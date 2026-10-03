@@ -57,13 +57,34 @@ const base = import.meta.env.BASE_URL;
 				</div>
 			</section>
 
+			<!-- Piatti del Giorno Carousel -->
+			<section class="piatti-carousel">
+				<div class="container">
+					<h2 class="section-title">Piatti del Giorno</h2>
+					<div class="carousel-wrapper">
+						<div class="carousel">
+							<img src="https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=600&h=400&fit=crop" alt="Pasta fresca" class="carousel__img" />
+							<img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&h=400&fit=crop" alt="Brasato di stagione" class="carousel__img" />
+							<img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&h=400&fit=crop" alt="Risotto ai funghi" class="carousel__img" />
+							<img src="https://images.unsplash.com/photo-1625521372841-35c51e5f9d4e?w=600&h=400&fit=crop" alt="Ravioli" class="carousel__img" />
+							<img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=600&h=400&fit=crop" alt="Carpaccio" class="carousel__img" />
+							<img src="https://images.unsplash.com/photo-1560448204-e02f7cbb8f0c?w=600&h=400&fit=crop" alt="Pane e olio" class="carousel__img" />
+							<img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&h=400&fit=crop" alt="Stracotto" class="carousel__img" />
+							<img src="https://images.unsplash.com/photo-1535521066927-ab7c9ab60908?w=600&h=400&fit=crop" alt="Pasta al pomodoro" class="carousel__img" />
+							<img src="https://images.unsplash.com/photo-1571407614614-c31a01e91ffe?w=600&h=400&fit=crop" alt="Orecchiette" class="carousel__img" />
+							<img src="https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=600&h=400&fit=crop" alt="Tagliatelle" class="carousel__img" />
+						</div>
+					</div>
+				</div>
+			</section>
+
 			<!-- Social Feed Mockup -->
 			<section class="social-feed">
 				<div class="container">
 					<h2 class="section-title">Dal Nostro Feed</h2>
 					<div class="feed-grid">
 						<div class="feed-card">
-							<div class="feed-card__image">📸 Pasta fresca</div>
+							<img src="https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=500&h=500&fit=crop" alt="Pasta fresca" class="feed-card__image" />
 							<div class="feed-card__content">
 								<p class="feed-card__caption">Pasta all'uovo fatta stamattina. Ogni giorno, dalle 9.</p>
 								<p class="feed-card__meta">❤️ 234 • 💬 12</p>
@@ -71,7 +92,7 @@ const base = import.meta.env.BASE_URL;
 						</div>
 
 						<div class="feed-card">
-							<div class="feed-card__image">🍽️ Brasato</div>
+							<img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&h=500&fit=crop" alt="Brasato di stagione" class="feed-card__image" />
 							<div class="feed-card__content">
 								<p class="feed-card__caption">Brasato di stagione con verdure dell'orto. Ricetta di famiglia.</p>
 								<p class="feed-card__meta">❤️ 189 • 💬 8</p>
@@ -79,17 +100,17 @@ const base = import.meta.env.BASE_URL;
 						</div>
 
 						<div class="feed-card">
-							<div class="feed-card__image">🍷 Vino</div>
+							<img src="https://images.unsplash.com/photo-1625521372841-35c51e5f9d4e?w=500&h=500&fit=crop" alt="Ravioli fatti in casa" class="feed-card__image" />
 							<div class="feed-card__content">
-								<p class="feed-card__caption">Vini locali curati. Scopri le etichette della zona.</p>
+								<p class="feed-card__caption">Ravioli fatti in casa con ripieno di ricotta e spinaci. Salsa di burro salvia.</p>
 								<p class="feed-card__meta">❤️ 156 • 💬 5</p>
 							</div>
 						</div>
 
 						<div class="feed-card">
-							<div class="feed-card__image">🎉 Comunità</div>
+							<img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=500&h=500&fit=crop" alt="Carpaccio di manzo" class="feed-card__image" />
 							<div class="feed-card__content">
-								<p class="feed-card__caption">Stasera cena con la zona. Qualità, convivialità, prezzi giusti.</p>
+								<p class="feed-card__caption">Carpaccio di manzo con rucola fresca e scaglie di parmigiano. Qualità d'eccellenza.</p>
 								<p class="feed-card__meta">❤️ 412 • 💬 24</p>
 							</div>
 						</div>
@@ -351,6 +372,11 @@ const base = import.meta.env.BASE_URL;
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 	}
 
+	.navbar.scrolled .navbar__logo,
+	.navbar.scrolled .navbar__link {
+		color: var(--text-primary);
+	}
+
 	.navbar__container {
 		max-width: 1200px;
 		margin: 0 auto;
@@ -536,6 +562,48 @@ const base = import.meta.env.BASE_URL;
 		z-index: 5;
 	}
 
+	/* Piatti Carousel */
+	.piatti-carousel {
+		padding: 100px 0;
+		background: var(--bg-main);
+	}
+
+	.carousel-wrapper {
+		overflow: hidden;
+		border-radius: 16px;
+	}
+
+	.carousel {
+		display: flex;
+		animation: carousel-scroll 20s linear infinite;
+		gap: 8px;
+	}
+
+	.carousel__img {
+		width: 600px;
+		height: 400px;
+		object-fit: cover;
+		border-radius: 12px;
+		flex-shrink: 0;
+	}
+
+	@keyframes carousel-scroll {
+		0% {
+			transform: translateX(0);
+		}
+		100% {
+			transform: translateX(calc(-600px * 4 - 8px * 4));
+		}
+	}
+
+	.carousel {
+		animation-play-state: running;
+	}
+
+	.carousel-wrapper:hover .carousel {
+		animation-play-state: paused;
+	}
+
 	/* Social Feed */
 	.social-feed {
 		padding: 100px 0;
@@ -573,14 +641,8 @@ const base = import.meta.env.BASE_URL;
 	.feed-card__image {
 		width: 100%;
 		aspect-ratio: 1 / 1;
-		background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 48px;
-		color: var(--bg-main);
-		text-align: center;
-		padding: 16px;
+		object-fit: cover;
+		display: block;
 	}
 
 	.feed-card__content {
