@@ -1,0 +1,250 @@
+---
+import { Image } from 'astro:assets';
+import emblema from '../../assets/trattoria/brand/emblema.png';
+---
+
+<!-- Navbar sticky con theme switcher -->
+<nav class="navbar" aria-label="Navigazione principale">
+	<div class="navbar__container">
+		<a href="#" class="navbar__logo">
+			<Image src={emblema} alt="" width={46} densities={[1, 2, 3]} class="navbar__emblem" />
+			<span>Trattoria del Borgo</span>
+		</a>
+		<ul class="navbar__menu">
+			<li><a href="#hero" class="navbar__link">Home</a></li>
+			<li><a href="#menu" class="navbar__link">Menu</a></li>
+			<li><a href="#reviews" class="navbar__link">Recensioni</a></li>
+			<li><a href="#info" class="navbar__link">Contatti</a></li>
+		</ul>
+		<div class="navbar__actions">
+			<a href="#prenota" class="navbar__cta">Prenota</a>
+			<button class="theme-switcher" aria-label="Cambia tema" title="Cambia tema">
+				<span class="theme-switcher__icon">🌙</span>
+			</button>
+		</div>
+	</div>
+</nav>
+
+<style>
+	/* Navbar */
+	.navbar {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		z-index: 1000;
+		background: transparent;
+		backdrop-filter: blur(0px);
+		-webkit-backdrop-filter: blur(0px);
+		transition: background-color 0.3s, border-color 0.3s, backdrop-filter 0.3s, box-shadow 0.3s;
+		border-bottom: 1px solid transparent;
+	}
+
+	.navbar.scrolled {
+		background: var(--glass-backdrop);
+		border-bottom-color: var(--border-color);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+	}
+
+	.navbar:not(.scrolled) .navbar__logo,
+	.navbar:not(.scrolled) .navbar__link {
+		color: rgba(255, 255, 255, 0.92);
+	}
+
+	.navbar.scrolled .navbar__logo,
+	.navbar.scrolled .navbar__link {
+		color: var(--text-primary);
+	}
+
+	.navbar__container {
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 16px 24px;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 24px;
+	}
+
+	.navbar__logo {
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		font-family: var(--font-display);
+		font-size: 24px;
+		font-weight: 700;
+		color: var(--text-primary);
+		text-decoration: none;
+		letter-spacing: -0.3px;
+		transition: color 0.2s;
+	}
+
+	.navbar__emblem {
+		width: auto;
+		height: 46px;
+		flex-shrink: 0;
+	}
+
+	.navbar__logo:hover {
+		color: var(--accent-primary);
+	}
+
+	.navbar__menu {
+		list-style: none;
+		display: flex;
+		gap: 36px;
+		flex: 1;
+		justify-content: center;
+	}
+
+	.navbar__link {
+		font-size: 17px;
+		font-weight: 500;
+		color: var(--text-secondary);
+		text-decoration: none;
+		transition: color 0.2s;
+		position: relative;
+	}
+
+	.navbar__link:hover {
+		color: var(--text-primary);
+	}
+
+	.navbar__link::after {
+		content: '';
+		position: absolute;
+		bottom: -4px;
+		left: 0;
+		width: 0;
+		height: 2px;
+		background: var(--accent-primary);
+		transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.navbar__link:hover::after {
+		width: 100%;
+	}
+
+	.navbar__actions {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+
+	.navbar__cta {
+		background: var(--accent-primary);
+		color: var(--on-accent);
+		font-size: 16px;
+		font-weight: 600;
+		text-decoration: none;
+		padding: 10px 20px;
+		border-radius: 8px;
+		transition: transform 0.2s, filter 0.2s;
+	}
+
+	.navbar__cta:hover {
+		transform: translateY(-1px);
+		filter: brightness(1.08);
+	}
+	/* Theme Switcher */
+	.theme-switcher {
+		background: var(--bg-secondary);
+		border: 1px solid var(--border-color);
+		border-radius: 8px;
+		padding: 8px 12px;
+		cursor: pointer;
+		font-size: 18px;
+		transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+		color: var(--text-primary);
+	}
+
+	.theme-switcher:hover {
+		background: var(--accent-primary);
+		color: var(--bg-main);
+		border-color: var(--accent-primary);
+	}
+
+	.theme-switcher__icon {
+		display: inline-block;
+		transition: transform 0.3s ease;
+	}
+
+
+	@media (max-width: 768px) {
+		.navbar__menu {
+			gap: 18px;
+		}
+
+		.navbar__link {
+			font-size: 15px;
+		}
+
+		.navbar__logo {
+			font-size: 20px;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.navbar__menu {
+			display: none;
+		}
+
+		.navbar__logo {
+			font-size: 17px;
+			gap: 8px;
+		}
+
+		.navbar__emblem {
+			height: 38px;
+		}
+	}
+</style>
+
+<script>
+	// Theme switcher
+	const themeSwitcher = document.querySelector('.theme-switcher') as HTMLButtonElement;
+	const html = document.documentElement;
+	const icon = themeSwitcher?.querySelector('.theme-switcher__icon') as HTMLElement;
+
+	// Il tema iniziale è già applicato dallo script inline in <head> (evita il lampo)
+	const isDark = () => html.getAttribute('data-theme') === 'dark';
+	if (icon) icon.textContent = isDark() ? '☀️' : '🌙';
+
+	themeSwitcher?.addEventListener('click', () => {
+		const newTheme = isDark() ? 'light' : 'dark';
+		html.setAttribute('data-theme', newTheme);
+		try {
+			localStorage.setItem('theme', newTheme);
+		} catch {
+			// storage non disponibile (es. navigazione privata): il tema vale solo per la sessione
+		}
+		if (icon) icon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+	});
+
+	// Navbar scroll effect
+	const navbar = document.querySelector('.navbar') as HTMLElement;
+
+	window.addEventListener('scroll', () => {
+		if (window.scrollY > 10) {
+			navbar.classList.add('scrolled');
+		} else {
+			navbar.classList.remove('scrolled');
+		}
+	});
+
+	// Smooth scroll per navbar links
+	document.querySelectorAll<HTMLAnchorElement>('.navbar__link').forEach(link => {
+		link.addEventListener('click', (e) => {
+			const href = link.getAttribute('href');
+			if (href && href.startsWith('#')) {
+				e.preventDefault();
+				const target = document.querySelector(href);
+				if (target) {
+					target.scrollIntoView({ behavior: 'smooth' });
+				}
+			}
+		});
+	});
+</script>

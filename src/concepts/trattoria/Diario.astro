@@ -1,0 +1,123 @@
+---
+import { Image } from 'astro:assets';
+
+const feedImages = import.meta.glob<{ default: ImageMetadata }>('/src/assets/trattoria/feed/*.jpg', { eager: true });
+const feedImg = (file: string) => feedImages[`/src/assets/trattoria/feed/${file}`].default;
+
+const diario = [
+	{ img: 'verdure.jpg', alt: 'Cassette di verdure di stagione dal contadino', time: '7:40', caption: 'Spesa dal contadino di Via Vecchia. Quello che troviamo stamattina è quello che trovate nel piatto.' },
+	{ img: 'pasta.jpg', alt: 'Sfoglia tirata con la macchinetta a mano', time: '9:12', caption: 'Si tira la sfoglia come ci ha insegnato la nonna. La macchinetta è la sua, il resto lo facciamo a mano.' },
+	{ img: 'pane.jpg', alt: 'Pane a lievitazione lunga appena sfornato', time: '10:30', caption: 'Pane a lievitazione lunga, 24 ore di attesa. Appena sfornato, finito entro stasera.' },
+	{ img: 'cucina.jpg', alt: 'Il cuoco al lavoro in cucina prima del servizio', time: '11:15', caption: 'Prima del servizio ognuno al suo posto. Il menu del giorno va in lavagna alle 12.' },
+	{ img: 'sala.jpg', alt: 'Tavoli con tovaglie a quadretti rossi apparecchiati', time: '11:50', caption: 'Tovaglie a quadretti, tavoli pronti. Prenotate dal sito o chiamateci: rispondiamo davvero noi.' },
+	{ img: 'sera.jpg', alt: 'Bancone con candela e bottiglia di vino a fine serata', time: '21:50', caption: 'Ultimo giro di rosso, la candela ancora accesa. Domani si ricomincia alle 7.' },
+];
+---
+
+<!-- Diario dalla cucina (angolo social) -->
+	<section class="social-feed">
+		<div class="container">
+			<div class="feed-header">
+				<h2 class="section-title">Dalla cucina</h2>
+				<p class="feed-handle">Una giornata qui, raccontata da noi su Instagram <span>@trattoriadelborgo</span></p>
+			</div>
+			<div class="feed-grid">
+				{diario.map((post, i) => (
+					<figure class="feed-card" style={`--i: ${i}`}>
+						<Image src={feedImg(post.img)} alt={post.alt} width={400} height={400} densities={[1, 2]} class="feed-card__image" />
+						<figcaption class="feed-card__content">
+							<p class="feed-card__caption">{post.caption}</p>
+							<p class="feed-card__meta">Oggi · {post.time}</p>
+						</figcaption>
+					</figure>
+				))}
+			</div>
+		</div>
+	</section>
+
+<style>
+	/* Social Feed */
+	.social-feed {
+		padding: 100px 0;
+		background: var(--bg-secondary);
+		border-top: 1px solid var(--border-color);
+		border-bottom: 1px solid var(--border-color);
+	}
+
+	.feed-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 24px;
+	}
+
+	.feed-card {
+		margin: 0;
+		background: var(--bg-main);
+		border: 1px solid var(--border-color);
+		border-radius: 12px;
+		overflow: hidden;
+		transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+		animation: fadeInUp 0.6s ease-out backwards;
+		animation-delay: calc(var(--i) * 0.1s + 0.1s);
+	}
+
+	.feed-card:hover {
+		border-color: var(--accent-primary);
+		box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.15);
+		transform: translateY(-4px);
+	}
+
+	.feed-card__image {
+		width: 100%;
+		aspect-ratio: 1 / 1;
+		object-fit: cover;
+		display: block;
+	}
+
+	.feed-card__content {
+		padding: 20px;
+	}
+
+	.feed-card__caption {
+		font-size: 14px;
+		line-height: 1.6;
+		color: var(--text-secondary);
+		margin: 0 0 12px 0;
+	}
+
+	.feed-card__meta {
+		font-size: 12px;
+		letter-spacing: 0.5px;
+		text-transform: uppercase;
+		color: var(--accent-primary);
+		margin: 0;
+	}
+
+	.feed-header .section-title {
+		margin-bottom: 20px;
+	}
+
+	.feed-handle {
+		font-size: 15px;
+		color: var(--text-secondary);
+		margin-bottom: 48px;
+	}
+
+	.feed-handle span {
+		color: var(--accent-primary);
+		font-weight: 500;
+	}
+
+
+	@media (max-width: 768px) {
+		.feed-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (max-width: 480px) {
+		.feed-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

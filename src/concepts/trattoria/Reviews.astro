@@ -1,0 +1,247 @@
+---
+const recensioni = [
+	{ name: 'Marco R.', stars: 5, time: '2 settimane fa', text: 'Tagliatelle al ragù come non le mangiavo da anni. Il ragazzo in sala ci ha consigliato il vino giusto senza farci sentire in un posto "da carta lunga". Abbiamo già prenotato per sabato prossimo.' },
+	{ name: 'Lucia M.', stars: 5, time: '1 mese fa', text: 'Locale piccolo, tavoli a quadretti, prezzi onesti. Abbiamo diviso brasato e ravioli e chiuso con il tiramisù. Si sente che è tutto fatto lì.' },
+	{ name: 'Andrea T.', stars: 4, time: '3 settimane fa', text: "Cucina davvero buona. Il sabato sera c'è un po' di attesa, ma si capisce: è sempre pieno. Meglio prenotare." },
+	{ name: 'Giulia P.', stars: 5, time: '2 mesi fa', text: 'Siamo venuti in sei per un compleanno. Ci hanno accolti come amici e la panna cotta è finita in dieci minuti.' },
+	{ name: 'Davide S.', stars: 5, time: '3 mesi fa', text: 'Pranzo veloce in settimana: risotto del giorno e caffè. Spesa onesta, servizio rapido, nessuna fretta di farti alzare.' },
+	{ name: 'Elena F.', stars: 5, time: '4 mesi fa', text: 'Ho portato i miei genitori, che di trattorie se ne intendono. Hanno chiesto il bis dei ravioli e il numero per prenotare.' },
+];
+const mediaVoti = recensioni.reduce((t, r) => t + r.stars, 0) / recensioni.length;
+const starPath = 'M10 1.5l2.5 5.3 5.8.8-4.2 4.1 1 5.8L10 14.7 4.9 17.5l1-5.8L1.7 7.6l5.8-.8z';
+---
+
+<!-- Recensioni -->
+	<section id="reviews" class="reviews-section">
+		<div class="container">
+			<h2 class="section-title">Cosa dicono di noi</h2>
+			<div class="reviews-widget">
+				<div class="reviews-widget__head">
+					<div>
+						<h3 class="reviews-widget__title">Recensioni dei clienti</h3>
+						<span class="reviews-widget__sub">Trattoria del Borgo</span>
+					</div>
+					<span class="reviews-widget__badge">Recensioni di esempio</span>
+				</div>
+				<div class="rating-summary">
+					<span class="rating-summary__number">{mediaVoti.toFixed(1).replace('.', ',')}</span>
+					<span class="rating-summary__stars" role="img" aria-label={`${mediaVoti.toFixed(1)} stelle su 5`} style={`--fill: ${(mediaVoti / 5) * 100}%`}>
+						<span class="rating-summary__row rating-summary__row--bg" aria-hidden="true">
+							{[0, 1, 2, 3, 4].map(() => <svg viewBox="0 0 20 20" width="18" height="18"><path d={starPath} /></svg>)}
+						</span>
+						<span class="rating-summary__row rating-summary__row--fg" aria-hidden="true">
+							{[0, 1, 2, 3, 4].map(() => <svg viewBox="0 0 20 20" width="18" height="18"><path d={starPath} /></svg>)}
+						</span>
+					</span>
+					<span class="rating-summary__count">126 recensioni</span>
+				</div>
+				<div class="reviews-grid">
+					{recensioni.map((r, i) => (
+						<article class="review-card" style={`--i: ${i}`}>
+							<div class="review-card__header">
+								<div class="review-card__avatar" aria-hidden="true">{r.name[0]}</div>
+								<div class="review-card__meta">
+									<h4 class="review-card__author">{r.name}</h4>
+									<div class="review-card__sub">
+										<span class="stars" role="img" aria-label={`${r.stars} stelle su 5`}>
+											{[1, 2, 3, 4, 5].map((n) => <svg viewBox="0 0 20 20" width="13" height="13" class={n <= r.stars ? 'star star--on' : 'star'}><path d={starPath} /></svg>)}
+										</span>
+										<span class="review-card__date">{r.time}</span>
+									</div>
+								</div>
+							</div>
+							<p class="review-card__text">{r.text}</p>
+						</article>
+					))}
+				</div>
+			</div>
+		</div>
+	</section>
+
+<style>
+	/* Reviews Section */
+	.reviews-section {
+		padding: 100px 0;
+		background: var(--bg-secondary);
+		border-top: 1px solid var(--border-color);
+	}
+
+	.reviews-widget {
+		background: var(--bg-main);
+		border: 1px solid var(--border-color);
+		border-radius: 16px;
+		padding: 28px;
+	}
+
+	.reviews-widget__head {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 16px;
+		margin-bottom: 20px;
+	}
+
+	.reviews-widget__title {
+		font-family: var(--font-display);
+		font-size: 22px;
+		line-height: 1.2;
+	}
+
+	.reviews-widget__sub {
+		font-size: 13px;
+		color: var(--text-muted);
+	}
+
+	.reviews-widget__badge {
+		flex-shrink: 0;
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 0.6px;
+		text-transform: uppercase;
+		color: var(--text-muted);
+		border: 1px solid var(--border-color);
+		border-radius: 999px;
+		padding: 4px 12px;
+	}
+
+	.rating-summary {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		padding-bottom: 20px;
+		margin-bottom: 24px;
+		border-bottom: 1px solid var(--border-color);
+	}
+
+	.rating-summary__number {
+		font-family: var(--font-display);
+		font-size: 36px;
+		font-weight: 700;
+		line-height: 1;
+	}
+
+	.rating-summary__stars {
+		position: relative;
+		display: block;
+		line-height: 0;
+	}
+
+	.rating-summary__row {
+		display: flex;
+		gap: 2px;
+		white-space: nowrap;
+	}
+
+	.rating-summary__row svg {
+		flex-shrink: 0;
+	}
+
+	.rating-summary__row--bg {
+		fill: var(--border-color);
+	}
+
+	.rating-summary__row--fg {
+		position: absolute;
+		inset: 0;
+		width: var(--fill);
+		overflow: hidden;
+		fill: var(--accent-tertiary);
+	}
+
+	.rating-summary__count {
+		font-size: 14px;
+		color: var(--text-muted);
+	}
+
+	.reviews-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+		gap: 16px;
+	}
+
+	.review-card {
+		background: var(--bg-secondary);
+		padding: 20px;
+		border-radius: 12px;
+		border: 1px solid var(--border-color);
+		transition: border-color 0.3s, transform 0.3s;
+		animation: fadeInUp 0.6s ease-out backwards;
+		animation-delay: calc(var(--i) * 0.05s + 0.05s);
+	}
+
+	.review-card:hover {
+		border-color: var(--accent-primary);
+		transform: translateY(-2px);
+	}
+
+	.review-card__header {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		margin-bottom: 12px;
+	}
+
+	.review-card__avatar {
+		width: 38px;
+		height: 38px;
+		flex-shrink: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50%;
+		background: var(--accent-primary);
+		color: var(--on-accent);
+		font-family: var(--font-display);
+		font-size: 18px;
+		font-weight: 700;
+	}
+
+	.review-card__author {
+		font-family: var(--font-body);
+		font-size: 15px;
+		font-weight: 600;
+		color: var(--text-primary);
+		margin: 0 0 2px 0;
+	}
+
+	.review-card__sub {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.stars {
+		display: inline-flex;
+		gap: 1px;
+		line-height: 0;
+	}
+
+	.star {
+		fill: var(--border-color);
+	}
+
+	.star--on {
+		fill: var(--accent-tertiary);
+	}
+
+	.review-card__text {
+		font-family: var(--font-body);
+		font-size: 14px;
+		line-height: 1.6;
+		color: var(--text-secondary);
+		margin: 0;
+	}
+
+	.review-card__date {
+		font-size: 12px;
+		color: var(--text-muted);
+		margin: 0;
+	}
+
+
+	@media (max-width: 480px) {
+		.reviews-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

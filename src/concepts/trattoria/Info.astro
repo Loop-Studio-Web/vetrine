@@ -1,0 +1,288 @@
+<!-- Info Section -->
+<section id="info" class="info-section">
+	<div class="container">
+		<h2 class="section-title">Dove siamo</h2>
+		<div class="info-layout">
+			<figure class="info-map">
+				<svg
+					class="info-map__svg"
+					viewBox="0 0 600 640"
+					role="img"
+					aria-label="Mappa illustrata del borgo: la trattoria è in Via del Borgo 42, a due passi da Piazza del Mercato, dove c'è un parcheggio gratuito."
+					xmlns="http://www.w3.org/2000/svg"
+				>
+					<!-- Strade: lo sfondo è l'asfalto, gli isolati sono i blocchi -->
+					<rect class="map-road" width="600" height="640" />
+
+					<!-- Isolati -->
+					<rect class="map-block" x="20" y="20" width="150" height="90" rx="8" />
+					<rect class="map-block map-block--here" x="215" y="20" width="175" height="90" rx="8" />
+					<rect class="map-block" x="435" y="20" width="145" height="90" rx="8" />
+					<rect class="map-block" x="20" y="160" width="150" height="110" rx="8" />
+					<rect class="map-block" x="435" y="160" width="145" height="110" rx="8" />
+					<rect class="map-block" x="20" y="310" width="150" height="90" rx="8" />
+					<rect class="map-block map-block--parking" x="215" y="310" width="175" height="90" rx="8" />
+					<rect class="map-block" x="435" y="310" width="145" height="90" rx="8" />
+					<rect class="map-block" x="20" y="450" width="150" height="170" rx="8" />
+					<rect class="map-block" x="215" y="450" width="175" height="170" rx="8" />
+
+					<!-- Piazza con fontana -->
+					<rect class="map-piazza" x="215" y="160" width="175" height="110" rx="8" />
+					<circle class="map-fountain-ring" cx="302" cy="212" r="22" />
+					<circle class="map-fountain" cx="302" cy="212" r="10" />
+
+					<!-- Giardini -->
+					<rect class="map-park" x="435" y="450" width="145" height="170" rx="8" />
+					<circle class="map-tree" cx="470" cy="485" r="13" />
+					<circle class="map-tree" cx="520" cy="505" r="15" />
+					<circle class="map-tree" cx="555" cy="470" r="11" />
+					<circle class="map-tree" cx="480" cy="550" r="11" />
+					<circle class="map-tree" cx="540" cy="560" r="13" />
+
+					<!-- Chiesa -->
+					<path class="map-church" d="M501 186h12v14h14v12h-14v26h-12v-26h-14v-12h14z" />
+
+					<!-- Nomi delle vie e dei luoghi -->
+					<text class="map-street" x="302" y="141" text-anchor="middle">Via del Borgo</text>
+					<text class="map-street" x="302" y="292" text-anchor="middle">Via Garibaldi</text>
+					<text class="map-street" x="302" y="432" text-anchor="middle">Via Mazzini</text>
+					<text class="map-street" x="196" y="215" text-anchor="middle" transform="rotate(-90 196 215)">Via Roma</text>
+					<text class="map-place" x="302" y="257" text-anchor="middle">Piazza del Mercato</text>
+					<text class="map-place map-place--p" x="302" y="352" text-anchor="middle">P</text>
+					<text class="map-place" x="302" y="384" text-anchor="middle">Parcheggio gratuito</text>
+					<text class="map-place" x="507" y="257" text-anchor="middle">Chiesa</text>
+					<text class="map-place" x="507" y="600" text-anchor="middle">Giardini</text>
+
+					<!-- La trattoria -->
+					<g class="map-pin" transform="translate(302 44)">
+						<ellipse class="map-pin__shadow" cx="0" cy="38" rx="14" ry="4" />
+						<path class="map-pin__body" d="M0 38C-5 28-20 16-20 0a20 20 0 0 1 40 0C20 16 5 28 0 38z" />
+						<circle class="map-pin__dot" cx="0" cy="0" r="7" />
+					</g>
+					<text class="map-here" x="302" y="102" text-anchor="middle">Trattoria del Borgo</text>
+				</svg>
+				<figcaption class="info-map__caption">Mappa illustrativa: l'indirizzo è di fantasia.</figcaption>
+			</figure>
+
+			<div class="info-cards">
+				<div class="info-card">
+					<h3>Orari</h3>
+					<p>
+						Martedì - Domenica<br />
+						12:00 - 14:30<br />
+						19:00 - 22:00<br />
+						<em>Chiuso il lunedì</em>
+					</p>
+				</div>
+				<div class="info-card">
+					<h3>Contatti</h3>
+					<p>
+						Via del Borgo, 42<br />
+						<a href="tel:+390321234567">+39 0321 234567</a><br />
+						<a href="mailto:info@trattoriadelborgo.it">info@trattoriadelborgo.it</a>
+						<em>Parcheggio gratuito in Piazza del Mercato, a due minuti a piedi.</em>
+					</p>
+				</div>
+				<div class="info-card">
+					<h3>Prenotazioni</h3>
+					<p>
+						<a href="#prenota">Prenota online</a><br />
+						Oltre 8 persone: chiamaci<br />
+						Il banco è senza prenotazione
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.info-section {
+		padding: 100px 0;
+		background: var(--bg-main);
+	}
+
+	.info-layout {
+		display: grid;
+		grid-template-columns: 1.3fr 1fr;
+		gap: 32px;
+		align-items: start;
+	}
+
+	.info-map {
+		margin: 0;
+	}
+
+	.info-map__svg {
+		display: block;
+		width: 100%;
+		height: auto;
+		border-radius: 16px;
+		border: 1px solid var(--border-color);
+	}
+
+	.info-map__caption {
+		margin-top: 10px;
+		font-size: 12px;
+		color: var(--text-muted);
+	}
+
+	.map-road {
+		fill: var(--bg-main);
+	}
+
+	.map-block {
+		fill: var(--bg-tertiary);
+	}
+
+	.map-block--here {
+		fill: rgba(var(--accent-rgb), 0.18);
+	}
+
+	.map-block--parking {
+		fill: var(--bg-secondary);
+		stroke: var(--border-color);
+		stroke-width: 2;
+		stroke-dasharray: 6 5;
+	}
+
+	.map-piazza {
+		fill: var(--bg-secondary);
+		stroke: var(--border-color);
+		stroke-width: 1.5;
+	}
+
+	.map-fountain-ring {
+		fill: none;
+		stroke: var(--border-color);
+		stroke-width: 3;
+	}
+
+	.map-fountain {
+		fill: var(--accent-secondary);
+		opacity: 0.55;
+	}
+
+	.map-park {
+		fill: var(--accent-secondary);
+		opacity: 0.28;
+	}
+
+	.map-tree {
+		fill: var(--accent-secondary);
+	}
+
+	.map-church {
+		fill: var(--text-muted);
+		opacity: 0.55;
+	}
+
+	.map-street,
+	.map-place,
+	.map-here {
+		font-family: var(--font-body);
+		fill: var(--text-muted);
+	}
+
+	.map-street {
+		font-size: 15px;
+		letter-spacing: 0.5px;
+	}
+
+	.map-place {
+		font-size: 14px;
+	}
+
+	.map-place--p {
+		font-size: 26px;
+		font-weight: 700;
+		fill: var(--accent-secondary);
+	}
+
+	.map-here {
+		font-size: 16px;
+		font-weight: 700;
+		fill: var(--text-primary);
+	}
+
+	.map-pin__shadow {
+		fill: rgba(0, 0, 0, 0.18);
+	}
+
+	.map-pin__body {
+		fill: var(--accent-primary);
+	}
+
+	.map-pin__dot {
+		fill: var(--on-accent);
+	}
+
+	.info-cards {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+	}
+
+	.info-card {
+		padding: 28px 32px;
+		background: var(--bg-secondary);
+		border-radius: 12px;
+		border: 1px solid var(--border-color);
+		transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+	}
+
+	.info-card:hover {
+		border-color: var(--accent-primary);
+		box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.12);
+		transform: translateY(-4px);
+	}
+
+	.info-card h3 {
+		font-family: var(--font-body);
+		font-size: 13px;
+		font-weight: 600;
+		margin-bottom: 12px;
+		color: var(--accent-primary);
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+	}
+
+	.info-card p {
+		font-size: 15px;
+		line-height: 1.8;
+		color: var(--text-secondary);
+		margin: 0;
+	}
+
+	.info-card a {
+		color: var(--accent-primary);
+		text-decoration: none;
+		font-weight: 500;
+		transition: color 0.2s;
+	}
+
+	.info-card a:hover {
+		color: var(--accent-secondary);
+		text-decoration: underline;
+	}
+
+	.info-card em {
+		font-style: italic;
+		color: var(--text-muted);
+		font-size: 13px;
+		display: block;
+		margin-top: 8px;
+	}
+
+	@media (max-width: 900px) {
+		.info-layout {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.info-card {
+			padding: 24px;
+		}
+	}
+</style>

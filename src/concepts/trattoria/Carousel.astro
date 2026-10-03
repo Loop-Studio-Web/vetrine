@@ -1,0 +1,237 @@
+---
+import { Image } from 'astro:assets';
+
+const piatti = [
+	{ img: 'pizza.jpg', alt: 'Pizza con pomodoro, mozzarella e basilico' },
+	{ img: 'pappardelle-ragu.jpg', alt: 'Pappardelle al ragù con salsiccia e parmigiano' },
+	{ img: 'antipasto-rustico.jpg', alt: 'Tagliere rustico con pane, prosciutto, olive e formaggio' },
+	{ img: 'brasato.jpg', alt: 'Brasato con patate e carote' },
+	{ img: 'ravioli.jpg', alt: 'Ravioli fatti in casa' },
+	{ img: 'risotto.jpg', alt: 'Risotto ai frutti di mare' },
+	{ img: 'tagliata.jpg', alt: 'Tagliata di carne alla griglia' },
+	{ img: 'panna-cotta.jpg', alt: 'Panna cotta con frutti rossi e crumble' },
+	{ img: 'pesce.jpg', alt: 'Pesce al forno con limone' },
+	{ img: 'tiramisu.jpg', alt: 'Tiramisù' },
+	{ img: 'sfoglie-frutti-di-bosco.jpg', alt: 'Sfoglie con crema e frutti di bosco' },
+];
+const carouselImages = import.meta.glob<{ default: ImageMetadata }>('/src/assets/trattoria/carousel/*.jpg', { eager: true });
+const carouselImg = (file: string) => carouselImages[`/src/assets/trattoria/carousel/${file}`].default;
+---
+
+<!-- Piatti del Giorno Carousel -->
+<section class="piatti-carousel">
+	<div class="container">
+		<h2 class="section-title">Piatti del Giorno</h2>
+		<div class="carousel-wrapper">
+			<div class="carousel" tabindex="0" role="region" aria-roledescription="carosello" aria-label="Piatti del giorno">
+				{piatti.map((piatto) => (
+					<Image src={carouselImg(piatto.img)} alt={piatto.alt} width={600} height={400} densities={[1, 2]} class="carousel__img" />
+				))}
+			</div>
+			<button type="button" class="carousel__arrow carousel__arrow--prev" aria-label="Piatto precedente">
+				<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+			</button>
+			<button type="button" class="carousel__arrow carousel__arrow--next" aria-label="Piatto successivo">
+				<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+			</button>
+		</div>
+		<div class="carousel__dots" role="group" aria-label="Posizione nel carosello"></div>
+	</div>
+	</section>
+
+<style>
+	/* Piatti Carousel */
+	.piatti-carousel {
+		padding: 100px 0;
+		background: var(--bg-main);
+	}
+
+	.carousel-wrapper {
+		position: relative;
+	}
+
+	.carousel {
+		display: flex;
+		gap: 8px;
+		overflow-x: auto;
+		scroll-snap-type: x mandatory;
+		scrollbar-width: none;
+		border-radius: 16px;
+	}
+
+	.carousel::-webkit-scrollbar {
+		display: none;
+	}
+
+	.carousel:focus-visible {
+		outline: 2px solid var(--accent-primary);
+		outline-offset: 4px;
+	}
+
+	.carousel__img {
+		flex: 0 0 min(600px, 86%);
+		width: min(600px, 86%);
+		height: auto;
+		aspect-ratio: 3 / 2;
+		object-fit: cover;
+		border-radius: 12px;
+		scroll-snap-align: start;
+	}
+
+	.carousel__arrow {
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 46px;
+		height: 46px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50%;
+		border: 1px solid var(--border-color);
+		background: var(--glass-backdrop);
+		color: var(--text-primary);
+		cursor: pointer;
+		box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+		transition: background 0.2s, color 0.2s, opacity 0.2s, border-color 0.2s;
+	}
+
+	.carousel__arrow--prev { left: 12px; }
+	.carousel__arrow--next { right: 12px; }
+
+	.carousel__arrow:hover:not(:disabled) {
+		background: var(--accent-primary);
+		border-color: var(--accent-primary);
+		color: var(--on-accent);
+	}
+
+	.carousel__arrow:focus-visible {
+		outline: 2px solid var(--accent-primary);
+		outline-offset: 2px;
+	}
+
+	.carousel__arrow:disabled {
+		opacity: 0;
+		pointer-events: none;
+	}
+</style>
+
+<style is:global>
+	/* Pallini del carosello: globali perché creati via JS */
+	.carousel__dots {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 10px;
+		margin-top: 22px;
+		min-height: 10px;
+	}
+
+	.carousel__dot {
+		position: relative;
+		width: 10px;
+		height: 10px;
+		padding: 0;
+		border: none;
+		border-radius: 999px;
+		background: var(--border-color);
+		cursor: pointer;
+		transition: width 0.3s, background 0.3s;
+	}
+
+	.carousel__dot::before {
+		content: '';
+		position: absolute;
+		inset: -8px -3px;
+	}
+
+	.carousel__dot:hover {
+		background: var(--text-muted);
+	}
+
+	.carousel__dot.is-active {
+		width: 28px;
+		background: var(--accent-primary);
+	}
+
+	.carousel__dot:focus-visible {
+		outline: 2px solid var(--accent-primary);
+		outline-offset: 3px;
+	}
+</style>
+
+<script>
+	// Carosello piatti: scroll-snap nativo + frecce, pallini e autoplay
+	const carousel = document.querySelector<HTMLElement>('.carousel');
+
+	if (carousel) {
+		const prevBtn = document.querySelector<HTMLButtonElement>('.carousel__arrow--prev')!;
+		const nextBtn = document.querySelector<HTMLButtonElement>('.carousel__arrow--next')!;
+		const dotsWrap = document.querySelector<HTMLElement>('.carousel__dots')!;
+		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		const AUTOPLAY_MS = 4500;
+		let dots: HTMLButtonElement[] = [];
+		let pages = 1;
+		let paused = false;
+		let visible = false;
+
+		const step = () => {
+			const first = carousel.firstElementChild as HTMLElement;
+			return first.offsetWidth + (parseFloat(getComputedStyle(carousel).columnGap) || 0);
+		};
+		const maxScroll = () => carousel.scrollWidth - carousel.clientWidth;
+		const atEnd = () => carousel.scrollLeft >= maxScroll() - 2;
+		const current = () => (atEnd() ? pages - 1 : Math.min(pages - 1, Math.round(carousel.scrollLeft / step())));
+
+		const goTo = (i: number) => {
+			const left = Math.max(0, Math.min(i * step(), maxScroll()));
+			carousel.scrollTo({ left, behavior: reduceMotion ? 'auto' : 'smooth' });
+		};
+
+		const update = () => {
+			const i = current();
+			dots.forEach((d, k) => {
+				d.classList.toggle('is-active', k === i);
+				d.setAttribute('aria-current', k === i ? 'true' : 'false');
+			});
+			prevBtn.disabled = carousel.scrollLeft <= 2;
+			nextBtn.disabled = atEnd();
+		};
+
+		const buildDots = () => {
+			pages = Math.max(1, Math.ceil((maxScroll() - 2) / step()) + 1);
+			dots = Array.from({ length: pages }, (_, i) => {
+				const b = document.createElement('button');
+				b.type = 'button';
+				b.className = 'carousel__dot';
+				b.setAttribute('aria-label', `Vai al piatto ${i + 1} di ${pages}`);
+				b.addEventListener('click', () => goTo(i));
+				return b;
+			});
+			dotsWrap.replaceChildren(...dots);
+			update();
+		};
+
+		carousel.addEventListener('scroll', () => requestAnimationFrame(update), { passive: true });
+		prevBtn.addEventListener('click', () => goTo(current() - 1));
+		nextBtn.addEventListener('click', () => goTo(current() + 1));
+
+		// Autoplay: si ferma se il mouse/focus/dito è sul carosello o se non è in vista
+		const wrapper = carousel.closest<HTMLElement>('.container')!;
+		['mouseenter', 'focusin', 'touchstart'].forEach((ev) => wrapper.addEventListener(ev, () => (paused = true), { passive: true }));
+		['mouseleave', 'focusout', 'touchend'].forEach((ev) => wrapper.addEventListener(ev, () => (paused = false), { passive: true }));
+		new IntersectionObserver(([e]) => (visible = e.isIntersecting), { threshold: 0.4 }).observe(wrapper);
+
+		if (!reduceMotion) {
+			setInterval(() => {
+				if (paused || !visible || document.hidden) return;
+				if (atEnd()) goTo(0);
+				else goTo(current() + 1);
+			}, AUTOPLAY_MS);
+		}
+
+		buildDots();
+		// le immagini caricano dopo: ricalcola quando le dimensioni cambiano
+		new ResizeObserver(buildDots).observe(carousel);
+	}
+</script>

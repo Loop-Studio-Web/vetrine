@@ -1,0 +1,139 @@
+---
+import { Image } from 'astro:assets';
+import emblema from '../../assets/trattoria/brand/emblema.png';
+
+const numeri = [
+	{ valore: '1980', etichetta: 'Anno di apertura' },
+	{ valore: '9:00', etichetta: 'Ogni mattina si tira la sfoglia' },
+	{ valore: '20 km', etichetta: 'Raggio dei nostri fornitori' },
+];
+---
+
+<!-- La nostra storia -->
+<section id="storia" class="storia-section">
+	<div class="container storia">
+		<div class="storia__emblem">
+			<Image src={emblema} alt="Emblema della Trattoria del Borgo, dal 1980" width={420} densities={[1, 2]} class="storia__img" />
+		</div>
+
+		<div class="storia__body">
+			<h2 class="section-title">La nostra storia</h2>
+			<p class="storia__lead">
+				Dal 1980 al Borgo si mangia così: pasta tirata a mano, un brasato che cuoce tutta la mattina, il pane del forno
+				qui accanto.
+			</p>
+			<p class="storia__text">
+				Da pochi anni il locale è passato a tre ragazzi cresciuti tra questi tavoli. Hanno tenuto le ricette e cambiato il
+				resto: si prenota dal telefono, la cucina si racconta ogni giorno, i fornitori sono a pochi chilometri.
+				Tradizione nel piatto, un po' di modernità attorno.
+			</p>
+
+			<dl class="storia__numeri">
+				{numeri.map((n) => (
+					<div class="storia__numero">
+						<dt>{n.valore}</dt>
+						<dd>{n.etichetta}</dd>
+					</div>
+				))}
+			</dl>
+		</div>
+	</div>
+</section>
+
+<style>
+	.storia-section {
+		padding: 100px 0;
+		background: var(--bg-secondary);
+		border-top: 1px solid var(--border-color);
+	}
+
+	.storia {
+		display: grid;
+		grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+		gap: 64px;
+		align-items: center;
+	}
+
+	.storia__emblem {
+		display: flex;
+		justify-content: center;
+	}
+
+	.storia__img {
+		width: min(100%, 420px);
+		height: auto;
+		filter: drop-shadow(0 14px 30px rgba(0, 0, 0, 0.14));
+	}
+
+	.storia__lead {
+		font-family: var(--font-display);
+		font-size: 26px;
+		line-height: 1.4;
+		font-style: italic;
+		color: var(--text-primary);
+		margin: 0 0 20px;
+	}
+
+	.storia__text {
+		font-size: 16px;
+		line-height: 1.75;
+		color: var(--text-secondary);
+		margin: 0;
+	}
+
+	.storia__numeri {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 20px;
+		margin: 40px 0 0;
+		padding-top: 28px;
+		border-top: 1px solid var(--border-color);
+	}
+
+	.storia__numero dt {
+		font-family: var(--font-display);
+		font-size: 34px;
+		font-weight: 700;
+		line-height: 1;
+		color: var(--accent-primary);
+	}
+
+	.storia__numero dd {
+		margin: 8px 0 0;
+		font-size: 13px;
+		line-height: 1.4;
+		color: var(--text-muted);
+	}
+
+	@media (max-width: 900px) {
+		.storia {
+			grid-template-columns: 1fr;
+			gap: 40px;
+		}
+
+		.storia__img {
+			width: min(100%, 300px);
+		}
+	}
+
+	@media (max-width: 480px) {
+		.storia__lead {
+			font-size: 22px;
+		}
+
+		.storia__numeri {
+			grid-template-columns: 1fr;
+			gap: 18px;
+		}
+
+		.storia__numero {
+			display: flex;
+			align-items: baseline;
+			gap: 14px;
+		}
+
+		.storia__numero dd {
+			margin: 0;
+		}
+	}
+</style>

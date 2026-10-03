@@ -1,0 +1,318 @@
+---
+import { Image } from 'astro:assets';
+import fotoAntipasti from '../../assets/trattoria/carousel/antipasto-rustico.jpg';
+import fotoPrimi from '../../assets/trattoria/carousel/pappardelle-ragu.jpg';
+import fotoSecondi from '../../assets/trattoria/carousel/tagliata.jpg';
+import fotoContorni from '../../assets/trattoria/feed/verdure.jpg';
+import fotoDolci from '../../assets/trattoria/carousel/tiramisu.jpg';
+import fotoLavagna from '../../assets/trattoria/feed/cucina.jpg';
+
+const categorie = [
+	{
+		id: 'antipasti',
+		nome: 'Antipasti',
+		foto: fotoAntipasti,
+		alt: 'Tagliere con pane, prosciutto, olive e formaggio',
+		piatti: [
+			{ nome: 'Tagliere del Borgo', prezzo: 12, desc: 'Salumi e formaggi del territorio, giardiniera della casa' },
+			{ nome: 'Crostini toscani', prezzo: 7, desc: 'Fegatini, capperi e un goccio di vin santo' },
+			{ nome: 'Bruschetta al pomodoro', prezzo: 5, desc: 'Pane casareccio, olio nuovo, basilico' },
+			{ nome: "Frittata dell'orto", prezzo: 7, desc: 'Con le verdure del giorno' },
+		],
+	},
+	{
+		id: 'primi',
+		nome: 'Primi',
+		foto: fotoPrimi,
+		alt: 'Pappardelle al ragù con salsiccia e parmigiano',
+		piatti: [
+			{ nome: "Pasta all'Uovo", prezzo: 8, desc: 'Tirata a mano, con ragù di carne locale' },
+			{ nome: 'Ravioli ricotta e spinaci', prezzo: 10, desc: 'Burro, salvia e parmigiano' },
+			{ nome: 'Risotto ai Frutti di Mare', prezzo: 14, desc: 'Cozze e gamberi del giorno' },
+			{ nome: 'Zuppa del giorno', prezzo: 7, desc: 'Legumi o verdure, secondo stagione' },
+		],
+	},
+	{
+		id: 'secondi',
+		nome: 'Secondi',
+		foto: fotoSecondi,
+		alt: 'Tagliata di manzo alla griglia',
+		piatti: [
+			{ nome: 'Brasato di Stagione', prezzo: 14, desc: "Cotto lentamente, con verdure dell'orto" },
+			{ nome: 'Tagliata di manzo', prezzo: 16, desc: 'Rosmarino, sale grosso, rucola' },
+			{ nome: 'Pesce al forno', prezzo: 15, desc: 'Limone, erbe e olio buono' },
+			{ nome: 'Salsiccia alla griglia', prezzo: 11, desc: 'Con polenta abbrustolita' },
+		],
+	},
+	{
+		id: 'contorni',
+		nome: 'Contorni',
+		foto: fotoContorni,
+		alt: 'Cassette di verdure fresche di stagione',
+		piatti: [
+			{ nome: 'Verdure Grigliate', prezzo: 5, desc: 'Di stagione' },
+			{ nome: 'Insalata Mista', prezzo: 4, desc: 'Verdure fresche' },
+			{ nome: 'Patate al Forno', prezzo: 3, desc: 'Rosmarino e aglio in camicia' },
+			{ nome: "Fagioli all'olio", prezzo: 4, desc: 'Cipolla rossa e salvia' },
+		],
+	},
+	{
+		id: 'dolci',
+		nome: 'Dolci',
+		foto: fotoDolci,
+		alt: 'Tiramisù fatto in casa',
+		piatti: [
+			{ nome: 'Tiramisù', prezzo: 6, desc: 'Fatto in casa, ogni mattina' },
+			{ nome: 'Panna Cotta', prezzo: 5, desc: 'Frutti rossi di stagione' },
+			{ nome: 'Sfoglie ai frutti di bosco', prezzo: 6, desc: 'Crema leggera e sfoglia croccante' },
+			{ nome: 'Cantucci e vin santo', prezzo: 6, desc: 'Mandorle tostate, da inzuppare' },
+		],
+	},
+];
+---
+
+<!-- Menu Section -->
+<section id="menu" class="menu-section">
+	<div class="container">
+		<h2 class="section-title">Menu</h2>
+
+		<nav class="menu-tabs" aria-label="Categorie del menu">
+			{categorie.map((c, i) => (
+				<button type="button" class={i === 0 ? 'menu-tab is-active' : 'menu-tab'} data-cat={c.id} aria-pressed={i === 0 ? 'true' : 'false'}>
+					{c.nome}
+				</button>
+			))}
+		</nav>
+
+		<div class="menu-grid">
+			{categorie.map((c, i) => (
+				<article class={i === 0 ? 'menu-category is-active' : 'menu-category'} id={`menu-${c.id}`} style={`--i: ${i}`}>
+					<Image src={c.foto} alt={c.alt} width={480} height={320} densities={[1, 2]} class="menu-category__photo" />
+					<h3 class="menu-category__title">{c.nome}</h3>
+					<div class="menu-items">
+						{c.piatti.map((p) => (
+							<div class="menu-item">
+								<div class="menu-item__header">
+									<h4 class="menu-item__name">{p.nome}</h4>
+									<span class="menu-item__price">{p.prezzo}€</span>
+								</div>
+								<p class="menu-item__desc">{p.desc}</p>
+							</div>
+						))}
+					</div>
+				</article>
+			))}
+
+			<aside class="menu-special" style="--i: 5">
+				<Image src={fotoLavagna} alt="Il cuoco al lavoro in cucina" width={480} height={320} densities={[1, 2]} class="menu-category__photo" />
+				<h3 class="menu-category__title">Sulla lavagna</h3>
+				<p class="menu-special__text">
+					Ogni mattina scriviamo un primo e un secondo del giorno, secondo quello che porta il contadino. Non sono
+					in questo elenco: chiedi a chi ti serve.
+				</p>
+				<p class="menu-special__small">Fino a esaurimento.</p>
+			</aside>
+		</div>
+
+		<p class="menu-note">Coperto 2€. Hai allergie o intolleranze? Dillo pure a chi ti serve, ne teniamo conto volentieri.</p>
+	</div>
+</section>
+
+<style>
+	.menu-section {
+		padding: 100px 0;
+		background: var(--bg-main);
+	}
+
+	/* Schede: visibili solo su schermi piccoli, dove si mostra una categoria alla volta */
+	.menu-tabs {
+		display: none;
+		gap: 8px;
+		overflow-x: auto;
+		margin: -12px -24px 28px;
+		padding: 4px 24px;
+		scrollbar-width: none;
+	}
+
+	.menu-tabs::-webkit-scrollbar {
+		display: none;
+	}
+
+	.menu-tab {
+		flex-shrink: 0;
+		font: inherit;
+		font-size: 15px;
+		font-weight: 500;
+		color: var(--text-secondary);
+		background: var(--bg-secondary);
+		border: 1px solid var(--border-color);
+		border-radius: 999px;
+		padding: 9px 18px;
+		cursor: pointer;
+		transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+	}
+
+	.menu-tab.is-active {
+		background: var(--accent-primary);
+		border-color: var(--accent-primary);
+		color: var(--on-accent);
+	}
+
+	.menu-tab:focus-visible {
+		outline: 2px solid var(--accent-primary);
+		outline-offset: 2px;
+	}
+
+	.menu-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 64px 40px;
+	}
+
+	.menu-category {
+		animation: fadeInUp 0.6s ease-out backwards;
+		animation-delay: calc(var(--i) * 0.1s + 0.1s);
+	}
+
+	.menu-category__photo {
+		display: block;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 3 / 2;
+		object-fit: cover;
+		border-radius: 12px;
+		margin-bottom: 24px;
+	}
+
+	.menu-category__title {
+		font-family: var(--font-body);
+		font-size: 13px;
+		font-weight: 600;
+		color: var(--accent-primary);
+		margin-bottom: 24px;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+	}
+
+	.menu-items {
+		display: flex;
+		flex-direction: column;
+		gap: 28px;
+	}
+
+	.menu-item {
+		padding-bottom: 20px;
+		border-bottom: 1px solid var(--border-color);
+		transition: padding-left 0.3s, transform 0.3s;
+	}
+
+	.menu-item:last-child {
+		border-bottom: none;
+		padding-bottom: 0;
+	}
+
+	.menu-item:hover {
+		padding-left: 8px;
+		transform: translateX(4px);
+	}
+
+	.menu-item__header {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		margin-bottom: 8px;
+		gap: 12px;
+	}
+
+	.menu-item__name {
+		font-family: var(--font-display);
+		font-size: 19px;
+		font-weight: 700;
+		color: var(--text-primary);
+		margin: 0;
+	}
+
+	.menu-item__price {
+		font-family: var(--font-display);
+		font-size: 19px;
+		font-weight: 700;
+		color: var(--accent-secondary);
+		flex-shrink: 0;
+	}
+
+	.menu-item__desc {
+		font-size: 14px;
+		color: var(--text-muted);
+		margin: 0;
+		font-style: italic;
+	}
+
+	/* Sesta cella della griglia: il piatto del giorno scritto a mano */
+	.menu-special {
+		animation: fadeInUp 0.6s ease-out backwards;
+		animation-delay: calc(var(--i) * 0.1s + 0.1s);
+	}
+
+	.menu-special__text {
+		font-family: var(--font-display);
+		font-size: 21px;
+		font-style: italic;
+		line-height: 1.5;
+		color: var(--text-primary);
+		margin: 0 0 12px;
+	}
+
+	.menu-special__small {
+		font-size: 13px;
+		color: var(--text-muted);
+		margin: 0;
+	}
+
+	.menu-note {
+		margin-top: 56px;
+		font-size: 13px;
+		color: var(--text-muted);
+	}
+
+	@media (max-width: 900px) {
+		.menu-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (max-width: 768px) {
+		.menu-tabs {
+			display: flex;
+		}
+
+		.menu-grid {
+			grid-template-columns: 1fr;
+			gap: 40px;
+		}
+
+		.menu-category:not(.is-active) {
+			display: none;
+		}
+
+		.menu-note {
+			margin-top: 40px;
+		}
+	}
+</style>
+
+<script>
+	// Su schermi piccoli il menu mostra una categoria alla volta
+	const tabs = document.querySelectorAll<HTMLButtonElement>('.menu-tab');
+	const categories = document.querySelectorAll<HTMLElement>('.menu-category');
+
+	tabs.forEach((tab) => {
+		tab.addEventListener('click', () => {
+			tabs.forEach((t) => {
+				const on = t === tab;
+				t.classList.toggle('is-active', on);
+				t.setAttribute('aria-pressed', String(on));
+			});
+			categories.forEach((c) => c.classList.toggle('is-active', c.id === `menu-${tab.dataset.cat}`));
+		});
+	});
+</script>

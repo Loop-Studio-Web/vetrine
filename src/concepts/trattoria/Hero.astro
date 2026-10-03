@@ -1,0 +1,203 @@
+---
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<!-- Video Hero Section -->
+<section id="hero" class="hero-video">
+	<div class="hero-video__container">
+		<div class="hero-video__content">
+			<h1 class="hero-video__title">Trattoria del Borgo</h1>
+			<p class="hero-video__subtitle">Ristorazione autentica. Rimodernizzata.</p>
+			<p class="hero-video__description">
+				Una trattoria nata negli anni '80, riaperta da ragazzi che credono nella qualità.
+				Pasta fatta in casa, ingredienti di stagione, prezzi onesti.
+			</p>
+			<div class="hero-video__actions">
+				<a href="#prenota" class="btn btn--primary">Prenota un tavolo</a>
+				<a href="#menu" class="btn btn--ghost">Guarda il menu</a>
+			</div>
+		</div>
+		<div class="hero-video__frame">
+			<video class="hero-video__iframe" autoplay muted loop playsinline>
+				<source src={`${base}/videos/trattoria-hero.f616.mp4`} type="video/mp4" />
+				Il tuo browser non supporta il tag video.
+			</video>
+		</div>
+	</div>
+</section>
+
+<style>
+	/* Hero Video Section */
+	.hero-video {
+		position: relative;
+		height: 100vh;
+		overflow: hidden;
+		background: #17120f; /* riserva se il video non carica: la navbar resta leggibile */
+	}
+
+	.hero-video__container {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 10;
+	}
+
+	.hero-video__content {
+		text-align: center;
+		max-width: 600px;
+		animation: fadeInUp 0.8s ease-out;
+		position: relative;
+		z-index: 20;
+		padding: 48px;
+		background: rgba(23, 18, 15, 0.78);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		border-radius: 16px;
+		border: 1px solid rgba(var(--accent-rgb), 0.35);
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+	}
+
+	.hero-video__title {
+		font-family: var(--font-display);
+		font-size: 72px;
+		font-weight: 700;
+		line-height: 1.05;
+		margin-bottom: 20px;
+		letter-spacing: -0.5px;
+		color: white;
+		text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+	}
+
+	.hero-video__subtitle {
+		font-family: var(--font-editorial);
+		font-size: 24px;
+		color: rgba(255, 255, 255, 0.9);
+		margin-bottom: 24px;
+		font-weight: 400;
+		font-style: italic;
+		text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+	}
+
+	.hero-video__description {
+		font-size: 18px;
+		line-height: 1.7;
+		color: rgba(255, 255, 255, 0.85);
+		text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+	}
+
+	.hero-video__actions {
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 12px;
+		margin-top: 28px;
+	}
+
+	.btn {
+		font-family: var(--font-body);
+		font-size: 15px;
+		font-weight: 600;
+		text-decoration: none;
+		padding: 13px 26px;
+		border-radius: 10px;
+		border: 1px solid transparent;
+		transition: transform 0.2s, filter 0.2s, background 0.2s;
+	}
+
+	.btn:hover {
+		transform: translateY(-1px);
+	}
+
+	.btn--primary {
+		background: var(--accent-primary);
+		color: var(--on-accent);
+	}
+
+	.btn--primary:hover {
+		filter: brightness(1.08);
+	}
+
+	.btn--ghost {
+		color: #fff;
+		border-color: rgba(255, 255, 255, 0.5);
+	}
+
+	.btn--ghost:hover {
+		background: rgba(255, 255, 255, 0.12);
+	}
+
+	.hero-video__frame {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 100vw;
+		height: 100vh;
+		z-index: 1;
+	}
+
+	.hero-video__iframe {
+		width: 100%;
+		height: 100%;
+		border: none;
+		object-fit: cover;
+	}
+
+	.hero-video::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.8) 100%);
+		z-index: 5;
+	}
+
+
+	@media (max-width: 768px) {
+		.hero-video__title {
+			font-size: 48px;
+		}
+
+		.hero-video__subtitle {
+			font-size: 18px;
+		}
+
+		.hero-video__description {
+			font-size: 16px;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.hero-video {
+			height: 80vh;
+		}
+
+		.hero-video__title {
+			font-size: 36px;
+		}
+
+		.hero-video__subtitle {
+			font-size: 16px;
+		}
+
+		.hero-video__description {
+			font-size: 14px;
+		}
+	}
+</style>
+
+<script>
+	// Chi ha chiesto "riduci animazioni" vede il primo fotogramma fermo
+	if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		const video = document.querySelector<HTMLVideoElement>('.hero-video__iframe');
+		video?.removeAttribute('autoplay');
+		video?.pause();
+	}
+</script>
