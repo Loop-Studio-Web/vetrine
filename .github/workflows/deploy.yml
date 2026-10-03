@@ -20,6 +20,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: withastro/action@v3
+        with:
+          # Astro 7 richiede Node >=22.12 (stesso vincolo di "engines" in
+          # package.json) — senza questo il runner usa Node 20 di default
+          # e la build fallisce subito.
+          node-version: 22
 
   deploy:
     needs: build
