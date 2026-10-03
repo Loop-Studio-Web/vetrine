@@ -18,7 +18,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 			</div>
 		</div>
 		<div class="hero-video__frame">
-			<video class="hero-video__iframe" autoplay muted loop playsinline>
+			<video class="hero-video__iframe" autoplay muted loop playsinline preload="auto" poster={`${base}/images/trattoria/hero-poster.jpg`}>
 				<source src={`${base}/videos/trattoria-hero.f616.mp4`} type="video/mp4" />
 				Il tuo browser non supporta il tag video.
 			</video>

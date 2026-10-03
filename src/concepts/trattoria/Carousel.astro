@@ -122,34 +122,37 @@ const carouselImg = (file: string) => carouselImages[`/src/assets/trattoria/caro
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		gap: 10px;
-		margin-top: 22px;
-		min-height: 10px;
+		margin-top: 14px;
+		min-height: 24px;
 	}
 
+	/* Il bottone è un'area di tocco di almeno 24 px; il pallino vero è il ::after */
 	.carousel__dot {
-		position: relative;
-		width: 10px;
-		height: 10px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 24px;
+		height: 24px;
 		padding: 0;
 		border: none;
+		background: none;
+		cursor: pointer;
+	}
+
+	.carousel__dot::after {
+		content: '';
+		width: 10px;
+		height: 10px;
 		border-radius: 999px;
 		background: var(--border-color);
-		cursor: pointer;
 		transition: width 0.3s, background 0.3s;
 	}
 
-	.carousel__dot::before {
-		content: '';
-		position: absolute;
-		inset: -8px -3px;
-	}
-
-	.carousel__dot:hover {
+	.carousel__dot:hover::after {
 		background: var(--text-muted);
 	}
 
-	.carousel__dot.is-active {
+	.carousel__dot.is-active::after {
 		width: 28px;
 		background: var(--accent-primary);
 	}

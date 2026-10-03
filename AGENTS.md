@@ -32,14 +32,54 @@ quel concept specifico — stessa logica di varietà tecnica del repo `lab`.
 ## Struttura
 
 ```
-src/pages/<macrocategoria>/<variante>/index.astro   → un concept
+src/pages/<macrocategoria>/<variante>/index.astro   → un concept (solo l'impianto della pagina)
+src/concepts/<variante>/                            → sezioni (.astro) e base.css del concept
+src/assets/<variante>/                              → immagini, ottimizzate da astro:assets
+public/images/<variante>/                           → file con URL fisso (og:image, favicon)
 ```
 
-Esempio: `src/pages/ristorazione/trattoria/index.astro`.
+Esempio: `src/pages/ristorazione/trattoria/index.astro` importa i componenti di
+`src/concepts/trattoria/` (Navbar, Hero, Carousel, Diario, Menu, Reviews,
+Storia, Booking, Info, Footer) e `base.css` con token colore, reset e
+animazioni. I componenti restano **dentro il concept**: la cartella
+`src/concepts/<variante>/` serve a spezzare il file, non a condividere codice
+con le altre varianti.
 
 La `src/pages/index.astro` in radice è un indice semplice con i link ai
 concept pubblicati (sul modello della index.html di `lab`), da aggiornare a
 mano a ogni nuova pubblicazione.
+
+## Convenzioni di un concept
+
+- **Un componente per sezione**, con markup, CSS (scoped) e JS propri. Gli
+  elementi creati via JavaScript non ricevono lo scope: i loro stili vanno in
+  un blocco `<style is:global>` dello stesso componente.
+- **Immagini solo in locale**, in `src/assets/` e con `<Image>` di
+  `astro:assets`: niente hotlink. Da Unsplash solo URL `images.unsplash.com/photo-…`
+  (licenza libera); `plus.unsplash.com` è Unsplash+ a pagamento, da scartare.
+  Controllare sempre l'assenza di watermark prima di salvare.
+- **Percorsi con `base`**: `import.meta.env.BASE_URL` non ha lo slash finale.
+  Usare `const base = import.meta.env.BASE_URL.replace(/\/$/, '')` e poi
+  `${base}/percorso`, altrimenti favicon, video e link danno 404 online.
+- **Sono vetrine dimostrative**: `noindex, nofollow` su ogni pagina, dati,
+  indirizzi e recensioni di fantasia dichiarati come tali ("di esempio"),
+  nessun nome o foto di clienti reali, nessun logo di terzi (es. Google).
+- **Widget ispirati al lab** (recensioni, prenotazione): si ricreano nel
+  concept, con stile proprio, non si importano i bundle compilati.
+- **Footer** con il logo Loop Studio (SVG, nero o bianco + rosso `#fe3b30`) e
+  link a https://theloopstudio.org/.
+- **Prima di pubblicare**: `astro build`, `axe-core` a 0 violazioni in tema
+  chiaro e scuro, nessuno scorrimento orizzontale a 390 px, prova del flusso
+  dei widget e dell'anteprima social (`og:image` 1200×630 in
+  `public/images/<variante>/`).
+- **Dev server**: dopo riscritture grandi di un componente può servire stili
+  vecchi. Se la pagina appare senza stili, `astro dev stop` e
+  `astro dev --background`.
+
+## Stato dei concept
+
+- **Ristorazione / Trattoria** (Trattoria del Borgo): pubblicata. Da rifare il
+  video dell'hero (il file attuale non è pertinente).
 
 ## Deploy
 

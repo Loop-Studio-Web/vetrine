@@ -18,8 +18,14 @@ import emblema from '../../assets/trattoria/brand/emblema.png';
 		</ul>
 		<div class="navbar__actions">
 			<a href="#prenota" class="navbar__cta">Prenota</a>
-			<button class="theme-switcher" aria-label="Cambia tema" title="Cambia tema">
-				<span class="theme-switcher__icon">🌙</span>
+			<button class="theme-switcher" type="button" aria-label="Passa al tema scuro" title="Passa al tema scuro">
+				<svg class="theme-switcher__icon theme-switcher__icon--moon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+					<path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+				</svg>
+				<svg class="theme-switcher__icon theme-switcher__icon--sun" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+					<circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2" />
+					<path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+				</svg>
 			</button>
 		</div>
 	</div>
@@ -153,9 +159,11 @@ import emblema from '../../assets/trattoria/brand/emblema.png';
 		background: var(--bg-secondary);
 		border: 1px solid var(--border-color);
 		border-radius: 8px;
-		padding: 8px 12px;
+		padding: 8px 10px;
 		cursor: pointer;
-		font-size: 18px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
 		transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 		color: var(--text-primary);
 	}
@@ -166,9 +174,26 @@ import emblema from '../../assets/trattoria/brand/emblema.png';
 		border-color: var(--accent-primary);
 	}
 
+	.theme-switcher:focus-visible {
+		outline: 2px solid var(--accent-primary);
+		outline-offset: 2px;
+	}
+
 	.theme-switcher__icon {
-		display: inline-block;
-		transition: transform 0.3s ease;
+		display: block;
+	}
+
+	/* Mostra l'icona del tema in cui si passa: luna nel chiaro, sole nello scuro */
+	.theme-switcher__icon--sun {
+		display: none;
+	}
+
+	:global(html[data-theme='dark']) .theme-switcher__icon--moon {
+		display: none;
+	}
+
+	:global(html[data-theme='dark']) .theme-switcher__icon--sun {
+		display: block;
 	}
 
 
@@ -206,11 +231,15 @@ import emblema from '../../assets/trattoria/brand/emblema.png';
 	// Theme switcher
 	const themeSwitcher = document.querySelector('.theme-switcher') as HTMLButtonElement;
 	const html = document.documentElement;
-	const icon = themeSwitcher?.querySelector('.theme-switcher__icon') as HTMLElement;
 
 	// Il tema iniziale è già applicato dallo script inline in <head> (evita il lampo)
 	const isDark = () => html.getAttribute('data-theme') === 'dark';
-	if (icon) icon.textContent = isDark() ? '☀️' : '🌙';
+	const syncLabel = () => {
+		const label = isDark() ? 'Passa al tema chiaro' : 'Passa al tema scuro';
+		themeSwitcher?.setAttribute('aria-label', label);
+		themeSwitcher?.setAttribute('title', label);
+	};
+	syncLabel();
 
 	themeSwitcher?.addEventListener('click', () => {
 		const newTheme = isDark() ? 'light' : 'dark';
@@ -220,7 +249,7 @@ import emblema from '../../assets/trattoria/brand/emblema.png';
 		} catch {
 			// storage non disponibile (es. navigazione privata): il tema vale solo per la sessione
 		}
-		if (icon) icon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+		syncLabel();
 	});
 
 	// Navbar scroll effect
