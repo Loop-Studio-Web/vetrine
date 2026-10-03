@@ -3,8 +3,37 @@ import '@fontsource-variable/space-grotesk';
 import '@fontsource/newsreader/400.css';
 import '@fontsource/newsreader/400-italic.css';
 import '@fontsource/newsreader/700.css';
+import { Image } from 'astro:assets';
 
 const base = import.meta.env.BASE_URL;
+
+const feedImages = import.meta.glob<{ default: ImageMetadata }>('/src/assets/trattoria/feed/*.jpg', { eager: true });
+const feedImg = (file: string) => feedImages[`/src/assets/trattoria/feed/${file}`].default;
+
+const piatti = [
+	{ img: 'pizza.jpg', alt: 'Pizza con pomodoro, mozzarella e basilico' },
+	{ img: 'pappardelle-ragu.jpg', alt: 'Pappardelle al ragù con salsiccia e parmigiano' },
+	{ img: 'antipasto-rustico.jpg', alt: 'Tagliere rustico con pane, prosciutto, olive e formaggio' },
+	{ img: 'brasato.jpg', alt: 'Brasato con patate e carote' },
+	{ img: 'ravioli.jpg', alt: 'Ravioli fatti in casa' },
+	{ img: 'risotto.jpg', alt: 'Risotto ai frutti di mare' },
+	{ img: 'tagliata.jpg', alt: 'Tagliata di carne alla griglia' },
+	{ img: 'panna-cotta.jpg', alt: 'Panna cotta con frutti rossi e crumble' },
+	{ img: 'pesce.jpg', alt: 'Pesce al forno con limone' },
+	{ img: 'tiramisu.jpg', alt: 'Tiramisù' },
+	{ img: 'sfoglie-frutti-di-bosco.jpg', alt: 'Sfoglie con crema e frutti di bosco' },
+];
+const carouselImages = import.meta.glob<{ default: ImageMetadata }>('/src/assets/trattoria/carousel/*.jpg', { eager: true });
+const carouselImg = (file: string) => carouselImages[`/src/assets/trattoria/carousel/${file}`].default;
+
+const diario = [
+	{ img: 'verdure.jpg', alt: 'Cassette di verdure di stagione dal contadino', time: '7:40', caption: 'Spesa dal contadino di Via Vecchia. Quello che troviamo stamattina è quello che trovate nel piatto.' },
+	{ img: 'pasta.jpg', alt: 'Sfoglia tirata con la macchinetta a mano', time: '9:12', caption: 'Si tira la sfoglia come ci ha insegnato la nonna. La macchinetta è la sua, il resto lo facciamo a mano.' },
+	{ img: 'pane.jpg', alt: 'Pane a lievitazione lunga appena sfornato', time: '10:30', caption: 'Pane a lievitazione lunga, 24 ore di attesa. Appena sfornato, finito entro stasera.' },
+	{ img: 'cucina.jpg', alt: 'Il cuoco al lavoro in cucina prima del servizio', time: '11:15', caption: 'Prima del servizio ognuno al suo posto. Il menu del giorno va in lavagna alle 12.' },
+	{ img: 'sala.jpg', alt: 'Tavoli con tovaglie a quadretti rossi apparecchiati', time: '11:50', caption: 'Tovaglie a quadretti, tavoli pronti. Per prenotare scrivete su WhatsApp: rispondiamo davvero noi.' },
+	{ img: 'sera.jpg', alt: 'Bancone con candela e bottiglia di vino a fine serata', time: '21:50', caption: 'Ultimo giro di rosso, la candela ancora accesa. Domani si ricomincia alle 7.' },
+];
 ---
 
 <html lang="it">
@@ -63,62 +92,40 @@ const base = import.meta.env.BASE_URL;
 					<h2 class="section-title">Piatti del Giorno</h2>
 					<div class="carousel-wrapper">
 						<div class="carousel">
-							<img src="https://images.unsplash.com/photo-1598023696416-0193a0bcd302?w=600&h=400&fit=crop" alt="Pizza" class="carousel__img" />
-							<img src="https://images.unsplash.com/photo-1597131628347-c769fc631754?w=600&h=400&fit=crop" alt="Pasta" class="carousel__img" />
-							<img src="https://images.unsplash.com/photo-1625467150224-673f708dd8e8?w=600&h=400&fit=crop" alt="Antipasto della casa" class="carousel__img" />
-							<img src="https://images.unsplash.com/photo-1665761543682-6305ccc5398b?w=600&h=400&fit=crop" alt="Ravioli fatti in casa" class="carousel__img" />
-							<img src="https://plus.unsplash.com/premium_photo-1666662657979-4ff6241901e9?w=600&h=400&fit=crop" alt="Antipasto" class="carousel__img" />
-							<img src="https://images.unsplash.com/photo-1702742322469-36315505728f?w=600&h=400&fit=crop" alt="Dessert" class="carousel__img" />
-							<img src="https://images.unsplash.com/photo-1567691334394-c0d00a7716db?w=600&h=400&fit=crop" alt="Dessert ai frutti di bosco" class="carousel__img" />
-							<img src="https://images.unsplash.com/photo-1598577789978-b87168a57b69?w=600&h=400&fit=crop" alt="Carne alla griglia" class="carousel__img" />
-							<img src="https://images.unsplash.com/photo-1665401015549-712c0dc5ef85?w=600&h=400&fit=crop" alt="Pesce fresco" class="carousel__img" />
-							<img src="https://images.unsplash.com/photo-1627935722051-395636b0d8a5?w=600&h=400&fit=crop" alt="Tagliere formaggi" class="carousel__img" />
-						</div>
+								{[0, 1].map((copy) => (
+									<div class="carousel__set" aria-hidden={copy === 1 ? 'true' : undefined}>
+										{piatti.map((piatto) => (
+											<Image src={carouselImg(piatto.img)} alt={copy === 1 ? '' : piatto.alt} width={600} height={400} densities={[1, 2]} class="carousel__img" />
+										))}
+									</div>
+								))}
+							</div>
 					</div>
 				</div>
 			</section>
 
-			<!-- Social Feed Mockup -->
-			<section class="social-feed">
-				<div class="container">
-					<h2 class="section-title">Dal Nostro Feed</h2>
-					<div class="feed-grid">
-						<div class="feed-card">
-							<img src="https://images.unsplash.com/photo-1597131628347-c769fc631754?w=500&h=500&fit=crop" alt="Pasta fresca" class="feed-card__image" />
-							<div class="feed-card__content">
-								<p class="feed-card__caption">Pasta all'uovo fatta stamattina. Ogni giorno, dalle 9.</p>
-								<p class="feed-card__meta">❤️ 234 • 💬 12</p>
-							</div>
+			<!-- Diario dalla cucina (angolo social) -->
+				<section class="social-feed">
+					<div class="container">
+						<div class="feed-header">
+							<h2 class="section-title">Dalla cucina</h2>
+							<p class="feed-handle">Una giornata qui, raccontata da noi su Instagram <span>@trattoriadelborgo</span></p>
 						</div>
-
-						<div class="feed-card">
-							<img src="https://images.unsplash.com/photo-1665761543682-6305ccc5398b?w=500&h=500&fit=crop" alt="Ravioli fatti in casa" class="feed-card__image" />
-							<div class="feed-card__content">
-								<p class="feed-card__caption">Ravioli fatti in casa con ripieno di ricotta e spinaci. Salsa di burro salvia.</p>
-								<p class="feed-card__meta">❤️ 156 • 💬 5</p>
-							</div>
-						</div>
-
-						<div class="feed-card">
-							<img src="https://images.unsplash.com/photo-1598577789978-b87168a57b69?w=500&h=500&fit=crop" alt="Carne alla griglia" class="feed-card__image" />
-							<div class="feed-card__content">
-								<p class="feed-card__caption">Carne alla griglia, tagliata al momento. Ricetta tradizionale e ingredienti selezionati.</p>
-								<p class="feed-card__meta">❤️ 189 • 💬 8</p>
-							</div>
-						</div>
-
-						<div class="feed-card">
-							<img src="https://images.unsplash.com/photo-1702742322469-36315505728f?w=500&h=500&fit=crop" alt="Dolci della casa" class="feed-card__image" />
-							<div class="feed-card__content">
-								<p class="feed-card__caption">Dolci fatti in casa. Ogni giorno creazioni nuove dalle mani sapienti della cucina.</p>
-								<p class="feed-card__meta">❤️ 412 • 💬 24</p>
-							</div>
+						<div class="feed-grid">
+							{diario.map((post) => (
+								<figure class="feed-card">
+									<Image src={feedImg(post.img)} alt={post.alt} width={400} height={400} densities={[1, 2]} class="feed-card__image" />
+									<figcaption class="feed-card__content">
+										<p class="feed-card__caption">{post.caption}</p>
+										<p class="feed-card__meta">Oggi · {post.time}</p>
+									</figcaption>
+								</figure>
+							))}
 						</div>
 					</div>
-				</div>
-			</section>
+				</section>
 
-			<!-- Menu Section -->
+				<!-- Menu Section -->
 			<section id="menu" class="menu-section">
 				<div class="container">
 					<h2 class="section-title">Menu</h2>
@@ -296,38 +303,40 @@ const base = import.meta.env.BASE_URL;
 
 <style>
 	:root {
-		--font-display: 'Space Grotesk Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+		--font-display: 'Newsreader', Georgia, 'Times New Roman', serif;
 		--font-editorial: 'Newsreader', -apple-system, BlinkMacSystemFont, 'Segoe UI', serif;
 		--font-body: 'Space Grotesk Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
 		/* Light theme */
-		--bg-main: #f8f7f5;
-		--bg-secondary: #fefdfb;
-		--bg-tertiary: #f0ede8;
-		--text-primary: #1a1a1a;
-		--text-secondary: #555555;
-		--text-muted: #888888;
-		--accent-primary: #00d9ff;
-		--accent-secondary: #7fff00;
-		--accent-tertiary: #ff6b35;
-		--border-color: #e0dbd5;
-		--glass-bg: rgba(255, 255, 255, 0.7);
-		--glass-backdrop: rgba(255, 255, 255, 0.95);
+		--bg-main: #f6f0e6;
+		--bg-secondary: #fbf7ef;
+		--bg-tertiary: #ece3d3;
+		--text-primary: #2a1f1a;
+		--text-secondary: #5c4d43;
+		--text-muted: #7d6e61;
+		--accent-primary: #b5412a;
+		--accent-secondary: #6b7a3a;
+		--accent-tertiary: #c8963e;
+		--accent-rgb: 181, 65, 42;
+		--border-color: #ddd0bb;
+		--glass-bg: rgba(246, 240, 230, 0.7);
+		--glass-backdrop: rgba(246, 240, 230, 0.95);
 	}
 
 	html[data-theme="dark"] {
-		--bg-main: #0a0a0a;
-		--bg-secondary: #1a1a1a;
-		--bg-tertiary: #252525;
-		--text-primary: #ffffff;
-		--text-secondary: #cccccc;
-		--text-muted: #999999;
-		--accent-primary: #00d9ff;
-		--accent-secondary: #7fff00;
-		--accent-tertiary: #ff6b35;
-		--border-color: #333333;
-		--glass-bg: rgba(20, 20, 20, 0.7);
-		--glass-backdrop: rgba(10, 10, 10, 0.95);
+		--bg-main: #17120f;
+		--bg-secondary: #211a15;
+		--bg-tertiary: #2b221c;
+		--text-primary: #f3ece0;
+		--text-secondary: #cfc3b3;
+		--text-muted: #9a8c7c;
+		--accent-primary: #e0694d;
+		--accent-secondary: #a5b36a;
+		--accent-tertiary: #d9a74e;
+		--accent-rgb: 224, 105, 77;
+		--border-color: #3a2f27;
+		--glass-bg: rgba(33, 26, 21, 0.7);
+		--glass-backdrop: rgba(23, 18, 15, 0.95);
 	}
 
 	* {
@@ -498,11 +507,11 @@ const base = import.meta.env.BASE_URL;
 		position: relative;
 		z-index: 20;
 		padding: 48px;
-		background: rgba(10, 10, 10, 0.75);
+		background: rgba(23, 18, 15, 0.78);
 		backdrop-filter: blur(10px);
 		-webkit-backdrop-filter: blur(10px);
 		border-radius: 16px;
-		border: 1px solid rgba(0, 217, 255, 0.2);
+		border: 1px solid rgba(var(--accent-rgb), 0.35);
 		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 	}
 
@@ -510,9 +519,9 @@ const base = import.meta.env.BASE_URL;
 		font-family: var(--font-display);
 		font-size: 72px;
 		font-weight: 700;
-		line-height: 1.1;
+		line-height: 1.05;
 		margin-bottom: 20px;
-		letter-spacing: -1px;
+		letter-spacing: -0.5px;
 		color: white;
 		text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 	}
@@ -575,8 +584,13 @@ const base = import.meta.env.BASE_URL;
 
 	.carousel {
 		display: flex;
-		animation: carousel-scroll 20s linear infinite;
-		gap: 8px;
+		width: max-content;
+		animation: carousel-scroll 70s linear infinite;
+	}
+
+	.carousel__set {
+		display: flex;
+		flex-shrink: 0;
 	}
 
 	.carousel__img {
@@ -585,19 +599,16 @@ const base = import.meta.env.BASE_URL;
 		object-fit: cover;
 		border-radius: 12px;
 		flex-shrink: 0;
+		margin-right: 8px;
 	}
 
 	@keyframes carousel-scroll {
-		0% {
+		from {
 			transform: translateX(0);
 		}
-		100% {
-			transform: translateX(calc(-600px * 4 - 8px * 4));
+		to {
+			transform: translateX(-50%);
 		}
-	}
-
-	.carousel {
-		animation-play-state: running;
 	}
 
 	.carousel-wrapper:hover .carousel {
@@ -614,11 +625,12 @@ const base = import.meta.env.BASE_URL;
 
 	.feed-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+		grid-template-columns: repeat(3, 1fr);
 		gap: 24px;
 	}
 
 	.feed-card {
+		margin: 0;
 		background: var(--bg-main);
 		border: 1px solid var(--border-color);
 		border-radius: 12px;
@@ -631,10 +643,12 @@ const base = import.meta.env.BASE_URL;
 	.feed-card:nth-child(2) { animation-delay: 0.2s; }
 	.feed-card:nth-child(3) { animation-delay: 0.3s; }
 	.feed-card:nth-child(4) { animation-delay: 0.4s; }
+	.feed-card:nth-child(5) { animation-delay: 0.5s; }
+	.feed-card:nth-child(6) { animation-delay: 0.6s; }
 
 	.feed-card:hover {
 		border-color: var(--accent-primary);
-		box-shadow: 0 0 20px rgba(0, 217, 255, 0.15);
+		box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.15);
 		transform: translateY(-4px);
 	}
 
@@ -657,9 +671,26 @@ const base = import.meta.env.BASE_URL;
 	}
 
 	.feed-card__meta {
-		font-size: 13px;
-		color: var(--text-muted);
+		font-size: 12px;
+		letter-spacing: 0.5px;
+		text-transform: uppercase;
+		color: var(--accent-primary);
 		margin: 0;
+	}
+
+	.feed-header .section-title {
+		margin-bottom: 20px;
+	}
+
+	.feed-handle {
+		font-size: 15px;
+		color: var(--text-secondary);
+		margin-bottom: 48px;
+	}
+
+	.feed-handle span {
+		color: var(--accent-primary);
+		font-weight: 500;
 	}
 
 	/* Section Title */
@@ -681,7 +712,7 @@ const base = import.meta.env.BASE_URL;
 		left: 0;
 		width: 48px;
 		height: 3px;
-		background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+		background: var(--accent-primary);
 		border-radius: 2px;
 	}
 
@@ -706,7 +737,7 @@ const base = import.meta.env.BASE_URL;
 	.menu-category:nth-child(3) { animation-delay: 0.3s; }
 
 	.menu-category__title {
-		font-family: var(--font-display);
+		font-family: var(--font-body);
 		font-size: 13px;
 		font-weight: 600;
 		color: var(--accent-primary);
@@ -796,7 +827,7 @@ const base = import.meta.env.BASE_URL;
 
 	.review-card:hover {
 		border-color: var(--accent-primary);
-		box-shadow: 0 8px 24px rgba(0, 217, 255, 0.1);
+		box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.12);
 		transform: translateY(-4px);
 	}
 
@@ -866,12 +897,12 @@ const base = import.meta.env.BASE_URL;
 
 	.info-card:hover {
 		border-color: var(--accent-primary);
-		box-shadow: 0 8px 24px rgba(0, 217, 255, 0.1);
+		box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.12);
 		transform: translateY(-4px);
 	}
 
 	.info-card h3 {
-		font-family: var(--font-display);
+		font-family: var(--font-body);
 		font-size: 13px;
 		font-weight: 600;
 		margin-bottom: 16px;
