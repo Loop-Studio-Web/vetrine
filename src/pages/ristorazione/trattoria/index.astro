@@ -1,0 +1,723 @@
+---
+import '@fontsource-variable/space-grotesk';
+import '@fontsource/newsreader/400.css';
+import '@fontsource/newsreader/400-italic.css';
+import '@fontsource/newsreader/700.css';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<html lang="it">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Trattoria del Borgo — Ristorazione Autentica</title>
+		<meta
+			name="description"
+			content="Trattoria di provincia. Pasta fatta in casa, piatti di stagione, prezzi onesti. Qualità senza pretese."
+		/>
+	</head>
+	<body>
+		<!-- Navbar sticky con glassmorphism -->
+		<nav class="navbar" aria-label="Navigazione principale">
+			<div class="navbar__container">
+				<a href="#" class="navbar__logo">Trattoria del Borgo</a>
+				<ul class="navbar__menu">
+					<li><a href="#menu" class="navbar__link">Menu</a></li>
+					<li><a href="#about" class="navbar__link">Chi Siamo</a></li>
+					<li><a href="#info" class="navbar__link">Contatti</a></li>
+				</ul>
+			</div>
+		</nav>
+
+		<main>
+			<!-- Hero Section -->
+			<section class="hero">
+				<div class="container">
+					<div class="hero__content">
+						<h1 class="hero__title">Trattoria del Borgo</h1>
+						<p class="hero__subtitle">Ristorazione autentica. Qualità senza pretese.</p>
+						<p class="hero__description">
+							Una trattoria nata negli anni '80, riaperta con consapevolezza moderna.
+							Pasta fatta in casa, ingredienti di stagione, prezzi onesti.
+						</p>
+					</div>
+					<div class="hero__image">
+						<div class="hero__image-placeholder">[Immagine del luogo]</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- Menu Section -->
+			<section id="menu" class="menu-section">
+				<div class="container">
+					<h2 class="section-title">Menu</h2>
+
+					<div class="menu-grid">
+						<article class="menu-category">
+							<h3 class="menu-category__title">Piatti Tipici</h3>
+							<div class="menu-items">
+								<div class="menu-item">
+									<div class="menu-item__header">
+										<h4 class="menu-item__name">Pasta all'Uovo</h4>
+										<span class="menu-item__price">8€</span>
+									</div>
+									<p class="menu-item__desc">Con ragù di carne locale</p>
+								</div>
+								<div class="menu-item">
+									<div class="menu-item__header">
+										<h4 class="menu-item__name">Brasato di Stagione</h4>
+										<span class="menu-item__price">14€</span>
+									</div>
+									<p class="menu-item__desc">Con verdure dell'orto</p>
+								</div>
+								<div class="menu-item">
+									<div class="menu-item__header">
+										<h4 class="menu-item__name">Risotto ai Funghi</h4>
+										<span class="menu-item__price">12€</span>
+									</div>
+									<p class="menu-item__desc">Funghi di stagione</p>
+								</div>
+							</div>
+						</article>
+
+						<article class="menu-category">
+							<h3 class="menu-category__title">Contorni & Insalate</h3>
+							<div class="menu-items">
+								<div class="menu-item">
+									<div class="menu-item__header">
+										<h4 class="menu-item__name">Verdure Grigliate</h4>
+										<span class="menu-item__price">5€</span>
+									</div>
+									<p class="menu-item__desc">Di stagione</p>
+								</div>
+								<div class="menu-item">
+									<div class="menu-item__header">
+										<h4 class="menu-item__name">Insalata Mista</h4>
+										<span class="menu-item__price">4€</span>
+									</div>
+									<p class="menu-item__desc">Verdure fresche</p>
+								</div>
+								<div class="menu-item">
+									<div class="menu-item__header">
+										<h4 class="menu-item__name">Patate al Forno</h4>
+										<span class="menu-item__price">3€</span>
+									</div>
+								</div>
+							</div>
+						</article>
+
+						<article class="menu-category">
+							<h3 class="menu-category__title">Dolci</h3>
+							<div class="menu-items">
+								<div class="menu-item">
+									<div class="menu-item__header">
+										<h4 class="menu-item__name">Tiramisu</h4>
+										<span class="menu-item__price">6€</span>
+									</div>
+									<p class="menu-item__desc">Fatto in casa</p>
+								</div>
+								<div class="menu-item">
+									<div class="menu-item__header">
+										<h4 class="menu-item__name">Panna Cotta</h4>
+										<span class="menu-item__price">5€</span>
+									</div>
+									<p class="menu-item__desc">Frutta di stagione</p>
+								</div>
+							</div>
+						</article>
+					</div>
+				</div>
+			</section>
+
+			<!-- About Section -->
+			<section id="about" class="about-section">
+				<div class="container">
+					<div class="about__content">
+						<h2 class="section-title">Chi Siamo</h2>
+						<p class="about__text">
+							Una trattoria nata negli anni '80 nel cuore del paese, riaperta qualche anno fa
+							con lo stesso spirito di sempre: cibo buono, genuino, a prezzi onesti.
+						</p>
+						<p class="about__text">
+							Pasta e pane fatti in casa ogni mattina. Ingredienti locali, di stagione.
+							Non abbiamo pretese, solo qualità. La modernità che vedete nel sito
+							riflette come abbiamo ripreso il luogo: con rispetto per quello che era,
+							e consapevolezza di quello che poteva diventare.
+						</p>
+					</div>
+				</div>
+			</section>
+
+			<!-- Info Section -->
+			<section id="info" class="info-section">
+				<div class="container">
+					<h2 class="section-title">Informazioni</h2>
+					<div class="info-grid">
+						<div class="info-card">
+							<h3>Orari</h3>
+							<p>
+								Lunedì - Domenica<br />
+								12:00 - 14:30<br />
+								19:00 - 22:00<br />
+								<em>Chiuso un giorno a settimana</em>
+							</p>
+						</div>
+						<div class="info-card">
+							<h3>Contatti</h3>
+							<p>
+								Via del Borgo, 42<br />
+								<a href="tel:+390321234567">+39 0321 234567</a><br />
+								<a href="mailto:info@trattoriadelborgo.it">info@trattoriadelborgo.it</a>
+							</p>
+						</div>
+						<div class="info-card">
+							<h3>Prenotazioni</h3>
+							<p>
+								Consigliato per gruppi<br />
+								Disponibile anche al banco<br />
+								Weekend sempre prenotato
+							</p>
+						</div>
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<!-- Footer -->
+		<footer class="footer">
+			<div class="container">
+				<p>&copy; 2026 Trattoria del Borgo. Sito di presentazione Loop Studio.</p>
+			</div>
+		</footer>
+	</body>
+</html>
+
+<style>
+	:root {
+		--font-display: 'Space Grotesk Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+		--font-editorial: 'Newsreader', -apple-system, BlinkMacSystemFont, 'Segoe UI', serif;
+		--font-body: 'Space Grotesk Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+		--bg-main: #f5f3f0;
+		--bg-secondary: #faf9f7;
+		--text-primary: #1a1a1a;
+		--text-secondary: #666666;
+		--text-muted: #999999;
+		--accent-primary: #8b7355;
+		--accent-secondary: #6b8e5a;
+		--border-color: #e5e0db;
+		--glass-bg: rgba(255, 255, 255, 0.7);
+		--glass-backdrop: rgba(255, 255, 255, 0.95);
+	}
+
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
+
+	html {
+		scroll-behavior: smooth;
+	}
+
+	body {
+		font-family: var(--font-body);
+		background: var(--bg-main);
+		color: var(--text-primary);
+		line-height: 1.6;
+		font-weight: 400;
+		font-size: 16px;
+	}
+
+	/* Navbar Sticky Glassmorphic */
+	.navbar {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		z-index: 1000;
+		background: transparent;
+		backdrop-filter: blur(0px);
+		-webkit-backdrop-filter: blur(0px);
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		border-bottom: 1px solid transparent;
+	}
+
+	.navbar.scrolled {
+		background: var(--glass-backdrop);
+		border-bottom-color: rgba(0, 0, 0, 0.05);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+	}
+
+	.navbar__container {
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 16px 24px;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.navbar__logo {
+		font-family: var(--font-display);
+		font-size: 18px;
+		font-weight: 600;
+		color: var(--text-primary);
+		text-decoration: none;
+		letter-spacing: -0.5px;
+		transition: color 0.2s;
+	}
+
+	.navbar__logo:hover {
+		color: var(--accent-primary);
+	}
+
+	.navbar__menu {
+		list-style: none;
+		display: flex;
+		gap: 40px;
+	}
+
+	.navbar__link {
+		font-size: 14px;
+		font-weight: 500;
+		color: var(--text-secondary);
+		text-decoration: none;
+		transition: color 0.2s, text-decoration 0.2s;
+		position: relative;
+	}
+
+	.navbar__link:hover {
+		color: var(--text-primary);
+	}
+
+	.navbar__link::after {
+		content: '';
+		position: absolute;
+		bottom: -4px;
+		left: 0;
+		width: 0;
+		height: 2px;
+		background: var(--accent-primary);
+		transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.navbar__link:hover::after {
+		width: 100%;
+	}
+
+	/* Container & Layout */
+	.container {
+		max-width: 1000px;
+		margin: 0 auto;
+		padding: 0 32px;
+	}
+
+	main {
+		margin-top: 60px;
+	}
+
+	/* Hero Section */
+	.hero {
+		padding: 80px 0 100px;
+		position: relative;
+	}
+
+	.hero .container {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 80px;
+		align-items: center;
+	}
+
+	.hero__content {
+		animation: fadeInUp 0.8s ease-out;
+	}
+
+	.hero__title {
+		font-family: var(--font-display);
+		font-size: 56px;
+		font-weight: 700;
+		line-height: 1.2;
+		margin-bottom: 16px;
+		letter-spacing: -1px;
+		color: var(--text-primary);
+	}
+
+	.hero__subtitle {
+		font-family: var(--font-editorial);
+		font-size: 20px;
+		color: var(--text-secondary);
+		margin-bottom: 24px;
+		font-weight: 400;
+		font-style: italic;
+	}
+
+	.hero__description {
+		font-size: 16px;
+		line-height: 1.7;
+		color: var(--text-secondary);
+		max-width: 420px;
+	}
+
+	.hero__image {
+		animation: fadeInRight 0.8s ease-out 0.1s both;
+	}
+
+	.hero__image-placeholder {
+		background: linear-gradient(135deg, #e0ded9 0%, #d4d1cc 100%);
+		aspect-ratio: 1 / 1;
+		border-radius: 12px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--text-muted);
+		font-size: 14px;
+		min-height: 400px;
+		transition: transform 0.3s ease, box-shadow 0.3s ease;
+	}
+
+	.hero__image-placeholder:hover {
+		transform: scale(1.02);
+		box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+	}
+
+	/* Section Title */
+	.section-title {
+		font-family: var(--font-display);
+		font-size: 42px;
+		font-weight: 700;
+		margin-bottom: 48px;
+		color: var(--text-primary);
+		letter-spacing: -0.5px;
+		position: relative;
+		padding-bottom: 20px;
+	}
+
+	.section-title::after {
+		content: '';
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 48px;
+		height: 3px;
+		background: var(--accent-primary);
+		border-radius: 2px;
+	}
+
+	/* Menu Section */
+	.menu-section {
+		padding: 100px 0;
+		background: var(--bg-secondary);
+	}
+
+	.menu-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		gap: 60px;
+	}
+
+	.menu-category {
+		animation: fadeInUp 0.6s ease-out backwards;
+	}
+
+	.menu-category:nth-child(1) {
+		animation-delay: 0.1s;
+	}
+
+	.menu-category:nth-child(2) {
+		animation-delay: 0.2s;
+	}
+
+	.menu-category:nth-child(3) {
+		animation-delay: 0.3s;
+	}
+
+	.menu-category__title {
+		font-family: var(--font-display);
+		font-size: 18px;
+		font-weight: 600;
+		color: var(--accent-primary);
+		margin-bottom: 24px;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+		font-size: 13px;
+	}
+
+	.menu-items {
+		display: flex;
+		flex-direction: column;
+		gap: 28px;
+	}
+
+	.menu-item {
+		padding: 0;
+		border-bottom: 1px solid var(--border-color);
+		padding-bottom: 20px;
+		transition: all 0.3s ease;
+	}
+
+	.menu-item:last-child {
+		border-bottom: none;
+	}
+
+	.menu-item:hover {
+		padding-left: 8px;
+		transform: translateX(4px);
+	}
+
+	.menu-item__header {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		margin-bottom: 8px;
+		gap: 12px;
+	}
+
+	.menu-item__name {
+		font-family: var(--font-display);
+		font-size: 16px;
+		font-weight: 600;
+		color: var(--text-primary);
+		margin: 0;
+	}
+
+	.menu-item__price {
+		font-family: var(--font-display);
+		font-size: 16px;
+		font-weight: 700;
+		color: var(--accent-primary);
+		flex-shrink: 0;
+		letter-spacing: -0.5px;
+	}
+
+	.menu-item__desc {
+		font-size: 13px;
+		color: var(--text-muted);
+		margin: 0;
+		font-style: italic;
+	}
+
+	/* About Section */
+	.about-section {
+		padding: 100px 0;
+	}
+
+	.about__content {
+		max-width: 680px;
+	}
+
+	.about__text {
+		font-family: var(--font-editorial);
+		font-size: 17px;
+		line-height: 1.8;
+		color: var(--text-secondary);
+		margin-bottom: 28px;
+	}
+
+	.about__text:last-child {
+		margin-bottom: 0;
+	}
+
+	/* Info Section */
+	.info-section {
+		padding: 100px 0;
+		background: var(--bg-secondary);
+	}
+
+	.info-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+		gap: 48px;
+	}
+
+	.info-card {
+		padding: 32px;
+		background: var(--bg-main);
+		border-radius: 8px;
+		border: 1px solid var(--border-color);
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.info-card:hover {
+		background: white;
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+		transform: translateY(-4px);
+		border-color: var(--accent-primary);
+	}
+
+	.info-card h3 {
+		font-family: var(--font-display);
+		font-size: 16px;
+		font-weight: 600;
+		margin-bottom: 16px;
+		color: var(--text-primary);
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		font-size: 13px;
+		color: var(--accent-primary);
+	}
+
+	.info-card p {
+		font-size: 14px;
+		line-height: 1.8;
+		color: var(--text-secondary);
+		margin: 0;
+	}
+
+	.info-card a {
+		color: var(--accent-primary);
+		text-decoration: none;
+		font-weight: 500;
+		transition: color 0.2s, text-decoration 0.2s;
+	}
+
+	.info-card a:hover {
+		color: var(--accent-secondary);
+		text-decoration: underline;
+	}
+
+	.info-card em {
+		font-style: italic;
+		color: var(--text-muted);
+		font-size: 13px;
+		display: block;
+		margin-top: 8px;
+	}
+
+	/* Footer */
+	.footer {
+		padding: 40px 0;
+		border-top: 1px solid var(--border-color);
+		background: var(--bg-main);
+		text-align: center;
+	}
+
+	.footer p {
+		font-size: 12px;
+		color: var(--text-muted);
+		margin: 0;
+	}
+
+	/* Animations */
+	@keyframes fadeInUp {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@keyframes fadeInRight {
+		from {
+			opacity: 0;
+			transform: translateX(20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(0);
+		}
+	}
+
+	/* Responsive */
+	@media (max-width: 768px) {
+		.hero .container {
+			grid-template-columns: 1fr;
+			gap: 48px;
+		}
+
+		.hero__title {
+			font-size: 40px;
+		}
+
+		.hero__subtitle {
+			font-size: 18px;
+		}
+
+		.hero__image-placeholder {
+			min-height: 300px;
+		}
+
+		.section-title {
+			font-size: 32px;
+			margin-bottom: 36px;
+		}
+
+		.menu-section,
+		.info-section {
+			padding: 70px 0;
+		}
+
+		.navbar__menu {
+			gap: 24px;
+			font-size: 13px;
+		}
+
+		.container {
+			padding: 0 24px;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.hero__title {
+			font-size: 32px;
+		}
+
+		.section-title {
+			font-size: 24px;
+		}
+
+		.navbar__menu {
+			display: none;
+		}
+
+		.menu-grid {
+			grid-template-columns: 1fr;
+			gap: 40px;
+		}
+
+		.info-grid {
+			grid-template-columns: 1fr;
+			gap: 24px;
+		}
+
+		.info-card {
+			padding: 24px;
+		}
+	}
+</style>
+
+<script>
+	// Navbar scroll effect — glassmorphism blur al scroll
+	const navbar = document.querySelector('.navbar') as HTMLElement;
+
+	window.addEventListener('scroll', () => {
+		if (window.scrollY > 10) {
+			navbar.classList.add('scrolled');
+		} else {
+			navbar.classList.remove('scrolled');
+		}
+	});
+
+	// Smooth scroll per navbar links
+	document.querySelectorAll<HTMLAnchorElement>('.navbar__link').forEach(link => {
+		link.addEventListener('click', (e) => {
+			const href = link.getAttribute('href');
+			if (href && href.startsWith('#')) {
+				e.preventDefault();
+				const target = document.querySelector(href);
+				if (target) {
+					target.scrollIntoView({ behavior: 'smooth' });
+				}
+			}
+		});
+	});
+</script>
