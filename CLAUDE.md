@@ -54,6 +54,29 @@ asset e link assoluti puntano alla radice del dominio invece che dentro
 
 Nessuna fretta: si costruisce un concept alla volta, con la cura che serve
 a ciascuno, anche su un orizzonte di mesi. Niente scadenza da rispettare.
+Lavoro di ampliamento portfolio in attesa che i preventivi in corso vengano
+accettati dai nuovi clienti.
+
+## Macrocategorie pianificate
+
+Senza ordine fisso tra macrocategorie:
+
+- **Ristorazione** — 4 varianti: Grande ristorante di classe, Home
+  restaurant, Trattoria, RistoPub. Proposta di partire da Trattoria (bacino
+  di clienti potenziali più ampio), da confermare.
+- Legale/professionale
+- Beauty & wellness
+- Negozio/e-commerce locale
+
+Altre macrocategorie si aggiungeranno nel tempo.
+
+**Punto di partenza per Ristorante/Home restaurant:** esistono due repo
+private sull'account personale Domenico85 (`Incanto_Astro` e `incanto`),
+costruite per un vero cliente ("L'Incanto") il cui contratto non si è mai
+chiuso. Riusabili solo come base tecnica/architetturale (la versione Astro,
+non quella WordPress — non gira su GitHub Pages), mai con nome, foto o dati
+reali di quel cliente: contenuti e brand completamente nuovi prima di
+pubblicare qualunque cosa qui.
 
 ## Development
 
