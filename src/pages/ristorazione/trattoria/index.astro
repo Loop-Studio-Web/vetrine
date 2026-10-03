@@ -5,10 +5,21 @@ import '@fontsource/newsreader/400-italic.css';
 import '@fontsource/newsreader/700.css';
 import { Image } from 'astro:assets';
 
-const base = import.meta.env.BASE_URL;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const feedImages = import.meta.glob<{ default: ImageMetadata }>('/src/assets/trattoria/feed/*.jpg', { eager: true });
 const feedImg = (file: string) => feedImages[`/src/assets/trattoria/feed/${file}`].default;
+
+const recensioni = [
+	{ name: 'Marco R.', stars: 5, time: '2 settimane fa', text: 'Tagliatelle al ragù come non le mangiavo da anni. Il ragazzo in sala ci ha consigliato il vino giusto senza farci sentire in un posto "da carta lunga". Abbiamo già prenotato per sabato prossimo.' },
+	{ name: 'Lucia M.', stars: 5, time: '1 mese fa', text: 'Locale piccolo, tavoli a quadretti, prezzi onesti. Abbiamo diviso brasato e ravioli e chiuso con il tiramisù. Si sente che è tutto fatto lì.' },
+	{ name: 'Andrea T.', stars: 4, time: '3 settimane fa', text: "Cucina davvero buona. Il sabato sera c'è un po' di attesa, ma si capisce: è sempre pieno. Meglio prenotare." },
+	{ name: 'Giulia P.', stars: 5, time: '2 mesi fa', text: 'Siamo venuti in sei per un compleanno. Ci hanno accolti come amici e la panna cotta è finita in dieci minuti.' },
+	{ name: 'Davide S.', stars: 5, time: '3 mesi fa', text: 'Pranzo veloce in settimana: risotto del giorno e caffè. Spesa onesta, servizio rapido, nessuna fretta di farti alzare.' },
+	{ name: 'Elena F.', stars: 5, time: '4 mesi fa', text: 'Ho portato i miei genitori, che di trattorie se ne intendono. Hanno chiesto il bis dei ravioli e il numero per prenotare.' },
+];
+const mediaVoti = recensioni.reduce((t, r) => t + r.stars, 0) / recensioni.length;
+const starPath = 'M10 1.5l2.5 5.3 5.8.8-4.2 4.1 1 5.8L10 14.7 4.9 17.5l1-5.8L1.7 7.6l5.8-.8z';
 
 const piatti = [
 	{ img: 'pizza.jpg', alt: 'Pizza con pomodoro, mozzarella e basilico' },
@@ -31,7 +42,7 @@ const diario = [
 	{ img: 'pasta.jpg', alt: 'Sfoglia tirata con la macchinetta a mano', time: '9:12', caption: 'Si tira la sfoglia come ci ha insegnato la nonna. La macchinetta è la sua, il resto lo facciamo a mano.' },
 	{ img: 'pane.jpg', alt: 'Pane a lievitazione lunga appena sfornato', time: '10:30', caption: 'Pane a lievitazione lunga, 24 ore di attesa. Appena sfornato, finito entro stasera.' },
 	{ img: 'cucina.jpg', alt: 'Il cuoco al lavoro in cucina prima del servizio', time: '11:15', caption: 'Prima del servizio ognuno al suo posto. Il menu del giorno va in lavagna alle 12.' },
-	{ img: 'sala.jpg', alt: 'Tavoli con tovaglie a quadretti rossi apparecchiati', time: '11:50', caption: 'Tovaglie a quadretti, tavoli pronti. Per prenotare scrivete su WhatsApp: rispondiamo davvero noi.' },
+	{ img: 'sala.jpg', alt: 'Tavoli con tovaglie a quadretti rossi apparecchiati', time: '11:50', caption: 'Tovaglie a quadretti, tavoli pronti. Prenotate dal sito o chiamateci: rispondiamo davvero noi.' },
 	{ img: 'sera.jpg', alt: 'Bancone con candela e bottiglia di vino a fine serata', time: '21:50', caption: 'Ultimo giro di rosso, la candela ancora accesa. Domani si ricomincia alle 7.' },
 ];
 ---
@@ -39,7 +50,7 @@ const diario = [
 <html lang="it">
 	<head>
 		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+		<link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
 		<title>Trattoria del Borgo — Ristorazione Autentica</title>
@@ -59,9 +70,12 @@ const diario = [
 					<li><a href="#reviews" class="navbar__link">Recensioni</a></li>
 					<li><a href="#info" class="navbar__link">Contatti</a></li>
 				</ul>
-				<button class="theme-switcher" aria-label="Cambia tema" title="Cambia tema">
-					<span class="theme-switcher__icon">🌙</span>
-				</button>
+				<div class="navbar__actions">
+					<a href="#prenota" class="navbar__cta">Prenota</a>
+					<button class="theme-switcher" aria-label="Cambia tema" title="Cambia tema">
+						<span class="theme-switcher__icon">🌙</span>
+					</button>
+				</div>
 			</div>
 		</nav>
 
@@ -76,10 +90,15 @@ const diario = [
 							Una trattoria nata negli anni '80, riaperta da ragazzi che credono nella qualità.
 							Pasta fatta in casa, ingredienti di stagione, prezzi onesti.
 						</p>
+						<div class="hero-video__actions">
+							<a href="#prenota" class="btn btn--primary">Prenota un tavolo</a>
+							<a href="#menu" class="btn btn--ghost">Guarda il menu</a>
+						</div>
 					</div>
 					<div class="hero-video__frame">
 						<video class="hero-video__iframe" autoplay muted loop playsinline>
-							<source src="/vetrine/videos/trattoria-hero.f616.mp4" type="video/mp4" />
+							<source src={`${base}/videos/trattoria-hero.f251.webm`} type="video/webm" />
+								<source src={`${base}/videos/trattoria-hero.f616.mp4`} type="video/mp4" />
 							Il tuo browser non supporta il tag video.
 						</video>
 					</div>
@@ -150,10 +169,10 @@ const diario = [
 								</div>
 								<div class="menu-item">
 									<div class="menu-item__header">
-										<h4 class="menu-item__name">Risotto ai Funghi</h4>
-										<span class="menu-item__price">12€</span>
+										<h4 class="menu-item__name">Risotto ai Frutti di Mare</h4>
+										<span class="menu-item__price">14€</span>
 									</div>
-									<p class="menu-item__desc">Funghi di stagione</p>
+									<p class="menu-item__desc">Cozze e gamberi del giorno</p>
 								</div>
 							</div>
 						</article>
@@ -207,57 +226,72 @@ const diario = [
 				</div>
 			</section>
 
-			<!-- Reviews Section (Loop Studio Style) -->
-			<section id="reviews" class="reviews-section">
-				<div class="container">
-					<h2 class="section-title">Cosa Dicono</h2>
-					<div class="reviews-grid">
-						<article class="review-card">
-							<div class="review-card__header">
-								<div class="review-card__avatar">👤</div>
-								<div class="review-card__meta">
-									<h3 class="review-card__author">Marco R.</h3>
-									<div class="review-card__rating">⭐⭐⭐⭐⭐</div>
+			<!-- Recensioni -->
+				<section id="reviews" class="reviews-section">
+					<div class="container">
+						<h2 class="section-title">Cosa dicono</h2>
+						<div class="reviews-widget">
+							<div class="reviews-widget__head">
+								<div>
+									<h3 class="reviews-widget__title">Recensioni dei clienti</h3>
+									<span class="reviews-widget__sub">Trattoria del Borgo</span>
 								</div>
+								<span class="reviews-widget__badge">Recensioni di esempio</span>
 							</div>
-							<p class="review-card__text">
-								"Finalmente un posto dove la qualità non è negoziata. Pasta fatta come si deve, vini locali curati, e il gestore che conosce ogni cliente. Questo è il futuro della ristorazione di provincia."
-							</p>
-							<p class="review-card__date">2 settimane fa</p>
-						</article>
-
-						<article class="review-card">
-							<div class="review-card__header">
-								<div class="review-card__avatar">👤</div>
-								<div class="review-card__meta">
-									<h3 class="review-card__author">Lucia M.</h3>
-									<div class="review-card__rating">⭐⭐⭐⭐⭐</div>
-								</div>
+							<div class="rating-summary">
+								<span class="rating-summary__number">{mediaVoti.toFixed(1).replace('.', ',')}</span>
+								<span class="rating-summary__stars" role="img" aria-label={`${mediaVoti.toFixed(1)} stelle su 5`} style={`--fill: ${(mediaVoti / 5) * 100}%`}>
+									<span class="rating-summary__row rating-summary__row--bg" aria-hidden="true">
+										{[0, 1, 2, 3, 4].map(() => <svg viewBox="0 0 20 20" width="18" height="18"><path d={starPath} /></svg>)}
+									</span>
+									<span class="rating-summary__row rating-summary__row--fg" aria-hidden="true">
+										{[0, 1, 2, 3, 4].map(() => <svg viewBox="0 0 20 20" width="18" height="18"><path d={starPath} /></svg>)}
+									</span>
+								</span>
+								<span class="rating-summary__count">126 recensioni</span>
 							</div>
-							<p class="review-card__text">
-								"Ingredienti di stagione, prezzi onesti, e uno staff che capisce quello che fa. Non è un ristorante, è una comunità. Torniamo ogni weekend."
-							</p>
-							<p class="review-card__date">1 mese fa</p>
-						</article>
-
-						<article class="review-card">
-							<div class="review-card__header">
-								<div class="review-card__avatar">👤</div>
-								<div class="review-card__meta">
-									<h3 class="review-card__author">Andrea T.</h3>
-									<div class="review-card__rating">⭐⭐⭐⭐⭐</div>
-								</div>
+							<div class="reviews-grid">
+								{recensioni.map((r) => (
+									<article class="review-card">
+										<div class="review-card__header">
+											<div class="review-card__avatar" aria-hidden="true">{r.name[0]}</div>
+											<div class="review-card__meta">
+												<h3 class="review-card__author">{r.name}</h3>
+												<div class="review-card__sub">
+													<span class="stars" role="img" aria-label={`${r.stars} stelle su 5`}>
+														{[1, 2, 3, 4, 5].map((n) => <svg viewBox="0 0 20 20" width="13" height="13" class={n <= r.stars ? 'star star--on' : 'star'}><path d={starPath} /></svg>)}
+													</span>
+													<span class="review-card__date">{r.time}</span>
+												</div>
+											</div>
+										</div>
+										<p class="review-card__text">{r.text}</p>
+									</article>
+								))}
 							</div>
-							<p class="review-card__text">
-								"Ristorazione autentica. Il brasato della nonna, rivisitato con consapevolezza moderna. Questo è quello che cercavamo."
-							</p>
-							<p class="review-card__date">3 settimane fa</p>
-						</article>
+						</div>
 					</div>
-				</div>
-			</section>
+				</section>
 
-			<!-- Info Section -->
+				<!-- Prenotazione tavolo -->
+				<section id="prenota" class="booking-section">
+					<div class="container">
+						<h2 class="section-title">Prenota un tavolo</h2>
+						<p class="booking-lead">Scegli quanti siete, il giorno e l'orario. Conferma immediata, senza telefonare.</p>
+						<div class="booking" id="booking">
+							<ol class="booking__steps" aria-label="Fasi della prenotazione">
+								<li class="booking__step" data-step="1"><span class="booking__bullet">1</span><span class="booking__label">Persone</span></li>
+								<li class="booking__step" data-step="2"><span class="booking__bullet">2</span><span class="booking__label">Giorno</span></li>
+								<li class="booking__step" data-step="3"><span class="booking__bullet">3</span><span class="booking__label">Orario</span></li>
+								<li class="booking__step" data-step="4"><span class="booking__bullet">4</span><span class="booking__label">I tuoi dati</span></li>
+							</ol>
+							<div class="booking__panel" aria-live="polite"></div>
+							<button type="button" class="booking__back" hidden>← Indietro</button>
+						</div>
+					</div>
+				</section>
+
+				<!-- Info Section -->
 			<section id="info" class="info-section">
 				<div class="container">
 					<h2 class="section-title">Informazioni</h2>
@@ -265,10 +299,10 @@ const diario = [
 						<div class="info-card">
 							<h3>Orari</h3>
 							<p>
-								Lunedì - Domenica<br />
+								Martedì - Domenica<br />
 								12:00 - 14:30<br />
 								19:00 - 22:00<br />
-								<em>Chiuso un giorno a settimana</em>
+								<em>Chiuso il lunedì</em>
 							</p>
 						</div>
 						<div class="info-card">
@@ -282,9 +316,9 @@ const diario = [
 						<div class="info-card">
 							<h3>Prenotazioni</h3>
 							<p>
-								Consigliato per gruppi<br />
-								Disponibile anche al banco<br />
-								Weekend sempre prenotato
+								<a href="#prenota">Prenota online</a><br />
+								Oltre 8 persone: chiamaci<br />
+								Il banco è senza prenotazione
 							</p>
 						</div>
 					</div>
@@ -381,6 +415,11 @@ const diario = [
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 	}
 
+	.navbar:not(.scrolled) .navbar__logo,
+	.navbar:not(.scrolled) .navbar__link {
+		color: rgba(255, 255, 255, 0.92);
+	}
+
 	.navbar.scrolled .navbar__logo,
 	.navbar.scrolled .navbar__link {
 		color: var(--text-primary);
@@ -444,6 +483,28 @@ const diario = [
 
 	.navbar__link:hover::after {
 		width: 100%;
+	}
+
+	.navbar__actions {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+
+	.navbar__cta {
+		background: var(--accent-primary);
+		color: #fff;
+		font-size: 14px;
+		font-weight: 600;
+		text-decoration: none;
+		padding: 9px 18px;
+		border-radius: 8px;
+		transition: transform 0.2s, filter 0.2s;
+	}
+
+	.navbar__cta:hover {
+		transform: translateY(-1px);
+		filter: brightness(1.08);
 	}
 
 	/* Theme Switcher */
@@ -541,6 +602,51 @@ const diario = [
 		line-height: 1.7;
 		color: rgba(255, 255, 255, 0.85);
 		text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+	}
+
+	.hero-video__actions {
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 12px;
+		margin-top: 28px;
+	}
+
+	.btn {
+		font-family: var(--font-body);
+		font-size: 15px;
+		font-weight: 600;
+		text-decoration: none;
+		padding: 13px 26px;
+		border-radius: 10px;
+		border: 1px solid transparent;
+		transition: transform 0.2s, filter 0.2s, background 0.2s;
+	}
+
+	.btn:hover {
+		transform: translateY(-1px);
+	}
+
+	.btn--primary {
+		background: var(--accent-primary);
+		color: #fff;
+	}
+
+	.btn--primary:hover {
+		filter: brightness(1.08);
+	}
+
+	.btn--ghost {
+		color: #fff;
+		border-color: rgba(255, 255, 255, 0.5);
+	}
+
+	.btn--ghost:hover {
+		background: rgba(255, 255, 255, 0.12);
+	}
+
+	section[id] {
+		scroll-margin-top: 72px;
 	}
 
 	.hero-video__frame {
@@ -806,73 +912,195 @@ const diario = [
 		border-top: 1px solid var(--border-color);
 	}
 
+	.reviews-widget {
+		background: var(--bg-main);
+		border: 1px solid var(--border-color);
+		border-radius: 16px;
+		padding: 28px;
+	}
+
+	.reviews-widget__head {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 16px;
+		margin-bottom: 20px;
+	}
+
+	.reviews-widget__title {
+		font-family: var(--font-display);
+		font-size: 22px;
+		line-height: 1.2;
+	}
+
+	.reviews-widget__sub {
+		font-size: 13px;
+		color: var(--text-muted);
+	}
+
+	.reviews-widget__badge {
+		flex-shrink: 0;
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 0.6px;
+		text-transform: uppercase;
+		color: var(--text-muted);
+		border: 1px solid var(--border-color);
+		border-radius: 999px;
+		padding: 4px 12px;
+	}
+
+	.rating-summary {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		padding-bottom: 20px;
+		margin-bottom: 24px;
+		border-bottom: 1px solid var(--border-color);
+	}
+
+	.rating-summary__number {
+		font-family: var(--font-display);
+		font-size: 36px;
+		font-weight: 700;
+		line-height: 1;
+	}
+
+	.rating-summary__stars {
+		position: relative;
+		display: block;
+		line-height: 0;
+	}
+
+	.rating-summary__row {
+		display: flex;
+		gap: 2px;
+		white-space: nowrap;
+	}
+
+	.rating-summary__row svg {
+		flex-shrink: 0;
+	}
+
+	.rating-summary__row--bg {
+		fill: var(--border-color);
+	}
+
+	.rating-summary__row--fg {
+		position: absolute;
+		inset: 0;
+		width: var(--fill);
+		overflow: hidden;
+		fill: var(--accent-tertiary);
+	}
+
+	.rating-summary__count {
+		font-size: 14px;
+		color: var(--text-muted);
+	}
+
 	.reviews-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-		gap: 32px;
+		grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+		gap: 16px;
 	}
 
 	.review-card {
-		background: var(--bg-main);
-		padding: 32px;
+		background: var(--bg-secondary);
+		padding: 20px;
 		border-radius: 12px;
 		border: 1px solid var(--border-color);
-		transition: all 0.3s ease;
+		transition: border-color 0.3s, transform 0.3s;
 		animation: fadeInUp 0.6s ease-out backwards;
 	}
 
-	.review-card:nth-child(1) { animation-delay: 0.1s; }
-	.review-card:nth-child(2) { animation-delay: 0.2s; }
-	.review-card:nth-child(3) { animation-delay: 0.3s; }
+	.review-card:nth-child(1) { animation-delay: 0.05s; }
+	.review-card:nth-child(2) { animation-delay: 0.1s; }
+	.review-card:nth-child(3) { animation-delay: 0.15s; }
+	.review-card:nth-child(4) { animation-delay: 0.2s; }
+	.review-card:nth-child(5) { animation-delay: 0.25s; }
+	.review-card:nth-child(6) { animation-delay: 0.3s; }
 
 	.review-card:hover {
 		border-color: var(--accent-primary);
-		box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.12);
-		transform: translateY(-4px);
+		transform: translateY(-2px);
 	}
 
 	.review-card__header {
 		display: flex;
-		gap: 16px;
-		margin-bottom: 20px;
-		align-items: flex-start;
+		align-items: center;
+		gap: 12px;
+		margin-bottom: 12px;
 	}
 
 	.review-card__avatar {
-		font-size: 32px;
+		width: 38px;
+		height: 38px;
 		flex-shrink: 0;
-	}
-
-	.review-card__meta {
-		flex: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50%;
+		background: var(--accent-primary);
+		color: #fff;
+		font-family: var(--font-display);
+		font-size: 18px;
+		font-weight: 700;
 	}
 
 	.review-card__author {
-		font-family: var(--font-display);
-		font-size: 16px;
+		font-family: var(--font-body);
+		font-size: 15px;
 		font-weight: 600;
 		color: var(--text-primary);
-		margin: 0 0 8px 0;
+		margin: 0 0 2px 0;
 	}
 
-	.review-card__rating {
-		font-size: 14px;
-		letter-spacing: 2px;
+	.review-card__sub {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.stars {
+		display: inline-flex;
+		gap: 1px;
+		line-height: 0;
+	}
+
+	.star {
+		fill: var(--border-color);
+	}
+
+	.star--on {
+		fill: var(--accent-tertiary);
 	}
 
 	.review-card__text {
-		font-family: var(--font-editorial);
-		font-size: 15px;
-		line-height: 1.7;
+		font-family: var(--font-body);
+		font-size: 14px;
+		line-height: 1.6;
 		color: var(--text-secondary);
-		margin: 0 0 16px 0;
-		font-style: italic;
+		margin: 0;
 	}
 
 	.review-card__date {
 		font-size: 12px;
 		color: var(--text-muted);
 		margin: 0;
+	}
+
+	/* Booking Section (gli stili del widget sono nel blocco globale in fondo) */
+	.booking-section {
+		padding: 100px 0;
+		background: var(--bg-main);
+		border-top: 1px solid var(--border-color);
+	}
+
+	.booking-lead {
+		max-width: 560px;
+		margin: -24px 0 36px;
+		color: var(--text-secondary);
 	}
 
 	/* Info Section */
@@ -1056,6 +1284,730 @@ const diario = [
 		}
 	}
 </style>
+
+<style is:global>
+	/* Widget prenotazione: globale perché il contenuto è generato via JS */
+	.booking {
+		max-width: 640px;
+		background: var(--bg-secondary);
+		border: 1px solid var(--border-color);
+		border-radius: 16px;
+		padding: 28px;
+		position: relative;
+	}
+
+	.booking__steps {
+		display: flex;
+		list-style: none;
+		margin: 0 0 28px;
+		padding: 0;
+	}
+
+	.booking__step {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 6px;
+		position: relative;
+		text-align: center;
+	}
+
+	.booking__step:not(:last-child)::after {
+		content: '';
+		position: absolute;
+		top: 14px;
+		left: calc(50% + 18px);
+		right: calc(-50% + 18px);
+		height: 2px;
+		background: var(--border-color);
+		transition: background 0.4s;
+	}
+
+	.booking__step--done:not(:last-child)::after {
+		background: var(--accent-primary);
+	}
+
+	.booking__bullet {
+		width: 28px;
+		height: 28px;
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 13px;
+		font-weight: 700;
+		background: var(--bg-tertiary);
+		color: var(--text-muted);
+		z-index: 1;
+		transition: background 0.3s, color 0.3s, transform 0.3s;
+	}
+
+	.booking__step--active .booking__bullet {
+		background: var(--accent-primary);
+		color: #fff;
+		transform: scale(1.12);
+	}
+
+	.booking__step--done .booking__bullet {
+		background: var(--accent-secondary);
+		color: #fff;
+	}
+
+	.booking__label {
+		font-size: 12px;
+		color: var(--text-muted);
+	}
+
+	.booking__step--active .booking__label {
+		color: var(--text-primary);
+	}
+
+	.booking__panel {
+		animation: booking-in 0.35s both;
+	}
+
+	@keyframes booking-in {
+		from { opacity: 0; transform: translateX(14px); }
+		to { opacity: 1; transform: translateX(0); }
+	}
+
+	.booking__title {
+		font-family: var(--font-display);
+		font-size: 22px;
+		font-weight: 700;
+		margin-bottom: 6px;
+		outline: none;
+	}
+
+	.booking__hint {
+		font-size: 14px;
+		color: var(--text-muted);
+		margin-bottom: 18px;
+	}
+
+	.booking__back {
+		margin-top: 20px;
+		background: none;
+		border: none;
+		padding: 0;
+		font: inherit;
+		font-size: 14px;
+		color: var(--text-muted);
+		cursor: pointer;
+		transition: color 0.2s;
+	}
+
+	.booking__back:hover {
+		color: var(--text-primary);
+	}
+
+	.booking button:focus-visible,
+	.booking input:focus-visible,
+	.booking textarea:focus-visible {
+		outline: 2px solid var(--accent-primary);
+		outline-offset: 2px;
+	}
+
+	/* Persone */
+	.guest-grid {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 10px;
+	}
+
+	.guest-btn,
+	.time-slot,
+	.cal-cell {
+		font: inherit;
+		color: var(--text-primary);
+		background: var(--bg-main);
+		border: 1px solid var(--border-color);
+		cursor: pointer;
+		transition: border-color 0.2s, background 0.2s, transform 0.2s;
+	}
+
+	.guest-btn {
+		border-radius: 12px;
+		padding: 18px 8px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 2px;
+	}
+
+	.guest-btn strong {
+		font-family: var(--font-display);
+		font-size: 24px;
+		line-height: 1;
+	}
+
+	.guest-btn span {
+		font-size: 12px;
+		color: var(--text-muted);
+	}
+
+	.guest-btn:hover,
+	.time-slot:hover:not(:disabled),
+	.cal-cell:hover:not(:disabled) {
+		border-color: var(--accent-primary);
+	}
+
+	.guest-btn--selected,
+	.time-slot--selected,
+	.cal-cell--selected {
+		background: var(--accent-primary);
+		border-color: var(--accent-primary);
+		color: #fff;
+	}
+
+	.guest-btn--selected span {
+		color: rgba(255, 255, 255, 0.85);
+	}
+
+	.booking__note {
+		margin-top: 14px;
+		font-size: 13px;
+		color: var(--text-muted);
+	}
+
+	.booking__note a {
+		color: var(--accent-primary);
+		font-weight: 500;
+	}
+
+	/* Calendario */
+	.cal-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 14px;
+	}
+
+	.cal-month {
+		font-weight: 600;
+		text-transform: capitalize;
+		animation: booking-fade 0.25s both;
+	}
+
+	@keyframes booking-fade {
+		from { opacity: 0; transform: translateY(-4px); }
+		to { opacity: 1; transform: translateY(0); }
+	}
+
+	.cal-nav {
+		width: 34px;
+		height: 34px;
+		border-radius: 50%;
+		background: none;
+		border: 1px solid var(--border-color);
+		color: var(--text-primary);
+		font-size: 18px;
+		line-height: 1;
+		cursor: pointer;
+		transition: border-color 0.2s, color 0.2s;
+	}
+
+	.cal-nav:hover:not(:disabled) {
+		border-color: var(--accent-primary);
+		color: var(--accent-primary);
+	}
+
+	.cal-nav:disabled {
+		opacity: 0.3;
+		cursor: not-allowed;
+	}
+
+	.cal-weekdays,
+	.cal-grid {
+		display: grid;
+		grid-template-columns: repeat(7, 1fr);
+		gap: 5px;
+	}
+
+	.cal-weekdays {
+		text-align: center;
+		font-size: 12px;
+		color: var(--text-muted);
+		margin-bottom: 6px;
+	}
+
+	.cal-cell {
+		aspect-ratio: 1;
+		border-radius: 8px;
+		font-size: 14px;
+		animation: booking-pop 0.3s backwards;
+		animation-delay: var(--pop, 0s);
+	}
+
+	@keyframes booking-pop {
+		from { opacity: 0; transform: scale(0.7); }
+		to { opacity: 1; transform: scale(1); }
+	}
+
+	.cal-cell--empty {
+		visibility: hidden;
+		animation: none;
+	}
+
+	.cal-cell:disabled {
+		color: var(--text-muted);
+		opacity: 0.4;
+		cursor: not-allowed;
+		animation: none;
+	}
+
+	.cal-legend {
+		margin-top: 14px;
+		font-size: 13px;
+		color: var(--text-muted);
+	}
+
+	/* Orari */
+	.time-group + .time-group {
+		margin-top: 18px;
+	}
+
+	.time-group__label {
+		font-size: 12px;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+		color: var(--text-muted);
+		margin-bottom: 8px;
+	}
+
+	.time-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+		gap: 10px;
+	}
+
+	.time-slot {
+		border-radius: 10px;
+		padding: 11px 6px;
+		font-size: 15px;
+		animation: booking-pop 0.3s backwards;
+		animation-delay: var(--pop, 0s);
+	}
+
+	.time-slot:disabled {
+		opacity: 0.4;
+		cursor: not-allowed;
+		text-decoration: line-through;
+		animation: none;
+	}
+
+	/* Dati */
+	.field {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+		margin-bottom: 16px;
+		font-size: 14px;
+		color: var(--text-secondary);
+	}
+
+	.field input,
+	.field textarea {
+		font: inherit;
+		color: var(--text-primary);
+		background: var(--bg-main);
+		border: 1px solid var(--border-color);
+		border-radius: 10px;
+		padding: 11px 13px;
+		resize: vertical;
+		transition: border-color 0.2s;
+	}
+
+	.field input:focus,
+	.field textarea:focus {
+		border-color: var(--accent-primary);
+		outline: none;
+	}
+
+	.booking-submit {
+		width: 100%;
+		font: inherit;
+		font-weight: 700;
+		color: #fff;
+		background: var(--accent-primary);
+		border: none;
+		border-radius: 10px;
+		padding: 14px;
+		cursor: pointer;
+		transition: transform 0.15s, opacity 0.2s, filter 0.2s;
+	}
+
+	.booking-submit:hover:not(:disabled) {
+		transform: translateY(-1px);
+		filter: brightness(1.08);
+	}
+
+	.booking-submit:disabled {
+		opacity: 0.45;
+		cursor: not-allowed;
+	}
+
+	.booking-submit--ghost {
+		background: none;
+		color: var(--accent-primary);
+		border: 1px solid var(--accent-primary);
+		margin-top: 8px;
+	}
+
+	/* Conferma */
+	.booking-done {
+		text-align: center;
+		position: relative;
+	}
+
+	.booking-done__check {
+		width: 72px;
+		height: 72px;
+		margin: 0 auto 14px;
+		display: block;
+	}
+
+	.booking-done__circle,
+	.booking-done__mark {
+		fill: none;
+		stroke: var(--accent-secondary);
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	.booking-done__circle {
+		stroke-width: 2;
+		stroke-dasharray: 151;
+		stroke-dashoffset: 151;
+		animation: booking-draw 0.5s forwards;
+	}
+
+	.booking-done__mark {
+		stroke-width: 3;
+		stroke-dasharray: 40;
+		stroke-dashoffset: 40;
+		animation: booking-draw 0.35s 0.45s forwards;
+	}
+
+	@keyframes booking-draw {
+		to { stroke-dashoffset: 0; }
+	}
+
+	.booking-summary {
+		text-align: left;
+		display: grid;
+		gap: 10px;
+		margin: 20px 0;
+		padding: 16px 18px;
+		background: var(--bg-main);
+		border: 1px solid var(--border-color);
+		border-radius: 12px;
+	}
+
+	.booking-summary div {
+		display: flex;
+		justify-content: space-between;
+		gap: 16px;
+		font-size: 14px;
+	}
+
+	.booking-summary dt {
+		color: var(--text-muted);
+	}
+
+	.booking-summary dd {
+		margin: 0;
+		font-weight: 600;
+		text-align: right;
+	}
+
+	.confetti {
+		position: absolute;
+		inset: -8px 0 auto;
+		height: 0;
+		pointer-events: none;
+		overflow: visible;
+	}
+
+	.confetti span {
+		position: absolute;
+		top: 0;
+		opacity: 0;
+		border-radius: 1px;
+		animation: booking-confetti var(--dur, 1.2s) ease-in var(--delay, 0s) forwards;
+	}
+
+	@keyframes booking-confetti {
+		0% { opacity: 1; transform: translateY(0) rotate(0); }
+		100% { opacity: 0; transform: translateY(150px) rotate(var(--rot, 180deg)); }
+	}
+
+	@media (max-width: 480px) {
+		.booking {
+			padding: 20px;
+		}
+
+		.booking__label {
+			display: none;
+		}
+
+		.guest-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.booking__panel,
+		.cal-cell,
+		.time-slot,
+		.confetti span {
+			animation: none;
+		}
+
+		.confetti {
+			display: none;
+		}
+	}
+</style>
+
+<script>
+	// Widget prenotazione tavolo (demo: nessun dato viene inviato)
+	const booking = document.getElementById('booking');
+
+	if (booking) {
+		const panel = booking.querySelector<HTMLElement>('.booking__panel')!;
+		const backBtn = booking.querySelector<HTMLButtonElement>('.booking__back')!;
+		const stepEls = booking.querySelectorAll<HTMLElement>('.booking__step');
+
+		const MAX_GUESTS = 8;
+		const CLOSED_DAY = 1; // lunedì
+		const BOOKABLE_DAYS = 60;
+		const SLOTS = {
+			Pranzo: ['12:00', '12:30', '13:00', '13:30', '14:00'],
+			Cena: ['19:00', '19:30', '20:00', '20:30', '21:00', '21:30'],
+		};
+		const CONFETTI_COLORS = ['#b5412a', '#6b7a3a', '#c8963e', '#e0694d'];
+		const WEEKDAYS = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
+
+		const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+		const today = startOfDay(new Date());
+		const lastDay = new Date(today.getTime() + BOOKABLE_DAYS * 86400000);
+		const sameDay = (a: Date, b: Date) => a.getTime() === b.getTime();
+		const fmtLong = (d: Date) => {
+			const t = d.toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' });
+			return t.charAt(0).toUpperCase() + t.slice(1);
+		};
+
+		const state = {
+			step: 1,
+			guests: null as number | null,
+			date: null as Date | null,
+			time: null as string | null,
+			name: '',
+			phone: '',
+			notes: '',
+			view: new Date(today.getFullYear(), today.getMonth(), 1),
+			submitting: false,
+			done: false,
+		};
+
+		// Disponibilità fittizia ma stabile: dipende solo da giorno e orario
+		const isBooked = (date: Date, time: string) => {
+			const [h, m] = time.split(':').map(Number);
+			if (sameDay(date, today)) {
+				const now = new Date();
+				if (h * 60 + m <= now.getHours() * 60 + now.getMinutes() + 30) return true;
+			}
+			const seed = date.getDate() * 31 + date.getMonth() * 17 + h * 7 + m;
+			const weekend = [5, 6, 0].includes(date.getDay()) && h >= 19;
+			return seed % 6 === 0 || (weekend && seed % 4 === 0);
+		};
+
+		const isDayDisabled = (d: Date) => d < today || d > lastDay || d.getDay() === CLOSED_DAY;
+
+		function renderSteps() {
+			stepEls.forEach((el) => {
+				const n = Number(el.dataset.step);
+				el.classList.toggle('booking__step--active', !state.done && n === state.step);
+				el.classList.toggle('booking__step--done', state.done || n < state.step);
+			});
+			backBtn.hidden = state.done || state.step === 1;
+		}
+
+		function renderGuests() {
+			const buttons = Array.from({ length: MAX_GUESTS }, (_, i) => {
+				const n = i + 1;
+				const sel = state.guests === n ? ' guest-btn--selected' : '';
+				return `<button type="button" class="guest-btn${sel}" data-guests="${n}"><strong>${n}</strong><span>${n === 1 ? 'persona' : 'persone'}</span></button>`;
+			}).join('');
+			return `<h3 class="booking__title" tabindex="-1">Quanti siete?</h3>
+				<p class="booking__hint">Scegli il numero di persone al tavolo.</p>
+				<div class="guest-grid">${buttons}</div>
+				<p class="booking__note">Più di ${MAX_GUESTS} persone? Chiamaci al <a href="tel:+390321234567">0321 234567</a>.</p>`;
+		}
+
+		function renderCalendar() {
+			const v = state.view;
+			const first = new Date(v.getFullYear(), v.getMonth(), 1);
+			const daysInMonth = new Date(v.getFullYear(), v.getMonth() + 1, 0).getDate();
+			const lead = (first.getDay() + 6) % 7;
+			const canPrev = first > new Date(today.getFullYear(), today.getMonth(), 1);
+			const canNext = new Date(v.getFullYear(), v.getMonth() + 1, 1) <= lastDay;
+			let cells = '';
+			for (let i = 0; i < lead; i++) cells += '<span class="cal-cell cal-cell--empty" aria-hidden="true"></span>';
+			for (let day = 1; day <= daysInMonth; day++) {
+				const d = new Date(v.getFullYear(), v.getMonth(), day);
+				const sel = state.date && sameDay(d, state.date) ? ' cal-cell--selected' : '';
+				const off = isDayDisabled(d) ? ' disabled' : '';
+				cells += `<button type="button" class="cal-cell${sel}" data-date="${d.getTime()}" style="--pop:${(lead + day) * 10}ms"${off}>${day}</button>`;
+			}
+			const monthLabel = first.toLocaleDateString('it-IT', { month: 'long', year: 'numeric' });
+			return `<h3 class="booking__title" tabindex="-1">Che giorno?</h3>
+				<p class="booking__hint">Tavolo per ${state.guests} ${state.guests === 1 ? 'persona' : 'persone'}.</p>
+				<div class="cal-head">
+					<button type="button" class="cal-nav" data-nav="-1" aria-label="Mese precedente"${canPrev ? '' : ' disabled'}>‹</button>
+					<span class="cal-month">${monthLabel}</span>
+					<button type="button" class="cal-nav" data-nav="1" aria-label="Mese successivo"${canNext ? '' : ' disabled'}>›</button>
+				</div>
+				<div class="cal-weekdays">${WEEKDAYS.map((w) => `<span>${w}</span>`).join('')}</div>
+				<div class="cal-grid">${cells}</div>
+				<p class="cal-legend">Chiusi il lunedì.</p>`;
+		}
+
+		function renderTimes() {
+			const date = state.date!;
+			let i = 0;
+			const groups = Object.entries(SLOTS)
+				.map(([label, times]) => {
+					const buttons = times
+						.map((t) => {
+							const booked = isBooked(date, t);
+							const sel = state.time === t ? ' time-slot--selected' : '';
+							return `<button type="button" class="time-slot${sel}" data-time="${t}" style="--pop:${i++ * 25}ms"${booked ? ' disabled' : ''}>${t}</button>`;
+						})
+						.join('');
+					return `<div class="time-group"><p class="time-group__label">${label}</p><div class="time-grid">${buttons}</div></div>`;
+				})
+				.join('');
+			return `<h3 class="booking__title" tabindex="-1">A che ora?</h3>
+				<p class="booking__hint">${fmtLong(date)}</p>${groups}
+				<p class="booking__note">Gli orari barrati sono già al completo.</p>`;
+		}
+
+		function renderForm() {
+			return `<form class="booking-form" novalidate>
+				<h3 class="booking__title" tabindex="-1">I tuoi dati</h3>
+				<p class="booking__hint">Ti servono solo per confermare il tavolo.</p>
+				<label class="field"><span>Nome e cognome</span><input type="text" name="name" autocomplete="name" placeholder="Mario Rossi" required /></label>
+				<label class="field"><span>Telefono</span><input type="tel" name="phone" autocomplete="tel" placeholder="333 1234567" required /></label>
+				<label class="field"><span>Note (facoltativo)</span><textarea name="notes" rows="3" placeholder="Allergie, seggiolone, ricorrenze…"></textarea></label>
+				<button type="submit" class="booking-submit" disabled>Conferma prenotazione</button>
+			</form>`;
+		}
+
+		function renderDone() {
+			const pieces = Array.from({ length: 26 }, (_, i) => {
+				const w = 5 + Math.random() * 5;
+				return `<span style="left:${Math.random() * 100}%;width:${w}px;height:${w * 0.4}px;background:${CONFETTI_COLORS[i % CONFETTI_COLORS.length]};--delay:${Math.round(Math.random() * 250)}ms;--dur:${Math.round(900 + Math.random() * 700)}ms;--rot:${Math.round(Math.random() * 360)}deg"></span>`;
+			}).join('');
+			return `<div class="booking-done">
+				<div class="confetti" aria-hidden="true">${pieces}</div>
+				<svg class="booking-done__check" viewBox="0 0 52 52" aria-hidden="true"><circle class="booking-done__circle" cx="26" cy="26" r="24"/><path class="booking-done__mark" d="M14 27l7 7 17-17"/></svg>
+				<h3 class="booking__title" tabindex="-1">Tavolo prenotato</h3>
+				<p class="booking__hint">Riepilogo di esempio: è una demo, nessuna prenotazione è stata inviata davvero.</p>
+				<dl class="booking-summary">
+					<div><dt>Persone</dt><dd>${state.guests}</dd></div>
+					<div><dt>Giorno</dt><dd>${fmtLong(state.date!)}</dd></div>
+					<div><dt>Orario</dt><dd>${state.time}</dd></div>
+					<div><dt>A nome di</dt><dd class="booking-summary__free" data-name></dd></div>
+				</dl>
+				<button type="button" class="booking-submit booking-submit--ghost" data-reset>Nuova prenotazione</button>
+			</div>`;
+		}
+
+		function render(focus = false) {
+			renderSteps();
+			panel.style.animation = 'none';
+			void panel.offsetWidth;
+			panel.style.animation = '';
+			if (state.done) panel.innerHTML = renderDone();
+			else if (state.step === 1) panel.innerHTML = renderGuests();
+			else if (state.step === 2) panel.innerHTML = renderCalendar();
+			else if (state.step === 3) panel.innerHTML = renderTimes();
+			else panel.innerHTML = renderForm();
+
+			if (state.done) {
+				const nameEl = panel.querySelector<HTMLElement>('[data-name]');
+				if (nameEl) nameEl.textContent = state.name; // textContent: nessun HTML dall'utente
+			} else if (state.step === 4) {
+				const form = panel.querySelector<HTMLFormElement>('.booking-form')!;
+				const submit = form.querySelector<HTMLButtonElement>('.booking-submit')!;
+				const nameInput = form.elements.namedItem('name') as HTMLInputElement;
+				const phoneInput = form.elements.namedItem('phone') as HTMLInputElement;
+				const notesInput = form.elements.namedItem('notes') as HTMLTextAreaElement;
+				nameInput.value = state.name;
+				phoneInput.value = state.phone;
+				notesInput.value = state.notes;
+				const validate = () => {
+					state.name = nameInput.value;
+					state.phone = phoneInput.value;
+					state.notes = notesInput.value;
+					const phoneOk = state.phone.replace(/\D/g, '').length >= 6;
+					submit.disabled = !(state.name.trim().length > 1 && phoneOk) || state.submitting;
+				};
+				form.addEventListener('input', validate);
+				form.addEventListener('submit', (e) => {
+					e.preventDefault();
+					validate();
+					if (submit.disabled) return;
+					state.submitting = true;
+					submit.disabled = true;
+					submit.textContent = 'Invio in corso…';
+					setTimeout(() => {
+						state.submitting = false;
+						state.done = true;
+						render(true);
+					}, 900);
+				});
+				validate();
+			}
+			if (focus) panel.querySelector<HTMLElement>('.booking__title')?.focus({ preventScroll: true });
+		}
+
+		function go(step: number) {
+			state.step = Math.max(1, Math.min(4, step));
+			render(true);
+		}
+
+		panel.addEventListener('click', (e) => {
+			const t = (e.target as HTMLElement).closest<HTMLElement>('button');
+			if (!t) return;
+			if (t.dataset.guests) {
+				state.guests = Number(t.dataset.guests);
+				go(2);
+			} else if (t.dataset.date) {
+				const d = new Date(Number(t.dataset.date));
+				if (!state.date || !sameDay(state.date, d)) state.time = null;
+				state.date = d;
+				go(3);
+			} else if (t.dataset.time) {
+				state.time = t.dataset.time;
+				go(4);
+			} else if (t.dataset.nav) {
+				state.view = new Date(state.view.getFullYear(), state.view.getMonth() + Number(t.dataset.nav), 1);
+				render();
+			} else if (t.hasAttribute('data-reset')) {
+				Object.assign(state, { step: 1, guests: null, date: null, time: null, name: '', phone: '', notes: '', done: false, view: new Date(today.getFullYear(), today.getMonth(), 1) });
+				render(true);
+			}
+		});
+
+		backBtn.addEventListener('click', () => go(state.step - 1));
+
+		render();
+	}
+</script>
 
 <script>
 	// Theme switcher
