@@ -20,32 +20,79 @@ const base = import.meta.env.BASE_URL;
 		/>
 	</head>
 	<body>
-		<!-- Navbar sticky con glassmorphism -->
+		<!-- Navbar sticky con theme switcher -->
 		<nav class="navbar" aria-label="Navigazione principale">
 			<div class="navbar__container">
 				<a href="#" class="navbar__logo">Trattoria del Borgo</a>
 				<ul class="navbar__menu">
+					<li><a href="#hero" class="navbar__link">Home</a></li>
 					<li><a href="#menu" class="navbar__link">Menu</a></li>
-					<li><a href="#about" class="navbar__link">Chi Siamo</a></li>
+					<li><a href="#reviews" class="navbar__link">Recensioni</a></li>
 					<li><a href="#info" class="navbar__link">Contatti</a></li>
 				</ul>
+				<button class="theme-switcher" aria-label="Cambia tema" title="Cambia tema">
+					<span class="theme-switcher__icon">🌙</span>
+				</button>
 			</div>
 		</nav>
 
 		<main>
-			<!-- Hero Section -->
-			<section class="hero">
-				<div class="container">
-					<div class="hero__content">
-						<h1 class="hero__title">Trattoria del Borgo</h1>
-						<p class="hero__subtitle">Ristorazione autentica. Qualità senza pretese.</p>
-						<p class="hero__description">
-							Una trattoria nata negli anni '80, riaperta con consapevolezza moderna.
+			<!-- Video Hero Section -->
+			<section id="hero" class="hero-video">
+				<div class="hero-video__container">
+					<div class="hero-video__content">
+						<h1 class="hero-video__title">Trattoria del Borgo</h1>
+						<p class="hero-video__subtitle">Ristorazione autentica. Rimodernizzata.</p>
+						<p class="hero-video__description">
+							Una trattoria nata negli anni '80, riaperta da ragazzi che credono nella qualità.
 							Pasta fatta in casa, ingredienti di stagione, prezzi onesti.
 						</p>
 					</div>
-					<div class="hero__image">
-						<div class="hero__image-placeholder">[Immagine del luogo]</div>
+					<div class="hero-video__frame">
+						<video class="hero-video__iframe" autoplay muted loop playsinline>
+							<source src="/vetrine/videos/trattoria-hero.f616.mp4" type="video/mp4" />
+							Il tuo browser non supporta il tag video.
+						</video>
+					</div>
+				</div>
+			</section>
+
+			<!-- Social Feed Mockup -->
+			<section class="social-feed">
+				<div class="container">
+					<h2 class="section-title">Dal Nostro Feed</h2>
+					<div class="feed-grid">
+						<div class="feed-card">
+							<div class="feed-card__image">📸 Pasta fresca</div>
+							<div class="feed-card__content">
+								<p class="feed-card__caption">Pasta all'uovo fatta stamattina. Ogni giorno, dalle 9.</p>
+								<p class="feed-card__meta">❤️ 234 • 💬 12</p>
+							</div>
+						</div>
+
+						<div class="feed-card">
+							<div class="feed-card__image">🍽️ Brasato</div>
+							<div class="feed-card__content">
+								<p class="feed-card__caption">Brasato di stagione con verdure dell'orto. Ricetta di famiglia.</p>
+								<p class="feed-card__meta">❤️ 189 • 💬 8</p>
+							</div>
+						</div>
+
+						<div class="feed-card">
+							<div class="feed-card__image">🍷 Vino</div>
+							<div class="feed-card__content">
+								<p class="feed-card__caption">Vini locali curati. Scopri le etichette della zona.</p>
+								<p class="feed-card__meta">❤️ 156 • 💬 5</p>
+							</div>
+						</div>
+
+						<div class="feed-card">
+							<div class="feed-card__image">🎉 Comunità</div>
+							<div class="feed-card__content">
+								<p class="feed-card__caption">Stasera cena con la zona. Qualità, convivialità, prezzi giusti.</p>
+								<p class="feed-card__meta">❤️ 412 • 💬 24</p>
+							</div>
+						</div>
 					</div>
 				</div>
 			</section>
@@ -132,21 +179,52 @@ const base = import.meta.env.BASE_URL;
 				</div>
 			</section>
 
-			<!-- About Section -->
-			<section id="about" class="about-section">
+			<!-- Reviews Section (Loop Studio Style) -->
+			<section id="reviews" class="reviews-section">
 				<div class="container">
-					<div class="about__content">
-						<h2 class="section-title">Chi Siamo</h2>
-						<p class="about__text">
-							Una trattoria nata negli anni '80 nel cuore del paese, riaperta qualche anno fa
-							con lo stesso spirito di sempre: cibo buono, genuino, a prezzi onesti.
-						</p>
-						<p class="about__text">
-							Pasta e pane fatti in casa ogni mattina. Ingredienti locali, di stagione.
-							Non abbiamo pretese, solo qualità. La modernità che vedete nel sito
-							riflette come abbiamo ripreso il luogo: con rispetto per quello che era,
-							e consapevolezza di quello che poteva diventare.
-						</p>
+					<h2 class="section-title">Cosa Dicono</h2>
+					<div class="reviews-grid">
+						<article class="review-card">
+							<div class="review-card__header">
+								<div class="review-card__avatar">👤</div>
+								<div class="review-card__meta">
+									<h3 class="review-card__author">Marco R.</h3>
+									<div class="review-card__rating">⭐⭐⭐⭐⭐</div>
+								</div>
+							</div>
+							<p class="review-card__text">
+								"Finalmente un posto dove la qualità non è negoziata. Pasta fatta come si deve, vini locali curati, e il gestore che conosce ogni cliente. Questo è il futuro della ristorazione di provincia."
+							</p>
+							<p class="review-card__date">2 settimane fa</p>
+						</article>
+
+						<article class="review-card">
+							<div class="review-card__header">
+								<div class="review-card__avatar">👤</div>
+								<div class="review-card__meta">
+									<h3 class="review-card__author">Lucia M.</h3>
+									<div class="review-card__rating">⭐⭐⭐⭐⭐</div>
+								</div>
+							</div>
+							<p class="review-card__text">
+								"Ingredienti di stagione, prezzi onesti, e uno staff che capisce quello che fa. Non è un ristorante, è una comunità. Torniamo ogni weekend."
+							</p>
+							<p class="review-card__date">1 mese fa</p>
+						</article>
+
+						<article class="review-card">
+							<div class="review-card__header">
+								<div class="review-card__avatar">👤</div>
+								<div class="review-card__meta">
+									<h3 class="review-card__author">Andrea T.</h3>
+									<div class="review-card__rating">⭐⭐⭐⭐⭐</div>
+								</div>
+							</div>
+							<p class="review-card__text">
+								"Ristorazione autentica. Il brasato della nonna, rivisitato con consapevolezza moderna. Questo è quello che cercavamo."
+							</p>
+							<p class="review-card__date">3 settimane fa</p>
+						</article>
 					</div>
 				</div>
 			</section>
@@ -201,16 +279,34 @@ const base = import.meta.env.BASE_URL;
 		--font-editorial: 'Newsreader', -apple-system, BlinkMacSystemFont, 'Segoe UI', serif;
 		--font-body: 'Space Grotesk Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
-		--bg-main: #f5f3f0;
-		--bg-secondary: #faf9f7;
+		/* Light theme */
+		--bg-main: #f8f7f5;
+		--bg-secondary: #fefdfb;
+		--bg-tertiary: #f0ede8;
 		--text-primary: #1a1a1a;
-		--text-secondary: #666666;
-		--text-muted: #999999;
-		--accent-primary: #8b7355;
-		--accent-secondary: #6b8e5a;
-		--border-color: #e5e0db;
+		--text-secondary: #555555;
+		--text-muted: #888888;
+		--accent-primary: #00d9ff;
+		--accent-secondary: #7fff00;
+		--accent-tertiary: #ff6b35;
+		--border-color: #e0dbd5;
 		--glass-bg: rgba(255, 255, 255, 0.7);
 		--glass-backdrop: rgba(255, 255, 255, 0.95);
+	}
+
+	html[data-theme="dark"] {
+		--bg-main: #0a0a0a;
+		--bg-secondary: #1a1a1a;
+		--bg-tertiary: #252525;
+		--text-primary: #ffffff;
+		--text-secondary: #cccccc;
+		--text-muted: #999999;
+		--accent-primary: #00d9ff;
+		--accent-secondary: #7fff00;
+		--accent-tertiary: #ff6b35;
+		--border-color: #333333;
+		--glass-bg: rgba(20, 20, 20, 0.7);
+		--glass-backdrop: rgba(10, 10, 10, 0.95);
 	}
 
 	* {
@@ -230,9 +326,10 @@ const base = import.meta.env.BASE_URL;
 		line-height: 1.6;
 		font-weight: 400;
 		font-size: 16px;
+		transition: background-color 0.3s, color 0.3s;
 	}
 
-	/* Navbar Sticky Glassmorphic */
+	/* Navbar */
 	.navbar {
 		position: fixed;
 		top: 0;
@@ -248,10 +345,10 @@ const base = import.meta.env.BASE_URL;
 
 	.navbar.scrolled {
 		background: var(--glass-backdrop);
-		border-bottom-color: rgba(0, 0, 0, 0.05);
+		border-bottom-color: var(--border-color);
 		backdrop-filter: blur(10px);
 		-webkit-backdrop-filter: blur(10px);
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 	}
 
 	.navbar__container {
@@ -261,6 +358,7 @@ const base = import.meta.env.BASE_URL;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+		gap: 24px;
 	}
 
 	.navbar__logo {
@@ -281,6 +379,8 @@ const base = import.meta.env.BASE_URL;
 		list-style: none;
 		display: flex;
 		gap: 40px;
+		flex: 1;
+		justify-content: center;
 	}
 
 	.navbar__link {
@@ -288,7 +388,7 @@ const base = import.meta.env.BASE_URL;
 		font-weight: 500;
 		color: var(--text-secondary);
 		text-decoration: none;
-		transition: color 0.2s, text-decoration 0.2s;
+		transition: color 0.2s;
 		position: relative;
 	}
 
@@ -311,7 +411,30 @@ const base = import.meta.env.BASE_URL;
 		width: 100%;
 	}
 
-	/* Container & Layout */
+	/* Theme Switcher */
+	.theme-switcher {
+		background: var(--bg-secondary);
+		border: 1px solid var(--border-color);
+		border-radius: 8px;
+		padding: 8px 12px;
+		cursor: pointer;
+		font-size: 18px;
+		transition: all 0.3s ease;
+		color: var(--text-primary);
+	}
+
+	.theme-switcher:hover {
+		background: var(--accent-primary);
+		color: var(--bg-main);
+		border-color: var(--accent-primary);
+	}
+
+	.theme-switcher__icon {
+		display: inline-block;
+		transition: transform 0.3s ease;
+	}
+
+	/* Container */
 	.container {
 		max-width: 1000px;
 		margin: 0 auto;
@@ -319,72 +442,162 @@ const base = import.meta.env.BASE_URL;
 	}
 
 	main {
-		margin-top: 60px;
-	}
-
-	/* Hero Section */
-	.hero {
-		padding: 80px 0 100px;
 		position: relative;
+		z-index: 100;
 	}
 
-	.hero .container {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 80px;
-		align-items: center;
+	/* Hero Video Section */
+	.hero-video {
+		position: relative;
+		height: 100vh;
+		overflow: hidden;
 	}
 
-	.hero__content {
-		animation: fadeInUp 0.8s ease-out;
-	}
-
-	.hero__title {
-		font-family: var(--font-display);
-		font-size: 56px;
-		font-weight: 700;
-		line-height: 1.2;
-		margin-bottom: 16px;
-		letter-spacing: -1px;
-		color: var(--text-primary);
-	}
-
-	.hero__subtitle {
-		font-family: var(--font-editorial);
-		font-size: 20px;
-		color: var(--text-secondary);
-		margin-bottom: 24px;
-		font-weight: 400;
-		font-style: italic;
-	}
-
-	.hero__description {
-		font-size: 16px;
-		line-height: 1.7;
-		color: var(--text-secondary);
-		max-width: 420px;
-	}
-
-	.hero__image {
-		animation: fadeInRight 0.8s ease-out 0.1s both;
-	}
-
-	.hero__image-placeholder {
-		background: linear-gradient(135deg, #e0ded9 0%, #d4d1cc 100%);
-		aspect-ratio: 1 / 1;
-		border-radius: 12px;
+	.hero-video__container {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		color: var(--text-muted);
-		font-size: 14px;
-		min-height: 400px;
-		transition: transform 0.3s ease, box-shadow 0.3s ease;
+		z-index: 10;
 	}
 
-	.hero__image-placeholder:hover {
-		transform: scale(1.02);
-		box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+	.hero-video__content {
+		text-align: center;
+		max-width: 600px;
+		animation: fadeInUp 0.8s ease-out;
+		position: relative;
+		z-index: 20;
+		padding: 48px;
+		background: rgba(10, 10, 10, 0.75);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		border-radius: 16px;
+		border: 1px solid rgba(0, 217, 255, 0.2);
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+	}
+
+	.hero-video__title {
+		font-family: var(--font-display);
+		font-size: 72px;
+		font-weight: 700;
+		line-height: 1.1;
+		margin-bottom: 20px;
+		letter-spacing: -1px;
+		color: white;
+		text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+	}
+
+	.hero-video__subtitle {
+		font-family: var(--font-editorial);
+		font-size: 24px;
+		color: rgba(255, 255, 255, 0.9);
+		margin-bottom: 24px;
+		font-weight: 400;
+		font-style: italic;
+		text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+	}
+
+	.hero-video__description {
+		font-size: 18px;
+		line-height: 1.7;
+		color: rgba(255, 255, 255, 0.85);
+		text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+	}
+
+	.hero-video__frame {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 100vw;
+		height: 100vh;
+		z-index: 1;
+	}
+
+	.hero-video__iframe {
+		width: 100%;
+		height: 100%;
+		border: none;
+		object-fit: cover;
+	}
+
+	.hero-video::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.8) 100%);
+		z-index: 5;
+	}
+
+	/* Social Feed */
+	.social-feed {
+		padding: 100px 0;
+		background: var(--bg-secondary);
+		border-top: 1px solid var(--border-color);
+		border-bottom: 1px solid var(--border-color);
+	}
+
+	.feed-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+		gap: 24px;
+	}
+
+	.feed-card {
+		background: var(--bg-main);
+		border: 1px solid var(--border-color);
+		border-radius: 12px;
+		overflow: hidden;
+		transition: all 0.3s ease;
+		animation: fadeInUp 0.6s ease-out backwards;
+	}
+
+	.feed-card:nth-child(1) { animation-delay: 0.1s; }
+	.feed-card:nth-child(2) { animation-delay: 0.2s; }
+	.feed-card:nth-child(3) { animation-delay: 0.3s; }
+	.feed-card:nth-child(4) { animation-delay: 0.4s; }
+
+	.feed-card:hover {
+		border-color: var(--accent-primary);
+		box-shadow: 0 0 20px rgba(0, 217, 255, 0.15);
+		transform: translateY(-4px);
+	}
+
+	.feed-card__image {
+		width: 100%;
+		aspect-ratio: 1 / 1;
+		background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 48px;
+		color: var(--bg-main);
+		text-align: center;
+		padding: 16px;
+	}
+
+	.feed-card__content {
+		padding: 20px;
+	}
+
+	.feed-card__caption {
+		font-size: 14px;
+		line-height: 1.6;
+		color: var(--text-secondary);
+		margin: 0 0 12px 0;
+	}
+
+	.feed-card__meta {
+		font-size: 13px;
+		color: var(--text-muted);
+		margin: 0;
 	}
 
 	/* Section Title */
@@ -406,14 +619,14 @@ const base = import.meta.env.BASE_URL;
 		left: 0;
 		width: 48px;
 		height: 3px;
-		background: var(--accent-primary);
+		background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
 		border-radius: 2px;
 	}
 
 	/* Menu Section */
 	.menu-section {
 		padding: 100px 0;
-		background: var(--bg-secondary);
+		background: var(--bg-main);
 	}
 
 	.menu-grid {
@@ -426,27 +639,18 @@ const base = import.meta.env.BASE_URL;
 		animation: fadeInUp 0.6s ease-out backwards;
 	}
 
-	.menu-category:nth-child(1) {
-		animation-delay: 0.1s;
-	}
-
-	.menu-category:nth-child(2) {
-		animation-delay: 0.2s;
-	}
-
-	.menu-category:nth-child(3) {
-		animation-delay: 0.3s;
-	}
+	.menu-category:nth-child(1) { animation-delay: 0.1s; }
+	.menu-category:nth-child(2) { animation-delay: 0.2s; }
+	.menu-category:nth-child(3) { animation-delay: 0.3s; }
 
 	.menu-category__title {
 		font-family: var(--font-display);
-		font-size: 18px;
+		font-size: 13px;
 		font-weight: 600;
 		color: var(--accent-primary);
 		margin-bottom: 24px;
 		text-transform: uppercase;
 		letter-spacing: 1px;
-		font-size: 13px;
 	}
 
 	.menu-items {
@@ -456,9 +660,8 @@ const base = import.meta.env.BASE_URL;
 	}
 
 	.menu-item {
-		padding: 0;
-		border-bottom: 1px solid var(--border-color);
 		padding-bottom: 20px;
+		border-bottom: 1px solid var(--border-color);
 		transition: all 0.3s ease;
 	}
 
@@ -491,7 +694,7 @@ const base = import.meta.env.BASE_URL;
 		font-family: var(--font-display);
 		font-size: 16px;
 		font-weight: 700;
-		color: var(--accent-primary);
+		color: var(--accent-secondary);
 		flex-shrink: 0;
 		letter-spacing: -0.5px;
 	}
@@ -503,31 +706,86 @@ const base = import.meta.env.BASE_URL;
 		font-style: italic;
 	}
 
-	/* About Section */
-	.about-section {
+	/* Reviews Section */
+	.reviews-section {
 		padding: 100px 0;
+		background: var(--bg-secondary);
+		border-top: 1px solid var(--border-color);
 	}
 
-	.about__content {
-		max-width: 680px;
+	.reviews-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		gap: 32px;
 	}
 
-	.about__text {
+	.review-card {
+		background: var(--bg-main);
+		padding: 32px;
+		border-radius: 12px;
+		border: 1px solid var(--border-color);
+		transition: all 0.3s ease;
+		animation: fadeInUp 0.6s ease-out backwards;
+	}
+
+	.review-card:nth-child(1) { animation-delay: 0.1s; }
+	.review-card:nth-child(2) { animation-delay: 0.2s; }
+	.review-card:nth-child(3) { animation-delay: 0.3s; }
+
+	.review-card:hover {
+		border-color: var(--accent-primary);
+		box-shadow: 0 8px 24px rgba(0, 217, 255, 0.1);
+		transform: translateY(-4px);
+	}
+
+	.review-card__header {
+		display: flex;
+		gap: 16px;
+		margin-bottom: 20px;
+		align-items: flex-start;
+	}
+
+	.review-card__avatar {
+		font-size: 32px;
+		flex-shrink: 0;
+	}
+
+	.review-card__meta {
+		flex: 1;
+	}
+
+	.review-card__author {
+		font-family: var(--font-display);
+		font-size: 16px;
+		font-weight: 600;
+		color: var(--text-primary);
+		margin: 0 0 8px 0;
+	}
+
+	.review-card__rating {
+		font-size: 14px;
+		letter-spacing: 2px;
+	}
+
+	.review-card__text {
 		font-family: var(--font-editorial);
-		font-size: 17px;
-		line-height: 1.8;
+		font-size: 15px;
+		line-height: 1.7;
 		color: var(--text-secondary);
-		margin-bottom: 28px;
+		margin: 0 0 16px 0;
+		font-style: italic;
 	}
 
-	.about__text:last-child {
-		margin-bottom: 0;
+	.review-card__date {
+		font-size: 12px;
+		color: var(--text-muted);
+		margin: 0;
 	}
 
 	/* Info Section */
 	.info-section {
 		padding: 100px 0;
-		background: var(--bg-secondary);
+		background: var(--bg-main);
 	}
 
 	.info-grid {
@@ -538,29 +796,26 @@ const base = import.meta.env.BASE_URL;
 
 	.info-card {
 		padding: 32px;
-		background: var(--bg-main);
-		border-radius: 8px;
+		background: var(--bg-secondary);
+		border-radius: 12px;
 		border: 1px solid var(--border-color);
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 	}
 
 	.info-card:hover {
-		background: white;
-		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-		transform: translateY(-4px);
 		border-color: var(--accent-primary);
+		box-shadow: 0 8px 24px rgba(0, 217, 255, 0.1);
+		transform: translateY(-4px);
 	}
 
 	.info-card h3 {
 		font-family: var(--font-display);
-		font-size: 16px;
+		font-size: 13px;
 		font-weight: 600;
 		margin-bottom: 16px;
-		color: var(--text-primary);
+		color: var(--accent-primary);
 		text-transform: uppercase;
 		letter-spacing: 0.5px;
-		font-size: 13px;
-		color: var(--accent-primary);
 	}
 
 	.info-card p {
@@ -574,7 +829,7 @@ const base = import.meta.env.BASE_URL;
 		color: var(--accent-primary);
 		text-decoration: none;
 		font-weight: 500;
-		transition: color 0.2s, text-decoration 0.2s;
+		transition: color 0.2s;
 	}
 
 	.info-card a:hover {
@@ -629,31 +884,21 @@ const base = import.meta.env.BASE_URL;
 
 	/* Responsive */
 	@media (max-width: 768px) {
-		.hero .container {
-			grid-template-columns: 1fr;
-			gap: 48px;
+		.hero-video__title {
+			font-size: 48px;
 		}
 
-		.hero__title {
-			font-size: 40px;
-		}
-
-		.hero__subtitle {
+		.hero-video__subtitle {
 			font-size: 18px;
 		}
 
-		.hero__image-placeholder {
-			min-height: 300px;
+		.hero-video__description {
+			font-size: 16px;
 		}
 
 		.section-title {
 			font-size: 32px;
 			margin-bottom: 36px;
-		}
-
-		.menu-section,
-		.info-section {
-			padding: 70px 0;
 		}
 
 		.navbar__menu {
@@ -664,11 +909,27 @@ const base = import.meta.env.BASE_URL;
 		.container {
 			padding: 0 24px;
 		}
+
+		.feed-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
 	}
 
 	@media (max-width: 480px) {
-		.hero__title {
-			font-size: 32px;
+		.hero-video {
+			height: 80vh;
+		}
+
+		.hero-video__title {
+			font-size: 36px;
+		}
+
+		.hero-video__subtitle {
+			font-size: 16px;
+		}
+
+		.hero-video__description {
+			font-size: 14px;
 		}
 
 		.section-title {
@@ -677,6 +938,10 @@ const base = import.meta.env.BASE_URL;
 
 		.navbar__menu {
 			display: none;
+		}
+
+		.feed-grid {
+			grid-template-columns: 1fr;
 		}
 
 		.menu-grid {
@@ -692,11 +957,44 @@ const base = import.meta.env.BASE_URL;
 		.info-card {
 			padding: 24px;
 		}
+
+		.reviews-grid {
+			grid-template-columns: 1fr;
+		}
 	}
 </style>
 
 <script>
-	// Navbar scroll effect — glassmorphism blur al scroll
+	// Theme switcher
+	const themeSwitcher = document.querySelector('.theme-switcher') as HTMLButtonElement;
+	const html = document.documentElement;
+	const icon = themeSwitcher?.querySelector('.theme-switcher__icon') as HTMLElement;
+
+	// Leggi il tema salvato o usa il preferito di sistema
+	const savedTheme = localStorage.getItem('theme');
+	const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+	const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+
+	// Applica il tema iniziale
+	if (initialTheme === 'dark') {
+		html.setAttribute('data-theme', 'dark');
+		if (icon) icon.textContent = '☀️';
+	}
+
+	// Toggle tema
+	themeSwitcher?.addEventListener('click', () => {
+		const currentTheme = html.getAttribute('data-theme');
+		const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+		html.setAttribute('data-theme', newTheme);
+		localStorage.setItem('theme', newTheme);
+
+		if (icon) {
+			icon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+		}
+	});
+
+	// Navbar scroll effect
 	const navbar = document.querySelector('.navbar') as HTMLElement;
 
 	window.addEventListener('scroll', () => {

@@ -23,9 +23,13 @@ const base = import.meta.env.BASE_URL;
 	<body>
 		<h1>Loop Studio — Vetrine</h1>
 		<p>
-			Homepage concept dimostrative, una per tipologia di attività. In
-			costruzione: il primo concept arriva a breve.
+			Homepage concept dimostrative, una per tipologia di attività.
 		</p>
+
+		<h2>Ristorazione</h2>
+		<ul>
+			<li><a href={`${base}ristorazione/trattoria/`}>Trattoria del Borgo</a> — Ristorazione autentica, qualità senza pretese</li>
+		</ul>
 	</body>
 </html>
 
@@ -44,8 +48,33 @@ const base = import.meta.env.BASE_URL;
 	h1 {
 		color: #ff3b30;
 	}
+	h2 {
+		font-size: 18px;
+		font-weight: 600;
+		color: #ccc;
+		margin-top: 40px;
+		margin-bottom: 15px;
+	}
 	p {
 		max-width: 480px;
 		line-height: 1.5;
+	}
+	ul {
+		max-width: 480px;
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+	li {
+		margin-bottom: 12px;
+		font-size: 15px;
+		line-height: 1.5;
+	}
+	a {
+		color: #ff3b30;
+		text-decoration: none;
+	}
+	a:hover {
+		text-decoration: underline;
 	}
 </style>
