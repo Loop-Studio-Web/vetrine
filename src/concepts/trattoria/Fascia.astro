@@ -1,0 +1,96 @@
+---
+// Fascia di ritorno: vetrina dimostrativa, torna all'hub, chiedi una così. Scorre via con la pagina;
+// la navbar fissa sta sotto di lei a inizio pagina e poi risale.
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<aside class="fascia" data-fascia aria-label="Informazioni su questa vetrina">
+	<p class="fascia__testo"><em>Vetrina dimostrativa</em><span class="fascia__studio"> · un concept di Loop Studio</span></p>
+	<nav class="fascia__link" aria-label="Vetrine">
+		<a href={`${base}/`}>← Tutte le vetrine</a>
+		<a href="https://theloopstudio.org/contatti/?concept=trattoria" class="fascia__cta">Ne voglio una così →</a>
+	</nav>
+</aside>
+
+<style is:global>
+	:root {
+		--fascia-h: 36px;
+	}
+</style>
+
+<style>
+	.fascia {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		z-index: 1001;
+		height: var(--fascia-h);
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
+		padding: 0 clamp(16px, 4vw, 40px);
+		background: var(--accent-primary);
+		color: var(--on-accent);
+		font-family: var(--font-body);
+		font-size: 0.82rem;
+		white-space: nowrap;
+	}
+	.fascia__testo em {
+		font-family: var(--font-display);
+		font-size: 1rem;
+	}
+	.fascia__link {
+		display: flex;
+		gap: 20px;
+	}
+	.fascia a {
+		color: inherit;
+		text-decoration: none;
+		border-bottom: 1px solid transparent;
+		padding-bottom: 1px;
+	}
+	.fascia a:hover {
+		border-bottom-color: currentColor;
+	}
+	.fascia__cta {
+		font-weight: 600;
+	}
+	@media (max-width: 640px) {
+		.fascia__studio {
+			display: none;
+		}
+	}
+	@media (max-width: 420px) {
+		.fascia__testo {
+			display: none;
+		}
+		.fascia {
+			justify-content: center;
+		}
+	}
+</style>
+
+<script>
+	const fascia = document.querySelector<HTMLElement>('[data-fascia]');
+	if (fascia) {
+		let attesa = false;
+		const aggiorna = () => {
+			attesa = false;
+			document.documentElement.style.setProperty('--fascia', `${Math.max(0, fascia.offsetHeight - scrollY)}px`);
+		};
+		addEventListener(
+			'scroll',
+			() => {
+				if (!attesa) {
+					attesa = true;
+					requestAnimationFrame(aggiorna);
+				}
+			},
+			{ passive: true },
+		);
+		addEventListener('resize', aggiorna);
+		aggiorna();
+	}
+</script>

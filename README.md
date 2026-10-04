@@ -72,11 +72,29 @@
 
 <br>
 
+### 03 · Luppolo & Watt
+
+<a href="https://vetrine.theloopstudio.org/ristorazione/ristopub/"><img src="docs/img/card-ristopub.jpg" alt="Luppolo & Watt on desktop and mobile: a giant title on an amber background, a polaroid of a beer with its foam, and the phone menu filling up with beer." width="100%"></a>
+
+*Beer that plays. Eight taps brewed in-house, sandwiches eaten by hand, live music on the small stage.*
+
+| | |
+|---|---|
+| **Archetype** | The brewpub with a stage: loud, warm, a little rough |
+| **Mood** | A beer label crossed with a gig poster: kraft paper, amber, ink, hard offset shadows. One light theme with a dark "stage" section |
+| **Type** | Big Shoulders Display for titles, Archivo for text |
+| **Palette** | <img src="docs/img/palette-ristopub.svg" alt="Kraft cream, sand, ink, amber, brick red and hop green" height="22"> |
+| **Signature moves** | A mobile menu that *pours*: the panel fills with beer from the bottom, with foam and bubbles. A tap board with filters and expandable beers (a glass that fills, bitterness and strength bars). "Goes with…" links from each dish that open the right beer. A gig calendar computed from today, so it never goes stale, whose "Book" button pre-fills the booking form. A fermenter that fills while a day counter climbs. A beer-mug cursor companion (mouse only) and a sub-second pour-the-logo intro, once per session |
+| **Lighthouse** | 99 performance on mobile, 100 on desktop, 100 on accessibility and best practices |
+
+[**Open Luppolo & Watt →**](https://vetrine.theloopstudio.org/ristorazione/ristopub/)
+
+<br>
+
 ### Next on the street
 
 | Category | Archetype | Status |
 |---|---|---|
-| Food & drink | RistoPub | Planned |
 | Legal & professional | to be decided | Planned |
 | Beauty & wellness | to be decided | Planned |
 | Local shop / e-commerce | to be decided | Planned |
@@ -97,6 +115,7 @@ flowchart TB
     infra["<b>Shared infrastructure</b><br/>one package.json · one build · one deploy"]
     infra --> T["<b>Trattoria</b><br/>own markup · CSS · JS · fonts"]
     infra --> O["<b>Ossidiana</b><br/>own markup · CSS · JS · fonts"]
+    infra --> R["<b>Luppolo & Watt</b><br/>own markup · CSS · JS · fonts"]
     infra --> N["<b>next concept…</b>"]
     T -.-|nothing shared| O
     O -.-|nothing shared| N
@@ -110,15 +129,15 @@ A piece of code is reused between two concepts only when it is the *exact same t
 
 Before a concept goes on the street, it has to clear the same gate:
 
-| Gate | What it means | Trattoria | Ossidiana |
-|---|---|:-:|:-:|
-| **Builds** | `astro build` is clean | ✅ | ✅ |
-| **Accessible** | `axe-core`: zero violations | ✅ | ✅ |
-| **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ |
-| **Menu on phones** | A real menu with its own open/close effect, keyboard and Escape friendly (a curtain for Ossidiana, an unrolling card for the Trattoria) | ✅ | ✅ |
-| **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ |
-| **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ |
-| **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ |
+| Gate | What it means | Trattoria | Ossidiana | Luppolo & Watt |
+|---|---|:-:|:-:|:-:|
+| **Builds** | `astro build` is clean | ✅ | ✅ | ✅ |
+| **Accessible** | `axe-core`: zero violations | ✅ | ✅ | ✅ |
+| **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ | ✅ |
+| **Menu on phones** | A real menu with its own open/close effect, keyboard and Escape friendly (a curtain for Ossidiana, an unrolling card for the Trattoria, a pour of beer for Luppolo & Watt) | ✅ | ✅ | ✅ |
+| **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ | ✅ |
+| **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ | ✅ |
+| **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ | ✅ |
 
 ```text
  LIGHTHOUSE · mobile            Trattoria                Ossidiana
@@ -141,11 +160,13 @@ src/
 │  ├─ index.astro                      the public hub (see src/hub/)
 │  └─ ristorazione/
 │     ├─ trattoria/index.astro         page shell only
-│     └─ grande-ristorante/index.astro
+│     ├─ grande-ristorante/index.astro
+│     └─ ristopub/index.astro
 ├─ hub/                                data, styles and sections of the hub page
 ├─ concepts/
 │  ├─ trattoria/                       one component per section + base.css
-│  └─ ossidiana/                       same idea, different everything
+│  ├─ ossidiana/                       same idea, different everything
+│  └─ ristopub/                        and again
 └─ assets/<concept>/ and hub/          local images only, no hotlinking
 public/images/<concept>/               fixed URLs: og:image, favicon
 docs/img/                              the pictures you are looking at

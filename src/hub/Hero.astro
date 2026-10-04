@@ -17,6 +17,21 @@ const gruppi = macros
 	}))
 	.filter((g) => g.live.length > 0);
 const soloInArrivo = prossime.filter((p) => !gruppi.some((g) => g.slug === p.macro));
+// Le categorie senza vetrine si dividono per stato: "stanno per aprire" e "in cantiere"
+const statiLabel = {
+	presto: { titolo: 'Stanno per aprire', conto: (n: number) => `${n} ${n === 1 ? 'categoria quasi pronta' : 'categorie quasi pronte'}`, cat: 'Sta per aprire' },
+	cantiere: { titolo: 'In cantiere', conto: (n: number) => `${n} ${n === 1 ? 'categoria in costruzione' : 'categorie in costruzione'}`, cat: 'In cantiere' },
+} as const;
+const perStato = (['presto', 'cantiere'] as const)
+	.map((stato) => ({ stato, ...statiLabel[stato], lista: soloInArrivo.filter((p) => p.stato === stato) }))
+	.filter((g) => g.lista.length > 0);
+const haPresto = prossime.some((p) => p.stato === 'presto');
+
+// Testo di benvenuto: i numeri si adeguano a quante vetrine ci sono davvero
+const parole = ['nessuna', 'una', 'due', 'tre', 'quattro', 'cinque', 'sei', 'sette', 'otto', 'nove', 'dieci'];
+const nAperte = concepts.length;
+const apertePar = (parole[nAperte] ?? String(nAperte)).replace(/^./, (c) => c.toUpperCase());
+const verboAperte = nAperte === 1 ? 'è già aperta' : 'sono già aperte';
 
 // Tenda a strisce con il bordo a scalloni, uguale per ogni negozio ma nei colori del concept
 function awning([a, b]: [string, string] | string[]) {
@@ -48,7 +63,7 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 		</h1>
 		<p class="hero__lead">
 			Homepage complete pensate per attività locali: identità, struttura, tipografia e movimento diversi per ogni
-			tipologia. Nessun template condiviso. Dalla trattoria al ristorante da menù degustazione, ognuna è disegnata
+			tipologia. Nessun template condiviso. Dalla trattoria al pub con il palco, passando per il ristorante da menù degustazione, ognuna è disegnata
 			come se fosse l’unica.
 		</p>
 		<div class="hero__cta">
@@ -58,9 +73,22 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 	</div>
 
 	<div class="wrap">
+		<div class="welcome" data-reveal>
+			<p class="eyebrow">Loop Street</p>
+			<h2 class="h2 welcome__title" data-scramble>Benvenuto in Loop Street.</h2>
+			<p class="welcome__text">
+				Questa è la via dove abitano i nostri concept: ogni vetrina è una homepage completa, pensata da zero per un tipo di
+				attività. {apertePar} {verboAperte}: entra, scorri, prova a prenotare un tavolo.
+				{haPresto && ' Altre stanno per aprire, e altre'}{!haPresto && ' Altre'} sono ancora in cantiere, dietro le tende abbassate.
+				Nessun modello, nessun locale vero: serve a farti vedere cosa può diventare il tuo.
+			</p>
+		</div>
+
 		<div class="street" data-reveal>
 			<div class="street__sign" aria-hidden="true">
-				<p class="street__neon">Aperto</p>
+				<p class="street__neon">
+					<span class="nl nl--a">A</span><span class="nl">p</span><span class="nl nl--e">e</span><span class="nl nl--r">r</span><span class="nl">t</span><span class="nl">o</span>
+				</p>
 				<span class="street__arrow">
 					<svg viewBox="0 0 36 16" width="36" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"
 						><path d="M2 8h31M26 2l7 6-7 6"></path></svg
@@ -104,7 +132,7 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 											<span class="shop__plus">+</span>
 										</span>
 										<span class="shop__name">{p.nome}</span>
-										<span class="shop__cat">In arrivo</span>
+										<span class="shop__cat">{statiLabel[p.stato].cat}</span>
 									</div>
 								</li>
 							))}
@@ -113,14 +141,14 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 				))
 			}
 			{
-				soloInArrivo.length > 0 && (
+				perStato.map((g) => (
 					<div class="street__group street__group--soon">
-						<p class="street__tag" id="via-presto">
-							<span>In arrivo</span>
-							<span class="street__n">{soloInArrivo.length} categorie in costruzione</span>
+						<p class="street__tag" id={`via-${g.stato}`}>
+							<span>{g.titolo}</span>
+							<span class="street__n">{g.conto(g.lista.length)}</span>
 						</p>
-						<ul class="street__row" role="list" aria-labelledby="via-presto">
-							{soloInArrivo.map((p) => (
+						<ul class="street__row" role="list" aria-labelledby={`via-${g.stato}`}>
+							{g.lista.map((p) => (
 								<li class="shop shop--soon">
 									<div class="shop__link">
 										<span class="shop__awning" set:html={soonAwning} />
@@ -134,7 +162,7 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 							))}
 						</ul>
 					</div>
-				)
+				))
 			}
 			<div class="street__ground" aria-hidden="true"></div>
 		</div>
@@ -226,10 +254,35 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 		margin-top: 36px;
 	}
 
+	/* Benvenuto in Loop Street */
+	.welcome {
+		max-width: 60ch;
+		margin: clamp(56px, 8vw, 100px) auto 0;
+		text-align: center;
+	}
+	.welcome__title {
+		margin-top: 12px;
+	}
+	.welcome__text {
+		margin-top: 18px;
+		color: var(--muted);
+		font-size: 1.08rem;
+	}
+
 	/* La via di negozi */
 	.street {
 		position: relative;
-		margin-top: clamp(56px, 8vw, 100px);
+		margin-top: clamp(40px, 5vw, 64px);
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.nl,
+		.street__neon {
+			animation: none;
+		}
+		.nl--e {
+			opacity: 0.3;
+			text-shadow: none;
+		}
 	}
 	/* Su telefono l'insegna sta nel flusso, centrata, con una freccia al neon che invita a scorrere */
 	.street__sign {
@@ -274,9 +327,28 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 		font-size: 0.85rem;
 		letter-spacing: 0.3em;
 		text-transform: uppercase;
-		text-shadow: 0 0 10px rgba(255, 59, 48, 0.8);
+		--g: 0 0 10px rgba(255, 59, 48, 0.8);
+		text-shadow: var(--g);
 		box-shadow: 0 0 14px rgba(255, 59, 48, 0.5), inset 0 0 10px rgba(255, 59, 48, 0.3);
-		animation: neon 7s infinite;
+		animation: neon-box 13s infinite;
+	}
+	/* Insegna mezza rotta: ogni lettera ha il suo difetto. La "e" è quasi sempre spenta (il tubo si vede appena),
+	   la "A" balbetta, la "r" ronza. Mai più di tre lampi al secondo, e solo quando l'insegna è in vista. */
+	.nl {
+		display: inline-block;
+	}
+	.nl--a {
+		animation: nl-a 8.3s infinite;
+	}
+	.nl--e {
+		animation: nl-e 11s infinite;
+	}
+	.nl--r {
+		animation: nl-r 6.7s infinite;
+	}
+	.street:not(.is-visible) .nl,
+	.street:not(.is-visible) .street__neon {
+		animation-play-state: paused;
 	}
 	:global(:root[data-theme='light']) .street__neon {
 		background: #0a0a0a;
@@ -444,6 +516,35 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 		0%, 100% { transform: translateX(0); }
 		50% { transform: translateX(8px); }
 	}
+	@keyframes neon-box {
+		0%, 92%, 100% { opacity: 1; }
+		93% { opacity: 0.6; }
+		94.5% { opacity: 1; }
+	}
+	@keyframes nl-a {
+		0%, 52%, 100% { opacity: 1; text-shadow: var(--g); }
+		53% { opacity: 0.18; text-shadow: none; }
+		55% { opacity: 1; text-shadow: var(--g); }
+		57% { opacity: 0.2; text-shadow: none; }
+		59.5% { opacity: 1; text-shadow: var(--g); }
+	}
+	@keyframes nl-e {
+		0%, 100% { opacity: 0.22; text-shadow: none; }
+		18% { opacity: 0.22; text-shadow: none; }
+		19% { opacity: 1; text-shadow: var(--g); }
+		20.5% { opacity: 0.25; text-shadow: none; }
+		22% { opacity: 1; text-shadow: var(--g); }
+		24.5% { opacity: 0.22; text-shadow: none; }
+		62% { opacity: 0.22; text-shadow: none; }
+		63% { opacity: 1; text-shadow: var(--g); }
+		65% { opacity: 0.3; text-shadow: none; }
+		67% { opacity: 0.22; }
+	}
+	@keyframes nl-r {
+		0%, 68%, 74%, 100% { opacity: 1; }
+		70% { opacity: 0.5; }
+		72% { opacity: 0.95; }
+	}
 	@keyframes neon {
 		0%, 90%, 100% { opacity: 1; }
 		92% { opacity: 0.3; }
@@ -503,7 +604,7 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 			border-width: 3px;
 			border-radius: 14px;
 			font-size: 1.35rem;
-			text-shadow: 0 0 14px rgba(255, 59, 48, 0.85);
+			--g: 0 0 14px rgba(255, 59, 48, 0.85);
 			box-shadow: 0 0 22px rgba(255, 59, 48, 0.55), inset 0 0 14px rgba(255, 59, 48, 0.3);
 		}
 		.street__arrow {

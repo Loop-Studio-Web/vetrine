@@ -53,8 +53,8 @@ aggiunge una voce lì (con le immagini in `src/assets/hub/`) e il concept compar
 nella "via" in alto (a scorrimento orizzontale su telefono) e nella sezione delle vetrine, filtrabile per
 macrocategoria (`macros` in `data.ts`). Ogni concept ha anche una pagina di dettaglio indicizzabile
 (`src/pages/<macro>/<variante>/info.astro`, 5 righe che usano `src/hub/Dettaglio.astro`; i testi sono in
-`data.ts`) da aggiungere anche in `public/sitemap.xml`. I concept restano `noindex`. Ogni pagina ha anche
-il proprio menù su mobile (hub: pannello a cerchio; Trattoria: cartoncino che si srotola; Ossidiana: sipario).
+`data.ts`) da aggiungere anche in `public/sitemap.xml`. I concept restano `noindex`. Sopra la via c'è il testo "Benvenuto in Loop Street" (numeri adattati a `concepts`); le categorie senza vetrine hanno `stato` in `prossime` (`'presto'` = "Stanno per aprire", `'cantiere'` = "In cantiere"; il testo parla di "stanno per aprire" solo se esiste almeno una `'presto'`). Il neon "Aperto" ha un difetto per lettera (max 3 lampi/s, fermo con reduced-motion). I titoli con `data-scramble` si decodificano all'ingresso in vista (script in `Layout.astro`, copia della logica del sito madre): mai sull'h1 (LCP mobile) e nascosti con `opacity`, non `visibility` (altrimenti saltano nell'albero di accessibilità). Ogni pagina ha anche
+il proprio menù su mobile (hub: pannello a cerchio; Trattoria: cartoncino che si srotola; Ossidiana: sipario; RistoPub: pannello che si riempie di birra).
 
 ## Convenzioni di un concept
 
@@ -73,6 +73,7 @@ il proprio menù su mobile (hub: pannello a cerchio; Trattoria: cartoncino che s
   nessun nome o foto di clienti reali, nessun logo di terzi (es. Google).
 - **Widget ispirati al lab** (recensioni, prenotazione): si ricreano nel
   concept, con stile proprio, non si importano i bundle compilati.
+- **Fascia di ritorno** in cima a ogni concept (`Fascia.astro` nel concept, stile proprio): "vetrina dimostrativa · concept di Loop Studio", link "Tutte le vetrine" e "Ne voglio una così" (`https://theloopstudio.org/contatti/?concept=<slug>`). Non è fissa: è `position: absolute` e scorre via; la navbar fissa del concept ha `top: var(--fascia, 0px)` (lo script della fascia aggiorna `--fascia` allo scroll) così a inizio pagina sta sotto di lei e poi risale. È un `<aside>` con `aria-label` (axe: landmark).
 - **Footer** con il logo Loop Studio (SVG, nero o bianco + rosso `#fe3b30`) e
   link a https://theloopstudio.org/.
 - **Prima di pubblicare**: `astro build`, `axe-core` a 0 violazioni in tema
@@ -87,11 +88,17 @@ il proprio menù su mobile (hub: pannello a cerchio; Trattoria: cartoncino che s
 
 - **Ristorazione / Trattoria** (Trattoria del Borgo): pubblicata. Da rifare il
   video dell'hero (il file attuale non è pertinente).
-- **Ristorazione / Grande ristorante** (Ossidiana): costruito in locale,
-  `build` ok, axe 0 violazioni, non ancora pubblicato. Solo tema scuro per
+- **Ristorazione / Grande ristorante** (Ossidiana): pubblicata. `build` ok, axe 0 violazioni. Solo tema scuro per
   scelta; percorso a 5 portate in scroll-snap con zoom lento (Ken Burns) sulle
   foto; font Bodoni Moda + Jost + IBM Plex Mono. Logo generato con AI
   (simbolo ritagliato in `src/assets/ossidiana/brand/simbolo.png`).
+- **Ristorazione / RistoPub** (Luppolo & Watt, `src/pages/ristorazione/ristopub/`):
+  costruito in locale, `build` ok, axe 0 violazioni (desktop, mobile con menù aperto, dopo il
+  flusso di prenotazione), Lighthouse 99/100/100 (mobile). Birrificio-pub con palco: carta kraft,
+  ambra, inchiostro, Big Shoulders Display + Archivo; tema chiaro con sezione "palco" scura.
+  Menù mobile "a spina" (si riempie di birra). Date degli eventi calcolate da oggi
+  (`eventi.ts`). Foto Unsplash libere, scelte senza marchi di terzi sulle spine. Da collaudare
+  ancora su WebKit/iPhone reale.
 
 ## Deploy
 

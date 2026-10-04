@@ -4,6 +4,8 @@ import cardTrattoria from '../assets/hub/card-trattoria.jpg';
 import cardOssidiana from '../assets/hub/card-ossidiana.jpg';
 import shotTrattoria from '../assets/hub/shot-trattoria.jpg';
 import shotOssidiana from '../assets/hub/shot-ossidiana.jpg';
+import cardRistopub from '../assets/hub/card-ristopub.jpg';
+import shotRistopub from '../assets/hub/shot-ristopub.jpg';
 
 export const SITE = 'https://theloopstudio.org/';
 export const CONTACT = 'https://theloopstudio.org/contatti';
@@ -151,11 +153,64 @@ export const concepts: Concept[] = [
 			{ label: 'Buone pratiche', valore: '100' },
 		],
 	},
+	{
+		slug: 'ristopub',
+		macro: 'ristorazione',
+		nome: 'Luppolo & Watt',
+		categoria: 'Ristorazione',
+		archetipo: 'Il birrificio-pub con il palco',
+		claim: 'Otto spine fatte in casa, panini con le mani e musica dal vivo.',
+		path: '/ristorazione/ristopub/',
+		infoPath: '/ristorazione/ristopub/info/',
+		titoloSeo: 'Sito web per pub e birrificio: homepage concept con spine, eventi e prenotazione',
+		descrizioneSeo:
+			'Come potrebbe essere la homepage di un pub con birrificio e musica dal vivo: lavagna delle spine, calendario serate, prenotazione del tavolo o della serata. Concept dimostrativo di Loop Studio.',
+		intro: [
+			'Un pub vive di due cose: che cosa si beve e che cosa succede la sera. Questa homepage le mette sullo stesso piano. La lavagna delle spine dice subito che birre ci sono e con quale panino vanno d’accordo; il calendario dice chi suona stasera e permette di prenotare il posto con un tocco.',
+			'È una vetrina dimostrativa: il locale, le birre, i gruppi, i prezzi e gli indirizzi sono di fantasia. Serve a mostrare come può essere il sito di un pub quando ha un’identità forte e le informazioni che i clienti cercano davvero, senza ricorrere a un modello generico.',
+		],
+		perChi:
+			'Pub, birrifici artigianali, birrerie con cucina e locali che fanno musica dal vivo o serate a tema. Adatta a chi cambia spesso la carta delle birre e il programma, e vuole che il sito resti sempre aggiornato e facile da gestire.',
+		sezioni: [
+			{
+				t: 'La lavagna delle spine, sempre aggiornata',
+				d: 'Le birre si filtrano per tipo e si aprono una alla volta: grado, amaro, colore e prezzo, con un bicchiere che si riempie. Cambiare una spina vuol dire cambiare una riga di dati.',
+			},
+			{
+				t: 'Ogni piatto indica la sua birra',
+				d: 'Dal menù, un tocco su «in coppia con…» porta alla scheda della birra giusta. L’abbinamento diventa una guida per scegliere, non una nota a piè di pagina.',
+			},
+			{
+				t: 'Un calendario che non invecchia',
+				d: 'Le serate si calcolano a partire da oggi: la pagina mostra sempre i prossimi appuntamenti e si filtra per live, quiz, assaggi e partite. Il pulsante «Prenota» arriva al modulo già compilato con la serata scelta.',
+			},
+			{
+				t: 'Un menù mobile che si versa',
+				d: 'Su telefono il menù si riempie di birra dal basso, con la schiuma in cima e le bollicine che salgono. Un gesto che racconta il locale prima ancora di leggere una parola.',
+			},
+		],
+		awning: ['#e8921a', '#1a1815'],
+		glow: 'rgba(232, 146, 26, 0.55)',
+		card: cardRistopub,
+		shot: shotRistopub,
+		shotAlt: '',
+		crop: '35% 50%',
+		cardAlt: 'Luppolo & Watt su desktop e su telefono: titolo gigante su fondo ambra, polaroid di una birra con la schiuma, menù mobile che si riempie di birra.',
+		mood: 'Etichetta e locandina: carta kraft, ambra, inchiostro. Una sola luce chiara, con un palco scuro.',
+		caratteri: 'Big Shoulders Display e Archivo',
+		palette: ['#f1e8d4', '#e6d9bb', '#1a1815', '#e8921a', '#a82915', '#3d6a2a'],
+		metriche: [
+			{ label: 'Performance', valore: '99' },
+			{ label: 'Accessibilità', valore: '100' },
+			{ label: 'Buone pratiche', valore: '100' },
+		],
+	},
 ];
 
-export const prossime: { nome: string; categoria: string; macro: MacroSlug }[] = [
-	{ nome: 'RistoPub', categoria: 'Ristorazione', macro: 'ristorazione' },
-	{ nome: 'Legale e professionale', categoria: 'Studi e servizi', macro: 'studi' },
-	{ nome: 'Beauty e wellness', categoria: 'Benessere', macro: 'benessere' },
-	{ nome: 'Negozio locale', categoria: 'Commercio', macro: 'commercio' },
+// stato: 'presto' = quasi pronta, 'cantiere' = ancora in costruzione (nessuna data promessa)
+export type StatoProssima = 'presto' | 'cantiere';
+export const prossime: { nome: string; categoria: string; macro: MacroSlug; stato: StatoProssima }[] = [
+	{ nome: 'Legale e professionale', categoria: 'Studi e servizi', macro: 'studi', stato: 'cantiere' },
+	{ nome: 'Beauty e wellness', categoria: 'Benessere', macro: 'benessere', stato: 'cantiere' },
+	{ nome: 'Negozio locale', categoria: 'Commercio', macro: 'commercio', stato: 'cantiere' },
 ];

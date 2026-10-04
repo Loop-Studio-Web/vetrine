@@ -83,5 +83,71 @@ const pageUrl = new URL(`${base}${path}`, Astro.site).href;
 			);
 			els.forEach((el) => io.observe(el));
 		</script>
+		<script>
+			// Titoli che si "decodificano" quando entrano in vista, come sul sito dello studio. Solo titoli sotto
+			// la piega (mai l'h1: lì lo scramble ritarda l'LCP su mobile, già misurato sul sito madre).
+			const titoli = document.querySelectorAll<HTMLElement>('[data-scramble]');
+			const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+			const POOL = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+			function decodifica(el: HTMLElement) {
+				const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+				const nodi: Text[] = [];
+				let n: Node | null;
+				while ((n = walker.nextNode())) nodi.push(n as Text);
+				const originali = nodi.map((t) => t.nodeValue ?? '');
+				let tot = 0;
+				const inizi = originali.map((t) => {
+					const i = tot;
+					tot += t.length;
+					return i;
+				});
+				// il testo vero resta il nome accessibile per tutta l'animazione
+				el.setAttribute('aria-label', originali.join('').replace(/\s+/g, ' ').trim());
+				// blocca la scatola sul testo vero: lettere diverse non devono far andare a capo in modo diverso
+				const r = el.getBoundingClientRect();
+				el.style.width = `${r.width}px`;
+				el.style.height = `${r.height}px`;
+				const ritardo = matchMedia('(max-width: 48rem)').matches ? 14 : 30;
+				let frame = 0;
+				const id = setInterval(() => {
+					nodi.forEach((t, i) => {
+						let out = '';
+						for (let c = 0; c < originali[i].length; c++) {
+							const ch = originali[i][c];
+							// spazi e punteggiatura restano al loro posto; ogni lettera si assesta dopo 10 fotogrammi
+							if (!/[\p{L}\d]/u.test(ch) || frame >= inizi[i] + c + 10) out += ch;
+							else out += POOL[Math.floor(Math.random() * POOL.length)];
+						}
+						t.nodeValue = out;
+					});
+					frame++;
+					if (frame > tot + 14) {
+						nodi.forEach((t, i) => (t.nodeValue = originali[i]));
+						el.style.width = '';
+						el.style.height = '';
+						clearInterval(id);
+					}
+				}, ritardo);
+			}
+
+			if (ridotto || !('IntersectionObserver' in window)) {
+				titoli.forEach((el) => el.classList.add('sc-on'));
+			} else {
+				const so = new IntersectionObserver(
+					(entries) => {
+						for (const e of entries) {
+							if (!e.isIntersecting) continue;
+							const el = e.target as HTMLElement;
+							so.unobserve(el);
+							el.classList.add('sc-on');
+							decodifica(el);
+						}
+					},
+					{ threshold: 0.6 },
+				);
+				titoli.forEach((el) => so.observe(el));
+			}
+		</script>
 	</body>
 </html>

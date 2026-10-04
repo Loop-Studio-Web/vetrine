@@ -4,6 +4,7 @@ import '@fontsource-variable/jost';
 import '@fontsource/nothing-you-could-do/400.css';
 import '../../../concepts/ossidiana/base.css';
 import Navbar from '../../../concepts/ossidiana/Navbar.astro';
+import Fascia from '../../../concepts/ossidiana/Fascia.astro';
 import Ingresso from '../../../concepts/ossidiana/Ingresso.astro';
 import Percorso from '../../../concepts/ossidiana/Percorso.astro';
 import Chef from '../../../concepts/ossidiana/Chef.astro';
@@ -46,6 +47,7 @@ const pageUrl = new URL(`${base}/ristorazione/grande-ristorante/`, Astro.site).h
 	</head>
 	<body>
 		<a href="#main" class="skip-link">Vai al contenuto</a>
+		<Fascia />
 		<Navbar />
 		<main id="main">
 			<Ingresso />

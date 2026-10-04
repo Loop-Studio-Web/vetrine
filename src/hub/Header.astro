@@ -255,6 +255,18 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 			display: none;
 		}
 	}
+
+	/* Cerchio che si espande dal pulsante: solo durante il click sul tema (classe messa dallo script) */
+	:global(html.theme-transition::view-transition-old(root)),
+	:global(html.theme-transition::view-transition-new(root)) {
+		animation: none;
+		mix-blend-mode: normal;
+	}
+	:global(html.theme-swap *),
+	:global(html.theme-swap *::before),
+	:global(html.theme-swap *::after) {
+		transition: none !important;
+	}
 </style>
 
 <script>
@@ -303,13 +315,45 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 			document.querySelector('meta[name="theme-color"]')?.setAttribute('content', light ? '#ffffff' : '#000000');
 		};
 		label();
-		btn.addEventListener('click', () => {
+		// Cambio tema come sul sito dello studio: un cerchio si espande dal pulsante (View Transitions).
+		// Durante il cambio nessuna transizione CSS (theme-swap), altrimenti il testo cambia colore
+		// all'istante mentre lo sfondo sfuma. Senza View Transitions o con "riduci animazioni": scambio netto.
+		btn.addEventListener('click', (event) => {
 			const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-			root.setAttribute('data-theme', next);
-			try {
-				localStorage.setItem('vetrine-theme', next);
-			} catch (e) {}
-			label();
+			const apply = () => {
+				root.setAttribute('data-theme', next);
+				try {
+					localStorage.setItem('vetrine-theme', next);
+				} catch (e) {}
+				label();
+			};
+			root.classList.add('theme-swap');
+			const fine = () => root.classList.remove('theme-swap');
+			if (matchMedia('(prefers-reduced-motion: reduce)').matches || !document.startViewTransition) {
+				apply();
+				requestAnimationFrame(() => requestAnimationFrame(fine));
+				return;
+			}
+			// il cerchio parte dal punto cliccato (o dal centro del pulsante se da tastiera)
+			const r = btn.getBoundingClientRect();
+			const x = event.clientX || r.left + r.width / 2;
+			const y = event.clientY || r.top + r.height / 2;
+			const raggio = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+			root.classList.add('theme-transition');
+			const t = document.startViewTransition(apply);
+			t.ready.then(() =>
+				root.animate(
+					{ clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${raggio}px at ${x}px ${y}px)`] },
+					{ duration: 500, easing: 'ease-in-out', pseudoElement: '::view-transition-new(root)' },
+				),
+			);
+			// le classi si tolgono 150 ms DOPO `finished` (Firefox lo risolve un attimo prima della fine dello strato)
+			t.finished.finally(() =>
+				setTimeout(() => {
+					root.classList.remove('theme-transition');
+					fine();
+				}, 150),
+			);
 		});
 	}
 </script>
