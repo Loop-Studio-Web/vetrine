@@ -7,12 +7,12 @@ import { defineConfig } from 'astro/config';
 // solo l'infrastruttura comune (build + deploy), non un design system — ogni
 // concept ha markup, CSS e JS propri. Vedi CLAUDE.md.
 //
-// Pubblicata su GitHub Pages come project site (non su un dominio proprio),
-// quindi serve sia `site` che `base`: senza `base` ogni asset e link assoluto
-// (es. /favicon.svg) punterebbe alla radice del dominio invece che a
-// /vetrine/, rompendo tutto fuori da localhost.
+// Pubblicata su GitHub Pages con dominio personalizzato: https://vetrine.theloopstudio.org
+// (record CNAME su Cloudflare verso loop-studio-web.github.io, DNS only). Essendo
+// un dominio dedicato il sito sta alla radice, quindi `base` è '/'. Tutti i percorsi
+// interni passano da import.meta.env.BASE_URL, perciò funzionano con qualunque base.
 export default defineConfig({
-	site: 'https://loop-studio-web.github.io',
-	base: '/vetrine',
+	site: 'https://vetrine.theloopstudio.org',
+	base: '/',
 	output: 'static',
 });
