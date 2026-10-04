@@ -9,13 +9,13 @@
 
 **Full-page homepage concepts for local businesses.<br>Each one designed as if it were the only one on the street.**
 
-[![Live](https://img.shields.io/badge/demo-live-fe3b30?style=flat-square&labelColor=0b0b0c)](https://loop-studio-web.github.io/vetrine/)
+[![Live](https://img.shields.io/badge/demo-live-fe3b30?style=flat-square&labelColor=0b0b0c)](https://vetrine.theloopstudio.org/)
 [![Deploy](https://github.com/Loop-Studio-Web/vetrine/actions/workflows/deploy.yml/badge.svg)](https://github.com/Loop-Studio-Web/vetrine/actions/workflows/deploy.yml)
 [![Astro](https://img.shields.io/badge/Astro-7-fe3b30?style=flat-square&logo=astro&logoColor=white&labelColor=0b0b0c)](https://astro.build)
 [![Lighthouse](https://img.shields.io/badge/Lighthouse-97%E2%80%93100-fe3b30?style=flat-square&logo=lighthouse&logoColor=white&labelColor=0b0b0c)](#the-checklist-every-window-passes)
 [![Accessibility](https://img.shields.io/badge/axe--core-0%20violations-fe3b30?style=flat-square&labelColor=0b0b0c)](#the-checklist-every-window-passes)
 
-[**Walk the street →**](https://loop-studio-web.github.io/vetrine/)
+[**Walk the street →**](https://vetrine.theloopstudio.org/)
 
 <sub>The entrance page follows the studio's own brand; each window behind it keeps its own identity.</sub>
 
@@ -34,7 +34,7 @@
 
 ### 01 · Trattoria del Borgo
 
-<a href="https://loop-studio-web.github.io/vetrine/ristorazione/trattoria/"><img src="docs/img/card-trattoria.jpg" alt="Trattoria del Borgo on desktop and mobile: a fullscreen cooking video behind a frosted card, warm terracotta accents." width="100%"></a>
+<a href="https://vetrine.theloopstudio.org/ristorazione/trattoria/"><img src="docs/img/card-trattoria.jpg" alt="Trattoria del Borgo on desktop and mobile: a fullscreen cooking video behind a frosted card, warm terracotta accents." width="100%"></a>
 
 *Honest food, rebuilt for today. Quality without airs.*
 
@@ -47,13 +47,13 @@
 | **Signature moves** | Fullscreen video hero with a poster fallback, a "from the kitchen" diary feed, a sample-reviews widget, a table-booking flow, an illustrated SVG map |
 | **Lighthouse** | 99 performance on mobile, 100 on accessibility and best practices |
 
-[**Open Trattoria →**](https://loop-studio-web.github.io/vetrine/ristorazione/trattoria/)
+[**Open Trattoria →**](https://vetrine.theloopstudio.org/ristorazione/trattoria/)
 
 <br>
 
 ### 02 · Ossidiana
 
-<a href="https://loop-studio-web.github.io/vetrine/ristorazione/grande-ristorante/"><img src="docs/img/card-ossidiana.jpg" alt="Ossidiana on desktop and mobile: a dark dining room, a duck dish lit like a stage, hand-written tasting notes." width="100%"></a>
+<a href="https://vetrine.theloopstudio.org/ristorazione/grande-ristorante/"><img src="docs/img/card-ossidiana.jpg" alt="Ossidiana on desktop and mobile: a dark dining room, a duck dish lit like a stage, hand-written tasting notes." width="100%"></a>
 
 *A dinner in five acts, in a room that stays dark. The light only goes where the plate is.*
 
@@ -66,7 +66,7 @@
 | **Signature moves** | A spotlight that follows the cursor (and drifts on its own on touch), a five-course journey on native scroll-snap with edge hints, a very slow in-view zoom on every photo, an "Atlante" of producers with an SVG map and season tabs |
 | **Lighthouse** | 97 performance on mobile, 100 on desktop, 100 on accessibility and best practices |
 
-[**Open Ossidiana →**](https://loop-studio-web.github.io/vetrine/ristorazione/grande-ristorante/)
+[**Open Ossidiana →**](https://vetrine.theloopstudio.org/ristorazione/grande-ristorante/)
 
 <br>
 
@@ -131,7 +131,7 @@ Before a concept goes on the street, it has to clear the same gate:
 
 ## Behind the counter
 
-**Stack:** [Astro](https://astro.build) (static output), plain CSS with scoped styles, small vanilla-JS scripts per section, images optimised by `astro:assets`. Hosted on GitHub Pages.
+**Stack:** [Astro](https://astro.build) (static output), plain CSS with scoped styles, small vanilla-JS scripts per section, images optimised by `astro:assets`. Hosted on GitHub Pages at [vetrine.theloopstudio.org](https://vetrine.theloopstudio.org/).
 
 ```text
 src/
@@ -159,14 +159,14 @@ docs/img/                              the pictures you are looking at
 
 ```bash
 npm install
-npm run dev        # http://localhost:4321/vetrine/
+npm run dev        # http://localhost:4321/
 npm run build      # static output in dist/
 npm run preview    # serve the production build locally
 ```
 
 Node 22.12 or newer.
 
-**Deploy:** every push to `main` triggers a GitHub Actions workflow that builds the site and publishes it to GitHub Pages. There are no manual steps. Because it is a project site, `astro.config.mjs` sets both `site` and `base: '/vetrine'`.
+**Deploy:** every push to `main` triggers a GitHub Actions workflow that builds the site and publishes it to GitHub Pages. There are no manual steps. The site lives on its own domain (a `CNAME` record on Cloudflare pointing at GitHub Pages), so `astro.config.mjs` sets `site` to that domain and `base` to `/`.
 
 <br>
 
@@ -174,7 +174,7 @@ Node 22.12 or newer.
 
 - 🎭 **Everything is fictional.** Names, addresses, phone numbers, chefs, producers and reviews are invented and labelled as examples. Review widgets carry no third-party branding.
 - 🔒 **Nothing leaves the page.** Booking forms are demonstrations: no data is sent or stored.
-- 🙈 **Not for search engines.** Every page is `noindex, nofollow`.
+- 🙈 **Concepts stay out of search engines.** Every concept page is `noindex, nofollow`; only the entrance page is indexable.
 - 📷 **Photos** are from [Unsplash](https://unsplash.com) and used under its licence. Brand marks and emblems are AI-assisted concepts created for these demos.
 
 <br>

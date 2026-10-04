@@ -50,8 +50,7 @@ d'ingresso, con il marchio dello studio (nero e rosso, Bricolage Grotesque e Han
 Grotesk, tema scuro e chiaro come theloopstudio.org). Vive in `src/hub/` ed è separato
 dai concept. I contenuti sono in `src/hub/data.ts`: a ogni nuova pubblicazione si
 aggiunge una voce lì (con le immagini in `src/assets/hub/`) e il concept compare da solo
-nella "via" in alto e nella sezione delle vetrine. Per ora `noindex`; da togliere quando il
-sito vivrà su `vetrine.theloopstudio.org`.
+nella "via" in alto e nella sezione delle vetrine. Indicizzabile; i concept restano `noindex`.
 
 ## Convenzioni di un concept
 
@@ -62,7 +61,7 @@ sito vivrà su `vetrine.theloopstudio.org`.
   `astro:assets`: niente hotlink. Da Unsplash solo URL `images.unsplash.com/photo-…`
   (licenza libera); `plus.unsplash.com` è Unsplash+ a pagamento, da scartare.
   Controllare sempre l'assenza di watermark prima di salvare.
-- **Percorsi con `base`**: `import.meta.env.BASE_URL` non ha lo slash finale.
+- **Percorsi con `base`**: `import.meta.env.BASE_URL` non ha lo slash finale (e con `base: '/'` diventa stringa vuota dopo il replace).
   Usare `const base = import.meta.env.BASE_URL.replace(/\/$/, '')` e poi
   `${base}/percorso`, altrimenti favicon, video e link danno 404 online.
 - **Sono vetrine dimostrative**: `noindex, nofollow` su ogni pagina, dati,
@@ -92,12 +91,13 @@ sito vivrà su `vetrine.theloopstudio.org`.
 
 ## Deploy
 
-`output: 'static'`, pubblicato su GitHub Pages come project site:
-`https://loop-studio-web.github.io/vetrine/`. Per questo `astro.config.mjs`
-ha sia `site` che `base: '/vetrine'` — necessario per Pages, altrimenti
-asset e link assoluti puntano alla radice del dominio invece che dentro
-`/vetrine/`. Deploy automatico via GitHub Actions
-(`.github/workflows/deploy.yml`) a ogni push su `main`, nessuno step manuale.
+`output: 'static'`, pubblicato su GitHub Pages con dominio personalizzato:
+**https://vetrine.theloopstudio.org** (record `CNAME` `vetrine` → `loop-studio-web.github.io`
+su Cloudflare, DNS only, nuvola grigia; HTTPS forzato dalle impostazioni di Pages). Essendo un
+dominio dedicato il sito sta alla radice: `astro.config.mjs` ha `site` sul sottodominio e
+`base: '/'`. I vecchi indirizzi `loop-studio-web.github.io/vetrine/` rimandano in automatico al
+nuovo. Deploy automatico via GitHub Actions (`.github/workflows/deploy.yml`) a ogni push su
+`main`, nessuno step manuale. In locale il sito sta su `http://localhost:4321/`.
 
 ## Timeline
 

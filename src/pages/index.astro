@@ -2,8 +2,7 @@
 // Hub delle vetrine di Loop Studio: ingresso pubblico a tutti i concept.
 // Segue il design system dello studio (nero, rosso, Bricolage Grotesque e Hanken Grotesk).
 // I concept restano indipendenti tra loro: qui vive solo l'ingresso, in src/hub/.
-// TODO quando il sito vivrà su vetrine.theloopstudio.org: togliere il noindex da questa pagina
-// (i singoli concept restano noindex).
+// Questa pagina è indicizzabile; i singoli concept restano `noindex, nofollow`.
 import '@fontsource-variable/bricolage-grotesque';
 import '@fontsource-variable/hanken-grotesk';
 import '../hub/hub.css';
@@ -31,7 +30,8 @@ const pageUrl = new URL(`${base}/`, Astro.site).href;
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 		<meta name="description" content={description} />
-		<meta name="robots" content="noindex, nofollow" />
+		<link rel="canonical" href={pageUrl} />
+		<meta name="robots" content="index, follow" />
 		<meta name="theme-color" content="#000000" />
 		<meta property="og:type" content="website" />
 		<meta property="og:locale" content="it_IT" />
