@@ -1,5 +1,5 @@
 ---
-import { prossime, CONTACT } from './data';
+import { concepts, prossime, CONTACT } from './data';
 ---
 
 <section class="prossime" id="prossime" aria-labelledby="prossime-title">
@@ -17,7 +17,7 @@ import { prossime, CONTACT } from './data';
 			{
 				prossime.map((p, i) => (
 					<li data-reveal style={`--d:${i * 0.07}s`}>
-						<span class="lista__n" aria-hidden="true">{String(i + 3).padStart(2, '0')}</span>
+						<span class="lista__n" aria-hidden="true">{String(concepts.length + 1 + i).padStart(2, '0')}</span>
 						<span class="lista__nome">{p.nome}</span>
 						<span class="lista__cat">{p.categoria}</span>
 					</li>

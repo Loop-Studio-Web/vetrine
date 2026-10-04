@@ -6,6 +6,8 @@ import shotTrattoria from '../assets/hub/shot-trattoria.jpg';
 import shotOssidiana from '../assets/hub/shot-ossidiana.jpg';
 import cardRistopub from '../assets/hub/card-ristopub.jpg';
 import shotRistopub from '../assets/hub/shot-ristopub.jpg';
+import cardBarbiere from '../assets/hub/card-barbiere.jpg';
+import shotBarbiere from '../assets/hub/shot-barbiere.jpg';
 
 export const SITE = 'https://theloopstudio.org/';
 export const CONTACT = 'https://theloopstudio.org/contatti';
@@ -205,12 +207,65 @@ export const concepts: Concept[] = [
 			{ label: 'Buone pratiche', valore: '100' },
 		],
 	},
+	{
+		slug: 'barbiere',
+		macro: 'benessere',
+		nome: 'Bottega Tre Rasoi',
+		categoria: 'Benessere',
+		archetipo: 'Il barbiere di quartiere',
+		claim: 'Taglio, barba e rasoio, senza fretta. Si prende il numero come in bottega.',
+		path: '/benessere/barbiere/',
+		infoPath: '/benessere/barbiere/info/',
+		titoloSeo: 'Sito web per barbiere: homepage concept con listino, sedie e prenotazione a turno',
+		descrizioneSeo:
+			'Come potrebbe essere la homepage di un barbiere di quartiere: listino dei servizi, scelta del barbiere, prenotazione a turno con il numerino. Concept dimostrativo di Loop Studio.',
+		intro: [
+			'Un barbiere di quartiere non ha bisogno di effetti speciali: ha bisogno che chi cerca un taglio trovi subito che cosa costa, da chi può sedersi e quando c’è posto. Questa homepage mette quelle tre cose in primo piano e le racconta con il linguaggio della bottega: il palo che gira, il tariffario appeso al muro, il numerino da prendere.',
+			'È una vetrina dimostrativa: il locale, i barbieri, i prezzi e gli indirizzi sono di fantasia. Serve a mostrare come può essere il sito di un’attività semplice e curata, con un budget contenuto, senza ricorrere a un modello generico.',
+		],
+		perChi:
+			'Barbieri, parrucchieri uomo e piccoli saloni di quartiere che lavorano su appuntamento e vogliono togliersi le telefonate. Adatta a chi ha poche sedie, un listino chiaro e una clientela che torna.',
+		sezioni: [
+			{
+				t: 'Il listino come un tariffario appeso',
+				d: 'Servizi, prezzi e durate in una bacheca leggibile in due secondi. Cambiare un prezzo vuol dire cambiare una riga di dati.',
+			},
+			{
+				t: 'Tre sedie, e il prossimo posto libero',
+				d: 'Ogni barbiere ha la sua sedia numerata, anche sulla foto della sala, con l’orario del primo posto libero calcolato da oggi. Un tocco e la prenotazione parte già con quella sedia.',
+			},
+			{
+				t: 'Prenotazione “a turno”, con il numerino',
+				d: 'Servizio, sedia, giorno e ora, con controlli sui dati. Alla fine si “stampa” il numerino con il riepilogo: la prenotazione ha un gesto che la rende memorabile.',
+			},
+			{
+				t: 'Un menù mobile che si stende e un cursore a forbici',
+				d: 'Su telefono il menù è un asciugamano caldo che si stende dall’alto. Con il mouse il puntatore diventa un paio di forbici che si aprono sui link e si chiudono al click.',
+			},
+		],
+		awning: ['#1f4d3a', '#f2e8d5'],
+		glow: 'rgba(31, 110, 78, 0.55)',
+		card: cardBarbiere,
+		shot: shotBarbiere,
+		shotAlt: '',
+		crop: '40% 50%',
+		cardAlt: 'Bottega Tre Rasoi su desktop e su telefono: un titolo grande su fondo crema, un barbiere al lavoro in un arco con il palo a righe, il menù mobile che si stende come un asciugamano.',
+		mood: 'Crema, verde bottiglia e ottone: la bottega di quartiere, luminosa, con un tema scuro “chiusura serale”.',
+		caratteri: 'Fraunces e Figtree',
+		palette: ['#f2e8d5', '#e8dbc0', '#1f4d3a', '#143426', '#b8892f', '#17211c'],
+		metriche: [
+			{ label: 'Performance', valore: '95' },
+			{ label: 'Accessibilità', valore: '100' },
+			{ label: 'Buone pratiche', valore: '100' },
+		],
+	},
 ];
 
 // stato: 'presto' = quasi pronta, 'cantiere' = ancora in costruzione (nessuna data promessa)
 export type StatoProssima = 'presto' | 'cantiere';
 export const prossime: { nome: string; categoria: string; macro: MacroSlug; stato: StatoProssima }[] = [
 	{ nome: 'Legale e professionale', categoria: 'Studi e servizi', macro: 'studi', stato: 'cantiere' },
-	{ nome: 'Beauty e wellness', categoria: 'Benessere', macro: 'benessere', stato: 'cantiere' },
+	{ nome: 'Salone e centro estetico', categoria: 'Benessere', macro: 'benessere', stato: 'presto' },
+	{ nome: 'Spa e wellness resort', categoria: 'Benessere', macro: 'benessere', stato: 'presto' },
 	{ nome: 'Negozio locale', categoria: 'Commercio', macro: 'commercio', stato: 'cantiere' },
 ];

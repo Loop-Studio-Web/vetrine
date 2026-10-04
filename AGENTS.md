@@ -54,7 +54,7 @@ nella "via" in alto (a scorrimento orizzontale su telefono) e nella sezione dell
 macrocategoria (`macros` in `data.ts`). Ogni concept ha anche una pagina di dettaglio indicizzabile
 (`src/pages/<macro>/<variante>/info.astro`, 5 righe che usano `src/hub/Dettaglio.astro`; i testi sono in
 `data.ts`) da aggiungere anche in `public/sitemap.xml`. I concept restano `noindex`. I link dall'hub alle homepage dei concept si aprono in una nuova scheda (`target="_blank" rel="noopener"` + testo per lettori di schermo), così l'hub resta aperto; i link alle pagine `info` restano nella stessa scheda. Sopra la via c'è il testo "Benvenuto in Loop Street" (numeri adattati a `concepts`); le categorie senza vetrine hanno `stato` in `prossime` (`'presto'` = "Stanno per aprire", `'cantiere'` = "In cantiere"; il testo parla di "stanno per aprire" solo se esiste almeno una `'presto'`). Il neon "Aperto" ha un difetto per lettera (max 3 lampi/s, fermo con reduced-motion). I titoli con `data-scramble` si decodificano all'ingresso in vista (script in `Layout.astro`, copia della logica del sito madre): mai sull'h1 (LCP mobile) e nascosti con `opacity`, non `visibility` (altrimenti saltano nell'albero di accessibilità). Ogni pagina ha anche
-il proprio menù su mobile (hub: pannello a cerchio; Trattoria: cartoncino che si srotola; Ossidiana: sipario; RistoPub: pannello che si riempie di birra).
+il proprio menù su mobile (hub: pannello a cerchio; Trattoria: cartoncino che si srotola; Ossidiana: sipario; RistoPub: pannello che si riempie di birra; Tre Rasoi: asciugamano che si stende).
 
 ## Convenzioni di un concept
 
@@ -102,7 +102,17 @@ il proprio menù su mobile (hub: pannello a cerchio; Trattoria: cartoncino che s
   Foto Unsplash libere, scelte senza marchi di terzi sulle spine. Da collaudare ancora su WebKit/iPhone
   reale e Firefox.
 - **La macrocategoria Ristorazione è chiusa**: tre concept (Trattoria, Ossidiana, Luppolo & Watt).
-  Prossime: Legale/professionale, Beauty & wellness, Negozio locale (3 concept ciascuna).
+- **Benessere / Barbiere** (Bottega Tre Rasoi, `src/pages/benessere/barbiere/`): pubblicata (2026-10-04),
+  livello **Low key** della macro. `build` ok, axe 0 violazioni (desktop chiaro/scuro, dopo il flusso
+  del turno, mobile con menù aperto), Lighthouse 95 mobile / 100 desktop. Crema, verde bottiglia, ottone;
+  Fraunces + Figtree; tema scuro "chiusura serale". Prenotazione "a turno" con numerino, tre sedie
+  (anche sulla foto della sala) con primo posto libero calcolato da oggi (`turni.ts`), menù mobile ad
+  asciugamano, cursore a forbici (CSS `cursor: url(svg)`, nessun JS) e scrollbar a righe come il palo.
+  Foto Unsplash libere; i poster con marchi nella foto delle poltrone sono stati sfocati. Logo generato con AI e
+  vettorializzato (`src/assets/barbiere/brand/`). Scala dei livelli: **Medium e High devono aggiungere animazioni,
+  hover ed effetti (anche JS)** per far notare la differenza di budget.
+- **Prossime:** Beauty & wellness Medium (salone/centro estetico) e High (spa/wellness resort);
+  Legale/professionale e Negozio locale (3 concept ciascuna).
 
 ## Deploy
 

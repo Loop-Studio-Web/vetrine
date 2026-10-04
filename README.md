@@ -5,7 +5,7 @@
   <img src="docs/img/loop-logo-on-light.svg" alt="Loop Studio" height="64">
 </picture>
 
-<img src="docs/img/header.svg" alt="A street of shop fronts: Trattoria, Ossidiana and Luppolo & Watt are lit and open, four more windows are dark and coming soon." width="100%">
+<img src="docs/img/header.svg" alt="A street of shop fronts: Trattoria, Ossidiana, Luppolo & Watt and Bottega Tre Rasoi are lit and open, three more windows are dark and coming soon." width="100%">
 
 **Full-page homepage concepts for local businesses.<br>Each one designed as if it were the only one on the street.**
 
@@ -91,12 +91,31 @@
 
 <br>
 
+### 04 · Bottega Tre Rasoi
+
+<a href="https://vetrine.theloopstudio.org/benessere/barbiere/"><img src="docs/img/card-barbiere.jpg" alt="Bottega Tre Rasoi on desktop and mobile: a big title on a cream background, a barber at work inside an arch next to a striped pole, and the phone menu unrolling like a towel." width="100%"></a>
+
+*Cut, beard and razor, without hurry. You take a number, like at the shop.*
+
+| | |
+|---|---|
+| **Archetype** | The neighbourhood barber: the **low-key** tier of the Beauty & wellness window |
+| **Mood** | A bright shop, not a hipster cliché: cream, bottle green and brass, a striped pole, a price board on the wall. A dark "closing time" theme on a switch |
+| **Type** | Fraunces for titles, Figtree for text |
+| **Palette** | <img src="docs/img/palette-barbiere.svg" alt="Cream, sand, bottle green, deep green, brass and ink" height="22"> |
+| **Signature moves** | Booking *by turn*: pick service, chair, day and time, then a numbered ticket is "printed" with the summary. Three numbered chairs, also pinned on the photo of the room, each with the next free slot computed from today. A mobile menu that unrolls like a hot towel. A pointer that *is* a pair of scissors (half open, wide open on links, shut while pressing) and a scrollbar striped like the pole |
+| **Lighthouse** | 95 performance on mobile, 100 on desktop, 100 on accessibility and best practices |
+
+[**Open Bottega Tre Rasoi →**](https://vetrine.theloopstudio.org/benessere/barbiere/)
+
+<br>
+
 ### Next on the street
 
 | Category | Archetype | Status |
 |---|---|---|
 | Legal & professional | to be decided | Planned |
-| Beauty & wellness | to be decided | Planned |
+| Beauty & wellness | Medium: salon / beauty centre · High: spa / wellness resort | In progress (low-key barber is open) |
 | Local shop / e-commerce | to be decided | Planned |
 
 No deadlines: one window at a time, with the care each one needs.
@@ -116,9 +135,11 @@ flowchart TB
     infra --> T["<b>Trattoria</b><br/>own markup · CSS · JS · fonts"]
     infra --> O["<b>Ossidiana</b><br/>own markup · CSS · JS · fonts"]
     infra --> R["<b>Luppolo & Watt</b><br/>own markup · CSS · JS · fonts"]
+    infra --> B["<b>Bottega Tre Rasoi</b><br/>own markup · CSS · JS · fonts"]
     infra --> N["<b>next concept…</b>"]
     T -.-|nothing shared| O
-    O -.-|nothing shared| N
+    O -.-|nothing shared| B
+    B -.-|nothing shared| N
 ```
 
 A piece of code is reused between two concepts only when it is the *exact same technical problem solved the exact same way*, never as a principle. Each concept is free to pick its own technique: plain CSS, vanilla JS, or a framework as an Astro island, whatever that page needs.
@@ -129,15 +150,15 @@ A piece of code is reused between two concepts only when it is the *exact same t
 
 Before a concept goes on the street, it has to clear the same gate:
 
-| Gate | What it means | Trattoria | Ossidiana | Luppolo & Watt |
-|---|---|:-:|:-:|:-:|
-| **Builds** | `astro build` is clean | ✅ | ✅ | ✅ |
-| **Accessible** | `axe-core`: zero violations | ✅ | ✅ | ✅ |
-| **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ | ✅ |
-| **Menu on phones** | A real menu with its own open/close effect, keyboard and Escape friendly (a curtain for Ossidiana, an unrolling card for the Trattoria, a pour of beer for Luppolo & Watt) | ✅ | ✅ | ✅ |
-| **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ | ✅ |
-| **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ | ✅ |
-| **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ | ✅ |
+| Gate | What it means | Trattoria | Ossidiana | Luppolo & Watt | Tre Rasoi |
+|---|---|:-:|:-:|:-:|:-:|
+| **Builds** | `astro build` is clean | ✅ | ✅ | ✅ | ✅ |
+| **Accessible** | `axe-core`: zero violations | ✅ | ✅ | ✅ | ✅ |
+| **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ | ✅ | ✅ |
+| **Menu on phones** | A real menu with its own open/close effect, keyboard and Escape friendly (a curtain for Ossidiana, an unrolling card for the Trattoria, a pour of beer for Luppolo & Watt, a hot towel for Tre Rasoi) | ✅ | ✅ | ✅ | ✅ |
+| **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ | ✅ | ✅ |
+| **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ | ✅ | ✅ |
+| **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ | ✅ | ✅ |
 
 ```text
  LIGHTHOUSE · mobile            Trattoria                Ossidiana
@@ -158,15 +179,18 @@ Before a concept goes on the street, it has to clear the same gate:
 src/
 ├─ pages/
 │  ├─ index.astro                      the public hub (see src/hub/)
-│  └─ ristorazione/
-│     ├─ trattoria/index.astro         page shell only
-│     ├─ grande-ristorante/index.astro
-│     └─ ristopub/index.astro
+│  ├─ ristorazione/
+│  │  ├─ trattoria/index.astro         page shell only
+│  │  ├─ grande-ristorante/index.astro
+│  │  └─ ristopub/index.astro
+│  └─ benessere/
+│     └─ barbiere/index.astro
 ├─ hub/                                data, styles and sections of the hub page
 ├─ concepts/
 │  ├─ trattoria/                       one component per section + base.css
 │  ├─ ossidiana/                       same idea, different everything
-│  └─ ristopub/                        and again
+│  ├─ ristopub/                        and again
+│  └─ barbiere/                        and again
 └─ assets/<concept>/ and hub/          local images only, no hotlinking
 public/images/<concept>/               fixed URLs: og:image, favicon
 docs/img/                              the pictures you are looking at
