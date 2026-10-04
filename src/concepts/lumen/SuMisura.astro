@@ -1,0 +1,425 @@
+---
+import { desideri, pelli, tempi } from './servizi';
+---
+
+<section class="sezione misura" id="su-misura" data-ora="giorno" aria-labelledby="misura-titolo" data-misura>
+	<div class="misura__luce" aria-hidden="true"></div>
+	<div class="sezione__in">
+		<header class="misura__testa" data-reveal>
+			<p class="ora">12:30 · mezzogiorno</p>
+			<h2 id="misura-titolo">Componi il tuo <em>rituale</em>.</h2>
+			<p class="misura__lead">
+				Tre scelte e la cabina prepara il percorso: i passaggi, i tempi, la luce. Cambia una risposta e il rituale si ricompone da solo.
+			</p>
+		</header>
+
+		<div class="misura__griglia">
+			<form class="misura__form" data-reveal onsubmit="return false">
+				<fieldset>
+					<legend><span>1</span> Com’è la tua pelle?</legend>
+					<div class="scelte scelte--4">
+						{
+							pelli.map((p, i) => (
+								<label class="scelta">
+									<input type="radio" name="pelle" value={p.id} checked={i === 1} />
+									<span class="scelta__in"><b>{p.nome}</b><small>{p.nota}</small></span>
+								</label>
+							))
+						}
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend><span>2</span> Quanto tempo hai?</legend>
+					<div class="scelte scelte--3">
+						{
+							tempi.map((t, i) => (
+								<label class="scelta">
+									<input type="radio" name="tempo" value={t.min} checked={i === 1} />
+									<span class="scelta__in"><b>{t.nome}</b><small>{t.nota}</small></span>
+								</label>
+							))
+						}
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend><span>3</span> Cosa vuoi dal rituale?</legend>
+					<div class="scelte scelte--3">
+						{
+							desideri.map((d, i) => (
+								<label class="scelta" style={`--punto:${d.luce}`}>
+									<input type="radio" name="desiderio" value={d.id} checked={i === 0} />
+									<span class="scelta__in"><b><i aria-hidden="true"></i>{d.nome}</b><small>{d.nota}</small></span>
+								</label>
+							))
+						}
+					</div>
+				</fieldset>
+			</form>
+
+			<div class="rituale" data-reveal style="--d:0.1s">
+				<div class="rituale__testa">
+					<svg class="anello" viewBox="0 0 120 120" width="132" height="132" aria-hidden="true">
+						<circle cx="60" cy="60" r="52" fill="none" stroke="currentColor" stroke-opacity="0.15" stroke-width="6"></circle>
+						<circle class="anello__arco" cx="60" cy="60" r="52" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" pathLength="100" stroke-dasharray="75 100" transform="rotate(-90 60 60)"></circle>
+					</svg>
+					<div class="rituale__tot">
+						<p class="rituale__nome" data-nome>Rituale Luminosità</p>
+						<p class="rituale__num"><strong data-min>90</strong> min · <strong data-prezzo>112</strong> €</p>
+					</div>
+				</div>
+				<p class="sr-only" role="status" data-annuncio></p>
+				<ol class="passi" data-passi></ol>
+				<button type="button" class="btn rituale__cta" data-prenota-rituale>Prenota questo rituale <span aria-hidden="true">→</span></button>
+				<p class="rituale__nota">Percorso di fantasia: durate e prezzi servono a mostrare come funzionerebbe il configuratore.</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style is:global>
+	@property --luce {
+		syntax: '<color>';
+		inherits: true;
+		initial-value: #ffd9a8;
+	}
+</style>
+
+<style>
+	.misura {
+		background: linear-gradient(180deg, var(--avorio) 0%, #eaeddf 14%, #e6eadb 100%);
+		overflow: clip;
+		transition: --luce 1.2s ease;
+	}
+	.misura__luce {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background: radial-gradient(60% 50% at 78% 38%, color-mix(in srgb, var(--luce) 75%, transparent), transparent 70%);
+		opacity: 0.85;
+	}
+	.misura__testa {
+		max-width: 44em;
+	}
+	.misura__testa h2 {
+		margin: 18px 0 20px;
+	}
+	.misura__testa em {
+		color: var(--oro-testo);
+	}
+	.misura__lead {
+		color: var(--inchiostro-2);
+		font-size: 1.1rem;
+		max-width: 36em;
+	}
+	.misura__griglia {
+		position: relative;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: clamp(28px, 5vw, 72px);
+		margin-top: 38px;
+		align-items: start;
+	}
+	.misura__form {
+		display: flex;
+		flex-direction: column;
+		gap: 34px;
+	}
+	fieldset {
+		border: 0;
+	}
+	legend {
+		font-family: var(--titoli);
+		font-size: 1.7rem;
+		font-weight: 500;
+		margin-bottom: 14px;
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+	legend span {
+		display: grid;
+		place-items: center;
+		width: 30px;
+		height: 30px;
+		border-radius: 50%;
+		background: var(--prugna);
+		color: var(--cipria);
+		font-family: var(--testo);
+		font-size: 0.82rem;
+		font-weight: 600;
+	}
+	.scelte {
+		display: grid;
+		gap: 10px;
+	}
+	.scelte--4 {
+		grid-template-columns: repeat(2, 1fr);
+	}
+	.scelte--3 {
+		grid-template-columns: repeat(3, 1fr);
+	}
+	.scelta {
+		display: block;
+		cursor: pointer;
+	}
+	.scelta input {
+		position: absolute;
+		opacity: 0;
+		pointer-events: none;
+	}
+	.scelta__in {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		height: 100%;
+		padding: 14px 16px;
+		border: 1px solid rgb(51 32 31 / 0.22);
+		border-radius: 14px;
+		background: rgb(255 255 255 / 0.5);
+		transition:
+			transform 0.4s var(--ease),
+			background 0.4s,
+			border-color 0.4s,
+			box-shadow 0.4s;
+	}
+	.scelta__in b {
+		font-weight: 600;
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+	.scelta__in small {
+		color: var(--inchiostro-2);
+		font-size: 0.82rem;
+		line-height: 1.3;
+	}
+	.scelta i {
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		background: var(--punto);
+		box-shadow: 0 0 0 2px rgb(51 32 31 / 0.25);
+	}
+	.scelta:hover .scelta__in {
+		transform: translateY(-2px);
+		border-color: var(--oro-testo);
+	}
+	.scelta input:checked + .scelta__in {
+		background: var(--prugna);
+		border-color: var(--prugna);
+		color: var(--cipria);
+		box-shadow: 0 16px 28px -16px rgb(36 22 25 / 0.6);
+	}
+	.scelta input:checked + .scelta__in small {
+		color: #e8cdc3;
+	}
+	.scelta input:focus-visible + .scelta__in {
+		outline: 3px solid var(--oro-testo);
+		outline-offset: 3px;
+	}
+
+	.rituale {
+		position: sticky;
+		top: calc(var(--nav-h) + var(--fascia, 0px) + 20px);
+		padding: 28px;
+		border-radius: 26px;
+		background: rgb(255 255 255 / 0.62);
+		backdrop-filter: blur(10px);
+		border: 1px solid rgb(51 32 31 / 0.12);
+		box-shadow: 0 40px 70px -46px rgb(51 32 31 / 0.5);
+	}
+	.rituale__testa {
+		display: flex;
+		align-items: center;
+		gap: 22px;
+		color: var(--oro-testo);
+	}
+	.anello__arco {
+		transition: stroke-dasharray 1.1s var(--ease);
+	}
+	.rituale__nome {
+		font-family: var(--titoli);
+		font-size: 2rem;
+		line-height: 1;
+		color: var(--inchiostro);
+	}
+	.rituale__num {
+		margin-top: 8px;
+		color: var(--inchiostro-2);
+	}
+	.rituale__num strong {
+		font-family: var(--titoli);
+		font-size: 1.9rem;
+		color: var(--inchiostro);
+		font-weight: 600;
+	}
+	.passi {
+		list-style: none;
+		position: relative;
+		margin: 24px 0 22px;
+		padding-left: 34px;
+		counter-reset: p;
+	}
+	.passi::before {
+		content: '';
+		position: absolute;
+		left: 9px;
+		top: 6px;
+		bottom: 6px;
+		width: 2px;
+		background: rgb(51 32 31 / 0.14);
+	}
+	.passi::after {
+		content: '';
+		position: absolute;
+		left: 9px;
+		top: 6px;
+		width: 2px;
+		height: calc(100% - 12px);
+		background: linear-gradient(180deg, var(--oro), #f1b99f);
+		transform-origin: top;
+		transform: scaleY(var(--fill, 1));
+		transition: transform 1.4s var(--ease);
+	}
+	.passi :global(.passo) {
+		position: relative;
+		padding-bottom: 14px;
+		opacity: 0;
+		transform: translateX(-10px);
+		animation: passo 0.7s var(--ease) forwards;
+		animation-delay: calc(var(--i) * 0.11s);
+	}
+	.passi :global(.passo)::before {
+		content: '';
+		position: absolute;
+		left: -34px;
+		top: 4px;
+		width: 20px;
+		height: 20px;
+		border-radius: 50%;
+		background: var(--avorio);
+		border: 2px solid var(--oro);
+		box-shadow: 0 0 0 4px rgb(255 255 255 / 0.5);
+	}
+	.passi :global(.passo h3) {
+		font-family: var(--titoli);
+		font-size: 1.35rem;
+		font-weight: 600;
+		display: flex;
+		justify-content: space-between;
+		gap: 12px;
+	}
+	.passi :global(.passo h3 span) {
+		font-family: var(--testo);
+		font-size: 0.8rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		color: var(--oro-testo);
+		white-space: nowrap;
+		padding-top: 6px;
+	}
+	.passi :global(.passo p) {
+		font-size: 0.93rem;
+		color: var(--inchiostro-2);
+	}
+	@keyframes passo {
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+	.rituale__nota {
+		margin-top: 14px;
+		font-size: 0.8rem;
+		color: var(--inchiostro-2);
+	}
+
+	@media (max-width: 920px) {
+		.misura__griglia {
+			grid-template-columns: 1fr;
+		}
+		.rituale {
+			position: relative;
+			top: 0;
+		}
+	}
+	@media (max-width: 480px) {
+		.scelte--3 {
+			grid-template-columns: 1fr;
+		}
+		.rituale {
+			padding: 20px;
+		}
+		.rituale__testa {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.passi :global(.passo) {
+			animation: none;
+			opacity: 1;
+			transform: none;
+		}
+		.anello__arco,
+		.passi::after {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	import { componiRituale, desideri, tempi, type Desiderio, type Pelle } from './servizi';
+
+	const sez = document.querySelector<HTMLElement>('[data-misura]')!;
+	const passi = sez.querySelector<HTMLOListElement>('[data-passi]')!;
+	const arco = sez.querySelector<SVGElement>('.anello__arco')!;
+	const val = (n: string) => sez.querySelector<HTMLInputElement>(`input[name="${n}"]:checked`)!.value;
+
+	let ultimo: { nome: string; min: number; prezzo: number } | null = null;
+
+	const aggiorna = () => {
+		const pelle = val('pelle') as Pelle;
+		const min = Number(val('tempo'));
+		const des = val('desiderio') as Desiderio;
+		const d = desideri.find((x) => x.id === des)!;
+		const t = tempi.find((x) => x.min === min)!;
+		const lista = componiRituale(pelle, min, des);
+		const nome = `Rituale ${d.nome}`;
+
+		sez.style.setProperty('--luce', d.luce);
+		sez.querySelector('[data-nome]')!.textContent = nome;
+		sez.querySelector('[data-min]')!.textContent = String(min);
+		sez.querySelector('[data-prezzo]')!.textContent = String(t.prezzo);
+		arco.setAttribute('stroke-dasharray', `${(min / 120) * 100} 100`);
+		passi.replaceChildren(
+			...lista.map((p, i) => {
+				const li = document.createElement('li');
+				li.className = 'passo';
+				li.style.setProperty('--i', String(i));
+				const h = document.createElement("h3");
+				const s = document.createElement('span');
+				s.textContent = `${p.min} min`;
+				h.append(p.nome, s);
+				const tx = document.createElement('p');
+				tx.textContent = p.testo;
+				li.append(h, tx);
+				return li;
+			}),
+		);
+		// il filo si ricarica dall'alto a ogni cambio
+		passi.style.setProperty('--fill', '0');
+		requestAnimationFrame(() => requestAnimationFrame(() => passi.style.setProperty('--fill', '1')));
+		sez.querySelector('[data-annuncio]')!.textContent = `${nome}: ${min} minuti, ${t.prezzo} euro, ${lista.length} passaggi.`;
+		ultimo = { nome: `${nome} · ${min} min`, min, prezzo: t.prezzo };
+	};
+
+	sez.querySelectorAll('input').forEach((i) => i.addEventListener('change', aggiorna));
+	aggiorna();
+
+	sez.querySelector('[data-prenota-rituale]')!.addEventListener('click', () => {
+		document.dispatchEvent(new CustomEvent('lumen:servizio', { detail: { rituale: ultimo } }));
+		const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+		document.getElementById('prenota')?.scrollIntoView({ behavior: ridotto ? 'auto' : 'smooth', block: 'start' });
+	});
+</script>

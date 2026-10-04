@@ -1,0 +1,368 @@
+---
+import { Image } from 'astro:assets';
+import alba from '../../assets/lumen/alba.jpg';
+import oli from '../../assets/lumen/oli.jpg';
+---
+
+<section class="ingresso" id="top" data-ora="alba" data-ingresso>
+	<div class="ingresso__cielo" aria-hidden="true">
+		<span class="sole" data-sole></span>
+		<span class="raggi"></span>
+	</div>
+
+	<div class="ingresso__in">
+		<div class="ingresso__testo">
+			<p class="ora">07:00 · l’alba</p>
+			<h1 class="titolo">
+				<span class="riga"><span>La pelle</span></span>
+				<span class="riga"><span>ha una <em>luce.</em></span></span>
+				<span class="riga"><span>La ritroviamo.</span></span>
+			</h1>
+			<p class="ingresso__lead">
+				Atelier Lumen è un centro estetico dove ogni trattamento ha la sua luce: quella morbida del mattino, quella piena del giorno, quella
+				calda della sera. Si sceglie il momento, il resto lo facciamo noi.
+			</p>
+			<div class="ingresso__cta">
+				<a href="#prenota" class="btn" data-magnete>Prenota un momento <span aria-hidden="true">→</span></a>
+				<a href="#su-misura" class="btn btn--chiaro">Componi il tuo rituale</a>
+			</div>
+			<dl class="ingresso__dati">
+				<div><dt>Trattamenti</dt><dd>dal viso ai piedi</dd></div>
+				<div><dt>Su appuntamento</dt><dd>con cabine private</dd></div>
+				<div><dt>Prodotti</dt><dd>formulati senza profumi forti</dd></div>
+			</dl>
+		</div>
+
+		<div class="ingresso__visivo" data-parallasse>
+			<div class="arco">
+				<Image
+					src={alba}
+					alt="Una nuvola rosa e pesca al primo sole del mattino"
+					widths={[480, 760, 1000]}
+					sizes="(min-width: 960px) 460px, 80vw"
+					loading="eager"
+					fetchpriority="high"
+					class="arco__img"
+				/>
+			</div>
+			<div class="goccia" aria-hidden="true">
+				<Image src={oli} alt="" widths={[300, 480]} sizes="220px" loading="eager" class="goccia__img" />
+			</div>
+			<p class="timbro" aria-hidden="true">
+				<svg viewBox="0 0 120 120" width="112" height="112">
+					<defs><path id="giro" d="M60 60 m-44 0 a44 44 0 1 1 88 0 a44 44 0 1 1 -88 0"></path></defs>
+					<text font-size="10.5" letter-spacing="3.4" fill="currentColor"><textPath href="#giro">ATELIER LUMEN · CENTRO ESTETICO · </textPath></text>
+					<circle cx="60" cy="60" r="6" fill="currentColor"></circle>
+				</svg>
+			</p>
+		</div>
+	</div>
+
+	<div class="nastro" aria-hidden="true">
+		<div class="nastro__pista">
+			{
+				[0, 1].map(() => (
+					<div class="nastro__gruppo">
+						{[0, 1, 2].map(() => (
+							<span>Viso · Corpo · Mani e piedi · Luce LED · Massaggi · Rituali su misura · Boutique ·&nbsp;</span>
+						))}
+					</div>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<style>
+	.ingresso {
+		position: relative;
+		min-height: 100svh;
+		padding: calc(var(--nav-h) + var(--fascia-h) + clamp(28px, 6vh, 70px)) var(--gutter) 0;
+		background: linear-gradient(180deg, #f6dcd2 0%, #f9e7de 55%, var(--avorio) 100%);
+		overflow: clip;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+	.ingresso__cielo {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+	}
+	.sole {
+		position: absolute;
+		right: 6%;
+		top: 14%;
+		width: clamp(260px, 38vw, 560px);
+		aspect-ratio: 1;
+		border-radius: 50%;
+		background: radial-gradient(circle at 50% 50%, #fff1e6 0 18%, #ffd9c2 40%, rgb(255 190 160 / 0) 70%);
+		transform: translate3d(calc(var(--px, 0) * -28px), calc(var(--py, 0) * -20px + var(--sy, 0) * 0.35px), 0);
+		transition: transform 0.9s var(--ease);
+		filter: blur(2px);
+		animation: respiro 9s ease-in-out infinite;
+	}
+	.raggi {
+		position: absolute;
+		right: -10%;
+		top: -20%;
+		width: 80%;
+		height: 140%;
+		background: repeating-conic-gradient(from 190deg at 70% 40%, rgb(255 222 200 / 0.28) 0 4deg, transparent 4deg 13deg);
+		mask-image: radial-gradient(circle at 70% 40%, #000 0, transparent 62%);
+		animation: ruota 90s linear infinite;
+	}
+	@keyframes respiro {
+		50% {
+			scale: 1.07;
+			opacity: 0.88;
+		}
+	}
+	@keyframes ruota {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	.ingresso__in {
+		position: relative;
+		z-index: 2;
+		max-width: var(--max);
+		width: 100%;
+		margin-inline: auto;
+		display: grid;
+		grid-template-columns: 1.1fr 0.9fr;
+		align-items: center;
+		gap: clamp(24px, 5vw, 80px);
+		padding-bottom: clamp(36px, 7vh, 80px);
+	}
+	.titolo {
+		margin: 22px 0 26px;
+		font-size: clamp(3.2rem, 7vw, 6.4rem);
+		font-weight: 500;
+		line-height: 0.92;
+	}
+	.titolo em {
+		color: var(--oro-testo);
+		font-weight: 400;
+	}
+	.riga {
+		display: block;
+		overflow: hidden;
+		padding-bottom: 0.08em;
+	}
+	.riga > span {
+		display: inline-block;
+		animation: sale 1.2s var(--ease) both;
+	}
+	.riga:nth-child(2) > span {
+		animation-delay: 0.12s;
+	}
+	.riga:nth-child(3) > span {
+		animation-delay: 0.24s;
+	}
+	@keyframes sale {
+		from {
+			transform: translateY(105%);
+		}
+	}
+	.ingresso__lead {
+		max-width: 33em;
+		font-size: 1.12rem;
+		color: var(--inchiostro-2);
+		animation: compare 1.2s 0.5s var(--ease) both;
+	}
+	@keyframes compare {
+		from {
+			transform: translateY(14px);
+			filter: blur(5px);
+		}
+	}
+	.ingresso__cta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px;
+		margin-top: 30px;
+		animation: compare 1.2s 0.65s var(--ease) both;
+	}
+	.ingresso__dati {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px 34px;
+		margin-top: 42px;
+		padding-top: 22px;
+		border-top: 1px solid var(--linea);
+		font-size: 0.9rem;
+	}
+	.ingresso__dati dt {
+		font-weight: 600;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		font-size: 0.72rem;
+		color: var(--oro-testo);
+	}
+	.ingresso__dati dd {
+		color: var(--inchiostro-2);
+	}
+
+	.ingresso__visivo {
+		position: relative;
+		justify-self: end;
+		width: min(100%, 470px);
+		transform: translate3d(calc(var(--px, 0) * 10px), calc(var(--sy, 0) * -0.06px), 0);
+		transition: transform 0.7s var(--ease);
+	}
+	.arco {
+		aspect-ratio: 3 / 4.1;
+		border-radius: 999px 999px 24px 24px;
+		overflow: hidden;
+		box-shadow: 0 50px 90px -40px rgb(143 75 61 / 0.55);
+		animation: apri 1.5s 0.1s var(--ease) both;
+	}
+	@keyframes apri {
+		from {
+			clip-path: inset(100% 0 0 0 round 999px 999px 24px 24px);
+		}
+	}
+	.arco__img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 28% 50%;
+		scale: 1.12;
+		transform: translate3d(calc(var(--px, 0) * -14px), calc(var(--sy, 0) * 0.04px), 0);
+		transition: transform 0.9s var(--ease);
+	}
+	.goccia {
+		position: absolute;
+		left: -14%;
+		bottom: 8%;
+		width: 44%;
+		aspect-ratio: 1;
+		border-radius: 50%;
+		overflow: hidden;
+		border: 6px solid var(--avorio);
+		box-shadow: 0 24px 50px -20px rgb(51 32 31 / 0.45);
+		animation: galleggia 7s ease-in-out infinite;
+	}
+	.goccia__img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 45% 50%;
+		scale: 1.6;
+	}
+	@keyframes galleggia {
+		50% {
+			translate: 0 -12px;
+		}
+	}
+	.timbro {
+		position: absolute;
+		right: -4%;
+		top: 6%;
+		color: var(--oro-testo);
+		background: var(--avorio);
+		border-radius: 50%;
+		padding: 4px;
+		line-height: 0;
+		animation: ruota 28s linear infinite;
+	}
+
+	.nastro {
+		position: relative;
+		z-index: 2;
+		margin-inline: calc(var(--gutter) * -1);
+		overflow: hidden;
+		border-block: 1px solid var(--linea);
+		padding: 14px 0;
+		font-family: var(--titoli);
+		font-style: italic;
+		font-size: 1.5rem;
+		color: var(--oro-testo);
+		white-space: nowrap;
+	}
+	.nastro__gruppo {
+		display: flex;
+		flex: none;
+	}
+	.nastro__pista {
+		display: inline-flex;
+		animation: scorri 46s linear infinite;
+	}
+	@keyframes scorri {
+		to {
+			transform: translateX(-50%);
+		}
+	}
+
+	@media (max-width: 900px) {
+		.ingresso__in {
+			grid-template-columns: 1fr;
+		}
+		.ingresso__visivo {
+			justify-self: center;
+			width: min(78%, 360px);
+			margin-top: 14px;
+		}
+		.timbro {
+			right: -10%;
+		}
+		.sole {
+			right: -20%;
+			top: 6%;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.sole,
+		.raggi,
+		.goccia,
+		.timbro,
+		.nastro__pista,
+		.riga > span,
+		.arco,
+		.ingresso__lead,
+		.ingresso__cta {
+			animation: none;
+		}
+		.nastro__pista {
+			transform: none;
+		}
+	}
+</style>
+
+<script>
+	// L'alba segue il mouse e il primo scorrimento; i bottoni principali sono leggermente "magnetici".
+	const sez = document.querySelector<HTMLElement>('[data-ingresso]')!;
+	const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+	if (!ridotto) {
+		if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+			sez.addEventListener('pointermove', (e) => {
+				const r = sez.getBoundingClientRect();
+				sez.style.setProperty('--px', (((e.clientX - r.left) / r.width) * 2 - 1).toFixed(3));
+				sez.style.setProperty('--py', (((e.clientY - r.top) / r.height) * 2 - 1).toFixed(3));
+			});
+		}
+		let attesa = false;
+		addEventListener(
+			'scroll',
+			() => {
+				if (attesa || scrollY > innerHeight * 1.2) return;
+				attesa = true;
+				requestAnimationFrame(() => {
+					attesa = false;
+					sez.style.setProperty('--sy', String(scrollY));
+				});
+			},
+			{ passive: true },
+		);
+	}
+	// riflesso sui bottoni
+	document.querySelectorAll<HTMLElement>('.btn').forEach((b) =>
+		b.addEventListener('pointermove', (e) => {
+			const r = b.getBoundingClientRect();
+			b.style.setProperty('--mx', `${((e.clientX - r.left) / r.width) * 100}%`);
+			b.style.setProperty('--my', `${((e.clientY - r.top) / r.height) * 100}%`);
+		}),
+	);
+</script>

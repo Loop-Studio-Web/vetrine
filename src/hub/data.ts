@@ -8,6 +8,8 @@ import cardRistopub from '../assets/hub/card-ristopub.jpg';
 import shotRistopub from '../assets/hub/shot-ristopub.jpg';
 import cardBarbiere from '../assets/hub/card-barbiere.jpg';
 import shotBarbiere from '../assets/hub/shot-barbiere.jpg';
+import cardLumen from '../assets/hub/card-lumen.jpg';
+import shotLumen from '../assets/hub/shot-lumen.jpg';
 
 export const SITE = 'https://theloopstudio.org/';
 export const CONTACT = 'https://theloopstudio.org/contatti';
@@ -259,13 +261,64 @@ export const concepts: Concept[] = [
 			{ label: 'Buone pratiche', valore: '100' },
 		],
 	},
+	{
+		slug: 'lumen',
+		macro: 'benessere',
+		nome: 'Atelier Lumen',
+		categoria: 'Benessere',
+		archetipo: 'Il centro estetico a base di luce',
+		claim: 'La pelle ha una luce. La ritroviamo. Si sceglie il momento, il resto lo facciamo noi.',
+		path: '/benessere/estetica/',
+		infoPath: '/benessere/estetica/info/',
+		titoloSeo: 'Sito web per centro estetico: homepage concept con rituale su misura e prenotazione',
+		descrizioneSeo:
+			'Come potrebbe essere la homepage di un centro estetico: trattamenti per momento della giornata, rituale su misura, cabine, boutique e prenotazione per fasce di luce. Concept dimostrativo di Loop Studio.',
+		intro: [
+			'Un centro estetico vende tempo e cura, e le persone scelgono in base a come si sentono: stanche, tese, con voglia di luce. Questa homepage racconta il centro come una giornata. Dall’alba alla sera cambiano i colori, i trattamenti consigliati e l’ora segnata in alto, mentre si scorre.',
+			'È una vetrina dimostrativa: il centro, i trattamenti, i prezzi e gli indirizzi sono di fantasia. Serve a mostrare un livello di sito più ricco di una pagina semplice: movimento, interazioni e un configuratore, pensati per un centro che vuole farsi ricordare.',
+		],
+		perChi:
+			'Centri estetici, saloni con trattamenti, studi di massaggio e piccoli centri benessere che vendono pacchetti e rituali. Adatta a chi ha un listino ampio, cabine diverse e vuole far scegliere il cliente in modo guidato prima di prenotare.',
+		sezioni: [
+			{
+				t: 'Una giornata di luce che scorre con la pagina',
+				d: 'Ogni sezione ha il suo momento, dall’alba alla sera, con i suoi colori. Un piccolo orologio solare nella barra segna l’ora a seconda di dove si è arrivati, e un alone di luce segue il mouse.',
+			},
+			{
+				t: 'Un rituale su misura, composto in tempo reale',
+				d: 'Tre scelte (tipo di pelle, tempo a disposizione, cosa si cerca) ricompongono il percorso passaggio per passaggio, con durata, prezzo e un colore di luce che cambia. Un tocco e il rituale arriva già scelto nella prenotazione.',
+			},
+			{
+				t: 'Schede che si inclinano, cabine che si aprono',
+				d: 'I trattamenti si filtrano per zona e le schede reagiscono al mouse con inclinazione e riflesso. Le tre cabine si espandono una alla volta, ciascuna con la sua luce e il suo carattere.',
+			},
+			{
+				t: 'Prenotazione per fasce di luce',
+				d: 'Trattamento, giorno, fascia (mattina, pomeriggio, sera) e contatti, in quattro passaggi con un sole che attraversa il cielo. Alla fine si stampa un “biglietto di luce” con il riepilogo.',
+			},
+		],
+		awning: ['#b9715f', '#f7e3dc'],
+		glow: 'rgba(231, 169, 148, 0.55)',
+		card: cardLumen,
+		shot: shotLumen,
+		shotAlt: '',
+		crop: '50% 40%',
+		cardAlt: 'Atelier Lumen su desktop e su telefono: titolo elegante su fondo cipria, un arco con una nuvola rosa all’alba, il menù mobile come una tenda che si apre sulla luce.',
+		mood: 'Una giornata di luce: cipria, pesca, avorio, oro rosato e prugna. Dall’alba alla sera.',
+		caratteri: 'Cormorant e DM Sans',
+		palette: ['#f7e3dc', '#fbf3ea', '#f0cdb9', '#b9715f', '#8f4b3d', '#241619'],
+		metriche: [
+			{ label: 'Performance', valore: '99' },
+			{ label: 'Accessibilità', valore: '100' },
+			{ label: 'Buone pratiche', valore: '100' },
+		],
+	},
 ];
 
 // stato: 'presto' = quasi pronta, 'cantiere' = ancora in costruzione (nessuna data promessa)
 export type StatoProssima = 'presto' | 'cantiere';
 export const prossime: { nome: string; categoria: string; macro: MacroSlug; stato: StatoProssima }[] = [
 	{ nome: 'Legale e professionale', categoria: 'Studi e servizi', macro: 'studi', stato: 'cantiere' },
-	{ nome: 'Salone e centro estetico', categoria: 'Benessere', macro: 'benessere', stato: 'presto' },
 	{ nome: 'Spa e wellness resort', categoria: 'Benessere', macro: 'benessere', stato: 'presto' },
 	{ nome: 'Negozio locale', categoria: 'Commercio', macro: 'commercio', stato: 'cantiere' },
 ];

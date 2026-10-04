@@ -1,10 +1,13 @@
 ---
-// Perché queste vetrine: tre principi e quattro numeri. I numeri vengono dai test reali (axe-core e Lighthouse su mobile).
+// Perché queste vetrine: tre principi e quattro numeri. I numeri di performance vengono dai test reali (Lighthouse su mobile, in data.ts); il conteggio delle vetrine è calcolato.
+import { concepts } from './data';
+
+const perfMin = Math.min(...concepts.map((c) => Number(c.metriche.find((m) => m.label === 'Performance')?.valore ?? 0)));
 const numeri = [
-	{ n: '2', t: 'vetrine aperte', s: 'e altre in costruzione, una alla volta' },
+	{ n: String(concepts.length), t: concepts.length === 1 ? 'vetrina aperta' : 'vetrine aperte', s: 'e altre in costruzione, una alla volta' },
 	{ n: '0', t: 'componenti condivisi', s: 'ogni vetrina nasce da zero' },
 	{ n: '0', t: 'violazioni di accessibilità', s: 'verificate con axe-core' },
-	{ n: '97+', t: 'performance su mobile', s: 'Lighthouse, build di produzione' },
+	{ n: `${perfMin}+`, t: 'performance su mobile', s: 'Lighthouse, build di produzione' },
 ];
 const principi = [
 	{

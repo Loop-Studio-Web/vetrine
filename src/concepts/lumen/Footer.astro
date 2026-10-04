@@ -1,0 +1,80 @@
+---
+import simbolo from '../../assets/lumen/brand/simbolo-chiaro.svg';
+import logo from '../../assets/hub/loop-logo-on-dark.svg';
+---
+
+<footer class="piede">
+	<div class="piede__in">
+		<p class="piede__nome">
+			<img src={simbolo.src} alt="" width="102" height="39" />
+			<span>Atelier <em>Lumen</em></span>
+		</p>
+		<p class="piede__copy">
+			&copy; 2026 Atelier Lumen. Centro estetico di fantasia: concept dimostrativo. Il locale, i trattamenti, i prezzi e gli indirizzi non
+			esistono; le foto vengono da Unsplash.
+		</p>
+		<a class="piede__credito" href="https://theloopstudio.org/" target="_blank" rel="noopener">
+			<span>Sito ideato da</span>
+			<img src={logo.src} width="84" height="44" alt="Loop Studio" />
+			<span class="sr-only">(si apre in una nuova scheda)</span>
+		</a>
+	</div>
+</footer>
+
+<style>
+	.piede {
+		background: #150b0e;
+		color: var(--cipria);
+		padding: 44px var(--gutter);
+		border-top: 1px solid rgb(247 227 220 / 0.1);
+	}
+	.piede__in {
+		max-width: var(--max);
+		margin-inline: auto;
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		align-items: center;
+		gap: 16px 36px;
+	}
+	.piede__nome {
+		display: flex;
+		align-items: center;
+		gap: 14px;
+		font-family: var(--titoli);
+		font-weight: 600;
+		font-size: 1.7rem;
+		line-height: 1;
+	}
+	.piede__nome img {
+		height: 40px;
+		width: auto;
+	}
+	.piede__nome em {
+		color: var(--oro-chiaro);
+		font-weight: 500;
+	}
+	.piede__copy {
+		font-size: 0.88rem;
+		color: #d8bdb3;
+		max-width: 52em;
+	}
+	.piede__credito {
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		text-decoration: none;
+		font-size: 0.85rem;
+	}
+	.piede__credito img {
+		height: 40px;
+		width: auto;
+	}
+	.piede__credito:hover {
+		opacity: 0.75;
+	}
+	@media (max-width: 860px) {
+		.piede__in {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

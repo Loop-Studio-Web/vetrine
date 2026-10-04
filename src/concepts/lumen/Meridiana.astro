@@ -1,0 +1,101 @@
+---
+// Il sole della meridiana (nella navbar) si muove con lo scorrimento e segna l'ora del giorno, dalle 7 alle 21, e colora la luce.
+// Qui c'è anche l'alone di luce: col mouse segue il puntatore, su telefono scivola con lo scorrimento e va dove si tocca.
+---
+
+<div class="alone" data-alone aria-hidden="true"></div>
+<div class="alone alone--multiply" data-alone-m aria-hidden="true"></div>
+
+<script>
+	const mer = document.querySelector<HTMLElement>('[data-meridiana]')!;
+	const sole = mer.querySelector<SVGCircleElement>('.meridiana__sole')!;
+	const ora = mer.querySelector<HTMLElement>('[data-mer-ora]')!;
+	const nome = mer.querySelector<HTMLElement>('[data-mer-nome]')!;
+	const nomi: [number, string][] = [
+		[0, 'alba'],
+		[0.12, 'mattino'],
+		[0.38, 'mezzogiorno'],
+		[0.62, 'tramonto'],
+		[0.82, 'sera'],
+	];
+	const tinte: [number, number[]][] = [
+		[0, [255, 196, 170]],
+		[0.35, [255, 238, 208]],
+		[0.65, [255, 168, 118]],
+		[1, [210, 150, 205]],
+	];
+	let attesa = false;
+	const aggiorna = () => {
+		attesa = false;
+		const max = document.documentElement.scrollHeight - innerHeight;
+		const p = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
+		const minuti = 7 * 60 + p * 14 * 60;
+		ora.textContent = `${String(Math.floor(minuti / 60)).padStart(2, '0')}:${String(Math.floor(minuti % 60)).padStart(2, '0')}`;
+		nome.textContent = [...nomi].reverse().find(([s]) => p >= s)![1];
+		// il sole percorre l'arco da sinistra a destra
+		const a = Math.PI * p;
+		sole.setAttribute('cx', String(60 - Math.cos(a) * 54));
+		sole.setAttribute('cy', String(54 - Math.sin(a) * 50));
+		// tinta della luce: rosata all'alba, calda a mezzogiorno, ambra al tramonto, viola verso sera
+		const k = tinte.findIndex(([s]) => p <= s);
+		const [s1, c1] = tinte[Math.max(0, k - 1)];
+		const [s2, c2] = tinte[Math.max(0, k)];
+		const f = s2 === s1 ? 0 : (p - s1) / (s2 - s1);
+		document.documentElement.style.setProperty('--tinta', c1.map((v, i) => Math.round(v + (c2[i] - v) * f)).join(' '));
+	};
+	addEventListener(
+		'scroll',
+		() => {
+			if (!attesa) {
+				attesa = true;
+				requestAnimationFrame(aggiorna);
+			}
+		},
+		{ passive: true },
+	);
+	aggiorna();
+
+	// alone di luce: col mouse segue il puntatore; su touch scivola con lo scorrimento e si sposta dove si tocca
+	const alone = document.querySelector<HTMLElement>('[data-alone]')!;
+	const aloneM = document.querySelector<HTMLElement>('[data-alone-m]')!;
+	const root = document.documentElement;
+	const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+	if (!ridotto) {
+		if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+			let t = 0;
+			addEventListener('pointermove', (e) => {
+				alone.classList.add('is-attivo');
+				cancelAnimationFrame(t);
+				t = requestAnimationFrame(() => {
+					root.style.setProperty('--ax', `${e.clientX}px`);
+					root.style.setProperty('--ay', `${e.clientY}px`);
+				});
+			});
+			document.documentElement.addEventListener('pointerleave', () => alone.classList.remove('is-attivo'));
+		} else {
+			alone.classList.add('is-touch', 'is-attivo');
+			aloneM.classList.add('is-touch', 'is-attivo');
+			root.classList.add('luce-touch');
+			let toccato = 0;
+			const segui = () => {
+				// finché non si tocca, la luce oscilla da una parte all'altra mentre si scorre
+				if (Date.now() - toccato < 2500) return;
+				const max = document.documentElement.scrollHeight - innerHeight;
+				const p = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
+				root.style.setProperty('--ax', `${50 + Math.sin(p * Math.PI * 7) * 38}%`);
+				root.style.setProperty('--ay', `${22 + Math.sin(p * Math.PI * 3) * 14}%`);
+			};
+			addEventListener('scroll', segui, { passive: true });
+			addEventListener(
+				'pointerdown',
+				(e) => {
+					toccato = Date.now();
+					root.style.setProperty('--ax', `${e.clientX}px`);
+					root.style.setProperty('--ay', `${e.clientY}px`);
+				},
+				{ passive: true },
+			);
+			segui();
+		}
+	}
+</script>

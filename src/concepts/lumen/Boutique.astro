@@ -1,0 +1,221 @@
+---
+import { Image } from 'astro:assets';
+import scaffale from '../../assets/lumen/scaffale.jpg';
+import prodotti from '../../assets/lumen/prodotti.jpg';
+
+const prodotto = [
+	{ nome: 'Siero Alba', formato: '30 ml', prezzo: 42, nota: 'Vitamina C stabile e acido ialuronico. Si usa al mattino, prima della crema.', colore: '#f6c9b4' },
+	{ nome: 'Crema Meridiana', formato: '50 ml', prezzo: 38, nota: 'Leggera, senza profumo, con filtro solare. Per chi esce e vuole una pelle serena.', colore: '#f8e2b8' },
+	{ nome: 'Olio Vespro', formato: '100 ml', prezzo: 34, nota: 'Mandorla e camomilla per il corpo, da scaldare tra le mani. Profuma di poco.', colore: '#e1bba9' },
+	{ nome: 'Maschera Lumen', formato: '75 ml', prezzo: 29, nota: 'Argilla rosa e avena: dieci minuti, una volta a settimana, e la pelle si distende.', colore: '#dfe6cf' },
+];
+---
+
+<section class="sezione boutique" id="boutique" data-ora="tramonto" aria-labelledby="boutique-titolo">
+	<div class="boutique__sfondo" aria-hidden="true">
+		<Image src={scaffale} alt="" widths={[800, 1400]} sizes="100vw" class="boutique__foto" />
+	</div>
+	<div class="sezione__in boutique__in">
+		<header class="boutique__testa" data-reveal>
+			<p class="ora">17:30 · il tramonto</p>
+			<h2 id="boutique-titolo">Quello che usiamo,<br />puoi portarlo <em>a casa</em>.</h2>
+			<p>Quattro formule soltanto, le stesse delle cabine. Nessun profumo forte, nessun trucco: poche cose fatte bene.</p>
+		</header>
+
+		<ul class="prodotti">
+			{
+				prodotto.map((p, i) => (
+					<li class="prodotto" data-reveal style={`--c:${p.colore};--d:${i * 0.08}s`}>
+						<div class="prodotto__vaso" aria-hidden="true">
+							<span class="prodotto__etichetta">{p.nome.split(' ')[1]}</span>
+						</div>
+						<div class="prodotto__testo">
+							<h3>{p.nome}</h3>
+							<p class="prodotto__nota">{p.nota}</p>
+							<p class="prodotto__dati">
+								<span>{p.formato}</span>
+								<strong>{p.prezzo} €</strong>
+							</p>
+						</div>
+					</li>
+				))
+			}
+		</ul>
+
+		<figure class="boutique__banco" data-reveal>
+			<Image src={prodotti} alt="Una mensola chiara con flaconi di siero e un vasetto di crema accanto a una rivista aperta" widths={[500, 800, 1100]} sizes="(min-width: 900px) 480px, 90vw" />
+			<figcaption>Il banco della boutique. Prodotti e prezzi di fantasia.</figcaption>
+		</figure>
+	</div>
+</section>
+
+<style>
+	.boutique {
+		background: #f0cdb9;
+		overflow: clip;
+	}
+	.boutique__sfondo {
+		position: absolute;
+		inset: 0;
+		opacity: 0.13;
+		mix-blend-mode: multiply;
+		mask-image: linear-gradient(180deg, transparent, #000 25%, #000 70%, transparent);
+	}
+	.boutique__foto {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		filter: saturate(0.7);
+	}
+	.boutique__in {
+		position: relative;
+		display: grid;
+		grid-template-columns: 1fr 0.8fr;
+		gap: 28px clamp(28px, 5vw, 80px);
+		align-items: start;
+	}
+	.boutique__testa {
+		grid-column: 1 / -1;
+		max-width: 44em;
+		margin-bottom: 26px;
+	}
+	.boutique__testa h2 {
+		margin: 18px 0 20px;
+	}
+	.boutique__testa em {
+		color: var(--oro-testo);
+	}
+	.boutique__testa p:last-child {
+		font-size: 1.1rem;
+		color: #5b413c;
+	}
+	.prodotti {
+		list-style: none;
+		display: grid;
+		gap: 14px;
+	}
+	.prodotto {
+		display: grid;
+		grid-template-columns: 96px 1fr;
+		gap: 22px;
+		align-items: center;
+		padding: 20px 24px;
+		background: rgb(251 243 234 / 0.8);
+		backdrop-filter: blur(6px);
+		border-radius: 22px;
+		border: 1px solid rgb(51 32 31 / 0.1);
+		transition:
+			transform 0.5s var(--ease),
+			box-shadow 0.5s var(--ease);
+	}
+	.prodotto:hover {
+		transform: translateX(8px);
+		box-shadow: 0 26px 40px -28px rgb(51 32 31 / 0.55);
+	}
+	.prodotto__vaso {
+		position: relative;
+		width: 96px;
+		height: 110px;
+		display: grid;
+		place-items: end center;
+	}
+	.prodotto__vaso::before {
+		content: '';
+		position: absolute;
+		inset: 20px 12px 0;
+		border-radius: 12px 12px 18px 18px;
+		background: linear-gradient(135deg, #fff8, transparent 40%), var(--c);
+		box-shadow: inset -8px -6px 14px rgb(51 32 31 / 0.14);
+		transition: transform 0.6s var(--ease);
+	}
+	.prodotto__vaso::after {
+		content: '';
+		position: absolute;
+		left: 28px;
+		right: 28px;
+		top: 4px;
+		height: 22px;
+		border-radius: 6px;
+		background: var(--oro);
+		transition: transform 0.6s var(--ease);
+	}
+	.prodotto:hover .prodotto__vaso::before {
+		transform: translateY(-6px) rotate(-3deg);
+	}
+	.prodotto:hover .prodotto__vaso::after {
+		transform: translateY(-14px) rotate(-3deg);
+	}
+	.prodotto__etichetta {
+		position: relative;
+		z-index: 1;
+		margin-bottom: 30px;
+		font-family: var(--titoli);
+		font-style: italic;
+		font-size: 1.05rem;
+		color: var(--inchiostro);
+	}
+	.prodotto h3 {
+		font-size: 1.9rem;
+		font-weight: 500;
+	}
+	.prodotto__nota {
+		margin: 6px 0 10px;
+		font-size: 0.94rem;
+		color: var(--inchiostro-2);
+	}
+	.prodotto__dati {
+		display: flex;
+		align-items: baseline;
+		gap: 14px;
+		font-size: 0.9rem;
+	}
+	.prodotto__dati strong {
+		font-family: var(--titoli);
+		font-size: 1.5rem;
+		font-weight: 600;
+	}
+	.boutique__banco {
+		position: sticky;
+		top: calc(var(--nav-h) + var(--fascia, 0px) + 24px);
+	}
+	.boutique__banco img {
+		width: 100%;
+		border-radius: 26px;
+		aspect-ratio: 1;
+		object-fit: cover;
+		box-shadow: 0 50px 70px -44px rgb(51 32 31 / 0.7);
+	}
+	.boutique__banco figcaption {
+		margin-top: 12px;
+		font-size: 0.85rem;
+		color: #5b413c;
+	}
+	@media (max-width: 900px) {
+		.boutique__in {
+			grid-template-columns: 1fr;
+		}
+		.boutique__banco {
+			position: static;
+		}
+	}
+	@media (max-width: 480px) {
+		.prodotto {
+			grid-template-columns: 70px 1fr;
+			gap: 14px;
+			padding: 16px;
+		}
+		.prodotto__vaso {
+			width: 70px;
+		}
+		.prodotto__vaso::after {
+			left: 18px;
+			right: 18px;
+		}
+		.prodotto__vaso::before {
+			inset: 20px 6px 0;
+		}
+		.prodotto__etichetta {
+			display: none;
+		}
+	}
+</style>

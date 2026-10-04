@@ -1,0 +1,291 @@
+/* Atelier Lumen — token, reset e animazioni. Una giornata di luce: alba, mattino, giorno, tramonto, sera.
+   Ogni sezione ha il suo momento (data-ora) e le sue variabili di colore. */
+:root {
+	--cipria: #f7e3dc;
+	--avorio: #fbf3ea;
+	--pesca: #f0cdb9;
+	--salvia: #e6eadb;
+	--oro: #b9715f; /* decorativo e grandi segni */
+	--oro-testo: #8f4b3d; /* testo e link su fondo chiaro */
+	--oro-chiaro: #e7a994; /* su fondo scuro */
+	--prugna: #241619;
+	--prugna-2: #36222a;
+	--inchiostro: #33201f;
+	--inchiostro-2: #644a45;
+
+	--bg: var(--avorio);
+	--ink: var(--inchiostro);
+	--ink-2: var(--inchiostro-2);
+	--acc: var(--oro-testo);
+	--linea: color-mix(in srgb, var(--ink) 16%, transparent);
+
+	--titoli: 'Cormorant Variable', 'Cormorant Garamond', Georgia, serif;
+	--testo: 'DM Sans Variable', system-ui, sans-serif;
+
+	--gutter: clamp(18px, 5vw, 64px);
+	--max: 1240px;
+	--nav-h: 72px;
+	--ease: cubic-bezier(0.22, 0.7, 0.2, 1);
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	scroll-padding-top: calc(var(--nav-h) + 12px);
+	-webkit-text-size-adjust: 100%;
+	background: var(--prugna);
+}
+
+body {
+	background: var(--avorio);
+	color: var(--ink);
+	font-family: var(--testo);
+	font-size: 1.04rem;
+	line-height: 1.6;
+	overflow-x: clip;
+}
+body.menu-aperto {
+	overflow: hidden;
+}
+
+img {
+	display: block;
+	max-width: 100%;
+	height: auto;
+}
+a {
+	color: inherit;
+}
+button,
+input,
+select,
+textarea {
+	font: inherit;
+	color: inherit;
+}
+h1,
+h2,
+h3 {
+	font-family: var(--titoli);
+	font-weight: 500;
+	line-height: 1;
+	letter-spacing: -0.012em;
+}
+h2 {
+	font-size: clamp(2.3rem, 5.4vw, 4.4rem);
+}
+em {
+	font-style: italic;
+}
+
+:focus-visible {
+	outline: 3px solid var(--acc);
+	outline-offset: 3px;
+	border-radius: 4px;
+}
+
+.skip-link {
+	position: absolute;
+	left: 12px;
+	top: -70px;
+	z-index: 500;
+	padding: 10px 16px;
+	background: var(--prugna);
+	color: var(--cipria);
+	text-decoration: none;
+	font-weight: 600;
+}
+.skip-link:focus {
+	top: 12px;
+}
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+
+/* piccola etichetta sopra i titoli: l'ora del giorno */
+.ora {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	font-size: 0.78rem;
+	font-weight: 600;
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+	color: var(--acc);
+}
+.ora::before {
+	content: '';
+	width: 26px;
+	height: 1px;
+	background: currentColor;
+}
+
+.sezione {
+	padding: clamp(44px, 5.5vw, 76px) var(--gutter);
+	position: relative;
+}
+.sezione__in {
+	max-width: var(--max);
+	margin-inline: auto;
+}
+
+/* Rivelazione "a velo": parte quando l'elemento entra in vista, mai al caricamento */
+.js [data-reveal] {
+	opacity: 0;
+	transform: translateY(22px);
+	filter: blur(6px);
+	transition:
+		opacity 0.9s var(--ease),
+		transform 0.9s var(--ease),
+		filter 0.9s var(--ease);
+	transition-delay: var(--d, 0s);
+}
+.js [data-reveal].is-visible {
+	opacity: 1;
+	transform: none;
+	filter: none;
+}
+
+/* Bottoni */
+.btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	padding: 15px 28px;
+	border-radius: 999px;
+	border: 1px solid transparent;
+	background: var(--prugna);
+	color: var(--cipria);
+	font-weight: 600;
+	font-size: 0.95rem;
+	letter-spacing: 0.02em;
+	text-decoration: none;
+	cursor: pointer;
+	position: relative;
+	overflow: hidden;
+	isolation: isolate;
+	transition:
+		transform 0.35s var(--ease),
+		box-shadow 0.35s var(--ease);
+}
+.btn::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background: radial-gradient(circle at var(--mx, 50%) var(--my, 120%), #f6c4b0, transparent 62%);
+	opacity: 0;
+	transition: opacity 0.4s;
+}
+.btn:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 14px 30px -14px rgb(36 22 25 / 0.55);
+}
+.btn:hover::before {
+	opacity: 0.55;
+}
+.btn--chiaro {
+	background: transparent;
+	color: var(--ink);
+	border-color: var(--linea);
+}
+.btn--oro {
+	background: var(--oro-chiaro);
+	color: var(--prugna);
+}
+
+/* Alone di luce: segue il mouse; su touch scivola con lo scorrimento e va dove si tocca */
+@property --ax {
+	syntax: '<length-percentage>';
+	inherits: true;
+	initial-value: 50%;
+}
+@property --ay {
+	syntax: '<length-percentage>';
+	inherits: true;
+	initial-value: 30%;
+}
+.alone {
+	position: fixed;
+	inset: 0;
+	z-index: 90;
+	pointer-events: none;
+	opacity: 0;
+	/* la tinta cambia con l'ora del giorno (la imposta Meridiana.astro): rosata all'alba, calda a mezzogiorno, ambra al tramonto */
+	background: radial-gradient(520px circle at var(--ax, 50%) var(--ay, 30%), rgb(var(--tinta, 255 214 186) / 0.34), transparent 70%);
+	mix-blend-mode: soft-light;
+	transition: opacity 0.6s;
+}
+.alone.is-attivo {
+	opacity: 1;
+}
+/* su touch non c'è il mouse: la luce scivola con lo scorrimento e va dove si tocca */
+.alone.is-touch {
+	background: radial-gradient(70vmax circle at var(--ax, 50%) var(--ay, 30%), rgb(var(--tinta, 255 214 186) / 0.6), transparent 70%);
+	transition: opacity 0.6s;
+}
+
+/* Barra di scorrimento: un filo di luce rosata */
+::-webkit-scrollbar {
+	width: 14px;
+}
+::-webkit-scrollbar-track {
+	background: var(--prugna);
+}
+::-webkit-scrollbar-thumb {
+	background: linear-gradient(180deg, #f6d4c4, var(--oro) 55%, #8f4b3d);
+	border: 3px solid var(--prugna);
+	border-radius: 9px;
+}
+@supports not selector(::-webkit-scrollbar) {
+	html {
+		scrollbar-color: var(--oro) var(--prugna);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+	.js [data-reveal] {
+		opacity: 1;
+		transform: none;
+		filter: none;
+		transition: none;
+	}
+	.alone {
+		display: none;
+	}
+}
+
+/* Su touch un secondo strato "multiply" rende visibile la luce anche sulle sezioni chiare (soft-light da solo lì si vede poco) */
+.alone--multiply {
+	display: none;
+}
+.alone--multiply.is-touch {
+	display: block;
+	mix-blend-mode: multiply;
+	z-index: 89;
+	background: radial-gradient(60vmax circle at var(--ax, 50%) var(--ay, 30%), rgb(var(--tinta, 255 214 186) / 0.55), transparent 70%);
+}
+html.luce-touch {
+	transition:
+		--ax 1.1s cubic-bezier(0.22, 0.7, 0.2, 1),
+		--ay 1.1s cubic-bezier(0.22, 0.7, 0.2, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+	.alone--multiply {
+		display: none !important;
+	}
+}

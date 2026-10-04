@@ -1,0 +1,439 @@
+---
+import simbolo from '../../assets/lumen/brand/simbolo.svg';
+
+const voci = [
+	{ href: '#rituali', t: 'Rituali' },
+	{ href: '#su-misura', t: 'Il tuo rituale' },
+	{ href: '#cabine', t: 'Le cabine' },
+	{ href: '#boutique', t: 'Boutique' },
+	{ href: '#dove', t: 'Dove siamo' },
+];
+---
+
+<header class="nav" data-nav>
+	<div class="nav__in">
+		<a href="#top" class="nav__logo" aria-label="Atelier Lumen, torna in cima">
+			<img src={simbolo.src} alt="" width="62" height="24" />
+			<span class="nav__nome">Atelier <em>Lumen</em></span>
+		</a>
+		<nav class="nav__voci" aria-label="Sezioni della pagina">
+			{voci.map((v) => <a href={v.href}>{v.t}</a>)}
+		</nav>
+		<div class="nav__azioni">
+			<div class="meridiana" data-meridiana aria-hidden="true">
+				<svg viewBox="0 0 120 62" width="60" height="31">
+					<path d="M6 54 A54 50 0 0 1 114 54" fill="none" stroke="rgb(51 32 31 / 0.3)" stroke-width="2" stroke-dasharray="3 6" stroke-linecap="round"></path>
+					<path d="M0 55h120" stroke="rgb(51 32 31 / 0.5)" stroke-width="2.4"></path>
+					<circle class="meridiana__sole" r="9" cx="6" cy="54" fill="#d98b73"></circle>
+				</svg>
+				<p class="meridiana__ora"><span data-mer-ora>07:00</span> <small data-mer-nome>alba</small></p>
+			</div>
+			<a href="#prenota" class="btn nav__cta">Prenota</a>
+			<button type="button" class="burger" data-toggle aria-expanded="false" aria-controls="tenda" aria-label="Apri il menù">
+				<span class="burger__righe" aria-hidden="true"></span>
+			</button>
+		</div>
+	</div>
+	<div class="nav__filo" aria-hidden="true"><span></span></div>
+</header>
+
+<div class="tenda" id="tenda" data-tenda role="region" aria-label="Menù" inert>
+	<div class="tenda__lembo tenda__lembo--sx" aria-hidden="true"></div>
+	<div class="tenda__lembo tenda__lembo--dx" aria-hidden="true"></div>
+	<div class="tenda__luce">
+		<nav class="tenda__voci" aria-label="Menù">
+			{
+				voci.map((v, i) => (
+					<a href={v.href} data-chiudi style={`--i:${i}`}>
+						<small aria-hidden="true">{['07:00', '09:30', '12:00', '16:30', '19:00'][i]}</small>
+						{v.t}
+					</a>
+				))
+			}
+		</nav>
+		<a href="#prenota" class="btn tenda__cta" data-chiudi>Prenota un momento</a>
+	</div>
+</div>
+
+<style is:global>
+	:root {
+		--nav-h: 72px;
+	}
+</style>
+
+<style>
+	.nav {
+		position: fixed;
+		top: var(--fascia, 0px);
+		left: 0;
+		right: 0;
+		z-index: 200;
+		height: var(--nav-h);
+		transition:
+			background 0.5s ease,
+			box-shadow 0.5s ease;
+	}
+	.nav.is-scrolled,
+	:global(body.menu-aperto) .nav {
+		background: color-mix(in srgb, var(--avorio) 88%, transparent);
+		backdrop-filter: blur(12px) saturate(1.2);
+		box-shadow: 0 1px 0 rgb(51 32 31 / 0.1);
+	}
+	.nav__in {
+		max-width: var(--max);
+		height: 100%;
+		margin-inline: auto;
+		padding-inline: var(--gutter);
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 24px;
+		color: var(--inchiostro);
+	}
+	.nav__logo {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		text-decoration: none;
+	}
+	.nav__logo img {
+		width: 62px;
+		height: auto;
+		transition: transform 0.8s var(--ease);
+	}
+	.nav__logo:hover img {
+		transform: translateY(-3px) scale(1.06);
+	}
+	.nav__nome {
+		font-family: var(--titoli);
+		font-weight: 600;
+		font-size: 1.55rem;
+		letter-spacing: 0.01em;
+		white-space: nowrap;
+	}
+	.nav__nome em {
+		color: var(--oro-testo);
+		font-weight: 500;
+	}
+	.nav__voci {
+		display: flex;
+		gap: clamp(16px, 2.4vw, 34px);
+		font-size: 0.92rem;
+		font-weight: 500;
+	}
+	.nav__voci a {
+		text-decoration: none;
+		position: relative;
+		padding: 6px 0;
+		white-space: nowrap;
+	}
+	.nav__voci a::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: 1px;
+		background: var(--oro-testo);
+		transform: scaleX(0);
+		transform-origin: right;
+		transition: transform 0.5s var(--ease);
+	}
+	.nav__voci a:hover::after {
+		transform: scaleX(1);
+		transform-origin: left;
+	}
+	.nav__azioni {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+	.nav__cta {
+		padding: 11px 24px;
+	}
+	/* la meridiana: ora del giorno segnata dallo scorrimento (il sole si muove da Meridiana.astro) */
+	.meridiana {
+		display: none;
+		align-items: center;
+		gap: 10px;
+		margin-right: 6px;
+		padding-right: 16px;
+		border-right: 1px solid rgb(51 32 31 / 0.18);
+	}
+	.meridiana svg {
+		overflow: visible;
+	}
+	.meridiana__ora {
+		font-family: var(--titoli);
+		font-size: 1.3rem;
+		font-weight: 600;
+		line-height: 1;
+		font-variant-numeric: tabular-nums;
+		min-width: 3.3em;
+	}
+	.meridiana__ora small {
+		display: none;
+	}
+	/* visibile in navbar a tutte le larghezze tranne 1060-1239 px, dove le voci del menù occupano lo spazio */
+	@media (max-width: 1059px), (min-width: 1240px) {
+		.meridiana {
+			display: flex;
+		}
+	}
+	/* su telefono sta tra il logo e l'hamburger: compatto, senza il filo di separazione */
+	@media (max-width: 860px) {
+		.nav__logo {
+			gap: 8px;
+		}
+		.nav__logo img {
+			width: 48px;
+		}
+		.meridiana {
+			margin-right: 0;
+			padding-right: 0;
+			border-right: 0;
+			gap: 6px;
+		}
+		.meridiana svg {
+			width: 38px;
+			height: 20px;
+		}
+		.meridiana__ora {
+			font-size: 1.15rem;
+			min-width: 2.9em;
+		}
+		.nav__in {
+			gap: 10px;
+		}
+		.nav__azioni {
+			gap: 12px;
+			margin-left: auto;
+		}
+	}
+	@media (max-width: 400px) {
+		.meridiana {
+			gap: 5px;
+		}
+		.meridiana svg {
+			width: 32px;
+			height: 17px;
+		}
+		.nav__azioni {
+			gap: 6px;
+		}
+	}
+	/* solo sui telefoni più stretti (320-340 px) l'arco lascia il posto alla sola ora */
+	@media (max-width: 340px) {
+		.meridiana svg {
+			display: none;
+		}
+	}
+	.nav__filo {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: 2px;
+		pointer-events: none;
+	}
+	.nav__filo span {
+		display: block;
+		height: 100%;
+		width: 100%;
+		transform: scaleX(var(--p, 0));
+		transform-origin: left;
+		background: linear-gradient(90deg, #f6d4c4, var(--oro));
+	}
+
+	.burger {
+		display: none;
+		width: 46px;
+		height: 46px;
+		border-radius: 50%;
+		border: 1px solid rgb(51 32 31 / 0.3);
+		background: transparent;
+		cursor: pointer;
+		position: relative;
+	}
+	.burger__righe,
+	.burger__righe::before {
+		position: absolute;
+		left: 13px;
+		right: 13px;
+		height: 1.5px;
+		background: var(--inchiostro);
+		transition:
+			transform 0.5s var(--ease),
+			top 0.5s var(--ease);
+	}
+	.burger__righe {
+		top: 17px;
+	}
+	.burger__righe::before {
+		content: '';
+		left: 0;
+		right: 0;
+		top: 8px;
+	}
+	.burger[aria-expanded='true'] .burger__righe {
+		top: 22px;
+		transform: rotate(45deg);
+	}
+	.burger[aria-expanded='true'] .burger__righe::before {
+		top: 0;
+		transform: rotate(-90deg);
+	}
+
+	/* Tenda: due lembi di velluto che si aprono sulla luce */
+	.tenda {
+		position: fixed;
+		inset: 0;
+		z-index: 190;
+		visibility: hidden;
+		transition: visibility 0s linear 1s;
+	}
+	.tenda.is-aperta {
+		visibility: visible;
+		transition-delay: 0s;
+	}
+	.tenda__lembo {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		width: 51%;
+		z-index: 2;
+		background:
+			repeating-linear-gradient(90deg, rgb(255 255 255 / 0.05) 0 2px, transparent 2px 26px),
+			linear-gradient(180deg, #4a2a33, var(--prugna));
+		transition: transform 0.95s var(--ease);
+	}
+	.tenda__lembo--sx {
+		left: 0;
+	}
+	.tenda__lembo--dx {
+		right: 0;
+	}
+	.tenda.is-aperta .tenda__lembo--sx {
+		transform: translateX(-102%);
+	}
+	.tenda.is-aperta .tenda__lembo--dx {
+		transform: translateX(102%);
+	}
+	.tenda__luce {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		padding: calc(var(--nav-h) + var(--fascia-h) + 28px) var(--gutter) 40px;
+		background: radial-gradient(120% 70% at 50% 0%, #fde9de 0%, #f7d9cb 45%, #efc2ae 100%);
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		overflow-y: auto;
+	}
+	.tenda__voci {
+		display: flex;
+		flex-direction: column;
+	}
+	.tenda__voci a {
+		display: flex;
+		align-items: baseline;
+		gap: 18px;
+		padding: 14px 0;
+		border-bottom: 1px solid rgb(51 32 31 / 0.18);
+		font-family: var(--titoli);
+		font-size: clamp(2rem, 9vw, 2.9rem);
+		font-weight: 500;
+		color: var(--inchiostro);
+		text-decoration: none;
+		opacity: 0;
+		transform: translateY(18px);
+		transition:
+			opacity 0.6s ease,
+			transform 0.6s var(--ease);
+	}
+	.tenda__voci small {
+		font-family: var(--testo);
+		font-size: 0.78rem;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		color: var(--oro-testo);
+		min-width: 3.6em;
+	}
+	.tenda.is-aperta .tenda__voci a {
+		opacity: 1;
+		transform: none;
+		transition-delay: calc(0.5s + var(--i) * 0.08s);
+	}
+	.tenda__cta {
+		align-self: flex-start;
+		margin-top: 24px;
+	}
+
+	@media (max-width: 1060px) {
+		.nav__voci {
+			display: none;
+		}
+	}
+	@media (max-width: 860px) {
+		.burger {
+			display: block;
+		}
+		.nav__azioni > .nav__cta {
+			display: none;
+		}
+	}
+	@media (max-width: 400px) {
+		.nav__nome {
+			font-size: 1.3rem;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.tenda__lembo,
+		.tenda__voci a {
+			transition-duration: 0.01s;
+			transition-delay: 0s !important;
+		}
+	}
+</style>
+
+<script>
+	const nav = document.querySelector<HTMLElement>('[data-nav]')!;
+	const tenda = document.querySelector<HTMLElement>('[data-tenda]')!;
+	const toggle = document.querySelector<HTMLButtonElement>('[data-toggle]')!;
+
+	const imposta = (aperta: boolean) => {
+		tenda.classList.toggle('is-aperta', aperta);
+		tenda.toggleAttribute('inert', !aperta);
+		toggle.setAttribute('aria-expanded', String(aperta));
+		toggle.setAttribute('aria-label', aperta ? 'Chiudi il menù' : 'Apri il menù');
+		document.body.classList.toggle('menu-aperto', aperta);
+	};
+	toggle.addEventListener('click', () => imposta(!tenda.classList.contains('is-aperta')));
+	tenda.querySelectorAll('[data-chiudi]').forEach((a) => a.addEventListener('click', () => imposta(false)));
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape' && tenda.classList.contains('is-aperta')) {
+			imposta(false);
+			toggle.focus();
+		}
+	});
+	matchMedia('(min-width: 861px)').addEventListener('change', (m) => m.matches && imposta(false));
+
+	let attesa = false;
+	const aggiorna = () => {
+		attesa = false;
+		nav.classList.toggle('is-scrolled', scrollY > 24);
+		const max = document.documentElement.scrollHeight - innerHeight;
+		nav.style.setProperty('--p', (max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0).toFixed(4));
+	};
+	addEventListener(
+		'scroll',
+		() => {
+			if (!attesa) {
+				attesa = true;
+				requestAnimationFrame(aggiorna);
+			}
+		},
+		{ passive: true },
+	);
+	aggiorna();
+</script>

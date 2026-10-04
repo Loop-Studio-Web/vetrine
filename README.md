@@ -5,7 +5,7 @@
   <img src="docs/img/loop-logo-on-light.svg" alt="Loop Studio" height="64">
 </picture>
 
-<img src="docs/img/header.svg" alt="A street of shop fronts: Trattoria, Ossidiana, Luppolo & Watt and Bottega Tre Rasoi are lit and open, three more windows are dark and coming soon." width="100%">
+<img src="docs/img/header.svg" alt="A street of shop fronts: Trattoria, Ossidiana, Luppolo & Watt, Bottega Tre Rasoi and Atelier Lumen are lit and open, two more windows are dark and coming soon." width="100%">
 
 **Full-page homepage concepts for local businesses.<br>Each one designed as if it were the only one on the street.**
 
@@ -109,13 +109,32 @@
 [**Open Bottega Tre Rasoi →**](https://vetrine.theloopstudio.org/benessere/barbiere/)
 
 <br>
+### 05 · Atelier Lumen
+
+<a href="https://vetrine.theloopstudio.org/benessere/estetica/"><img src="docs/img/card-lumen.jpg" alt="Atelier Lumen on desktop and mobile: an elegant title on a powder-pink background, a pink dawn cloud inside an arch, and the phone menu opening like a curtain onto the light." width="100%"></a>
+
+*Skin has a light. We find it again. You choose the moment, we do the rest.*
+
+| | |
+|---|---|
+| **Archetype** | The beauty centre built around light: the **medium** tier of the Beauty & wellness window, a step up in motion and interaction from the barber |
+| **Mood** | One day of light, dawn to evening: powder pink, peach, ivory, rose gold and plum. Every section has its own hour and its own colours |
+| **Type** | Cormorant for titles, DM Sans for text |
+| **Palette** | <img src="docs/img/palette-lumen.svg" alt="Powder pink, ivory, peach, rose gold, deep rose and plum" height="22"> |
+| **Signature moves** | A **bespoke ritual builder**: three choices (skin, time, what you want) recompose the treatment step by step, with duration, price and a changing colour of light, and the result lands pre-selected in the booking form. A sundial in the nav that reads the hour from how far you have scrolled, and a halo of light that follows the mouse. Treatment cards that tilt in 3D with a moving sheen, filtered by zone. Three cabins that expand one at a time. Booking by *bands of light* with a sun crossing the sky and a printed "ticket of light". A mobile menu that opens like curtains onto the light |
+| **Lighthouse** | 99 performance on mobile, 100 on desktop, 100 on accessibility and best practices |
+
+[**Open Atelier Lumen →**](https://vetrine.theloopstudio.org/benessere/estetica/)
+
+<br>
+
 
 ### Next on the street
 
 | Category | Archetype | Status |
 |---|---|---|
 | Legal & professional | to be decided | Planned |
-| Beauty & wellness | Medium: salon / beauty centre · High: spa / wellness resort | In progress (low-key barber is open) |
+| Beauty & wellness | High: spa / wellness resort | In progress (low-key barber and medium beauty centre are open) |
 | Local shop / e-commerce | to be decided | Planned |
 
 No deadlines: one window at a time, with the care each one needs.
@@ -136,6 +155,7 @@ flowchart TB
     infra --> O["<b>Ossidiana</b><br/>own markup · CSS · JS · fonts"]
     infra --> R["<b>Luppolo & Watt</b><br/>own markup · CSS · JS · fonts"]
     infra --> B["<b>Bottega Tre Rasoi</b><br/>own markup · CSS · JS · fonts"]
+    infra --> L["<b>Atelier Lumen</b><br/>own markup · CSS · JS · fonts"]
     infra --> N["<b>next concept…</b>"]
     T -.-|nothing shared| O
     O -.-|nothing shared| B
@@ -150,15 +170,15 @@ A piece of code is reused between two concepts only when it is the *exact same t
 
 Before a concept goes on the street, it has to clear the same gate:
 
-| Gate | What it means | Trattoria | Ossidiana | Luppolo & Watt | Tre Rasoi |
-|---|---|:-:|:-:|:-:|:-:|
-| **Builds** | `astro build` is clean | ✅ | ✅ | ✅ | ✅ |
-| **Accessible** | `axe-core`: zero violations | ✅ | ✅ | ✅ | ✅ |
-| **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ | ✅ | ✅ |
-| **Menu on phones** | A real menu with its own open/close effect, keyboard and Escape friendly (a curtain for Ossidiana, an unrolling card for the Trattoria, a pour of beer for Luppolo & Watt, a hot towel for Tre Rasoi) | ✅ | ✅ | ✅ | ✅ |
-| **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ | ✅ | ✅ |
-| **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ | ✅ | ✅ |
-| **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ | ✅ | ✅ |
+| Gate | What it means | Trattoria | Ossidiana | Luppolo & Watt | Tre Rasoi | Lumen |
+|---|---|:-:|:-:|:-:|:-:|:-:|
+| **Builds** | `astro build` is clean | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Accessible** | `axe-core`: zero violations | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Menu on phones** | A real menu with its own open/close effect, keyboard and Escape friendly (a curtain for Ossidiana, an unrolling card for the Trattoria, a pour of beer for Luppolo & Watt, a hot towel for Tre Rasoi, curtains for Lumen) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ```text
  LIGHTHOUSE · mobile            Trattoria                Ossidiana
@@ -184,13 +204,15 @@ src/
 │  │  ├─ grande-ristorante/index.astro
 │  │  └─ ristopub/index.astro
 │  └─ benessere/
-│     └─ barbiere/index.astro
+│     ├─ barbiere/index.astro
+│     └─ estetica/index.astro
 ├─ hub/                                data, styles and sections of the hub page
 ├─ concepts/
 │  ├─ trattoria/                       one component per section + base.css
 │  ├─ ossidiana/                       same idea, different everything
 │  ├─ ristopub/                        and again
-│  └─ barbiere/                        and again
+│  ├─ barbiere/                        and again
+│  └─ lumen/                           and again
 └─ assets/<concept>/ and hub/          local images only, no hotlinking
 public/images/<concept>/               fixed URLs: og:image, favicon
 docs/img/                              the pictures you are looking at

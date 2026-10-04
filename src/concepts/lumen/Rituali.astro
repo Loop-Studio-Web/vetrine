@@ -1,0 +1,328 @@
+---
+import { aree, oraNome, servizi } from './servizi';
+
+const sole: Record<string, [number, number]> = { alba: [20, 50], mattino: [42, 36], giorno: [64, 26], sera: [102, 50] };
+---
+
+<section class="sezione rituali" id="rituali" data-ora="mattino" aria-labelledby="rituali-titolo">
+	<div class="sezione__in">
+		<header class="rituali__testa" data-reveal>
+			<p class="ora">09:30 · il mattino</p>
+			<h2 id="rituali-titolo">Ogni trattamento<br />ha la sua <em>ora</em>.</h2>
+			<p class="rituali__lead">
+				Dieci trattamenti, tutti da prenotare a orario. Il colore della scheda è la luce in cui li consigliamo: la pulizia all’alba, i massaggi nel
+				pieno del giorno, il drenaggio quando si fa sera.
+			</p>
+		</header>
+
+		<div class="filtri" role="group" aria-label="Filtra per zona" data-reveal>
+			{
+				aree.map((a, i) => (
+					<button type="button" class="filtro" data-area={a.id} aria-pressed={i === 0 ? 'true' : 'false'}>
+						{a.nome}
+						<span aria-hidden="true">{a.id === 'tutti' ? servizi.length : servizi.filter((s) => s.area === a.id).length}</span>
+					</button>
+				))
+			}
+		</div>
+
+		<ul class="schede" aria-live="polite">
+			{
+				servizi.map((s, i) => {
+					const [x, y] = sole[s.ora];
+					return (
+						<li class={`scheda o-${s.ora}`} data-area={s.area} data-reveal style={`--d:${(i % 3) * 0.08}s`}>
+							<article class="scheda__corpo" data-tilt>
+								<div class="scheda__luce" aria-hidden="true">
+									<svg viewBox="0 0 120 70" width="120" height="70" overflow="visible">
+										<path d="M0 62h120" stroke="currentColor" stroke-width="1" opacity="0.4" />
+										<circle cx={x} cy={y} r="11" fill="currentColor" opacity="0.9" class="sole-svg" />
+										<circle cx={x} cy={y} r="19" fill="none" stroke="currentColor" stroke-width="1" opacity="0.35" />
+									</svg>
+									<span class="scheda__ora">{oraNome[s.ora].ora}</span>
+								</div>
+								<h3>{s.nome}</h3>
+								<p class="scheda__testo">{s.testo}</p>
+								<div class="scheda__pie">
+									<p class="scheda__dati">
+										<span>{s.min} min</span>
+										<strong>{s.prezzo} €</strong>
+									</p>
+									<button type="button" class="scheda__scegli" data-scegli={s.id} aria-label={`Prenota ${s.nome}`}>
+										Prenota <span aria-hidden="true">→</span>
+									</button>
+								</div>
+							</article>
+						</li>
+					);
+				})
+			}
+		</ul>
+		<p class="rituali__nota" data-reveal>Prezzi e trattamenti di fantasia, per mostrare come potrebbe essere il listino di un centro estetico.</p>
+	</div>
+</section>
+
+<style>
+	.rituali {
+		background: var(--avorio);
+	}
+	.rituali__testa {
+		max-width: 46em;
+	}
+	.rituali__testa h2 {
+		margin: 18px 0 22px;
+	}
+	.rituali__testa em {
+		color: var(--oro-testo);
+	}
+	.rituali__lead {
+		max-width: 38em;
+		color: var(--inchiostro-2);
+		font-size: 1.1rem;
+	}
+
+	.filtri {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+		margin: 44px 0 28px;
+	}
+	.filtro {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		padding: 10px 20px;
+		border-radius: 999px;
+		border: 1px solid var(--linea);
+		background: transparent;
+		cursor: pointer;
+		font-weight: 500;
+		transition:
+			background 0.4s var(--ease),
+			color 0.4s var(--ease),
+			border-color 0.4s;
+	}
+	.filtro span {
+		font-size: 0.78rem;
+		opacity: 0.75;
+	}
+	.filtro:hover {
+		border-color: var(--oro-testo);
+	}
+	.filtro[aria-pressed='true'] {
+		background: var(--prugna);
+		border-color: var(--prugna);
+		color: var(--cipria);
+	}
+
+	.schede {
+		list-style: none;
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 20px;
+	}
+	.scheda {
+		perspective: 900px;
+	}
+	.scheda[hidden] {
+		display: none;
+	}
+	.scheda.is-entra {
+		animation: entra 0.7s var(--ease) both;
+		animation-delay: var(--e, 0s);
+	}
+	@keyframes entra {
+		from {
+			opacity: 0;
+			transform: translateY(26px) scale(0.96);
+		}
+	}
+	.scheda__corpo {
+		position: relative;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		padding: 26px 26px 22px;
+		border-radius: 22px;
+		color: var(--inchiostro);
+		background: linear-gradient(160deg, var(--g1), var(--g2));
+		transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+		transition:
+			transform 0.5s var(--ease),
+			box-shadow 0.5s var(--ease);
+		transform-style: preserve-3d;
+		overflow: hidden;
+	}
+	.scheda__corpo::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: radial-gradient(320px circle at var(--gx, 50%) var(--gy, 0%), rgb(255 255 255 / 0.5), transparent 60%);
+		opacity: 0;
+		transition: opacity 0.4s;
+		pointer-events: none;
+	}
+	.scheda__corpo:hover {
+		box-shadow: 0 30px 50px -28px rgb(51 32 31 / 0.5);
+	}
+	.scheda__corpo:hover::after {
+		opacity: 1;
+	}
+	.o-alba {
+		--g1: #fbe3da;
+		--g2: #f3c3b2;
+	}
+	.o-mattino {
+		--g1: #fdf0da;
+		--g2: #f5d4ae;
+	}
+	.o-giorno {
+		--g1: #f2f0df;
+		--g2: #d9e2c6;
+	}
+	.o-sera {
+		--g1: #f0c8b8;
+		--g2: #d69b8b;
+	}
+	.scheda__luce {
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		color: var(--oro-testo);
+	}
+	.scheda__ora {
+		font-size: 0.78rem;
+		font-weight: 600;
+		letter-spacing: 0.16em;
+		color: var(--inchiostro);
+	}
+	.sole-svg {
+		transition: transform 0.9s var(--ease);
+	}
+	.scheda__corpo:hover .sole-svg {
+		transform: translateY(-8px);
+	}
+	.scheda h3 {
+		font-size: 2rem;
+		font-weight: 500;
+	}
+	.scheda__testo {
+		font-size: 0.97rem;
+		flex: 1;
+		color: #4b3430;
+	}
+	.scheda__pie {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		padding-top: 14px;
+		border-top: 1px solid rgb(51 32 31 / 0.2);
+	}
+	.scheda__dati {
+		display: flex;
+		gap: 14px;
+		align-items: baseline;
+		font-size: 0.92rem;
+	}
+	.scheda__dati strong {
+		font-family: var(--titoli);
+		font-size: 1.6rem;
+		font-weight: 600;
+	}
+	.scheda__scegli {
+		border: 0;
+		background: var(--prugna);
+		color: var(--cipria);
+		padding: 9px 16px;
+		border-radius: 999px;
+		font-weight: 600;
+		font-size: 0.88rem;
+		cursor: pointer;
+		transition: transform 0.35s var(--ease);
+	}
+	.scheda__scegli:hover {
+		transform: translateX(3px);
+	}
+	.rituali__nota {
+		margin-top: 28px;
+		font-size: 0.88rem;
+		color: var(--inchiostro-2);
+	}
+
+	@media (max-width: 960px) {
+		.schede {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+	@media (max-width: 620px) {
+		.schede {
+			grid-template-columns: 1fr;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.scheda.is-entra {
+			animation: none;
+		}
+		.scheda__corpo {
+			transform: none !important;
+		}
+	}
+</style>
+
+<script>
+	const filtri = document.querySelectorAll<HTMLButtonElement>('.filtro');
+	const schede = document.querySelectorAll<HTMLElement>('.scheda');
+	const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	filtri.forEach((f) =>
+		f.addEventListener('click', () => {
+			filtri.forEach((x) => x.setAttribute('aria-pressed', String(x === f)));
+			const area = f.dataset.area;
+			let n = 0;
+			schede.forEach((s) => {
+				const visibile = area === 'tutti' || s.dataset.area === area;
+				s.hidden = !visibile;
+				s.classList.remove('is-entra');
+				if (visibile) {
+					// le schede appena filtrate non devono restare nascoste dal "velo" di rivelazione
+					s.classList.add('is-visible');
+					if (!ridotto) {
+						void s.offsetWidth;
+						s.style.setProperty('--e', `${n * 0.06}s`);
+						s.classList.add('is-entra');
+					}
+					n++;
+				}
+			});
+		}),
+	);
+
+	// inclinazione 3D e riflesso (solo mouse)
+	if (!ridotto && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+		document.querySelectorAll<HTMLElement>('[data-tilt]').forEach((c) => {
+			c.addEventListener('pointermove', (e) => {
+				const r = c.getBoundingClientRect();
+				const x = (e.clientX - r.left) / r.width;
+				const y = (e.clientY - r.top) / r.height;
+				c.style.setProperty('--ry', `${((x - 0.5) * 9).toFixed(2)}deg`);
+				c.style.setProperty('--rx', `${((0.5 - y) * 9).toFixed(2)}deg`);
+				c.style.setProperty('--gx', `${(x * 100).toFixed(0)}%`);
+				c.style.setProperty('--gy', `${(y * 100).toFixed(0)}%`);
+			});
+			c.addEventListener('pointerleave', () => {
+				c.style.setProperty('--rx', '0deg');
+				c.style.setProperty('--ry', '0deg');
+			});
+		});
+	}
+
+	// "Prenota": il modulo in fondo parte già con quel trattamento
+	document.querySelectorAll<HTMLButtonElement>('[data-scegli]').forEach((b) =>
+		b.addEventListener('click', () => {
+			document.dispatchEvent(new CustomEvent('lumen:servizio', { detail: { id: b.dataset.scegli } }));
+			document.getElementById('prenota')?.scrollIntoView({ behavior: ridotto ? 'auto' : 'smooth', block: 'start' });
+		}),
+	);
+</script>

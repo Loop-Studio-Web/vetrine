@@ -1,0 +1,175 @@
+---
+const orari = [
+	{ g: 'Lunedì', o: 'Chiuso', n: 1 },
+	{ g: 'Martedì', o: '9:00 – 19:30', n: 2 },
+	{ g: 'Mercoledì', o: '9:00 – 19:30', n: 3 },
+	{ g: 'Giovedì', o: '9:00 – 19:30', n: 4 },
+	{ g: 'Venerdì', o: '9:00 – 19:30', n: 5 },
+	{ g: 'Sabato', o: '9:00 – 17:30', n: 6 },
+	{ g: 'Domenica', o: 'Chiuso', n: 0 },
+];
+---
+
+<section class="sezione dove" id="dove" data-ora="sera" aria-labelledby="dove-titolo">
+	<div class="sezione__in dove__in">
+		<div class="dove__testo" data-reveal>
+			<p class="ora">19:30 · l’ultima luce</p>
+			<h2 id="dove-titolo">Un cortile,<br />una porta <em>chiara</em>.</h2>
+			<p class="dove__lead">
+				Via della Luce 12, in fondo al cortile con il glicine. La porta è color cipria e c’è una lampada accesa anche di giorno. Se arrivi
+				in anticipo, il tè è già pronto.
+			</p>
+			<p class="dove__avviso">Indirizzo e telefono di fantasia: questa è una vetrina dimostrativa di Loop Studio.</p>
+			<dl class="contatti">
+				<div><dt>Telefono</dt><dd>000 000 0000 <small>(di esempio)</small></dd></div>
+				<div><dt>Come si arriva</dt><dd>A piedi dalla piazza, 4 minuti. Posti bici nel cortile.</dd></div>
+				<div><dt>Accessibilità</dt><dd>Ingresso senza gradini e cabina Meridiana al piano terra.</dd></div>
+			</dl>
+		</div>
+
+		<div class="dove__lato" data-reveal style="--d:0.1s">
+			<table class="orari">
+				<caption class="sr-only">Orari di apertura</caption>
+				<tbody>
+					{
+						orari.map((r) => (
+							<tr data-giorno={r.n} class:list={{ chiuso: r.o === 'Chiuso' }}>
+								<th scope="row">{r.g}</th>
+								<td>{r.o}</td>
+							</tr>
+						))
+					}
+				</tbody>
+			</table>
+
+			<svg class="mappa" viewBox="0 0 400 220" role="img" aria-label="Piantina stilizzata: Atelier Lumen si trova in fondo al cortile di via della Luce, a quattro minuti dalla piazza">
+				<rect width="400" height="220" fill="#2b1a20"></rect>
+				<g stroke="#4a2e37" stroke-width="16" fill="none" stroke-linecap="round">
+					<path d="M-10 70 H410"></path>
+					<path d="M-10 160 H410"></path>
+					<path d="M110 -10 V230"></path>
+					<path d="M290 -10 V230"></path>
+				</g>
+				<g stroke="#2b1a20" stroke-width="1.5" stroke-dasharray="7 8" fill="none">
+					<path d="M-10 70 H410"></path>
+					<path d="M-10 160 H410"></path>
+				</g>
+				<rect x="300" y="82" width="70" height="66" rx="6" fill="#3a2430"></rect>
+				<text x="40" y="62" fill="#c9aaa0" font-size="11" font-family="DM Sans Variable, sans-serif" letter-spacing="1.5">PIAZZA</text>
+				<text x="130" y="152" fill="#c9aaa0" font-size="11" font-family="DM Sans Variable, sans-serif" letter-spacing="1.5">VIA DELLA LUCE</text>
+				<path d="M60 70 H110 V160 H290" stroke="#e7a994" stroke-width="3" stroke-dasharray="2 8" stroke-linecap="round" fill="none"></path>
+				<g class="pin" transform="translate(335 112)">
+					<circle r="26" fill="#e7a994" opacity="0.18"></circle>
+					<circle r="14" fill="#e7a994" opacity="0.32"></circle>
+					<circle r="6" fill="#ffd9c4"></circle>
+				</g>
+			</svg>
+		</div>
+	</div>
+</section>
+
+<style>
+	.dove {
+		background: #1d1115;
+		color: var(--cipria);
+		--acc: var(--oro-chiaro);
+	}
+	.dove__in {
+		display: grid;
+		grid-template-columns: 1.1fr 0.9fr;
+		gap: clamp(28px, 5vw, 80px);
+		align-items: center;
+	}
+	.dove__testo h2 {
+		margin: 18px 0 22px;
+	}
+	.dove__testo em {
+		color: var(--oro-chiaro);
+	}
+	.dove__lead {
+		font-size: 1.1rem;
+		color: #e6cdc4;
+		max-width: 34em;
+	}
+	.dove__avviso {
+		margin: 16px 0 28px;
+		font-size: 0.88rem;
+		color: #cfb2a8;
+	}
+	.contatti > div {
+		padding: 14px 0;
+		border-top: 1px solid rgb(247 227 220 / 0.16);
+	}
+	.contatti dt {
+		font-size: 0.74rem;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--oro-chiaro);
+	}
+	.contatti small {
+		color: #cfb2a8;
+	}
+	.orari {
+		width: 100%;
+		border-collapse: collapse;
+		margin-bottom: 22px;
+	}
+	.orari th,
+	.orari td {
+		padding: 11px 4px;
+		text-align: left;
+		border-bottom: 1px solid rgb(247 227 220 / 0.14);
+		font-weight: 400;
+	}
+	.orari td {
+		text-align: right;
+		font-variant-numeric: tabular-nums;
+	}
+	.orari tr.chiuso {
+		color: #bb9e95;
+	}
+	.orari tr.is-oggi {
+		color: var(--oro-chiaro);
+		font-weight: 600;
+	}
+	.orari tr.is-oggi th::after {
+		content: ' · oggi';
+		font-size: 0.8rem;
+		font-weight: 400;
+	}
+	.mappa {
+		width: 100%;
+		height: auto;
+		border-radius: 22px;
+		border: 1px solid rgb(247 227 220 / 0.14);
+	}
+	.pin circle:first-child {
+		transform-origin: center;
+		animation: onda 3s ease-out infinite;
+	}
+	@keyframes onda {
+		from {
+			transform: scale(0.5);
+			opacity: 0.6;
+		}
+		to {
+			transform: scale(1.6);
+			opacity: 0;
+		}
+	}
+	@media (max-width: 900px) {
+		.dove__in {
+			grid-template-columns: 1fr;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.pin circle:first-child {
+			animation: none;
+		}
+	}
+</style>
+
+<script>
+	document.querySelector(`.orari tr[data-giorno="${new Date().getDay()}"]`)?.classList.add('is-oggi');
+</script>

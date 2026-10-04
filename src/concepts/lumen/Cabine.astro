@@ -1,0 +1,273 @@
+---
+import { Image } from 'astro:assets';
+import mattino from '../../assets/lumen/mattino.jpg';
+import oli from '../../assets/lumen/oli.jpg';
+import candela from '../../assets/lumen/candela.jpg';
+
+const cabine = [
+	{
+		id: 'alba',
+		nome: 'Alba',
+		ora: '07:30',
+		per: 'Viso',
+		img: mattino,
+		pos: '50% 40%',
+		alt: 'Una tenda di lino bianco attraversata dalla luce del mattino',
+		testo: 'La cabina dei trattamenti al viso: luce zenitale morbida, tende di lino, un lettino che si inclina quanto serve. Qui la pelle si vede com’è.',
+		dettagli: ['Luce LED integrata nel soffitto', 'Lettino con riscaldamento', 'Un bancone di sieri con le tue formule'],
+	},
+	{
+		id: 'meridiana',
+		nome: 'Meridiana',
+		ora: '12:30',
+		per: 'Corpo',
+		img: oli,
+		pos: '50% 50%',
+		alt: 'Oli e creme in vaschette di vetro su fondo rosa pesca',
+		testo: 'La cabina per i massaggi e gli scrub: chiara, tiepida, con una grande finestra che guarda il cortile. L’olio si scalda a bagnomaria, come una volta.',
+		dettagli: ['Lettino a due altezze', 'Doccia privata in cabina', 'Oli scaldati prima di ogni seduta'],
+	},
+	{
+		id: 'vespro',
+		nome: 'Vespro',
+		ora: '18:30',
+		per: 'Rituali lenti',
+		img: candela,
+		pos: '40% 50%',
+		alt: 'Una candela accesa davanti a una finestra, nella penombra',
+		testo: 'La cabina della sera: luce di candela, musica quasi spenta, un impacco caldo che ti aspetta. Per i rituali più lunghi e per chi vuole staccare davvero.',
+		dettagli: ['Luce regolabile fino al buio', 'Poltrona per il tè finale', 'Impacchi caldi ai piedi'],
+	},
+];
+---
+
+<section class="sezione cabine" id="cabine" data-ora="tramonto" aria-labelledby="cabine-titolo">
+	<div class="sezione__in">
+		<header class="cabine__testa" data-reveal>
+			<p class="ora">16:30 · il pomeriggio</p>
+			<h2 id="cabine-titolo">Tre cabine,<br />tre <em>luci</em>.</h2>
+			<p>Scegli dove stare: ogni cabina ha la sua luce, il suo silenzio e il suo odore. Tocca una cabina per entrarci.</p>
+		</header>
+
+		<ul class="cab" data-cab>
+			{
+				cabine.map((c, i) => (
+					<li class={`cab__item ${i === 0 ? 'is-aperta' : ''}`} data-reveal style={`--d:${i * 0.1}s`}>
+						<Image src={c.img} alt={c.alt} widths={[480, 800, 1100]} sizes="(min-width: 900px) 760px, 100vw" class="cab__img" style={`object-position:${c.pos}`} />
+						<div class="cab__velo" aria-hidden="true"></div>
+						<h3 class="cab__tab">
+							<button type="button" aria-expanded={i === 0 ? 'true' : 'false'} aria-controls={`cab-${c.id}`}>
+								<span class="cab__ora">{c.ora}</span>
+								<span class="cab__nome">{c.nome}</span>
+								<span class="cab__per">{c.per}</span>
+							</button>
+						</h3>
+						<div class="cab__dettaglio" id={`cab-${c.id}`}>
+							<p>{c.testo}</p>
+							<ul>
+								{c.dettagli.map((d) => <li>{d}</li>)}
+							</ul>
+						</div>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</section>
+
+<style>
+	.cabine {
+		background: linear-gradient(180deg, #e6eadb 0%, #f4e0d0 22%, #f0cdb9 100%);
+	}
+	.cabine__testa {
+		max-width: 42em;
+		margin-bottom: 36px;
+	}
+	.cabine__testa h2 {
+		margin: 18px 0 20px;
+	}
+	.cabine__testa em {
+		color: var(--oro-testo);
+	}
+	.cabine__testa p:last-child {
+		color: #5b413c;
+		font-size: 1.1rem;
+	}
+	.cab {
+		list-style: none;
+		display: flex;
+		gap: 14px;
+		height: clamp(480px, 62vw, 620px);
+	}
+	.cab__item {
+		position: relative;
+		flex: 1 1 0;
+		min-width: 0;
+		overflow: hidden;
+		border-radius: 26px;
+		color: #fff;
+		background: var(--prugna);
+		transition: flex-grow 0.9s var(--ease);
+	}
+	.cab__item.is-aperta {
+		flex-grow: 3.4;
+	}
+	.cab__img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		scale: 1.12;
+		transition: scale 1.6s var(--ease);
+	}
+	.cab__item.is-aperta .cab__img {
+		scale: 1;
+	}
+	.cab__velo {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(180deg, rgb(36 22 25 / 0.55) 0%, rgb(36 22 25 / 0.4) 40%, rgb(36 22 25 / 0.9) 100%);
+	}
+	.cab__tab {
+		position: absolute;
+		inset: 0;
+		font-size: inherit;
+	}
+	.cab__tab button {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		border: 0;
+		background: transparent;
+		color: inherit;
+		text-align: left;
+		cursor: pointer;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		padding: 24px;
+		gap: 4px;
+	}
+	.cab__ora {
+		font-size: 0.78rem;
+		font-weight: 600;
+		letter-spacing: 0.18em;
+		color: #ffd9c6;
+	}
+	.cab__nome {
+		font-family: var(--titoli);
+		font-weight: 500;
+		font-size: clamp(2.2rem, 4vw, 3.4rem);
+		line-height: 1;
+	}
+	.cab__per {
+		font-size: 0.85rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		opacity: 0.9;
+	}
+	.cab__item:not(.is-aperta) .cab__tab button {
+		writing-mode: vertical-rl;
+		flex-direction: row;
+		align-items: flex-start;
+		gap: 18px;
+	}
+	.cab__dettaglio {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		padding: 0 28px 28px;
+		max-width: 38em;
+		opacity: 0;
+		transform: translateY(20px);
+		pointer-events: none;
+		transition:
+			opacity 0.5s ease,
+			transform 0.7s var(--ease);
+	}
+	.cab__item.is-aperta .cab__dettaglio {
+		opacity: 1;
+		transform: none;
+		pointer-events: auto;
+		transition-delay: 0.35s;
+	}
+	.cab__dettaglio p {
+		font-size: 1.04rem;
+		margin-bottom: 14px;
+	}
+	.cab__dettaglio ul {
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+	.cab__dettaglio li {
+		padding: 7px 14px;
+		border-radius: 999px;
+		background: rgb(255 255 255 / 0.16);
+		backdrop-filter: blur(6px);
+		font-size: 0.85rem;
+		border: 1px solid rgb(255 255 255 / 0.3);
+	}
+	.cab__item:not(.is-aperta):hover .cab__img {
+		scale: 1.04;
+	}
+
+	@media (max-width: 860px) {
+		.cab {
+			flex-direction: column;
+			height: auto;
+		}
+		.cab__item {
+			flex: none;
+			height: 112px;
+			transition: height 0.8s var(--ease);
+		}
+		.cab__item.is-aperta {
+			height: 460px;
+		}
+		.cab__item:not(.is-aperta) .cab__tab button {
+			writing-mode: horizontal-tb;
+			flex-direction: row;
+			align-items: center;
+			gap: 16px;
+			padding: 0 22px;
+			justify-content: flex-start;
+		}
+		.cab__item:not(.is-aperta) .cab__per {
+			display: none;
+		}
+		.cab__dettaglio {
+			padding: 0 22px 24px;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.cab__item,
+		.cab__img,
+		.cab__dettaglio {
+			transition-duration: 0.01s;
+			transition-delay: 0s;
+		}
+	}
+</style>
+
+<script>
+	const lista = document.querySelector<HTMLElement>('[data-cab]')!;
+	const voci = [...lista.querySelectorAll<HTMLElement>('.cab__item')];
+	const apri = (el: HTMLElement) => {
+		voci.forEach((v) => {
+			const aperta = v === el;
+			v.classList.toggle('is-aperta', aperta);
+			v.querySelector('button')!.setAttribute('aria-expanded', String(aperta));
+		});
+	};
+	voci.forEach((v) => {
+		v.querySelector('button')!.addEventListener('click', () => apri(v));
+		// con il mouse basta passarci sopra
+		if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+			v.addEventListener('pointerenter', () => matchMedia('(min-width: 861px)').matches && apri(v));
+		}
+	});
+</script>

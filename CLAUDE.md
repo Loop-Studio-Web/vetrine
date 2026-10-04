@@ -54,7 +54,7 @@ nella "via" in alto (a scorrimento orizzontale su telefono) e nella sezione dell
 macrocategoria (`macros` in `data.ts`). L'hub e le pagine `info` replicano gli stili del sito madre (`../Loop-Studio`): header (logo 52/42 px, righe rosse al passaggio, toggle tema con etichetta), footer a colonne con filo rosso animato e icone social, cursore "loop" (`src/hub/Cursore.astro`), scrollbar e selezione del testo, bottoni a 4 px. Sono COPIE, non componenti condivisi: se cambiano sul sito madre vanno riallineate a mano. Cursore e scrollbar del sito madre valgono SOLO per l'hub: i concept hanno i propri (il barbiere: forbici e scrollbar a righe). Ogni concept ha anche una pagina di dettaglio indicizzabile
 (`src/pages/<macro>/<variante>/info.astro`, 5 righe che usano `src/hub/Dettaglio.astro`; i testi sono in
 `data.ts`) da aggiungere anche in `public/sitemap.xml`. I concept restano `noindex`. I link dall'hub alle homepage dei concept si aprono in una nuova scheda (`target="_blank" rel="noopener"` + testo per lettori di schermo), così l'hub resta aperto; i link alle pagine `info` restano nella stessa scheda. Sopra la via c'è il testo "Benvenuto in Loop Street" (numeri adattati a `concepts`); le categorie senza vetrine hanno `stato` in `prossime` (`'presto'` = "Stanno per aprire", `'cantiere'` = "In cantiere"; il testo parla di "stanno per aprire" solo se esiste almeno una `'presto'`). Il neon "Aperto" ha un difetto per lettera (max 3 lampi/s, fermo con reduced-motion). I titoli con `data-scramble` si decodificano all'ingresso in vista (script in `Layout.astro`, copia della logica del sito madre): mai sull'h1 (LCP mobile) e nascosti con `opacity`, non `visibility` (altrimenti saltano nell'albero di accessibilità). Ogni pagina ha anche
-il proprio menù su mobile (hub: pannello a cerchio; Trattoria: cartoncino che si srotola; Ossidiana: sipario; RistoPub: pannello che si riempie di birra; Tre Rasoi: asciugamano che si stende).
+il proprio menù su mobile (hub: pannello a cerchio; Trattoria: cartoncino che si srotola; Ossidiana: sipario; RistoPub: pannello che si riempie di birra; Tre Rasoi: asciugamano che si stende; Lumen: tenda che si apre sulla luce).
 
 ## Convenzioni di un concept
 
@@ -111,8 +111,18 @@ il proprio menù su mobile (hub: pannello a cerchio; Trattoria: cartoncino che s
   Foto Unsplash libere; i poster con marchi nella foto delle poltrone sono stati sfocati. Logo generato con AI e
   vettorializzato (`src/assets/barbiere/brand/`). Scala dei livelli: **Medium e High devono aggiungere animazioni,
   hover ed effetti (anche JS)** per far notare la differenza di budget.
-- **Prossime:** Beauty & wellness Medium (salone/centro estetico) e High (spa/wellness resort);
-  Legale/professionale e Negozio locale (3 concept ciascuna).
+- **Benessere / Centro estetico** (Atelier Lumen, `src/pages/benessere/estetica/`, concept `src/concepts/lumen/`):
+  livello **Medium** della macro, pubblicata (2026-10-04). `build` ok, axe 0 violazioni (desktop, dopo il
+  flusso di prenotazione, mobile con menù aperto), Lighthouse 99 mobile / 100 desktop. Idea-guida: una giornata di luce
+  (alba, mattino, mezzogiorno, tramonto, sera; `data-ora` per sezione), cipria/pesca/avorio/oro rosato/prugna; Cormorant +
+  DM Sans. Salto rispetto al barbiere: configuratore del rituale (`SuMisura.astro`, dati in `servizi.ts`, il risultato
+  precompila la prenotazione via evento `lumen:servizio`), meridiana nella navbar (ora dallo scroll) e alone di luce
+  col mouse (`Meridiana.astro`), schede con tilt 3D e filtro, tre cabine a fisarmonica, prenotazione a fasce di luce con
+  "biglietto di luce" (`fasce.ts`, giorni calcolati da oggi), menù mobile a tenda. Nessun volto: foto Unsplash libere di
+  cielo, oli, candele, prodotti. Logo: SVG forniti dall'utente (`src/assets/lumen/brand/`), favicon dal simbolo nel cerchio.
+  Provato su iPhone 12 mini/Safari dall'utente (ok); sito madre e banner del README aggiornati. Da fare: Firefox, rilettura dei testi.
+- **Prossime:** Beauty & wellness High (spa/wellness resort, con più rischio e animazioni del Medium: es. WebGL/canvas,
+  transizioni di pagina); Legale/professionale e Negozio locale (3 concept ciascuna).
 
 ## Deploy
 
