@@ -121,6 +121,16 @@ committare, verificare che questo PC sia allineato al remoto e al deploy:
    ciò che sta su `origin/main`, non ciò che c'è sul PC. Dire sempre
    all'utente se una modifica è solo locale o già pubblicata.
 
+## Repository: sempre sull'organizzazione GitHub dello studio
+
+Il remoto di questa repo è `https://github.com/Loop-Studio-Web/vetrine.git`
+(organizzazione **Loop-Studio-Web**). Regola dell'utente: tutte le repo
+dello studio, vecchie e nuove, si pubblicano sull'organizzazione, **mai sul
+profilo personale**, a meno di un suo comando esplicito. Per una repo nuova:
+crearla direttamente sotto l'organizzazione (`gh repo create Loop-Studio-Web/<nome>`).
+Se un `git remote -v` mostra un indirizzo personale, segnalarlo e aggiornarlo
+con `git remote set-url origin …` (chiedendo prima).
+
 ## Timeline
 
 Nessuna fretta: si costruisce un concept alla volta, con la cura che serve
