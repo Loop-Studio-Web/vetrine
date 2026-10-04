@@ -110,13 +110,11 @@ Senza ordine fisso tra macrocategorie:
 
 Altre macrocategorie si aggiungeranno nel tempo.
 
-**Punto di partenza per Ristorante/Home restaurant:** esistono due repo
-private sull'account personale Domenico85 (`Incanto_Astro` e `incanto`),
-costruite per un vero cliente ("L'Incanto") il cui contratto non si è mai
-chiuso. Riusabili solo come base tecnica/architetturale (la versione Astro,
-non quella WordPress — non gira su GitHub Pages), mai con nome, foto o dati
-reali di quel cliente: contenuti e brand completamente nuovi prima di
-pubblicare qualunque cosa qui.
+**Punto di partenza per Ristorante/Home restaurant:** esiste una base tecnica
+Astro già pronta in repo private, nata per un altro progetto. Riusabile solo
+come base tecnica/architetturale (la versione Astro, non quella WordPress —
+non gira su GitHub Pages), mai con nome, foto o dati reali di terzi: contenuti
+e brand completamente nuovi prima di pubblicare qualunque cosa qui.
 
 ## Development
 
