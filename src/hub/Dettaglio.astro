@@ -37,13 +37,13 @@ const title = `${c.titoloSeo} | Loop Studio`;
 			<h1 class="det__title">{c.nome}</h1>
 			<p class="det__claim">{c.claim}</p>
 			<div class="det__cta">
-				<a class="btn" href={`${base}${c.path}`}>Entra nella vetrina <span aria-hidden="true">→</span></a>
+				<a class="btn" href={`${base}${c.path}`} target="_blank" rel="noopener">Entra nella vetrina <span aria-hidden="true">→</span><span class="sr-only"> (si apre in una nuova scheda)</span></a>
 				<a class="btn btn--ghost" href={`${CONTACT}?concept=${c.slug}`}>Ne voglio una così</a>
 			</div>
 		</header>
 
 		<div class="wrap">
-			<a class="det__media" href={`${base}${c.path}`} aria-label={`Apri la vetrina ${c.nome}`}>
+			<a class="det__media" href={`${base}${c.path}`} target="_blank" rel="noopener" aria-label={`Apri la vetrina ${c.nome} (si apre in una nuova scheda)`}>
 				<Image
 					src={c.card}
 					alt={c.cardAlt}

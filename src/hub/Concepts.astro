@@ -36,7 +36,7 @@ const live = (slug: string) => concepts.filter((c) => c.macro === slug).length;
 			{
 				concepts.map((c) => (
 					<article class="card" id={c.slug} data-macro={c.macro} style={`--glow:${c.glow}`}>
-						<a class="card__media" href={`${base}${c.path}`} tabindex="-1" aria-hidden="true">
+						<a class="card__media" href={`${base}${c.path}`} target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
 							<Image
 								src={c.card}
 								alt=""
@@ -53,8 +53,8 @@ const live = (slug: string) => concepts.filter((c) => c.macro === slug).length;
 							<h3 class="card__name">{c.nome}</h3>
 							<p class="card__claim">{c.claim}</p>
 							<div class="card__cta">
-								<a class="btn btn--sm" href={`${base}${c.path}`}>
-									Entra <span aria-hidden="true">→</span>
+								<a class="btn btn--sm" href={`${base}${c.path}`} target="_blank" rel="noopener">
+									Entra <span aria-hidden="true">→</span><span class="sr-only"> (si apre in una nuova scheda)</span>
 								</a>
 								<a class="btn btn--sm btn--ghost" href={`${base}${c.infoPath}`}>
 									Scopri di più<span class="sr-only"> su {c.nome}</span>

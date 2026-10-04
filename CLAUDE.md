@@ -53,7 +53,7 @@ aggiunge una voce lì (con le immagini in `src/assets/hub/`) e il concept compar
 nella "via" in alto (a scorrimento orizzontale su telefono) e nella sezione delle vetrine, filtrabile per
 macrocategoria (`macros` in `data.ts`). Ogni concept ha anche una pagina di dettaglio indicizzabile
 (`src/pages/<macro>/<variante>/info.astro`, 5 righe che usano `src/hub/Dettaglio.astro`; i testi sono in
-`data.ts`) da aggiungere anche in `public/sitemap.xml`. I concept restano `noindex`. Sopra la via c'è il testo "Benvenuto in Loop Street" (numeri adattati a `concepts`); le categorie senza vetrine hanno `stato` in `prossime` (`'presto'` = "Stanno per aprire", `'cantiere'` = "In cantiere"; il testo parla di "stanno per aprire" solo se esiste almeno una `'presto'`). Il neon "Aperto" ha un difetto per lettera (max 3 lampi/s, fermo con reduced-motion). I titoli con `data-scramble` si decodificano all'ingresso in vista (script in `Layout.astro`, copia della logica del sito madre): mai sull'h1 (LCP mobile) e nascosti con `opacity`, non `visibility` (altrimenti saltano nell'albero di accessibilità). Ogni pagina ha anche
+`data.ts`) da aggiungere anche in `public/sitemap.xml`. I concept restano `noindex`. I link dall'hub alle homepage dei concept si aprono in una nuova scheda (`target="_blank" rel="noopener"` + testo per lettori di schermo), così l'hub resta aperto; i link alle pagine `info` restano nella stessa scheda. Sopra la via c'è il testo "Benvenuto in Loop Street" (numeri adattati a `concepts`); le categorie senza vetrine hanno `stato` in `prossime` (`'presto'` = "Stanno per aprire", `'cantiere'` = "In cantiere"; il testo parla di "stanno per aprire" solo se esiste almeno una `'presto'`). Il neon "Aperto" ha un difetto per lettera (max 3 lampi/s, fermo con reduced-motion). I titoli con `data-scramble` si decodificano all'ingresso in vista (script in `Layout.astro`, copia della logica del sito madre): mai sull'h1 (LCP mobile) e nascosti con `opacity`, non `visibility` (altrimenti saltano nell'albero di accessibilità). Ogni pagina ha anche
 il proprio menù su mobile (hub: pannello a cerchio; Trattoria: cartoncino che si srotola; Ossidiana: sipario; RistoPub: pannello che si riempie di birra).
 
 ## Convenzioni di un concept
@@ -92,13 +92,17 @@ il proprio menù su mobile (hub: pannello a cerchio; Trattoria: cartoncino che s
   scelta; percorso a 5 portate in scroll-snap con zoom lento (Ken Burns) sulle
   foto; font Bodoni Moda + Jost + IBM Plex Mono. Logo generato con AI
   (simbolo ritagliato in `src/assets/ossidiana/brand/simbolo.png`).
-- **Ristorazione / RistoPub** (Luppolo & Watt, `src/pages/ristorazione/ristopub/`):
-  costruito in locale, `build` ok, axe 0 violazioni (desktop, mobile con menù aperto, dopo il
-  flusso di prenotazione), Lighthouse 99/100/100 (mobile). Birrificio-pub con palco: carta kraft,
-  ambra, inchiostro, Big Shoulders Display + Archivo; tema chiaro con sezione "palco" scura.
-  Menù mobile "a spina" (si riempie di birra). Date degli eventi calcolate da oggi
-  (`eventi.ts`). Foto Unsplash libere, scelte senza marchi di terzi sulle spine. Da collaudare
-  ancora su WebKit/iPhone reale.
+- **Ristorazione / RistoPub** (Luppolo & Watt, `src/pages/ristorazione/ristopub/`): pubblicata
+  (2026-10-04). `build` ok, axe 0 violazioni (desktop, mobile con menù aperto, dopo il flusso di
+  prenotazione), Lighthouse 99/100/100. Birrificio-pub con palco: carta kraft, ambra, inchiostro,
+  Big Shoulders Display + Archivo; tema chiaro con sezione "palco" scura. Menù mobile "a spina"
+  (si riempie di birra), boccale che accompagna il cursore (solo mouse), intro breve una volta per
+  sessione, barra di avanzamento e scrollbar ambra con schiuma. Date degli eventi calcolate da oggi
+  (`eventi.ts`). Logo generato con AI e vettorializzato (`src/assets/ristopub/brand/simbolo.svg`).
+  Foto Unsplash libere, scelte senza marchi di terzi sulle spine. Da collaudare ancora su WebKit/iPhone
+  reale e Firefox.
+- **La macrocategoria Ristorazione è chiusa**: tre concept (Trattoria, Ossidiana, Luppolo & Watt).
+  Prossime: Legale/professionale, Beauty & wellness, Negozio locale (3 concept ciascuna).
 
 ## Deploy
 

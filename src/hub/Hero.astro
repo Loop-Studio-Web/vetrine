@@ -105,7 +105,7 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 						<ul class="street__row" role="list" aria-labelledby={`via-${g.slug}`}>
 							{g.live.map((c) => (
 								<li class="shop shop--live" style={`--glow:${c.glow}`}>
-									<a class="shop__link" href={`${base}${c.path}`} aria-label={`${c.nome}, ${c.archetipo.toLowerCase()}: entra nella vetrina`}>
+									<a class="shop__link" href={`${base}${c.path}`} target="_blank" rel="noopener" aria-label={`${c.nome}, ${c.archetipo.toLowerCase()}: entra nella vetrina (si apre in una nuova scheda)`}>
 										<span class="shop__awning" set:html={awning(c.awning)} />
 										<span class="shop__window">
 											<Image
