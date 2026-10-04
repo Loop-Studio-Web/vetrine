@@ -18,15 +18,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       # v6: salva in cache anche node_modules/.astro (immagini già ottimizzate), così le build
       # non rifanno tutto da capo a ogni push man mano che i concept crescono (v3 non lo faceva).
       - uses: withastro/action@v6
         with:
-          # Astro 7 richiede Node >=22.12 (stesso vincolo di "engines" in
-          # package.json) — senza questo il runner usa Node 20 di default
-          # e la build fallisce subito.
-          node-version: 22
+          # Astro 7 richiede Node >=22.12 (vincolo "engines" in package.json). Si usa il 24, la LTS
+          # attuale: è la stessa versione con cui si lavora in locale, quindi niente differenze tra
+          # PC e deploy (il 22 va in fine supporto ad aprile 2027).
+          node-version: 24
 
   deploy:
     needs: build
@@ -36,4 +36,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
