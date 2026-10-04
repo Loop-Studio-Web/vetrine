@@ -19,7 +19,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: withastro/action@v3
+      # v6: salva in cache anche node_modules/.astro (immagini già ottimizzate), così le build
+      # non rifanno tutto da capo a ogni push man mano che i concept crescono (v3 non lo faceva).
+      - uses: withastro/action@v6
         with:
           # Astro 7 richiede Node >=22.12 (stesso vincolo di "engines" in
           # package.json) — senza questo il runner usa Node 20 di default

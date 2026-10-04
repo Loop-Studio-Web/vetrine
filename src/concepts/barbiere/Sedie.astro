@@ -34,10 +34,10 @@ const posti = [
 				{
 					sedie.map((s, i) => (
 						<li style={`--x:${posti[i].x}%; --y:${posti[i].y}%`} data-posto={s.n}>
-							<a href="#turno" data-scegli={s.n} aria-label={`Siediti da ${s.nome}, sedia ${s.n}`}>
+							<button type="button" data-vedi={s.n} aria-label={`Sedia ${s.n}: ${s.nome}, ${s.mestiere}`}>
 								<span class="posto__num">{s.n}</span>
 								<span class="posto__nome">{s.nome}</span>
-							</a>
+							</button>
 						</li>
 					))
 				}
@@ -131,7 +131,10 @@ const posti = [
 		top: var(--y);
 		transform: translate(-50%, -50%);
 	}
-	.sala__posti a {
+	.sala__posti button {
+		font: inherit;
+		border: 0;
+		cursor: pointer;
 		display: flex;
 		align-items: center;
 		gap: 0;
@@ -159,27 +162,35 @@ const posti = [
 		font-weight: 900;
 		font-size: 1.15rem;
 	}
+	/* il nome sta sempre accanto al numero: su touch non c'è hover e chi tocca deve sapere quale barbiere sceglie */
 	.posto__nome {
-		max-width: 0;
-		overflow: hidden;
 		white-space: nowrap;
 		font-weight: 700;
 		font-size: 0.95rem;
-		transition:
-			max-width 0.4s ease,
-			padding 0.4s ease;
+		padding: 0 12px 0 9px;
 	}
-	.sala__posti a:hover,
-	.sala__posti a:focus-visible,
-	.sala__posti li.is-acceso a {
+	/* con un mouse il nome compare al passaggio (o al focus): il numero da solo resta pulito sulla foto */
+	@media (hover: hover) and (pointer: fine) {
+		.posto__nome {
+			max-width: 0;
+			padding: 0;
+			overflow: hidden;
+			transition:
+				max-width 0.4s ease,
+				padding 0.4s ease;
+		}
+		.sala__posti button:hover .posto__nome,
+		.sala__posti button:focus-visible .posto__nome,
+		.sala__posti li.is-acceso .posto__nome {
+			max-width: 6em;
+			padding: 0 12px 0 10px;
+		}
+	}
+	.sala__posti button:hover,
+	.sala__posti button:focus-visible,
+	.sala__posti li.is-acceso button {
 		transform: scale(1.08);
 		background: var(--ottone-chiaro);
-	}
-	.sala__posti a:hover .posto__nome,
-	.sala__posti a:focus-visible .posto__nome,
-	.sala__posti li.is-acceso .posto__nome {
-		max-width: 6em;
-		padding: 0 12px 0 10px;
 	}
 
 	.sedie__lista {
@@ -202,7 +213,8 @@ const posti = [
 	}
 	.sedia:hover,
 	.sedia:focus-within,
-	.sedia.is-acceso {
+	.sedia.is-acceso,
+	.sedia.is-richiamo {
 		transform: translateY(-4px);
 		border-color: var(--ottone);
 	}
@@ -274,6 +286,10 @@ const posti = [
 			height: 28px;
 			font-size: 1rem;
 		}
+		.posto__nome {
+			font-size: 0.88rem;
+			padding: 0 10px 0 7px;
+		}
 	}
 	@media (max-width: 520px) {
 		.sedia {
@@ -284,14 +300,14 @@ const posti = [
 			font-size: 3rem;
 		}
 		.sala__posti li:nth-child(1) {
-			--x: 15%;
+			--x: 20%;
 		}
 		.sala__posti li:nth-child(3) {
-			--x: 85%;
+			--x: 80%;
 		}
 	}
 	@media (prefers-reduced-motion: reduce) {
-		.sala__posti a,
+		.sala__posti button,
 		.posto__nome,
 		.sedia {
 			transition: none;
@@ -308,10 +324,26 @@ const posti = [
 		const l = prossimaLibera(new Date(), n);
 		if (t && l) t.textContent = `Libera ${quando(l)}`;
 	});
-	// "Siediti da…" (scheda o segnaposto sulla foto) precompila il turno
+	const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+	const comportamento = ridotto ? 'auto' : 'smooth';
+	// "Siediti da…" precompila il turno e ci porta. Lo scorrimento lo guida lo script (non l'ancora #turno):
+	// su Safari/iPhone l'ancora con scorrimento morbido partiva dall'alto, e il modulo cambiava altezza mentre scorreva.
 	document.querySelectorAll<HTMLElement>('[data-scegli]').forEach((a) =>
-		a.addEventListener('click', () => {
+		a.addEventListener('click', (e) => {
+			e.preventDefault();
 			document.dispatchEvent(new CustomEvent('trr:scegli-sedia', { detail: Number(a.dataset.scegli) }));
+			requestAnimationFrame(() => document.getElementById('turno')?.scrollIntoView({ behavior: comportamento, block: 'start' }));
+		}),
+	);
+	// il numero sulla poltrona porta alla scheda del barbiere (non al turno): la accende per un momento
+	document.querySelectorAll<HTMLElement>('[data-vedi]').forEach((b) =>
+		b.addEventListener('click', () => {
+			const n = b.dataset.vedi!;
+			const scheda = document.querySelector<HTMLElement>(`.sedia[data-sedia="${n}"]`);
+			if (!scheda) return;
+			scheda.scrollIntoView({ behavior: comportamento, block: 'center' });
+			scheda.classList.add('is-richiamo');
+			setTimeout(() => scheda.classList.remove('is-richiamo'), 1800);
 		}),
 	);
 	// passando su una scheda si accende il numero sulla poltrona, e viceversa
@@ -321,8 +353,11 @@ const posti = [
 	};
 	document.querySelectorAll<HTMLElement>('[data-sedia], [data-posto]').forEach((el) => {
 		const n = el.dataset.sedia ?? el.dataset.posto!;
-		el.addEventListener('mouseenter', () => acceso(n, true));
-		el.addEventListener('mouseleave', () => acceso(n, false));
+		// solo con un mouse: su touch il mouseenter dopo il tocco resterebbe "appiccicato" finché non si tocca altrove
+		if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+			el.addEventListener('mouseenter', () => acceso(n, true));
+			el.addEventListener('mouseleave', () => acceso(n, false));
+		}
 		el.addEventListener('focusin', () => acceso(n, true));
 		el.addEventListener('focusout', () => acceso(n, false));
 	});

@@ -60,6 +60,21 @@ const pageUrl = new URL(`${base}/benessere/barbiere/`, Astro.site).href;
 		</main>
 		<Footer />
 		<script>
+			// Le ancore interne scorrono via script e non con l'ancora nativa: su Safari/iPhone l'ancora con scorrimento
+			// morbido può partire dall'alto e atterrare storta quando la pagina cambia altezza mentre scorre.
+			document.addEventListener('click', (e) => {
+				const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
+				if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey) return;
+				const id = a.getAttribute('href')!.slice(1);
+				const el = id ? document.getElementById(id) : document.documentElement;
+				if (!el) return;
+				e.preventDefault();
+				const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+				requestAnimationFrame(() => el.scrollIntoView({ behavior: ridotto ? 'auto' : 'smooth', block: 'start' }));
+				if (id) history.replaceState(null, '', `#${id}`);
+			});
+		</script>
+		<script>
 			// Rivela gli elementi quando entrano in vista
 			const els = document.querySelectorAll('[data-reveal]');
 			const io = new IntersectionObserver(
