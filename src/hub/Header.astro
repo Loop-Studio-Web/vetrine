@@ -1,0 +1,160 @@
+---
+import logoDark from '../assets/hub/loop-logo-on-dark.svg';
+import logoLight from '../assets/hub/loop-logo-on-light.svg';
+import { SITE, CONTACT } from './data';
+---
+
+<header class="hdr" data-hdr>
+	<div class="hdr__in wrap">
+		<a class="hdr__logo" href={SITE} aria-label="Loop Studio, torna al sito dello studio">
+			<img class="logo logo--dark" src={logoDark.src} alt="" width="95" height="50" />
+			<img class="logo logo--light" src={logoLight.src} alt="" width="95" height="50" />
+		</a>
+		<nav class="hdr__nav" aria-label="Sezioni">
+			<a href="#vetrine">Le vetrine</a>
+			<a href="#prossime">Prossime</a>
+			<a href={SITE}>Sito dello studio <span aria-hidden="true">↗</span></a>
+		</nav>
+		<div class="hdr__tools">
+			<button type="button" class="hdr__theme" data-theme-toggle aria-label="Passa al tema chiaro">
+				<svg class="ico ico--sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"
+					><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg
+				>
+				<svg class="ico ico--moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+					><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path></svg
+				>
+			</button>
+			<a class="btn btn--sm" href={CONTACT}>Parliamone</a>
+		</div>
+	</div>
+</header>
+
+<style>
+	.hdr {
+		position: fixed;
+		inset: 0 0 auto 0;
+		z-index: 100;
+		transition: padding 0.4s;
+	}
+	.hdr::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background: color-mix(in srgb, var(--bg) 78%, transparent);
+		-webkit-backdrop-filter: blur(16px) saturate(1.2);
+		backdrop-filter: blur(16px) saturate(1.2);
+		border-bottom: 1px solid var(--border);
+		opacity: 0;
+		transition: opacity 0.4s;
+	}
+	.hdr.is-scrolled::before {
+		opacity: 1;
+	}
+	.hdr__in {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 24px;
+		padding-block: 18px;
+		transition: padding 0.4s;
+	}
+	.hdr.is-scrolled .hdr__in {
+		padding-block: 10px;
+	}
+	.hdr__logo {
+		display: inline-flex;
+		line-height: 0;
+	}
+	.logo {
+		height: 38px;
+		width: auto;
+	}
+	.logo--light {
+		display: none;
+	}
+	:global(:root[data-theme='light']) .logo--dark {
+		display: none;
+	}
+	:global(:root[data-theme='light']) .logo--light {
+		display: block;
+	}
+	.hdr__nav {
+		display: none;
+		gap: 34px;
+	}
+	.hdr__nav a {
+		font-size: 0.95rem;
+		font-weight: 500;
+		text-decoration: none;
+		color: var(--muted);
+		padding: 8px 0;
+		transition: color 0.25s;
+	}
+	.hdr__nav a:hover {
+		color: var(--text);
+	}
+	.hdr__tools {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+	.hdr__theme {
+		display: grid;
+		place-items: center;
+		width: 42px;
+		height: 42px;
+		border-radius: 50%;
+		border: 1px solid var(--border);
+		background: transparent;
+		color: var(--text);
+		cursor: pointer;
+		transition: background 0.25s, border-color 0.25s;
+	}
+	.hdr__theme:hover {
+		background: var(--surface);
+	}
+	.ico--moon {
+		display: none;
+	}
+	:global(:root[data-theme='light']) .ico--sun {
+		display: none;
+	}
+	:global(:root[data-theme='light']) .ico--moon {
+		display: block;
+	}
+	@media (min-width: 900px) {
+		.hdr__nav {
+			display: flex;
+		}
+	}
+</style>
+
+<script>
+	const hdr = document.querySelector<HTMLElement>('[data-hdr]');
+	const btn = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+	const root = document.documentElement;
+
+	if (hdr) {
+		const upd = () => hdr.classList.toggle('is-scrolled', scrollY > 24);
+		addEventListener('scroll', upd, { passive: true });
+		upd();
+	}
+
+	if (btn) {
+		const label = () => {
+			const light = root.getAttribute('data-theme') === 'light';
+			btn.setAttribute('aria-label', light ? 'Passa al tema scuro' : 'Passa al tema chiaro');
+			document.querySelector('meta[name="theme-color"]')?.setAttribute('content', light ? '#ffffff' : '#000000');
+		};
+		label();
+		btn.addEventListener('click', () => {
+			const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+			root.setAttribute('data-theme', next);
+			try {
+				localStorage.setItem('vetrine-theme', next);
+			} catch (e) {}
+			label();
+		});
+	}
+</script>

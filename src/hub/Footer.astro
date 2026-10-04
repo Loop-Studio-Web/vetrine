@@ -1,0 +1,132 @@
+---
+import logoDark from '../assets/hub/loop-logo-on-dark.svg';
+import logoLight from '../assets/hub/loop-logo-on-light.svg';
+import { SITE, CONTACT, LAB, REPO } from './data';
+---
+
+<section class="cta" aria-labelledby="cta-title">
+	<div class="wrap cta__in" data-reveal>
+		<h2 id="cta-title" class="cta__title">Ne vuoi una così per la tua attività?</h2>
+		<p class="cta__lead">
+			Raccontaci cosa fai e a chi vuoi parlare. Ti rispondiamo con una proposta pensata per te, non con un
+			template.
+		</p>
+		<a class="btn" href={CONTACT}>Parliamone <span aria-hidden="true">→</span></a>
+	</div>
+</section>
+
+<footer class="ftr">
+	<div class="wrap ftr__in">
+		<div class="ftr__brand">
+			<a href={SITE} aria-label="Loop Studio, vai al sito dello studio" class="ftr__logo">
+				<img class="logo logo--dark" src={logoDark.src} alt="" width="95" height="50" />
+				<img class="logo logo--light" src={logoLight.src} alt="" width="95" height="50" />
+			</a>
+			<p>Diamo forma alla tua presenza online.</p>
+		</div>
+		<nav class="ftr__links" aria-label="Link dello studio">
+			<a href={SITE}>Sito dello studio</a>
+			<a href={LAB}>Lab: esperimenti e componenti</a>
+			<a href={CONTACT}>Contatti</a>
+			<a href={REPO} rel="noopener">Il codice su GitHub</a>
+		</nav>
+	</div>
+	<div class="wrap">
+		<p class="ftr__note">
+			Le vetrine sono concept dimostrativi: attività, nomi, indirizzi e recensioni sono di fantasia. Le foto
+			provengono da Unsplash e sono usate secondo la sua licenza.
+		</p>
+	</div>
+</footer>
+
+<style>
+	.cta {
+		position: relative;
+		padding: clamp(70px, 10vw, 140px) 0;
+		text-align: center;
+		overflow: hidden;
+		isolation: isolate;
+	}
+	.cta::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background: radial-gradient(ellipse 60% 70% at 50% 100%, color-mix(in srgb, var(--accent) 24%, transparent), transparent 70%);
+	}
+	.cta__in {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	.cta__title {
+		font-family: var(--display);
+		font-weight: 800;
+		font-size: clamp(2.2rem, 5.6vw, 4.4rem);
+		line-height: 1.04;
+		letter-spacing: -0.035em;
+		max-width: 18ch;
+	}
+	.cta__lead {
+		margin: 22px 0 34px;
+		max-width: 46ch;
+		color: var(--muted);
+		font-size: 1.15rem;
+	}
+
+	.ftr {
+		padding: 48px 0 36px;
+		border-top: 1px solid var(--border);
+	}
+	.ftr__in {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		gap: 32px;
+	}
+	.ftr__logo {
+		display: inline-flex;
+		line-height: 0;
+	}
+	.logo {
+		height: 40px;
+		width: auto;
+	}
+	.logo--light {
+		display: none;
+	}
+	:global(:root[data-theme='light']) .logo--dark {
+		display: none;
+	}
+	:global(:root[data-theme='light']) .logo--light {
+		display: block;
+	}
+	.ftr__brand p {
+		margin-top: 14px;
+		color: var(--muted);
+		font-size: 0.95rem;
+	}
+	.ftr__links {
+		display: grid;
+		gap: 4px;
+		align-content: start;
+	}
+	.ftr__links a {
+		padding: 6px 0;
+		text-decoration: none;
+		color: var(--muted);
+		font-size: 0.95rem;
+		transition: color 0.25s;
+	}
+	.ftr__links a:hover {
+		color: var(--text);
+	}
+	.ftr__note {
+		max-width: 70ch;
+		margin-top: 36px;
+		padding-top: 24px;
+		border-top: 1px solid var(--border);
+		font-size: 0.82rem;
+		color: var(--muted);
+	}
+</style>

@@ -1,0 +1,84 @@
+---
+import { prossime, CONTACT } from './data';
+---
+
+<section class="prossime" id="prossime" aria-labelledby="prossime-title">
+	<div class="wrap prossime__in">
+		<div data-reveal>
+			<p class="eyebrow">Prossime vetrine</p>
+			<h2 id="prossime-title" class="h2">La via è ancora lunga. Meglio così.</h2>
+			<p class="prossime__lead">
+				Costruiamo una vetrina alla volta, con la cura che ciascuna richiede. Queste sono le prossime: se la tua
+				attività non c’è, raccontacela, potrebbe essere la prossima.
+			</p>
+			<a class="btn" href={CONTACT}>Proponi la tua attività</a>
+		</div>
+		<ul class="lista" role="list">
+			{
+				prossime.map((p, i) => (
+					<li data-reveal style={`--d:${i * 0.07}s`}>
+						<span class="lista__n" aria-hidden="true">{String(i + 3).padStart(2, '0')}</span>
+						<span class="lista__nome">{p.nome}</span>
+						<span class="lista__cat">{p.categoria}</span>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</section>
+
+<style>
+	.prossime {
+		padding: clamp(70px, 9vw, 120px) 0;
+		background: var(--bg-2);
+		border-top: 1px solid var(--border);
+	}
+	.prossime__in {
+		display: grid;
+		gap: 44px;
+		align-items: start;
+	}
+	.prossime .h2 {
+		margin-top: 14px;
+		max-width: 16ch;
+	}
+	.prossime__lead {
+		margin: 20px 0 30px;
+		max-width: 42ch;
+		color: var(--muted);
+	}
+	.lista li {
+		display: grid;
+		grid-template-columns: 44px 1fr auto;
+		gap: 14px;
+		align-items: baseline;
+		padding: 20px 0;
+		border-bottom: 1px dashed var(--border);
+	}
+	.lista li:first-child {
+		border-top: 1px dashed var(--border);
+	}
+	.lista__n {
+		font-family: var(--display);
+		font-weight: 800;
+		font-size: 0.9rem;
+		color: var(--muted);
+	}
+	.lista__nome {
+		font-family: var(--display);
+		font-weight: 700;
+		font-size: clamp(1.25rem, 2.4vw, 1.7rem);
+		letter-spacing: -0.02em;
+	}
+	.lista__cat {
+		font-size: 0.85rem;
+		color: var(--muted);
+		text-align: right;
+	}
+	@media (min-width: 900px) {
+		.prossime__in {
+			grid-template-columns: 5fr 6fr;
+			gap: clamp(40px, 8vw, 120px);
+		}
+	}
+</style>

@@ -45,9 +45,13 @@ animazioni. I componenti restano **dentro il concept**: la cartella
 `src/concepts/<variante>/` serve a spezzare il file, non a condividere codice
 con le altre varianti.
 
-La `src/pages/index.astro` in radice è un indice semplice con i link ai
-concept pubblicati (sul modello della index.html di `lab`), da aggiornare a
-mano a ogni nuova pubblicazione.
+La `src/pages/index.astro` in radice è l'**hub pubblico delle vetrine**: unico punto
+d'ingresso, con il marchio dello studio (nero e rosso, Bricolage Grotesque e Hanken
+Grotesk, tema scuro e chiaro come theloopstudio.org). Vive in `src/hub/` ed è separato
+dai concept. I contenuti sono in `src/hub/data.ts`: a ogni nuova pubblicazione si
+aggiunge una voce lì (con le immagini in `src/assets/hub/`) e il concept compare da solo
+nella "via" in alto e nella sezione delle vetrine. Per ora `noindex`; da togliere quando il
+sito vivrà su `vetrine.theloopstudio.org`.
 
 ## Convenzioni di un concept
 

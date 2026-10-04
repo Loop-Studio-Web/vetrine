@@ -1,0 +1,303 @@
+---
+import { Image } from 'astro:assets';
+import { concepts, prossime, CONTACT } from './data';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// Tenda a strisce con il bordo a scalloni, uguale per ogni negozio ma nei colori del concept
+function awning([a, b]: [string, string] | string[]) {
+	const n = 6;
+	const w = 100 / n;
+	let s = '';
+	for (let i = 0; i < n; i++) {
+		const c = i % 2 === 0 ? a : b;
+		s += `<rect x="${(i * w).toFixed(2)}" width="${(w + 0.3).toFixed(2)}" height="20" fill="${c}"/><circle cx="${(i * w + w / 2).toFixed(2)}" cy="20" r="${(w / 2).toFixed(2)}" fill="${c}"/>`;
+	}
+	return `<svg viewBox="0 0 100 29" preserveAspectRatio="none" aria-hidden="true" focusable="false">${s}</svg>`;
+}
+const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
+---
+
+<section class="hero" aria-labelledby="hero-title">
+	<div class="hero__glow" aria-hidden="true"></div>
+	<div class="wrap hero__top">
+		<p class="eyebrow hero__eyebrow">Vetrine · homepage concept di Loop Studio</p>
+		<h1 id="hero-title" class="hero__title">
+			Ogni attività ha una vetrina.
+			<span class="hero__accent">La tua dovrebbe sembrare solo tua.</span>
+		</h1>
+		<p class="hero__lead">
+			Homepage complete pensate per attività locali: identità, struttura, tipografia e movimento diversi per ogni
+			tipologia. Nessun template condiviso. Dalla trattoria al ristorante da menù degustazione, ognuna è disegnata
+			come se fosse l’unica.
+		</p>
+		<div class="hero__cta">
+			<a class="btn" href="#vetrine">Entra nella via <span aria-hidden="true">↓</span></a>
+			<a class="btn btn--ghost" href={CONTACT}>Parliamone</a>
+		</div>
+	</div>
+
+	<div class="wrap">
+		<div class="street" data-reveal>
+			<p class="street__neon" aria-hidden="true">Aperto</p>
+			<ul class="street__row" role="list">
+				{
+					concepts.map((c) => (
+						<li class="shop shop--live" style={`--glow:${c.glow}`}>
+							<a class="shop__link" href={`${base}${c.path}`} aria-label={`${c.nome}, ${c.archetipo.toLowerCase()}: entra nella vetrina`}>
+								<span class="shop__awning" set:html={awning(c.awning)} />
+								<span class="shop__window">
+									<Image
+										src={c.shot}
+										alt={c.shotAlt}
+										widths={[320, 520, 760]}
+										sizes="(min-width: 1100px) 24vw, 46vw"
+										loading="eager"
+										class="shop__img"
+										style={`object-position:${c.crop}`}
+									/>
+									<span class="shop__open">Entra <span aria-hidden="true">→</span></span>
+								</span>
+								<span class="shop__name">{c.nome}</span>
+								<span class="shop__cat">{c.categoria}</span>
+							</a>
+						</li>
+					))
+				}
+				{
+					prossime.map((p) => (
+						<li class="shop shop--soon">
+							<div class="shop__link">
+								<span class="shop__awning" set:html={soonAwning} />
+								<span class="shop__window" aria-hidden="true">
+									<span class="shop__plus">+</span>
+								</span>
+								<span class="shop__name">{p.nome}</span>
+								<span class="shop__cat">In arrivo</span>
+							</div>
+						</li>
+					))
+				}
+			</ul>
+			<div class="street__ground" aria-hidden="true"></div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.hero {
+		position: relative;
+		padding: clamp(120px, 16vw, 190px) 0 clamp(60px, 8vw, 110px);
+		overflow: hidden;
+		isolation: isolate;
+	}
+	.hero__glow {
+		position: absolute;
+		inset: -10% -10% auto -10%;
+		height: 90%;
+		z-index: -1;
+		background:
+			radial-gradient(ellipse 55% 60% at 80% 10%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%),
+			radial-gradient(ellipse 40% 50% at 10% 0%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 70%);
+	}
+	.hero__eyebrow {
+		margin-bottom: 22px;
+	}
+	.hero__title {
+		font-family: var(--display);
+		font-weight: 800;
+		font-size: clamp(2.5rem, 6.6vw, 5.6rem);
+		line-height: 1.02;
+		letter-spacing: -0.035em;
+		max-width: 16ch;
+	}
+	.hero__accent {
+		display: block;
+		color: var(--accent);
+	}
+	.hero__lead {
+		margin-top: 28px;
+		max-width: 56ch;
+		font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+		color: var(--muted);
+	}
+	.hero__cta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 14px;
+		margin-top: 36px;
+	}
+
+	/* La via di negozi */
+	.street {
+		position: relative;
+		margin-top: clamp(56px, 8vw, 100px);
+	}
+	.street__neon {
+		position: absolute;
+		right: 0;
+		top: -34px;
+		margin: 0;
+		padding: 5px 16px;
+		border: 2px solid #ff3b30;
+		border-radius: 10px;
+		color: #ff3b30;
+		font-weight: 800;
+		font-size: 0.85rem;
+		letter-spacing: 0.3em;
+		text-transform: uppercase;
+		text-shadow: 0 0 10px rgba(255, 59, 48, 0.8);
+		box-shadow: 0 0 14px rgba(255, 59, 48, 0.5), inset 0 0 10px rgba(255, 59, 48, 0.3);
+		animation: neon 7s infinite;
+	}
+	:global(:root[data-theme='light']) .street__neon {
+		background: #0a0a0a;
+	}
+	.street__row {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 22px 16px;
+	}
+	.shop__link {
+		display: flex;
+		flex-direction: column;
+		text-decoration: none;
+		color: inherit;
+	}
+	.shop__awning {
+		display: block;
+		line-height: 0;
+		position: relative;
+		z-index: 1;
+		filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.35));
+	}
+	.shop__awning :global(svg) {
+		display: block;
+		width: 100%;
+		height: clamp(26px, 3.2vw, 44px);
+	}
+	.shop__window {
+		position: relative;
+		display: block;
+		margin: -2px 6px 0;
+		aspect-ratio: 3 / 4;
+		overflow: hidden;
+		border: 1px solid var(--border);
+		border-radius: 4px 4px 2px 2px;
+		background: var(--surface);
+	}
+	.shop__img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 50% 35%;
+		filter: brightness(0.68) saturate(0.85);
+		transform: scale(1.06);
+		transition: filter 0.7s ease, transform 1.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+	}
+	.shop--live .shop__window {
+		transition: box-shadow 0.7s ease, border-color 0.7s;
+	}
+	.shop--live .shop__link:hover .shop__window,
+	.shop--live .shop__link:focus-visible .shop__window {
+		box-shadow: 0 0 70px -6px var(--glow);
+		border-color: color-mix(in srgb, var(--text) 35%, transparent);
+	}
+	.shop--live .shop__link:hover .shop__img,
+	.shop--live .shop__link:focus-visible .shop__img {
+		filter: none;
+		transform: scale(1);
+	}
+	.shop__open {
+		position: absolute;
+		left: 50%;
+		bottom: 16px;
+		transform: translate(-50%, 10px);
+		padding: 9px 18px;
+		border-radius: 999px;
+		background: var(--text);
+		color: var(--bg);
+		font-size: 0.85rem;
+		font-weight: 700;
+		white-space: nowrap;
+		opacity: 0;
+		transition: opacity 0.4s, transform 0.4s;
+	}
+	.shop--live .shop__link:hover .shop__open,
+	.shop--live .shop__link:focus-visible .shop__open {
+		opacity: 1;
+		transform: translate(-50%, 0);
+	}
+	.shop__name {
+		margin-top: 14px;
+		font-family: var(--display);
+		font-weight: 700;
+		font-size: 1.05rem;
+		line-height: 1.2;
+	}
+	.shop__cat {
+		margin-top: 2px;
+		font-size: 0.82rem;
+		color: var(--muted);
+	}
+	.shop--soon .shop__window {
+		display: grid;
+		place-items: center;
+		background: transparent;
+		border-style: dashed;
+	}
+	.shop__plus {
+		font-size: 2.4rem;
+		font-weight: 200;
+		color: var(--muted);
+		opacity: 0.55;
+	}
+	.shop--soon .shop__name {
+		color: var(--muted);
+	}
+	.shop--soon .shop__awning {
+		opacity: 0.7;
+	}
+	.street__ground {
+		margin-top: 26px;
+		height: 1px;
+		background: linear-gradient(to right, transparent, var(--border) 15%, var(--border) 85%, transparent);
+	}
+	@keyframes neon {
+		0%, 90%, 100% { opacity: 1; }
+		92% { opacity: 0.3; }
+		94% { opacity: 1; }
+		96% { opacity: 0.45; }
+		97% { opacity: 1; }
+	}
+
+	@media (min-width: 700px) {
+		.street__row {
+			grid-template-columns: repeat(4, 1fr);
+		}
+	}
+	@media (min-width: 1100px) {
+		.street__row {
+			grid-template-columns: 1.55fr 1.55fr repeat(5, 1fr);
+			gap: 22px 18px;
+			align-items: start;
+		}
+		.shop--soon .shop__window {
+			aspect-ratio: 3 / 4;
+		}
+		.shop--soon .shop__name {
+			font-size: 0.9rem;
+		}
+	}
+	@media (hover: none) {
+		/* Sul touch non c'è hover: le vetrine aperte restano accese */
+		.shop--live .shop__img {
+			filter: none;
+			transform: none;
+		}
+		.shop__open {
+			opacity: 1;
+			transform: translate(-50%, 0);
+		}
+	}
+</style>

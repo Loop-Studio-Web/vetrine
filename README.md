@@ -17,6 +17,8 @@
 
 [**Walk the street →**](https://loop-studio-web.github.io/vetrine/)
 
+<sub>The entrance page follows the studio's own brand; each window behind it keeps its own identity.</sub>
+
 </div>
 
 <br>
@@ -134,14 +136,15 @@ Before a concept goes on the street, it has to clear the same gate:
 ```text
 src/
 ├─ pages/
-│  ├─ index.astro                      plain index of published concepts
+│  ├─ index.astro                      the public hub (see src/hub/)
 │  └─ ristorazione/
 │     ├─ trattoria/index.astro         page shell only
 │     └─ grande-ristorante/index.astro
+├─ hub/                                data, styles and sections of the hub page
 ├─ concepts/
 │  ├─ trattoria/                       one component per section + base.css
 │  └─ ossidiana/                       same idea, different everything
-└─ assets/<concept>/                   local images only, no hotlinking
+└─ assets/<concept>/ and hub/          local images only, no hotlinking
 public/images/<concept>/               fixed URLs: og:image, favicon
 docs/img/                              the pictures you are looking at
 ```
