@@ -261,6 +261,6 @@ Node 22.12 or newer.
 
 [theloopstudio.org](https://theloopstudio.org/) · [Lab: experiments and components](https://github.com/Loop-Studio-Web/lab)
 
-<sub>Spotted a bug or have an idea for the next window? Open an issue.</sub>
+<sub>&copy; 2026 Loop Studio. All rights reserved: the source is public to show our work, not to be reused (see [LICENSE](LICENSE)). Want a window like these for your business? [Get in touch](https://theloopstudio.org/contatti/).</sub>
 
 </div>

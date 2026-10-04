@@ -1,0 +1,24 @@
+Copyright (c) 2026 Loop Studio. All rights reserved.
+
+This repository is published to show Loop Studio's work. It is not open source.
+
+No permission is granted to copy, modify, merge, publish, distribute, sublicense,
+sell or otherwise use the code, designs, layouts, text, illustrations or any other
+original material in this repository, in whole or in part, for any purpose, without
+the prior written permission of Loop Studio.
+
+You are welcome to read the source and to view and fork the repository inside GitHub
+as allowed by the GitHub Terms of Service. That does not grant any other right.
+
+Third-party material is not covered by this notice and keeps its own license:
+  - photographs come from Unsplash and are used under the Unsplash License;
+  - fonts come from Fontsource packages and are used under their own open licenses
+    (mostly the SIL Open Font License);
+  - Astro and the other dependencies listed in package.json are licensed by their
+    respective authors.
+
+The Loop Studio name and logo are not licensed for any use. The businesses shown in
+the demo concepts (restaurants, pubs, barber shop, beauty centre) are fictional and
+their names, logos and texts are part of the original material described above.
+
+To ask for permission: https://theloopstudio.org/contatti/
