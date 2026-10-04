@@ -1,0 +1,297 @@
+---
+import { Image } from 'astro:assets';
+import luppolo from '../../assets/ristopub/luppolo-assaggio.jpg';
+import banco from '../../assets/ristopub/banco-spine.jpg';
+
+const passi = [
+	{ n: '01', t: 'Si macina', d: 'Orzo maltato di una malteria a un’ora di strada, macinato la mattina stessa.' },
+	{ n: '02', t: 'Si cuoce', d: 'Novanta minuti di mosto, e il luppolo a manciate: una all’inizio, una alla fine.' },
+	{ n: '03', t: 'Si aspetta', d: 'Due o tre settimane nel fermentatore. La fretta è nemica della birra, e dei clienti.' },
+	{ n: '04', t: 'Si spilla', d: 'Dalla cantina al banco ci sono nove metri di tubo. Meno strada fa, meglio è.' },
+];
+---
+
+<section class="sezione birr" id="birrificio" aria-labelledby="birr-titolo">
+	<div class="sezione__in birr__in">
+		<div class="birr__foto" data-reveal>
+			<Image src={luppolo} alt="Tre bicchieri di birra di colori diversi, dal chiaro allo scuro, circondati da coni di luppolo fresco." widths={[480, 720, 1000]} sizes="(min-width: 920px) 520px, 90vw" class="birr__immagine" />
+			<p class="birr__bollo" aria-hidden="true">Dal sacco<br />alla spina</p>
+			<Image src={banco} alt="Il banco con le maniglie delle spine di un pub, con le bottiglie sullo sfondo." widths={[360, 600]} sizes="(min-width: 920px) 260px, 50vw" class="birr__piccola" />
+		</div>
+
+		<div class="birr__testo">
+			<header data-reveal>
+				<p class="etichetta">Il birrificio</p>
+				<h2 class="titolo" id="birr-titolo">Fatta qui,<br />bevuta <em>qui</em>.</h2>
+				<p class="birr__lead">
+					Il birrificio è la stanza dietro il bancone: cinque ettolitri a cotta, due fermentatori, un mastro birraio che
+					ogni sera si siede in sala ad ascoltare cosa si dice delle sue birre.
+				</p>
+			</header>
+
+			<ol class="birr__passi">
+				{
+					passi.map((p, i) => (
+						<li data-reveal style={`--d:${i * 0.08}s`}>
+							<span class="birr__n">{p.n}</span>
+							<div>
+								<h3>{p.t}</h3>
+								<p>{p.d}</p>
+							</div>
+						</li>
+					))
+				}
+			</ol>
+
+			<div class="birr__tank" data-tank>
+				<svg viewBox="0 0 120 150" aria-hidden="true">
+					<defs>
+						<clipPath id="tank-clip">
+							<path d="M20 20h80v78l-40 44-40-44z" />
+						</clipPath>
+					</defs>
+					<g clip-path="url(#tank-clip)">
+						<rect class="birr__mosto" x="0" y="0" width="120" height="150" fill="#e8921a" />
+						<g class="birr__bolle">
+							<circle cx="45" cy="130" r="3" />
+							<circle cx="62" cy="136" r="2.4" />
+							<circle cx="78" cy="128" r="3.4" />
+							<circle cx="58" cy="112" r="2" />
+							<circle cx="72" cy="118" r="2.6" />
+						</g>
+					</g>
+					<path d="M20 20h80v78l-40 44-40-44z" fill="none" stroke="#1a1815" stroke-width="4" stroke-linejoin="round" />
+					<path d="M20 20c0-10 14-14 40-14s40 4 40 14" fill="#e6d9bb" stroke="#1a1815" stroke-width="4" />
+					<path d="M30 142v8m60-8v8" stroke="#1a1815" stroke-width="4" />
+				</svg>
+				<p>
+					Giorno <b data-giorno>1</b> di <b>21</b>
+					<small>La Sottopalco, nel fermentatore numero 2</small>
+				</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.birr__in {
+		display: grid;
+		grid-template-columns: 0.9fr 1.1fr;
+		gap: clamp(32px, 6vw, 96px);
+		align-items: start;
+	}
+	.titolo em {
+		font-style: normal;
+		color: var(--luppolo);
+	}
+	.birr__foto {
+		position: sticky;
+		top: calc(var(--nav-h) + 30px);
+		padding-bottom: 80px;
+	}
+	.birr__foto :global(.birr__immagine) {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 4 / 5;
+		object-fit: cover;
+		border: var(--bordo);
+		box-shadow: 10px 10px 0 var(--luppolo);
+	}
+	.birr__foto :global(.birr__piccola) {
+		position: absolute;
+		right: -14px;
+		bottom: 0;
+		width: 54%;
+		height: auto;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+		border: var(--bordo);
+		background: var(--carta);
+		box-shadow: var(--ombra);
+		transform: rotate(3deg);
+	}
+	.birr__bollo {
+		position: absolute;
+		left: -16px;
+		top: 24px;
+		background: var(--luppolo);
+		color: var(--carta);
+		border: var(--bordo);
+		font-family: var(--display);
+		font-weight: 900;
+		text-transform: uppercase;
+		font-size: 1.7rem;
+		line-height: 0.95;
+		letter-spacing: 0.04em;
+		padding: 10px 14px 6px;
+		transform: rotate(-6deg);
+	}
+	.birr__lead {
+		margin-top: 18px;
+		font-size: 1.15rem;
+		max-width: 34em;
+	}
+	.birr__passi {
+		list-style: none;
+		margin-top: 40px;
+		counter-reset: p;
+	}
+	.birr__passi li {
+		display: grid;
+		grid-template-columns: 82px 1fr;
+		gap: 18px;
+		padding: 20px 0;
+		border-top: var(--bordo);
+	}
+	.birr__passi li:last-child {
+		border-bottom: var(--bordo);
+	}
+	.birr__n {
+		font-family: var(--display);
+		font-weight: 900;
+		font-size: 3.6rem;
+		line-height: 0.9;
+		color: var(--luppolo);
+	}
+	.birr__passi h3 {
+		font-family: var(--display);
+		font-weight: 900;
+		text-transform: uppercase;
+		font-size: 1.9rem;
+		line-height: 1;
+	}
+	.birr__passi p {
+		margin-top: 4px;
+		max-width: 32em;
+	}
+
+	.birr__tank {
+		display: flex;
+		align-items: center;
+		gap: 22px;
+		margin-top: 34px;
+		border: var(--bordo);
+		padding: 16px 22px;
+		background: var(--carta-2);
+		box-shadow: var(--ombra);
+	}
+	.birr__tank svg {
+		width: 82px;
+		flex-shrink: 0;
+	}
+	.birr__tank p {
+		font-family: var(--display);
+		font-weight: 800;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		font-size: 1.5rem;
+		line-height: 1.1;
+	}
+	.birr__tank b {
+		font-size: 2.6rem;
+		color: var(--rosso);
+		font-weight: 900;
+	}
+	.birr__tank small {
+		display: block;
+		font-family: var(--testo);
+		font-weight: 600;
+		font-size: 0.9rem;
+		letter-spacing: 0;
+		text-transform: none;
+		margin-top: 4px;
+	}
+	.birr__mosto {
+		transform: translateY(150px);
+		transition: transform 3.2s cubic-bezier(0.3, 0.6, 0.2, 1);
+	}
+	.birr__tank.is-attivo .birr__mosto {
+		transform: translateY(46px);
+	}
+	.birr__bolle {
+		fill: rgba(255, 246, 224, 0.7);
+	}
+	.birr__bolle circle {
+		animation: sale 3s ease-in infinite;
+		animation-play-state: paused;
+	}
+	.birr__bolle circle:nth-child(2) {
+		animation-delay: 0.7s;
+	}
+	.birr__bolle circle:nth-child(3) {
+		animation-delay: 1.3s;
+	}
+	.birr__bolle circle:nth-child(4) {
+		animation-delay: 1.9s;
+	}
+	.birr__bolle circle:nth-child(5) {
+		animation-delay: 2.4s;
+	}
+	.birr__tank.is-attivo .birr__bolle circle {
+		animation-play-state: running;
+	}
+	@keyframes sale {
+		0% {
+			transform: translateY(0);
+			opacity: 0;
+		}
+		20% {
+			opacity: 1;
+		}
+		100% {
+			transform: translateY(-80px);
+			opacity: 0;
+		}
+	}
+
+	@media (max-width: 920px) {
+		.birr__in {
+			grid-template-columns: 1fr;
+		}
+		.birr__foto {
+			position: relative;
+			top: auto;
+			padding-bottom: 60px;
+			margin-inline: 14px 18px;
+		}
+		.birr__foto :global(.birr__piccola) {
+			right: 12px;
+		}
+		.birr__bollo {
+			left: -8px;
+		}
+		.birr__passi li {
+			grid-template-columns: 62px 1fr;
+		}
+		.birr__n {
+			font-size: 2.8rem;
+		}
+	}
+</style>
+
+<script>
+	const tank = document.querySelector<HTMLElement>('[data-tank]')!;
+	const giorno = tank.querySelector<HTMLElement>('[data-giorno]')!;
+	const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	new IntersectionObserver(
+		(es, io) => {
+			if (!es[0].isIntersecting) return;
+			io.disconnect();
+			tank.classList.add('is-attivo');
+			// il contatore dei giorni sale mentre il fermentatore si riempie
+			if (ridotto) {
+				giorno.textContent = '14';
+				return;
+			}
+			const t0 = performance.now();
+			const passo = (t: number) => {
+				const k = Math.min((t - t0) / 3200, 1);
+				giorno.textContent = String(1 + Math.round(k * 13));
+				if (k < 1) requestAnimationFrame(passo);
+			};
+			requestAnimationFrame(passo);
+		},
+		{ threshold: 0.6 },
+	).observe(tank);
+</script>

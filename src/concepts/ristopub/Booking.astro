@@ -1,0 +1,519 @@
+---
+// Prenotazione a tre passi: scelta, riepilogo, conferma. Widget di esempio: nessun dato viene inviato.
+const tipi = [
+	{ id: 'tavolo', nome: 'Un tavolo', det: 'Da mangiare e da bere, anche senza musica' },
+	{ id: 'serata', nome: 'Una serata live', det: 'Tavolo vicino al palco, ingresso libero' },
+	{ id: 'assaggio', nome: 'Assaggio guidato', det: 'Giovedì, sei birre con il mastro birraio, 12 €' },
+	{ id: 'gruppo', nome: 'Suono io', det: 'Proponi il tuo gruppo per il palco' },
+];
+---
+
+<section class="sezione prenota" id="prenota" aria-labelledby="prenota-titolo">
+	<div class="sezione__in prenota__in">
+		<header class="prenota__testa" data-reveal>
+			<p class="etichetta">Prenota</p>
+			<h2 class="titolo" id="prenota-titolo">Il tuo posto<br />in prima fila.</h2>
+			<p class="prenota__lead">
+				Il venerdì e il sabato sera i tavoli vicino al palco finiscono presto. Scegli che cosa vuoi fare e ti rispondiamo
+				entro un’ora, in orario di apertura.
+			</p>
+			<p class="prenota__demo">Modulo dimostrativo: nessun dato viene inviato o salvato.</p>
+		</header>
+
+		<div class="prenota__scheda" data-reveal>
+			<form class="modulo" novalidate data-form>
+				<fieldset class="modulo__gruppo">
+					<legend><span>1</span> Che cosa ti va?</legend>
+					<div class="modulo__tipi">
+						{
+							tipi.map((t, i) => (
+								<label class="tipo">
+									<input type="radio" name="tipo" value={t.id} checked={i === 0} />
+									<span class="tipo__corpo">
+										<b>{t.nome}</b>
+										<small>{t.det}</small>
+									</span>
+								</label>
+							))
+						}
+					</div>
+				</fieldset>
+
+				<fieldset class="modulo__gruppo">
+					<legend><span>2</span> Quando e in quanti</legend>
+					<div class="modulo__riga">
+						<label class="campo">
+							<span>Data</span>
+							<input type="date" name="data" required data-data />
+							<span class="campo__errore" data-errore="data"></span>
+						</label>
+						<label class="campo">
+							<span data-etichetta-persone>Persone</span>
+							<select name="persone" data-persone></select>
+						</label>
+					</div>
+					<div class="orari" role="radiogroup" aria-label="Orario" data-orari></div>
+				</fieldset>
+
+				<fieldset class="modulo__gruppo">
+					<legend><span>3</span> Chi sei</legend>
+					<div class="modulo__riga">
+						<label class="campo">
+							<span>Nome</span>
+							<input type="text" name="nome" autocomplete="name" required />
+							<span class="campo__errore" data-errore="nome"></span>
+						</label>
+						<label class="campo">
+							<span>Telefono o email</span>
+							<input type="text" name="contatto" autocomplete="off" required />
+							<span class="campo__errore" data-errore="contatto"></span>
+						</label>
+					</div>
+					<label class="campo">
+						<span data-etichetta-note>Note (intolleranze, compleanni, passeggini…)</span>
+						<textarea name="note" rows="3"></textarea>
+					</label>
+				</fieldset>
+
+				<button class="btn" type="submit">Controlla e conferma <span aria-hidden="true">→</span></button>
+			</form>
+
+			<div class="riepilogo" hidden data-riepilogo tabindex="-1">
+				<p class="etichetta">Riepilogo</p>
+				<h3 data-r-titolo></h3>
+				<dl data-r-lista></dl>
+				<div class="riepilogo__azioni">
+					<button type="button" class="btn" data-conferma>Conferma</button>
+					<button type="button" class="btn btn--chiaro" data-modifica>Modifica</button>
+				</div>
+			</div>
+
+			<div class="fatto" hidden data-fatto tabindex="-1">
+				<svg viewBox="0 0 80 100" aria-hidden="true">
+					<path d="M8 20h52l-5 70a6 6 0 0 1-6 6H19a6 6 0 0 1-6-6z" fill="#e8921a" stroke="#1a1815" stroke-width="4" stroke-linejoin="round" />
+					<path d="M60 34h8a8 8 0 0 1 8 8v14a8 8 0 0 1-8 8h-9" fill="none" stroke="#1a1815" stroke-width="4" />
+					<path d="M4 20c0-9 8-12 14-9 3-6 14-6 17 0 7-3 14 1 15 9z" fill="#fbf3df" stroke="#1a1815" stroke-width="4" stroke-linejoin="round" />
+				</svg>
+				<h3>Ci vediamo presto!</h3>
+				<p data-fatto-testo></p>
+				<p class="fatto__demo">Questa è una vetrina dimostrativa: la richiesta non è stata inviata a nessuno.</p>
+				<button type="button" class="btn btn--chiaro" data-ricomincia>Nuova richiesta</button>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.prenota {
+		background: var(--ambra);
+		border-top: var(--bordo);
+		border-bottom: var(--bordo);
+	}
+	.prenota__in {
+		display: grid;
+		grid-template-columns: 0.8fr 1.2fr;
+		gap: clamp(32px, 6vw, 80px);
+		align-items: start;
+	}
+	.prenota .etichetta {
+		background: var(--carta);
+	}
+	.prenota__lead {
+		margin-top: 18px;
+		font-size: 1.15rem;
+		font-weight: 500;
+		max-width: 28em;
+	}
+	.prenota__demo {
+		margin-top: 18px;
+		font-weight: 700;
+		font-size: 0.95rem;
+		border: 2px dashed var(--inchiostro);
+		padding: 8px 12px;
+		display: inline-block;
+	}
+	.prenota__scheda {
+		background: var(--carta);
+		border: var(--bordo);
+		box-shadow: 10px 10px 0 var(--inchiostro);
+		padding: clamp(18px, 4vw, 36px);
+	}
+	.modulo {
+		display: grid;
+		gap: 26px;
+	}
+	.modulo__gruppo {
+		border: 0;
+		display: grid;
+		gap: 14px;
+		min-width: 0;
+	}
+	.modulo legend {
+		font-family: var(--display);
+		font-weight: 900;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		font-size: 1.6rem;
+		margin-bottom: 12px;
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+	.modulo legend span {
+		display: grid;
+		place-items: center;
+		width: 34px;
+		height: 34px;
+		background: var(--inchiostro);
+		color: var(--carta);
+		border-radius: 50%;
+		font-size: 1.2rem;
+		padding-top: 2px;
+	}
+	.modulo__tipi {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 12px;
+	}
+	.tipo {
+		display: block;
+		cursor: pointer;
+	}
+	.tipo input {
+		position: absolute;
+		opacity: 0;
+		pointer-events: none;
+	}
+	.tipo__corpo {
+		display: grid;
+		gap: 2px;
+		height: 100%;
+		border: var(--bordo);
+		padding: 12px 14px;
+		transition:
+			background 0.15s,
+			transform 0.15s;
+	}
+	.tipo__corpo b {
+		font-family: var(--display);
+		font-weight: 900;
+		text-transform: uppercase;
+		font-size: 1.4rem;
+		line-height: 1;
+		letter-spacing: 0.03em;
+	}
+	.tipo__corpo small {
+		font-size: 0.9rem;
+		line-height: 1.3;
+	}
+	.tipo:hover .tipo__corpo {
+		background: var(--carta-2);
+	}
+	.tipo input:checked + .tipo__corpo {
+		background: var(--inchiostro);
+		color: var(--carta);
+		transform: translate(-2px, -2px);
+		box-shadow: 4px 4px 0 var(--rosso);
+	}
+	.tipo input:focus-visible + .tipo__corpo {
+		outline: 3px solid var(--rosso);
+		outline-offset: 3px;
+	}
+	.modulo__riga {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 14px;
+	}
+	.campo {
+		display: grid;
+		gap: 5px;
+		align-content: start;
+	}
+	.campo > span:first-child {
+		font-family: var(--display);
+		font-weight: 800;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		font-size: 1rem;
+	}
+	.campo input,
+	.campo select,
+	.campo textarea {
+		width: 100%;
+		background: #fffaf0;
+		border: var(--bordo);
+		border-radius: 0;
+		padding: 10px 12px;
+		min-height: 48px;
+	}
+	.campo textarea {
+		resize: vertical;
+	}
+	.campo input[aria-invalid='true'] {
+		border-color: var(--rosso);
+	}
+	.campo__errore {
+		color: var(--rosso);
+		font-weight: 700;
+		font-size: 0.92rem;
+		min-height: 0;
+	}
+	.orari {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+	.orari[hidden] {
+		display: none;
+	}
+	.orari :global(label) {
+		cursor: pointer;
+	}
+	.orari :global(input) {
+		position: absolute;
+		opacity: 0;
+		pointer-events: none;
+	}
+	.orari :global(span) {
+		display: block;
+		border: var(--bordo);
+		padding: 5px 16px 3px;
+		font-family: var(--display);
+		font-weight: 800;
+		font-size: 1.25rem;
+		letter-spacing: 0.06em;
+	}
+	.orari :global(label:hover span) {
+		background: var(--carta-2);
+	}
+	.orari :global(input:checked + span) {
+		background: var(--inchiostro);
+		color: var(--carta);
+	}
+	.orari :global(input:focus-visible + span) {
+		outline: 3px solid var(--rosso);
+		outline-offset: 3px;
+	}
+
+	.riepilogo h3,
+	.fatto h3 {
+		font-family: var(--display);
+		font-weight: 900;
+		text-transform: uppercase;
+		font-size: clamp(2.2rem, 6vw, 3.4rem);
+		line-height: 0.95;
+		margin: 14px 0 18px;
+	}
+	.riepilogo dl {
+		display: grid;
+		gap: 0;
+		border-top: var(--bordo);
+	}
+	.riepilogo dl div {
+		display: grid;
+		grid-template-columns: 130px 1fr;
+		gap: 12px;
+		padding: 10px 0;
+		border-bottom: 2px dashed rgba(26, 24, 21, 0.4);
+	}
+	.riepilogo dt {
+		font-family: var(--display);
+		font-weight: 800;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+	}
+	.riepilogo dd {
+		font-weight: 600;
+		overflow-wrap: anywhere;
+	}
+	.riepilogo__azioni {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 16px;
+		margin-top: 26px;
+	}
+	.fatto {
+		text-align: center;
+		display: grid;
+		justify-items: center;
+		gap: 4px;
+		padding: 16px 0;
+	}
+	.fatto svg {
+		width: 96px;
+		animation: brindisi 1.4s ease-in-out infinite alternate;
+	}
+	@keyframes brindisi {
+		from {
+			transform: rotate(-6deg);
+		}
+		to {
+			transform: rotate(6deg);
+		}
+	}
+	.fatto p {
+		max-width: 30em;
+	}
+	.fatto__demo {
+		margin: 12px 0 22px;
+		font-size: 0.92rem;
+		font-weight: 700;
+	}
+	[hidden] {
+		display: none !important;
+	}
+
+	@media (max-width: 960px) {
+		.prenota__in {
+			grid-template-columns: 1fr;
+		}
+	}
+	@media (max-width: 560px) {
+		.modulo__tipi,
+		.modulo__riga {
+			grid-template-columns: 1fr;
+		}
+		.riepilogo dl div {
+			grid-template-columns: 1fr;
+			gap: 0;
+		}
+	}
+</style>
+
+<script>
+	import { isoLocale, nomeGiorno, nomeMese } from './eventi';
+
+	const sez = document.querySelector<HTMLElement>('#prenota')!;
+	const form = sez.querySelector<HTMLFormElement>('[data-form]')!;
+	const riep = sez.querySelector<HTMLElement>('[data-riepilogo]')!;
+	const fatto = sez.querySelector<HTMLElement>('[data-fatto]')!;
+	const data = form.querySelector<HTMLInputElement>('[data-data]')!;
+	const persone = form.querySelector<HTMLSelectElement>('[data-persone]')!;
+	const orari = form.querySelector<HTMLElement>('[data-orari]')!;
+	const etPersone = form.querySelector<HTMLElement>('[data-etichetta-persone]')!;
+	const etNote = form.querySelector<HTMLElement>('[data-etichetta-note]')!;
+	const note = form.elements.namedItem('note') as HTMLTextAreaElement;
+
+	type Tipo = 'tavolo' | 'serata' | 'assaggio' | 'gruppo';
+	const config: Record<Tipo, { nome: string; orari: string[]; max: number; persone: string; note: string }> = {
+		tavolo: { nome: 'Un tavolo', orari: ['19:00', '19:30', '20:00', '20:30', '21:00', '21:30'], max: 10, persone: 'Persone', note: 'Note (intolleranze, compleanni, passeggini…)' },
+		serata: { nome: 'Una serata live', orari: ['20:30', '21:00', '21:30'], max: 10, persone: 'Persone', note: 'Note (preferisci vicino al palco o più defilato?)' },
+		assaggio: { nome: 'Assaggio guidato', orari: ['20:30'], max: 12, persone: 'Persone (12 € a testa)', note: 'Note (intolleranze, birre che non ti piacciono…)' },
+		gruppo: { nome: 'Suono io', orari: [], max: 8, persone: 'Componenti', note: 'Nome del gruppo, genere e un link a un ascolto' },
+	};
+
+	const tipoCorrente = () => (form.querySelector<HTMLInputElement>('input[name=tipo]:checked')!.value as Tipo);
+	const oggi = new Date();
+	data.min = isoLocale(oggi);
+
+	const aggiorna = (orarioScelto?: string) => {
+		const c = config[tipoCorrente()];
+		const p = persone.value || '2';
+		persone.innerHTML = Array.from({ length: c.max }, (_, i) => i + 1)
+			.map((n) => `<option value="${n}">${n}</option>`)
+			.join('');
+		persone.value = Math.min(Number(p), c.max).toString();
+		etPersone.textContent = c.persone;
+		etNote.textContent = c.note;
+		orari.hidden = c.orari.length === 0;
+		orari.innerHTML = c.orari
+			.map(
+				(o, i) =>
+					`<label><input type="radio" name="orario" value="${o}"${o === orarioScelto || (!orarioScelto && i === 0) ? ' checked' : ''}><span>${o}</span></label>`,
+			)
+			.join('');
+	};
+	form.querySelectorAll('input[name=tipo]').forEach((r) => r.addEventListener('change', () => aggiorna()));
+	aggiorna();
+
+	const errore = (campo: string, msg: string) => {
+		const el = form.querySelector<HTMLElement>(`[data-errore=${campo}]`)!;
+		el.textContent = msg;
+		(form.elements.namedItem(campo) as HTMLInputElement).setAttribute('aria-invalid', String(msg !== ''));
+		return msg !== '';
+	};
+
+	const dataLeggibile = (iso: string) => {
+		const [y, m, d] = iso.split('-').map(Number);
+		const dt = new Date(y, m - 1, d);
+		return `${nomeGiorno(dt)} ${d} ${nomeMese(dt)} ${y}`;
+	};
+
+	form.addEventListener('submit', (e) => {
+		e.preventDefault();
+		const t = tipoCorrente();
+		const fd = new FormData(form);
+		const nome = String(fd.get('nome')).trim();
+		const contatto = String(fd.get('contatto')).trim();
+		const giorno = String(fd.get('data'));
+		let brutto = false;
+		brutto = errore('data', !giorno ? 'Scegli una data.' : giorno < isoLocale(new Date()) ? 'La data è già passata.' : '') || brutto;
+		brutto = errore('nome', nome.length < 2 ? 'Scrivi il tuo nome.' : '') || brutto;
+		brutto = errore('contatto', !/^(\+?[\d\s().-]{6,}|[^\s@]+@[^\s@]+\.[^\s@]+)$/.test(contatto) ? 'Serve un telefono o un’email valida.' : '') || brutto;
+		if (brutto) {
+			form.querySelector<HTMLElement>('[aria-invalid=true]')!.focus();
+			return;
+		}
+		const c = config[t];
+		const righe: [string, string][] = [
+			['Quando', dataLeggibile(giorno) + (fd.get('orario') ? `, ore ${fd.get('orario')}` : '')],
+			[t === 'gruppo' ? 'Componenti' : 'Persone', String(fd.get('persone'))],
+			['A nome di', nome],
+			['Contatto', contatto],
+		];
+		if (String(fd.get('note')).trim()) righe.push([t === 'gruppo' ? 'Il gruppo' : 'Note', String(fd.get('note')).trim()]);
+		riep.querySelector('[data-r-titolo]')!.textContent = c.nome;
+		const dl = riep.querySelector('[data-r-lista]')!;
+		dl.replaceChildren(
+			...righe.map(([k, v]) => {
+				const row = document.createElement('div');
+				const dt = document.createElement('dt');
+				const dd = document.createElement('dd');
+				dt.textContent = k;
+				dd.textContent = v;
+				row.append(dt, dd);
+				return row;
+			}),
+		);
+		fatto.dataset.nome = nome;
+		form.hidden = true;
+		riep.hidden = false;
+		riep.focus();
+	});
+
+	riep.querySelector('[data-modifica]')!.addEventListener('click', () => {
+		riep.hidden = true;
+		form.hidden = false;
+		form.querySelector<HTMLElement>('input[name=nome]')!.focus();
+	});
+	riep.querySelector('[data-conferma]')!.addEventListener('click', () => {
+		const t = tipoCorrente();
+		fatto.querySelector('[data-fatto-testo]')!.textContent =
+			t === 'gruppo'
+				? `Grazie ${fatto.dataset.nome}: ascoltiamo la proposta e ti scriviamo entro qualche giorno.`
+				: `Grazie ${fatto.dataset.nome}: ti scriviamo entro un’ora per confermare il posto.`;
+		riep.hidden = true;
+		fatto.hidden = false;
+		fatto.focus();
+	});
+	fatto.querySelector('[data-ricomincia]')!.addEventListener('click', () => {
+		form.reset();
+		aggiorna();
+		fatto.hidden = true;
+		form.hidden = false;
+	});
+
+	// dal palco: "Prenota" arriva già compilato con la serata scelta
+	document.addEventListener('scegli-serata', (e) => {
+		const d = (e as CustomEvent<{ tipo: string; iso?: string; ora?: string; titolo?: string }>).detail;
+		const tipo: Tipo = d.tipo === 'gruppo' ? 'gruppo' : d.tipo === 'assaggio' ? 'assaggio' : 'serata';
+		riep.hidden = true;
+		fatto.hidden = true;
+		form.hidden = false;
+		form.querySelector<HTMLInputElement>(`input[name=tipo][value=${tipo}]`)!.checked = true;
+		const ora = d.ora && config[tipo].orari.includes(d.ora) ? d.ora : undefined;
+		aggiorna(ora ?? (tipo === 'serata' ? '21:00' : undefined));
+		if (d.iso) data.value = d.iso;
+		if (d.titolo) note.value = `Serata: ${d.titolo}.`;
+	});
+</script>

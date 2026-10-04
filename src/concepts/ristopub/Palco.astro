@@ -1,0 +1,440 @@
+---
+import { Image } from 'astro:assets';
+import banda from '../../assets/ristopub/live-bn.jpg';
+import pubblico from '../../assets/ristopub/live-pubblico.jpg';
+import { prossimiEventi, biglietti, tipi } from './eventi';
+
+const lista = prossimiEventi(new Date(), 8);
+---
+
+<section class="palco" id="palco" aria-labelledby="palco-titolo">
+	<div class="palco__scena" aria-hidden="true">
+		<Image src={banda} alt="" widths={[720, 1200, 1800]} sizes="100vw" class="palco__foto" />
+		<span class="palco__faro palco__faro--a"></span>
+		<span class="palco__faro palco__faro--b"></span>
+	</div>
+
+	<div class="palco__in">
+		<header class="palco__testa" data-reveal>
+			<p class="etichetta">Il palco</p>
+			<h2 class="titolo" id="palco-titolo">Stasera<br />si suona.</h2>
+			<p class="palco__lead">
+				Un palchetto largo tre metri, un impianto che sa il fatto suo e nessuna regola sul volume prima delle undici. Da
+				mercoledì a domenica c’è sempre qualcosa in programma, e quasi sempre è gratis.
+			</p>
+		</header>
+
+		<div class="palco__filtri" role="group" aria-label="Filtra gli appuntamenti" data-reveal>
+			{
+				tipi.map((t, i) => (
+					<button type="button" class="pchip" aria-pressed={i === 0 ? 'true' : 'false'} data-tipo-filtro={t.id}>
+						{t.nome}
+					</button>
+				))
+			}
+			<p class="palco__conto" aria-live="polite" data-conto></p>
+		</div>
+
+		<ol class="palco__lista" data-lista set:html={biglietti(lista)} />
+
+		<aside class="palco__banda" data-reveal>
+			<Image
+				src={pubblico}
+				alt="Un palco con luci puntate sul pubblico durante un concerto."
+				widths={[400, 700]}
+				sizes="(min-width: 760px) 340px, 90vw"
+				class="palco__banda-foto"
+			/>
+			<div>
+				<h3>Suoni? Scrivici.</h3>
+				<p>
+					Cerchiamo gruppi per le serate del venerdì e del sabato. Impianto, fonico e due birre a testa sono nostri; tu porti
+					quaranta minuti di musica che vale la pena ascoltare.
+				</p>
+				<a class="btn btn--chiaro" href="#prenota" data-candidatura>Proponi il tuo gruppo</a>
+			</div>
+		</aside>
+	</div>
+</section>
+
+<style is:global>
+	/* Biglietti: creati anche da JavaScript, quindi stili globali con prefisso del concept */
+	.palco__lista {
+		list-style: none;
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 26px 32px;
+	}
+	.bigl {
+		position: relative;
+		display: grid;
+		grid-template-columns: 96px 1fr;
+		grid-template-areas:
+			'data corpo'
+			'data vai';
+		background: var(--carta);
+		color: var(--inchiostro);
+		border: 3px solid var(--inchiostro);
+		box-shadow: 6px 6px 0 var(--ambra);
+		transition:
+			transform 0.2s,
+			box-shadow 0.2s;
+	}
+	.bigl[hidden] {
+		display: none;
+	}
+	.bigl:hover {
+		transform: translate(-3px, -3px) rotate(-0.4deg);
+		box-shadow: 9px 9px 0 var(--ambra);
+	}
+	.bigl__data {
+		grid-area: data;
+		display: grid;
+		align-content: center;
+		justify-items: center;
+		gap: 0;
+		background: var(--inchiostro);
+		color: var(--carta);
+		border-right: 3px dashed var(--carta);
+		font-family: var(--display);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		padding: 12px 6px 8px;
+	}
+	.bigl__data span {
+		font-weight: 700;
+		font-size: 1.1rem;
+	}
+	.bigl__data b {
+		font-weight: 900;
+		font-size: 3.6rem;
+		line-height: 0.95;
+		color: var(--ambra);
+	}
+	.bigl__corpo {
+		grid-area: corpo;
+		padding: 16px 20px 6px;
+	}
+	.bigl__tipo {
+		display: inline-block;
+		font-family: var(--display);
+		font-weight: 800;
+		text-transform: uppercase;
+		letter-spacing: 0.12em;
+		font-size: 0.95rem;
+		padding: 1px 10px 0;
+		border: 2px solid currentColor;
+	}
+	.bigl__tipo--live {
+		color: var(--rosso);
+	}
+	.bigl__tipo--quiz {
+		color: var(--luppolo);
+	}
+	.bigl__tipo--assaggio {
+		color: var(--ambra-scuro);
+	}
+	.bigl__tipo--sport {
+		color: var(--inchiostro-2);
+	}
+	.bigl h3 {
+		font-family: var(--display);
+		font-weight: 900;
+		text-transform: uppercase;
+		font-size: 2rem;
+		line-height: 0.98;
+		margin-top: 8px;
+	}
+	.bigl__det {
+		margin-top: 6px;
+		font-size: 0.98rem;
+	}
+	.bigl__quando {
+		margin-top: 10px;
+		font-family: var(--display);
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		font-size: 1.05rem;
+	}
+	.bigl__vai {
+		grid-area: vai;
+		justify-self: end;
+		margin: 6px 16px 14px;
+		background: transparent;
+		border: 0;
+		border-bottom: 3px solid var(--rosso);
+		padding: 2px 0;
+		font-family: var(--display);
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		font-size: 1.15rem;
+	}
+	.bigl__vai:hover {
+		background: var(--carta-2);
+	}
+	/* tacche del biglietto */
+	.bigl::before,
+	.bigl::after {
+		content: '';
+		position: absolute;
+		left: 84px;
+		width: 22px;
+		height: 22px;
+		border-radius: 50%;
+		background: var(--palco);
+		border: 3px solid var(--inchiostro);
+		z-index: 1;
+	}
+	.bigl::before {
+		top: -14px;
+		clip-path: inset(50% 0 0 0);
+	}
+	.bigl::after {
+		bottom: -14px;
+		clip-path: inset(0 0 50% 0);
+	}
+
+	@media (max-width: 920px) {
+		.palco__lista {
+			grid-template-columns: 1fr;
+		}
+	}
+	@media (max-width: 460px) {
+		.bigl {
+			grid-template-columns: 78px 1fr;
+		}
+		.bigl::before,
+		.bigl::after {
+			left: 66px;
+		}
+		.bigl__data b {
+			font-size: 3rem;
+		}
+		.bigl h3 {
+			font-size: 1.7rem;
+		}
+		.bigl__corpo {
+			padding: 14px 14px 4px;
+		}
+	}
+</style>
+
+<style>
+	.palco {
+		position: relative;
+		background: var(--palco);
+		color: var(--carta);
+		overflow: clip;
+		padding: clamp(72px, 11vw, 140px) var(--gutter) clamp(64px, 9vw, 110px);
+		isolation: isolate;
+	}
+	/* Foto in bicromia ambra, con due fari che oscillano quando la sezione è in vista */
+	.palco__scena {
+		position: absolute;
+		inset: 0 0 auto 0;
+		height: min(78vh, 640px);
+		z-index: -1;
+		background: var(--ambra);
+		mask-image: linear-gradient(#000 40%, transparent);
+		-webkit-mask-image: linear-gradient(#000 40%, transparent);
+	}
+	.palco__foto {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 50% 40%;
+		filter: grayscale(1) contrast(1.15);
+		mix-blend-mode: multiply;
+		opacity: 0.85;
+	}
+	.palco__faro {
+		position: absolute;
+		top: -10%;
+		width: 60%;
+		height: 120%;
+		background: conic-gradient(from 180deg at 50% 0, transparent 160deg, rgba(255, 238, 200, 0.55) 180deg, transparent 200deg);
+		mix-blend-mode: screen;
+		transform-origin: 50% 0;
+		animation: faro 11s ease-in-out infinite alternate;
+		animation-play-state: paused;
+	}
+	.palco__faro--a {
+		left: -8%;
+	}
+	.palco__faro--b {
+		right: -8%;
+		animation-delay: -5s;
+		animation-direction: alternate-reverse;
+	}
+	.palco.is-visible .palco__faro {
+		animation-play-state: running;
+	}
+	@keyframes faro {
+		from {
+			transform: rotate(-14deg);
+		}
+		to {
+			transform: rotate(14deg);
+		}
+	}
+	.palco__in {
+		max-width: var(--max);
+		margin-inline: auto;
+	}
+	.palco .etichetta {
+		color: var(--inchiostro);
+	}
+	.palco .titolo {
+		margin-bottom: 26px;
+		color: var(--carta);
+		text-shadow: 5px 5px 0 var(--inchiostro);
+	}
+	.palco__lead {
+		margin-top: 20px;
+		max-width: 36em;
+		font-size: 1.15rem;
+		background: var(--palco);
+		display: inline;
+		box-decoration-break: clone;
+		-webkit-box-decoration-break: clone;
+		padding: 2px 8px;
+		line-height: 1.9;
+	}
+	.palco__testa {
+		margin-bottom: 44px;
+	}
+	.palco__filtri {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 10px;
+		margin-bottom: 44px;
+	}
+	.pchip {
+		font-family: var(--display);
+		font-weight: 800;
+		font-size: 1.15rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		background: var(--palco);
+		color: var(--carta);
+		border: 3px solid var(--carta);
+		padding: 6px 16px 4px;
+	}
+	.pchip:hover {
+		background: var(--palco-2);
+	}
+	.pchip[aria-pressed='true'] {
+		background: var(--carta);
+		color: var(--inchiostro);
+	}
+	.palco__conto {
+		margin-left: auto;
+		font-family: var(--display);
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		background: var(--palco);
+		padding: 2px 8px 0;
+	}
+
+	.palco__banda {
+		display: grid;
+		grid-template-columns: 340px 1fr;
+		gap: 36px;
+		align-items: center;
+		margin-top: clamp(56px, 8vw, 96px);
+		border: 3px solid var(--carta);
+		padding: 22px;
+		background: var(--palco-2);
+	}
+	.palco__banda-foto {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+		filter: grayscale(1) contrast(1.1) sepia(0.5);
+		border: 3px solid var(--carta);
+	}
+	.palco__banda h3 {
+		font-family: var(--display);
+		font-weight: 900;
+		text-transform: uppercase;
+		font-size: clamp(2.2rem, 5vw, 3.4rem);
+		line-height: 0.95;
+		color: var(--ambra);
+	}
+	.palco__banda p {
+		margin: 12px 0 22px;
+		max-width: 38em;
+	}
+	@media (max-width: 760px) {
+		.palco__banda {
+			grid-template-columns: 1fr;
+			padding: 16px;
+		}
+	}
+</style>
+
+<script>
+	import { prossimiEventi, biglietti, isoLocale } from './eventi';
+
+	const sez = document.querySelector<HTMLElement>('#palco')!;
+	const lista = sez.querySelector<HTMLElement>('[data-lista]')!;
+	const conto = sez.querySelector<HTMLElement>('[data-conto]')!;
+	const chips = [...sez.querySelectorAll<HTMLButtonElement>('[data-tipo-filtro]')];
+	let filtro = 'tutti';
+
+	const filtra = () => {
+		let n = 0;
+		lista.querySelectorAll<HTMLElement>('.bigl').forEach((li) => {
+			const ok = filtro === 'tutti' || li.dataset.tipo === filtro;
+			li.hidden = !ok;
+			if (ok) n++;
+		});
+		chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.tipoFiltro === filtro)));
+		conto.textContent = `${n} ${n === 1 ? 'appuntamento' : 'appuntamenti'}`;
+	};
+
+	// le date del markup di build vengono ricalcolate su "oggi" del visitatore
+	const oggi = new Date();
+	if (lista.querySelector<HTMLElement>('[data-iso]')?.dataset.iso !== isoLocale(prossimiEventi(oggi, 1)[0].data)) {
+		lista.innerHTML = biglietti(prossimiEventi(oggi, 8));
+	}
+	chips.forEach((c) =>
+		c.addEventListener('click', () => {
+			filtro = c.dataset.tipoFiltro!;
+			filtra();
+		}),
+	);
+	filtra();
+
+	lista.addEventListener('click', (e) => {
+		const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-serata]');
+		if (!b) return;
+		document.dispatchEvent(
+			new CustomEvent('scegli-serata', {
+				detail: { tipo: b.dataset.tipoEvento, iso: b.dataset.iso, ora: b.dataset.ora, titolo: b.dataset.titolo },
+			}),
+		);
+		document.querySelector('#prenota')!.scrollIntoView({ behavior: 'smooth' });
+	});
+
+	document.querySelector('[data-candidatura]')?.addEventListener('click', () =>
+		document.dispatchEvent(new CustomEvent('scegli-serata', { detail: { tipo: 'gruppo' } })),
+	);
+
+	// i fari si accendono quando il palco entra in vista
+	new IntersectionObserver(
+		(es, io) =>
+			es.forEach((x) => {
+				if (x.isIntersecting) {
+					sez.classList.add('is-visible');
+					io.disconnect();
+				}
+			}),
+		{ threshold: 0.1 },
+	).observe(sez);
+</script>

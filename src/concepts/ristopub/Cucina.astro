@@ -1,0 +1,275 @@
+---
+import { Image } from 'astro:assets';
+import panino from '../../assets/ristopub/panino-birra.jpg';
+import cestino from '../../assets/ristopub/panino-cestino.jpg';
+import { birraPerId } from './birre';
+
+const gruppi = [
+	{
+		nome: 'Panini',
+		nota: 'Tutti con patate, tutti con le mani.',
+		piatti: [
+			{ nome: 'Il Backline', d: 'Manzo 180 g, cheddar stagionato, cipolla caramellata, salsa affumicata.', p: '11', b: 'sottopalco' },
+			{ nome: 'Pulled Pork', d: 'Maiale sfilacciato per dodici ore, cavolo viola, salsa barbecue della casa.', p: '11', b: 'amplificatore' },
+			{ nome: 'Il Tecnico', d: 'Pollo croccante, pickles, maionese al lime.', p: '10', b: 'fiume-chiara' },
+			{ nome: 'Hot Dog del Bassista', d: 'Wurstel artigianale, crauti, senape in grani.', p: '9', b: 'roadie' },
+			{ nome: 'Burger Ceci e Barbabietola', d: 'Vegetale, con maionese di anacardi e rucola.', p: '10', b: 'feedback', veg: true },
+		],
+	},
+	{
+		nome: 'Da dividere',
+		nota: 'Per chi aspetta il secondo giro.',
+		piatti: [
+			{ nome: 'Patate doppia frittura', d: 'Con tre salse: barbecue, yogurt e menta, maionese piccante.', p: '5', b: 'fiume-chiara', veg: true },
+			{ nome: 'Alette glassate', d: 'Miele e peperoncino, sei o dodici pezzi.', p: '8 / 14', b: 'distorsore' },
+			{ nome: 'Tagliere dei mastri', d: 'Salumi e formaggi del territorio, miele di castagno, pane tostato.', p: '14', b: 'basso-profondo' },
+			{ nome: 'Brownie al malto', d: 'Con gelato alla crema, fatto con il malto scuro del birrificio.', p: '6', b: 'ultima-corda', veg: true },
+		],
+	},
+];
+---
+
+<section class="sezione cucina" id="cucina" aria-labelledby="cucina-titolo">
+	<div class="sezione__in cucina__in">
+		<div class="cucina__menu">
+			<header data-reveal>
+				<p class="etichetta">La cucina</p>
+				<h2 class="titolo" id="cucina-titolo">Da mangiare<br />con le <em>mani</em>.</h2>
+				<p class="cucina__lead">
+					Poche cose, fatte bene e pensate per la birra che le accompagna. Ogni piatto ha la sua spina consigliata: tocca
+					il suggerimento e la lavagna si apre sulla birra giusta.
+				</p>
+			</header>
+
+			{
+				gruppi.map((g) => (
+					<div class="gruppo" data-reveal>
+						<h3 class="gruppo__titolo">
+							{g.nome}
+							<small>{g.nota}</small>
+						</h3>
+						<ul>
+							{g.piatti.map((p) => (
+								<li class="piatto">
+									<div class="piatto__riga">
+										<h4>
+											{p.nome}
+											{p.veg && <span class="piatto__veg">veg</span>}
+										</h4>
+										<span class="piatto__punti" aria-hidden="true" />
+										<span class="piatto__prezzo">{p.p} €</span>
+									</div>
+									<p>{p.d}</p>
+									<button type="button" class="piatto__coppia" data-birra={p.b}>
+										In coppia con <b>{birraPerId(p.b).nome}</b> <span aria-hidden="true">→</span>
+									</button>
+								</li>
+							))}
+						</ul>
+					</div>
+				))
+			}
+			<p class="cucina__nota">Piatti e prezzi di esempio. Cucina aperta fino a mezzanotte, il venerdì e il sabato fino all’una.</p>
+		</div>
+
+		<div class="cucina__foto" aria-hidden="false">
+			<figure class="foto foto--a" data-reveal>
+				<Image src={panino} alt="Un panino con insalata e pomodoro, patate fritte e una birra ambrata sullo sfondo." widths={[480, 720, 960]} sizes="(min-width: 920px) 420px, 80vw" />
+				<figcaption>Panino + media = serata</figcaption>
+			</figure>
+			<figure class="foto foto--b" data-reveal style="--d: 0.15s">
+				<Image src={cestino} alt="Un panino con i semi di sesamo e una montagna di patatine fritte in un cestino." widths={[480, 720, 960]} sizes="(min-width: 920px) 360px, 70vw" />
+				<figcaption>Le patate: doppia frittura</figcaption>
+			</figure>
+		</div>
+	</div>
+</section>
+
+<style>
+	.cucina {
+		background: var(--carta-2);
+		border-block: var(--bordo);
+	}
+	.cucina__in {
+		display: grid;
+		grid-template-columns: 1.1fr 0.9fr;
+		gap: clamp(32px, 6vw, 88px);
+		align-items: start;
+	}
+	.titolo em {
+		font-style: normal;
+		color: var(--rosso);
+	}
+	.cucina__lead {
+		margin-top: 18px;
+		font-size: 1.15rem;
+		max-width: 34em;
+	}
+	.gruppo {
+		margin-top: 52px;
+	}
+	.gruppo__titolo {
+		font-family: var(--display);
+		font-weight: 900;
+		text-transform: uppercase;
+		font-size: 2.2rem;
+		line-height: 1;
+		letter-spacing: 0.03em;
+		border-bottom: var(--bordo);
+		padding-bottom: 8px;
+	}
+	.gruppo__titolo small {
+		display: block;
+		font-family: var(--testo);
+		font-weight: 600;
+		font-size: 0.95rem;
+		letter-spacing: 0;
+		text-transform: none;
+		color: var(--inchiostro-2);
+		margin-top: 4px;
+	}
+	.gruppo ul {
+		list-style: none;
+	}
+	.piatto {
+		padding: 18px 0;
+		border-bottom: 2px dashed rgba(26, 24, 21, 0.35);
+	}
+	.piatto__riga {
+		display: flex;
+		align-items: baseline;
+		gap: 12px;
+	}
+	.piatto h4 {
+		font-family: var(--display);
+		font-weight: 800;
+		text-transform: uppercase;
+		font-size: 1.6rem;
+		line-height: 1.05;
+		letter-spacing: 0.02em;
+	}
+	.piatto__veg {
+		font-size: 0.8rem;
+		vertical-align: middle;
+		margin-left: 10px;
+		padding: 1px 8px 0;
+		border: 2px solid var(--luppolo);
+		color: var(--luppolo);
+		letter-spacing: 0.1em;
+	}
+	.piatto__punti {
+		flex: 1;
+		border-bottom: 3px dotted var(--inchiostro);
+		transform: translateY(-5px);
+		min-width: 20px;
+	}
+	.piatto__prezzo {
+		font-family: var(--display);
+		font-weight: 800;
+		font-size: 1.6rem;
+		white-space: nowrap;
+	}
+	.piatto p {
+		max-width: 36em;
+		margin-top: 4px;
+	}
+	.piatto__coppia {
+		margin-top: 10px;
+		background: transparent;
+		border: 0;
+		padding: 2px 0;
+		font-weight: 600;
+		font-size: 0.95rem;
+		border-bottom: 2px solid var(--rosso);
+		color: var(--inchiostro);
+	}
+	.piatto__coppia b {
+		font-family: var(--display);
+		font-weight: 800;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		font-size: 1.1rem;
+	}
+	.piatto__coppia:hover {
+		background: var(--carta);
+	}
+	.cucina__nota {
+		margin-top: 28px;
+		font-size: 0.9rem;
+		color: var(--inchiostro-2);
+	}
+
+	.cucina__foto {
+		position: sticky;
+		top: calc(var(--nav-h) + 30px);
+		display: grid;
+		gap: 0;
+		padding-bottom: 40px;
+	}
+	.foto {
+		border: var(--bordo);
+		background: var(--carta);
+		padding: 10px 10px 8px;
+		box-shadow: var(--ombra);
+		width: min(100%, 420px);
+	}
+	.foto :global(img) {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+		border: 2px solid var(--inchiostro);
+	}
+	.foto figcaption {
+		font-family: var(--display);
+		font-weight: 800;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		padding-top: 8px;
+	}
+	.foto--a {
+		justify-self: start;
+		transform: rotate(-2.5deg);
+	}
+	.foto--b {
+		justify-self: end;
+		width: min(88%, 360px);
+		margin-top: 6px;
+		transform: rotate(3deg);
+	}
+	.js .foto[data-reveal] {
+		transform: translateY(26px) rotate(0);
+	}
+	.js .foto--a.is-visible {
+		transform: rotate(-2.5deg);
+	}
+	.js .foto--b.is-visible {
+		transform: rotate(3deg);
+	}
+
+	@media (max-width: 920px) {
+		.cucina__in {
+			grid-template-columns: 1fr;
+		}
+		.cucina__foto {
+			position: static;
+			order: -1;
+		}
+		.foto--b {
+			margin-top: 6px;
+		}
+	}
+	@media (max-width: 520px) {
+		.piatto h4 {
+			font-size: 1.4rem;
+		}
+	}
+</style>
+
+<script>
+	document.querySelectorAll<HTMLButtonElement>('[data-birra]').forEach((b) =>
+		b.addEventListener('click', () =>
+			document.dispatchEvent(new CustomEvent('apri-birra', { detail: b.dataset.birra })),
+		),
+	);
+</script>

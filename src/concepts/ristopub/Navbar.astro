@@ -1,0 +1,436 @@
+---
+import simbolo from '../../assets/ristopub/brand/simbolo.svg';
+// Barra fissa + menù mobile "a spina": il pannello si riempie di birra dal basso, con la schiuma in cima.
+const voci = [
+	{ href: '#spine', nome: 'Le spine' },
+	{ href: '#cucina', nome: 'Cucina' },
+	{ href: '#palco', nome: 'Palco' },
+	{ href: '#birrificio', nome: 'Birrificio' },
+	{ href: '#info', nome: 'Dove & quando' },
+];
+// bollicine: posizione, misura e ritardo fissi (stesso markup a ogni build)
+const bolle = Array.from({ length: 16 }, (_, i) => ({
+	x: (i * 37 + 11) % 96,
+	s: 6 + ((i * 7) % 12),
+	d: ((i * 13) % 17) / 10,
+	t: 2.6 + ((i * 5) % 9) / 4,
+}));
+---
+
+<header class="nav" data-nav>
+	<a class="nav__logo" href="#top" aria-label="Luppolo & Watt, torna in cima">
+		<img src={simbolo.src} alt="" width="21" height="40" class="nav__mark" />
+		<span class="nav__nome">Luppolo<span class="nav__e">&amp;</span>Watt</span>
+	</a>
+
+	<nav class="nav__links" aria-label="Principale">
+		{voci.map((v) => <a href={v.href}>{v.nome}</a>)}
+	</nav>
+
+	<a class="nav__cta btn" href="#prenota">Prenota</a>
+
+	<div class="nav__birra" aria-hidden="true"><span class="nav__birra-fill" data-progresso></span></div>
+
+	<button class="nav__toggle" type="button" aria-expanded="false" aria-controls="spina" data-toggle>
+		<span class="nav__toggle-testo" data-toggle-testo>Menù</span>
+		<span class="nav__bars" aria-hidden="true"><i></i><i></i><i></i></span>
+	</button>
+</header>
+
+<div class="spina" id="spina" data-spina inert>
+	<div class="spina__liquido">
+		<div class="spina__schiuma" aria-hidden="true"></div>
+		<div class="spina__bolle" aria-hidden="true">
+			{bolle.map((b) => <i style={`--x:${b.x}%;--s:${b.s}px;--d:${b.d}s;--t:${b.t}s`}></i>)}
+		</div>
+		<nav class="spina__nav" aria-label="Menù mobile">
+			<p class="spina__riga">Alla spina oggi: 8 birre, 1 palco</p>
+			<ul>
+				{
+					voci.map((v, i) => (
+						<li style={`--i:${i}`}>
+							<a href={v.href} data-chiudi>
+								<span class="spina__n">{String(i + 1).padStart(2, '0')}</span>
+								{v.nome}
+							</a>
+						</li>
+					))
+				}
+			</ul>
+			<a class="btn btn--chiaro spina__cta" href="#prenota" data-chiudi style="--i:6">Prenota un tavolo</a>
+		</nav>
+	</div>
+</div>
+
+<style>
+	.nav {
+		position: fixed;
+		inset: var(--fascia, 0px) 0 auto 0;
+		z-index: 100;
+		height: var(--nav-h);
+		display: flex;
+		align-items: center;
+		gap: 28px;
+		padding: 0 var(--gutter);
+		background: var(--carta);
+		border-bottom: var(--bordo);
+		transition:
+			height 0.25s,
+			box-shadow 0.25s;
+	}
+	.nav.is-scrolled {
+		height: 56px;
+		box-shadow: 0 6px 0 rgba(26, 24, 21, 0.14);
+	}
+	.nav__logo {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		text-decoration: none;
+		margin-right: auto;
+	}
+	.nav__mark {
+		width: auto;
+		height: 40px;
+		transition: transform 0.3s;
+	}
+	.nav__logo:hover .nav__mark {
+		transform: rotate(-8deg);
+	}
+	.nav__nome {
+		font-family: var(--display);
+		font-weight: 900;
+		font-size: 1.7rem;
+		text-transform: uppercase;
+		letter-spacing: 0.02em;
+		line-height: 1;
+		padding-top: 3px;
+	}
+	.nav__e {
+		color: var(--rosso);
+		margin: 0 0.12em;
+	}
+	.nav__links {
+		display: flex;
+		gap: 26px;
+	}
+	.nav__links a {
+		font-family: var(--display);
+		font-weight: 700;
+		font-size: 1.2rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		text-decoration: none;
+		padding: 4px 0;
+		background: linear-gradient(var(--rosso), var(--rosso)) 0 100% / 0 3px no-repeat;
+		transition: background-size 0.25s;
+	}
+	.nav__links a:hover {
+		background-size: 100% 3px;
+	}
+	.nav__cta {
+		padding: 6px 18px 4px;
+		font-size: 1.1rem;
+	}
+	.nav__toggle {
+		display: none;
+		align-items: center;
+		gap: 10px;
+		background: var(--inchiostro);
+		color: var(--carta);
+		border: 0;
+		padding: 7px 14px 6px;
+		font-family: var(--display);
+		font-weight: 800;
+		font-size: 1.15rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		box-shadow: 3px 3px 0 var(--rosso);
+	}
+	.nav__bars {
+		position: relative;
+		width: 22px;
+		height: 16px;
+	}
+	.nav__bars i {
+		position: absolute;
+		left: 0;
+		width: 100%;
+		height: 3px;
+		background: currentColor;
+		transition:
+			transform 0.35s,
+			opacity 0.2s;
+	}
+	.nav__bars i:nth-child(1) {
+		top: 0;
+	}
+	.nav__bars i:nth-child(2) {
+		top: 6.5px;
+	}
+	.nav__bars i:nth-child(3) {
+		top: 13px;
+	}
+	.nav__toggle[aria-expanded='true'] .nav__bars i:nth-child(1) {
+		transform: translateY(6.5px) rotate(45deg);
+	}
+	.nav__toggle[aria-expanded='true'] .nav__bars i:nth-child(2) {
+		opacity: 0;
+	}
+	.nav__toggle[aria-expanded='true'] .nav__bars i:nth-child(3) {
+		transform: translateY(-6.5px) rotate(-45deg);
+	}
+
+	/* Barra di avanzamento: la birra che sale nel bicchiere, con la schiuma in punta */
+	.nav__birra {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: calc(100% + 3px);
+		height: 18px;
+		pointer-events: none;
+	}
+	.nav__birra-fill {
+		--p: 0;
+		position: absolute;
+		left: 0;
+		top: 0;
+		height: 13px;
+		width: calc(var(--p) * (100% - 20px));
+		background: linear-gradient(180deg, #f3b13d, var(--ambra) 60%, #cf7a12);
+		border: 3px solid var(--inchiostro);
+		border-left: 0;
+		border-top: 0;
+		opacity: 0;
+		transition: opacity 0.2s;
+	}
+	.nav__birra-fill.is-visibile {
+		opacity: 1;
+	}
+	/* la schiuma: tre bolle crema con il contorno d'inchiostro, che ondeggiano quando si scorre */
+	.nav__birra-fill::after {
+		content: '';
+		position: absolute;
+		right: -15px;
+		top: -3px;
+		width: 24px;
+		height: 16px;
+		border: 3px solid var(--inchiostro);
+		border-radius: 50% 60% 50% 50% / 60% 60% 40% 40%;
+		background: #fbf3df;
+		box-shadow:
+			-9px -4px 0 -2px #fbf3df,
+			-9px -4px 0 0 var(--inchiostro),
+			5px -5px 0 -3px #fbf3df,
+			5px -5px 0 -1px var(--inchiostro);
+		transform-origin: 20% 100%;
+	}
+	.nav__birra-fill.is-scorre::after {
+		animation: schiuma-onda 0.5s ease-in-out infinite alternate;
+	}
+	@keyframes schiuma-onda {
+		from {
+			transform: rotate(-5deg) scale(1);
+		}
+		to {
+			transform: rotate(4deg) scale(1.06, 0.94);
+		}
+	}
+
+
+	/* Pannello a spina */
+	.spina {
+		position: fixed;
+		inset: 0;
+		z-index: 90;
+		overflow: hidden;
+		visibility: hidden;
+		pointer-events: none;
+		transition: visibility 0s linear 1.1s;
+	}
+	.spina.is-aperta {
+		visibility: visible;
+		pointer-events: auto;
+		transition-delay: 0s;
+	}
+	.spina__liquido {
+		position: absolute;
+		inset: 0;
+		padding: calc(var(--nav-h) + 40px) var(--gutter) 40px;
+		background: linear-gradient(180deg, #f0a62e 0%, #e8921a 35%, #c9740e 100%);
+		transform: translateY(104%);
+		transition: transform 1.05s cubic-bezier(0.55, 0.05, 0.3, 1);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
+	.spina.is-aperta .spina__liquido {
+		transform: translateY(0);
+	}
+	.spina__schiuma {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: -46px;
+		height: 48px;
+		background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='48' viewBox='0 0 120 48'%3E%3Cpath d='M0 48V26c10-18 20-18 30 0s20 18 30 0 20-18 30 0 20 18 30 0v22z' fill='%23fbf3df'/%3E%3C/svg%3E") repeat-x 0 100% / 120px 48px;
+		animation: schiuma 5s linear infinite;
+		animation-play-state: paused;
+	}
+	.spina.is-aperta .spina__schiuma {
+		animation-play-state: running;
+	}
+	@keyframes schiuma {
+		to {
+			background-position-x: 120px;
+		}
+	}
+	.spina__bolle {
+		position: absolute;
+		inset: 0;
+		overflow: hidden;
+		pointer-events: none;
+	}
+	.spina__bolle i {
+		position: absolute;
+		left: var(--x);
+		bottom: -30px;
+		width: var(--s);
+		height: var(--s);
+		border-radius: 50%;
+		background: rgba(255, 246, 224, 0.4);
+		animation: bolla var(--t) ease-in infinite var(--d);
+		animation-play-state: paused;
+	}
+	.spina.is-aperta .spina__bolle i {
+		animation-play-state: running;
+	}
+	@keyframes bolla {
+		to {
+			transform: translateY(-110vh);
+		}
+	}
+	.spina__nav {
+		position: relative;
+		max-width: 520px;
+	}
+	.spina__riga {
+		font-family: var(--display);
+		font-weight: 700;
+		font-size: 1.1rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		margin-bottom: 14px;
+	}
+	.spina__nav ul {
+		list-style: none;
+	}
+	.spina__nav li,
+	.spina__cta {
+		opacity: 0;
+		transform: translateY(16px);
+		transition:
+			opacity 0.35s,
+			transform 0.35s;
+	}
+	.spina.is-aperta li,
+	.spina.is-aperta .spina__cta {
+		opacity: 1;
+		transform: none;
+		transition-delay: calc(0.55s + var(--i) * 0.07s);
+	}
+	.spina__nav li a {
+		display: flex;
+		align-items: baseline;
+		gap: 16px;
+		font-family: var(--display);
+		font-weight: 900;
+		font-size: clamp(2.6rem, 12vw, 4.4rem);
+		line-height: 1.05;
+		text-transform: uppercase;
+		text-decoration: none;
+		border-bottom: 3px solid rgba(26, 24, 21, 0.85);
+		padding: 2px 0;
+	}
+	.spina__n {
+		font-size: 1.2rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+	}
+	.spina__cta {
+		margin-top: 30px;
+	}
+
+	@media (max-width: 920px) {
+		.nav__links,
+		.nav__cta {
+			display: none;
+		}
+		.nav__toggle {
+			display: inline-flex;
+		}
+	}
+	@media (max-width: 380px) {
+		.nav__nome {
+			font-size: 1.45rem;
+		}
+	}
+</style>
+
+<script>
+	const nav = document.querySelector<HTMLElement>('[data-nav]')!;
+	const spina = document.querySelector<HTMLElement>('[data-spina]')!;
+	const toggle = document.querySelector<HTMLButtonElement>('[data-toggle]')!;
+	const testo = document.querySelector<HTMLElement>('[data-toggle-testo]')!;
+
+	const imposta = (aperta: boolean) => {
+		spina.classList.toggle('is-aperta', aperta);
+		spina.toggleAttribute('inert', !aperta);
+		toggle.setAttribute('aria-expanded', String(aperta));
+		toggle.setAttribute('aria-label', aperta ? 'Chiudi il menù' : 'Apri il menù');
+		testo.textContent = aperta ? 'Chiudi' : 'Menù';
+		document.body.classList.toggle('menu-aperto', aperta);
+	};
+
+	toggle.addEventListener('click', () => imposta(!spina.classList.contains('is-aperta')));
+	spina.querySelectorAll('[data-chiudi]').forEach((a) => a.addEventListener('click', () => imposta(false)));
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape' && spina.classList.contains('is-aperta')) {
+			imposta(false);
+			toggle.focus();
+		}
+	});
+	// se si allarga la finestra con il menù aperto, lo si chiude
+	matchMedia('(min-width: 921px)').addEventListener('change', (m) => m.matches && imposta(false));
+
+	const scroll = () => nav.classList.toggle('is-scrolled', window.scrollY > 24);
+	scroll();
+	addEventListener('scroll', scroll, { passive: true });
+
+	// barra di avanzamento: quanto manca alla fine della pagina
+	const birra = document.querySelector<HTMLElement>('[data-progresso]')!;
+	let fermo: number | undefined;
+	let attesa = false;
+	const avanza = () => {
+		attesa = false;
+		const max = document.documentElement.scrollHeight - innerHeight;
+		const p = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
+		birra.style.setProperty('--p', p.toFixed(4));
+		birra.classList.toggle('is-visibile', p > 0.004);
+		birra.classList.add('is-scorre');
+		clearTimeout(fermo);
+		fermo = window.setTimeout(() => birra.classList.remove('is-scorre'), 160);
+	};
+	addEventListener(
+		'scroll',
+		() => {
+			if (!attesa) {
+				attesa = true;
+				requestAnimationFrame(avanza);
+			}
+		},
+		{ passive: true },
+	);
+	addEventListener('resize', avanza);
+	avanza();
+</script>

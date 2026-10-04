@@ -1,0 +1,104 @@
+---
+// Fascia di ritorno: dice che è una vetrina dimostrativa e porta all'hub o al contatto. Non è fissa:
+// scorre via con la pagina e la barra di navigazione, che sta sotto di lei, risale mentre si scorre.
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<aside class="fascia" data-fascia aria-label="Informazioni su questa vetrina">
+	<p class="fascia__testo">Vetrina dimostrativa <span aria-hidden="true">★</span> <span class="fascia__studio">concept di Loop Studio</span></p>
+	<nav class="fascia__link" aria-label="Vetrine">
+		<a href={`${base}/`}><span aria-hidden="true">←</span> Tutte le vetrine</a>
+		<a href="https://theloopstudio.org/contatti/?concept=ristopub" class="fascia__cta">Ne voglio una così <span aria-hidden="true">→</span></a>
+	</nav>
+</aside>
+
+<style is:global>
+	:root {
+		--fascia-h: 34px;
+	}
+</style>
+
+<style>
+	.fascia {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		z-index: 150;
+		height: var(--fascia-h);
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
+		padding: 2px var(--gutter) 0;
+		background: var(--inchiostro);
+		color: var(--carta);
+		font-family: var(--display);
+		font-weight: 700;
+		font-size: 1rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		white-space: nowrap;
+	}
+	.fascia__testo span:first-of-type {
+		color: var(--ambra);
+		margin: 0 6px;
+	}
+	.fascia__link {
+		display: flex;
+		gap: 22px;
+	}
+	.fascia a {
+		text-decoration: none;
+		border-bottom: 2px solid transparent;
+		line-height: 1.2;
+	}
+	.fascia a:hover {
+		border-bottom-color: var(--ambra);
+	}
+	.fascia__cta {
+		color: var(--ambra);
+	}
+	@media (max-width: 640px) {
+		.fascia {
+			font-size: 0.88rem;
+			letter-spacing: 0.08em;
+		}
+		.fascia__studio,
+		.fascia__testo span {
+			display: none;
+		}
+	}
+	@media (max-width: 400px) {
+		.fascia__testo {
+			display: none;
+		}
+		.fascia {
+			justify-content: center;
+		}
+	}
+</style>
+
+<script>
+	// la barra di navigazione fissa sta sotto la fascia, poi risale mentre la fascia scorre via
+	const fascia = document.querySelector<HTMLElement>('[data-fascia]');
+	if (fascia) {
+		let attesa = false;
+		const aggiorna = () => {
+			attesa = false;
+			document.documentElement.style.setProperty('--fascia', `${Math.max(0, fascia.offsetHeight - scrollY)}px`);
+		};
+		addEventListener(
+			'scroll',
+			() => {
+				if (!attesa) {
+					attesa = true;
+					requestAnimationFrame(aggiorna);
+				}
+			},
+			{ passive: true },
+		);
+		addEventListener('resize', aggiorna);
+		aggiorna();
+	}
+</script>

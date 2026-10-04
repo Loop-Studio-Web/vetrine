@@ -1,0 +1,209 @@
+---
+// Orari come dati: 0 = domenica; chiusura oltre le 24 = dopo mezzanotte.
+const orari = [
+	{ g: 1, nome: 'Lunedì', apre: null, chiude: null },
+	{ g: 2, nome: 'Martedì', apre: 17, chiude: 24.5 },
+	{ g: 3, nome: 'Mercoledì', apre: 17, chiude: 24.5 },
+	{ g: 4, nome: 'Giovedì', apre: 17, chiude: 24.5 },
+	{ g: 5, nome: 'Venerdì', apre: 17, chiude: 26 },
+	{ g: 6, nome: 'Sabato', apre: 17, chiude: 26 },
+	{ g: 0, nome: 'Domenica', apre: 16, chiude: 24 },
+];
+const fmt = (h: number) => {
+	const x = h % 24;
+	return `${String(Math.floor(x)).padStart(2, '0')}:${x % 1 ? '30' : '00'}`;
+};
+---
+
+<section class="sezione info" id="info" aria-labelledby="info-titolo">
+	<div class="sezione__in info__in">
+		<header data-reveal>
+			<p class="etichetta">Dove &amp; quando</p>
+			<h2 class="titolo" id="info-titolo">Il bancone<br />è aperto.</h2>
+			<p class="info__stato" data-stato aria-live="polite">&nbsp;</p>
+		</header>
+
+		<div class="info__griglia">
+			<div class="info__scheda" data-reveal>
+				<h3>Orari</h3>
+				<table data-tabella={JSON.stringify(orari)}>
+					<caption class="sr-only">Orari di apertura settimanali</caption>
+					<tbody>
+						{
+							orari.map((o) => (
+								<tr data-g={o.g}>
+									<th scope="row">{o.nome}</th>
+									<td>{o.apre === null ? 'Chiuso' : `${fmt(o.apre)} – ${fmt(o.chiude!)}`}</td>
+								</tr>
+							))
+						}
+					</tbody>
+				</table>
+				<p class="info__piccolo">La cucina chiude un’ora prima del bancone.</p>
+			</div>
+
+			<div class="info__scheda" data-reveal style="--d: 0.1s">
+				<h3>Dove siamo</h3>
+				<address>
+					Via dei Maltai 7<br />
+					Borgovecchio (indirizzo di fantasia)
+				</address>
+				<ul class="info__lista">
+					<li><b>In bici</b> rastrelliera davanti all’ingresso</li>
+					<li><b>In auto</b> parcheggio libero nel piazzale dell’ex maglificio</li>
+					<li><b>A piedi</b> cinque minuti dalla piazza, seguendo l’odore di luppolo</li>
+				</ul>
+			</div>
+
+			<div class="info__scheda info__scheda--scura" data-reveal style="--d: 0.2s">
+				<h3>Scrivici</h3>
+				<p>Telefono <b>000 000 0000</b> (numero di esempio)</p>
+				<p>Email <b>ciao@luppolowatt.example</b></p>
+				<p class="info__piccolo">
+					Per le feste di compleanno e le cene aziendali chiedi del mastro birraio: apriamo anche il lunedì, per i gruppi
+					da venti in su.
+				</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.info__stato {
+		display: inline-block;
+		margin-top: 20px;
+		font-family: var(--display);
+		font-weight: 900;
+		font-size: 1.6rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		border: var(--bordo);
+		padding: 4px 16px 2px;
+	}
+	.info__stato[data-aperto='si'] {
+		background: var(--luppolo);
+		color: var(--carta);
+	}
+	.info__stato[data-aperto='no'] {
+		background: var(--carta-2);
+	}
+	.info__griglia {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 28px;
+		align-items: start;
+		margin-top: 48px;
+	}
+	.info__scheda {
+		border: var(--bordo);
+		background: var(--carta);
+		box-shadow: var(--ombra);
+		padding: 24px 24px 26px;
+	}
+	.info__scheda--scura {
+		background: var(--inchiostro);
+		color: var(--carta);
+		box-shadow: 5px 5px 0 var(--rosso);
+	}
+	.info__scheda h3 {
+		font-family: var(--display);
+		font-weight: 900;
+		text-transform: uppercase;
+		font-size: 2.2rem;
+		line-height: 1;
+		margin-bottom: 14px;
+	}
+	.info__scheda table {
+		width: 100%;
+		border-collapse: collapse;
+	}
+	.info__scheda th,
+	.info__scheda td {
+		text-align: left;
+		padding: 6px 0;
+		border-bottom: 2px dashed rgba(26, 24, 21, 0.35);
+	}
+	.info__scheda th {
+		font-family: var(--display);
+		font-weight: 800;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		font-size: 1.1rem;
+	}
+	.info__scheda td {
+		font-weight: 600;
+		text-align: right;
+		font-variant-numeric: tabular-nums;
+	}
+	.info__scheda tr.oggi th,
+	.info__scheda tr.oggi td {
+		background: var(--ambra);
+		border-bottom-style: solid;
+		padding-inline: 8px;
+	}
+	.info__piccolo {
+		margin-top: 14px;
+		font-size: 0.92rem;
+	}
+	.info__scheda address {
+		font-style: normal;
+		font-weight: 600;
+		font-size: 1.15rem;
+	}
+	.info__lista {
+		list-style: none;
+		margin-top: 16px;
+		display: grid;
+		gap: 10px;
+	}
+	.info__lista b {
+		font-family: var(--display);
+		font-weight: 800;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: var(--rosso);
+		margin-right: 6px;
+	}
+	.info__scheda--scura p {
+		margin-top: 8px;
+	}
+	.info__scheda--scura p b {
+		color: var(--ambra);
+		overflow-wrap: anywhere;
+	}
+	@media (max-width: 980px) {
+		.info__griglia {
+			grid-template-columns: 1fr;
+			max-width: 560px;
+		}
+	}
+</style>
+
+<script>
+	type Riga = { g: number; apre: number | null; chiude: number | null };
+	const tab = document.querySelector<HTMLElement>('[data-tabella]')!;
+	const stato = document.querySelector<HTMLElement>('[data-stato]')!;
+	const orari: Riga[] = JSON.parse(tab.dataset.tabella!);
+	const fmt = (h: number) => `${String(Math.floor(h % 24)).padStart(2, '0')}:${h % 1 ? '30' : '00'}`;
+
+	const adesso = new Date();
+	const g = adesso.getDay();
+	const h = adesso.getHours() + adesso.getMinutes() / 60;
+	tab.querySelector(`tr[data-g="${g}"]`)?.classList.add('oggi');
+
+	const oggi = orari.find((o) => o.g === g)!;
+	const ieri = orari.find((o) => o.g === (g + 6) % 7)!;
+	let aperto = false;
+	let fino = 0;
+	if (oggi.apre !== null && h >= oggi.apre && h < oggi.chiude!) {
+		aperto = true;
+		fino = oggi.chiude!;
+	} else if (ieri.chiude !== null && ieri.chiude > 24 && h < ieri.chiude - 24) {
+		aperto = true;
+		fino = ieri.chiude;
+	}
+	stato.dataset.aperto = aperto ? 'si' : 'no';
+	if (aperto) stato.textContent = `Aperto adesso, fino alle ${fmt(fino)}`;
+	else if (oggi.apre !== null && h < oggi.apre) stato.textContent = `Chiuso, apriamo alle ${fmt(oggi.apre)}`;
+	else stato.textContent = 'Chiuso adesso';
+</script>

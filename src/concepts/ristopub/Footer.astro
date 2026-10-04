@@ -1,0 +1,82 @@
+---
+import simbolo from '../../assets/ristopub/brand/simbolo.svg';
+import logo from '../../assets/hub/loop-logo-on-dark.svg';
+---
+
+<footer class="piede">
+	<div class="piede__in">
+		<p class="piede__nome">
+			<img src={simbolo.src} alt="" width="29" height="54" class="piede__mark" />
+			Luppolo<span>&amp;</span>Watt
+		</p>
+		<p class="piede__copy">
+			&copy; 2026 Luppolo &amp; Watt. Birrificio-pub di fantasia: concept dimostrativo, birre, piatti, eventi e indirizzi non
+			esistono.
+		</p>
+		<a class="piede__credito" href="https://theloopstudio.org/" target="_blank" rel="noopener">
+			<span>Sito ideato da</span>
+			<img src={logo.src} width="84" height="44" alt="Loop Studio" />
+		</a>
+	</div>
+</footer>
+
+<style>
+	.piede {
+		background: var(--inchiostro);
+		color: var(--carta);
+		padding: 44px var(--gutter);
+	}
+	.piede__in {
+		max-width: var(--max);
+		margin-inline: auto;
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		align-items: center;
+		gap: 16px 36px;
+	}
+	.piede__nome {
+		font-family: var(--display);
+		font-weight: 900;
+		font-size: 2rem;
+		text-transform: uppercase;
+		letter-spacing: 0.03em;
+		line-height: 1;
+	}
+	.piede__nome {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+	.piede__mark {
+		width: auto;
+		height: 54px;
+	}
+	.piede__nome span {
+		color: var(--ambra);
+		margin: 0 0.12em;
+	}
+	.piede__copy {
+		font-size: 0.88rem;
+		opacity: 0.85;
+		max-width: 52em;
+	}
+	.piede__credito {
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		text-decoration: none;
+		font-size: 0.85rem;
+	}
+	.piede__credito img {
+		height: 40px;
+		width: auto;
+	}
+	.piede__credito:hover {
+		opacity: 0.75;
+	}
+	@media (max-width: 860px) {
+		.piede__in {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

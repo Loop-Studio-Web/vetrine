@@ -1,0 +1,124 @@
+---
+// Boccale che accompagna il cursore (solo con mouse): segue con un po' di ritardo, si inclina con la
+// velocità e cambia sulle righe della lavagna (si riempie) e sui pulsanti (brindisi). La freccia di sistema resta.
+import simbolo from '../../assets/ristopub/brand/simbolo.svg';
+---
+
+<div class="boccale" aria-hidden="true" data-boccale>
+	<div class="boccale__in" data-boccale-in>
+		<img src={simbolo.src} alt="" width="26" height="49" class="boccale__img" />
+	</div>
+</div>
+
+<style>
+	.boccale {
+		position: fixed;
+		left: 0;
+		top: 0;
+		z-index: 300;
+		width: 26px;
+		pointer-events: none;
+		opacity: 0;
+		transition: opacity 0.25s;
+		will-change: transform;
+	}
+	.boccale.is-attivo {
+		opacity: 1;
+	}
+	.boccale__in {
+		transform-origin: 50% 20%;
+		transition: scale 0.25s cubic-bezier(0.3, 1.6, 0.5, 1);
+		filter: drop-shadow(2px 3px 0 rgba(26, 24, 21, 0.35));
+	}
+	.boccale__img {
+		display: block;
+		width: 26px;
+		height: auto;
+	}
+	/* sopra una riga della lavagna: il boccale si ingrandisce, "vuole essere riempito" */
+	.boccale.is-spina .boccale__in {
+		scale: 1.55;
+	}
+	/* sopra un pulsante o un link: brindisi */
+	.boccale.is-brindisi .boccale__in {
+		scale: 1.25;
+		animation: brindisi 0.5s ease-in-out infinite alternate;
+	}
+	.boccale.is-click .boccale__in {
+		scale: 0.8;
+	}
+	@keyframes brindisi {
+		from {
+			rotate: -14deg;
+		}
+		to {
+			rotate: 10deg;
+		}
+	}
+	/* solo dispositivi con mouse e movimento ammesso */
+	@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+		.boccale {
+			display: none;
+		}
+	}
+</style>
+
+<script>
+	const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+	const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+	const el = document.querySelector<HTMLElement>('[data-boccale]');
+	const dentro = document.querySelector<HTMLElement>('[data-boccale-in]');
+
+	if (el && dentro && fine && !ridotto) {
+		let mx = -100, my = -100; // puntatore
+		let x = -100, y = -100; // boccale
+		let vx = 0;
+		let acceso = false;
+		let attivo = false;
+
+		const tick = () => {
+			const nx = x + (mx + 20 - x) * 0.16;
+			const ny = y + (my + 18 - y) * 0.16;
+			vx += ((nx - x) - vx) * 0.25;
+			x = nx;
+			y = ny;
+			el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
+			// inclinazione: la birra "ondeggia" con la velocità orizzontale
+			dentro.style.rotate = `${Math.max(-28, Math.min(28, vx * 2.2)).toFixed(1)}deg`;
+			// ferma quando il boccale ha raggiunto il cursore e non si muove più
+			if (Math.abs(mx + 20 - x) < 0.3 && Math.abs(my + 18 - y) < 0.3 && Math.abs(vx) < 0.05) {
+				acceso = false;
+				return;
+			}
+			requestAnimationFrame(tick);
+		};
+		const sveglia = () => {
+			if (!acceso) {
+				acceso = true;
+				requestAnimationFrame(tick);
+			}
+		};
+
+		addEventListener('pointermove', (e) => {
+			if (e.pointerType !== 'mouse') return;
+			if (!attivo) {
+				attivo = true;
+				x = e.clientX + 20;
+				y = e.clientY + 18;
+				el.classList.add('is-attivo');
+			}
+			mx = e.clientX;
+			my = e.clientY;
+			const t = e.target as HTMLElement;
+			el.classList.toggle('is-spina', !!t.closest('.tap__riga'));
+			el.classList.toggle('is-brindisi', !t.closest('.tap__riga') && !!t.closest('a, button, label, summary'));
+			sveglia();
+		});
+		document.documentElement.addEventListener('pointerleave', () => {
+			attivo = false;
+			el.classList.remove('is-attivo');
+		});
+		addEventListener('pointerdown', () => el.classList.add('is-click'));
+		addEventListener('pointerup', () => el.classList.remove('is-click'));
+	}
+</script>

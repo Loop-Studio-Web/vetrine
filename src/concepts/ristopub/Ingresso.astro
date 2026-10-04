@@ -1,0 +1,227 @@
+---
+import { Image } from 'astro:assets';
+import foto from '../../assets/ristopub/birra-schiuma.jpg';
+import { prossimiEventi, nomeGiorno } from './eventi';
+
+const prossimi = prossimiEventi(new Date(), 4);
+const nastro = [
+	'12 spine, 8 fatte in casa',
+	...prossimi.map((e) => `${nomeGiorno(e.data)} ${e.ora} · ${e.titolo}`),
+	'Cucina aperta fino a mezzanotte',
+	'Palco aperto il giovedì, portate lo strumento',
+];
+---
+
+<section class="ingresso" id="top">
+	<div class="ingresso__in">
+		<div class="ingresso__testo">
+			<p class="etichetta ingresso__etichetta">Birrificio · Pub · Palco</p>
+			<h1 class="ingresso__titolo">
+				<span>Birra</span>
+				<span>che</span>
+				<span class="ingresso__suona">suona.</span>
+			</h1>
+			<p class="ingresso__lead">
+				Facciamo la birra nel retro, la spilliamo davanti e la accompagniamo con panini fatti come si deve. Dal mercoledì
+				alla domenica, sul palchetto in fondo, qualcuno suona.
+			</p>
+			<div class="ingresso__azioni">
+				<a class="btn" href="#spine">Vedi le spine <span aria-hidden="true">↓</span></a>
+				<a class="btn btn--chiaro" href="#palco">Stasera chi suona?</a>
+			</div>
+		</div>
+
+		<figure class="ingresso__foto">
+			<Image
+				src={foto}
+				alt="Un bicchiere di birra dorata con una schiuma fitta, ripreso da vicino."
+				widths={[480, 720, 960]}
+				sizes="(min-width: 920px) 460px, 86vw"
+				loading="eager"
+				fetchpriority="high"
+			/>
+			<span class="ingresso__bollo ingresso__bollo--uno" aria-hidden="true"><b>8</b>birre<br />nostre</span>
+			<span class="ingresso__bollo ingresso__bollo--due" aria-hidden="true">Live<br />ogni<br />venerdì</span>
+		</figure>
+	</div>
+
+	<div class="nastro" role="presentation">
+		<div class="nastro__pista">
+			{
+				[0, 1].map((k) => (
+					<ul aria-hidden={k === 1 ? 'true' : undefined}>
+						{nastro.map((t) => (
+							<li>{t}</li>
+						))}
+					</ul>
+				))
+			}
+		</div>
+	</div>
+
+</section>
+
+<style>
+	.ingresso {
+		position: relative;
+		background: var(--ambra);
+		padding-top: calc(var(--fascia-h, 0px) + var(--nav-h) + clamp(28px, 6vw, 72px));
+		overflow: hidden;
+		border-bottom: var(--bordo);
+	}
+	.ingresso__in {
+		max-width: var(--max);
+		margin-inline: auto;
+		padding: 0 var(--gutter) clamp(56px, 8vw, 100px);
+		display: grid;
+		grid-template-columns: 1.25fr 0.75fr;
+		gap: clamp(24px, 5vw, 72px);
+		align-items: center;
+	}
+	.ingresso__etichetta {
+		background: var(--carta);
+	}
+	.ingresso__titolo {
+		font-family: var(--display);
+		font-weight: 900;
+		text-transform: uppercase;
+		font-size: clamp(5rem, 17.5vw, 12.5rem);
+		line-height: 0.8;
+		letter-spacing: -0.01em;
+		margin: 22px 0 28px;
+	}
+	.ingresso__titolo span {
+		display: block;
+	}
+	.ingresso__suona {
+		display: inline-block !important;
+		background: var(--inchiostro);
+		color: var(--carta);
+		padding: 0.06em 0.14em 0;
+		transform: rotate(-2.5deg);
+		margin-top: 0.06em;
+		box-shadow: 8px 8px 0 var(--carta);
+	}
+	.ingresso__lead {
+		font-size: clamp(1.1rem, 2.2vw, 1.3rem);
+		max-width: 34em;
+		font-weight: 500;
+	}
+	.ingresso__azioni {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 16px 20px;
+		margin-top: 32px;
+	}
+	.ingresso__foto {
+		position: relative;
+		justify-self: center;
+		width: min(100%, 460px);
+		border: var(--bordo);
+		background: var(--carta);
+		padding: 12px 12px 44px;
+		box-shadow: 10px 10px 0 var(--inchiostro);
+		transform: rotate(2.5deg);
+	}
+	.ingresso__foto :global(img) {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 4 / 5;
+		object-fit: cover;
+		border: var(--bordo);
+	}
+	.ingresso__bollo {
+		position: absolute;
+		display: grid;
+		place-items: center;
+		text-align: center;
+		width: 104px;
+		height: 104px;
+		border-radius: 50%;
+		border: var(--bordo);
+		font-family: var(--display);
+		font-weight: 800;
+		font-size: 1.05rem;
+		line-height: 1;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+	}
+	.ingresso__bollo b {
+		display: block;
+		font-size: 2.6rem;
+		line-height: 0.9;
+	}
+	.ingresso__bollo--uno {
+		left: -34px;
+		top: 28px;
+		background: var(--carta);
+		transform: rotate(-12deg);
+	}
+	.ingresso__bollo--due {
+		right: -26px;
+		bottom: 8px;
+		background: var(--rosso);
+		color: var(--carta);
+		transform: rotate(9deg);
+	}
+
+	/* Nastro di notizie, scorre piano */
+	.nastro {
+		position: relative;
+		background: var(--inchiostro);
+		color: var(--carta);
+		overflow: hidden;
+		border-top: var(--bordo);
+		padding: 14px 0 10px;
+		z-index: 1;
+	}
+	.nastro__pista {
+		display: flex;
+		width: max-content;
+		animation: nastro 60s linear infinite;
+	}
+	.nastro ul {
+		display: flex;
+		flex-shrink: 0;
+		list-style: none;
+	}
+	.nastro li {
+		font-family: var(--display);
+		font-weight: 700;
+		font-size: 1.3rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		white-space: nowrap;
+		padding-right: 28px;
+	}
+	.nastro li::after {
+		content: '★';
+		color: var(--ambra);
+		margin-left: 28px;
+	}
+	@keyframes nastro {
+		to {
+			transform: translateX(-50%);
+		}
+	}
+	.nastro:hover .nastro__pista {
+		animation-play-state: paused;
+	}
+
+
+	@media (max-width: 920px) {
+		.ingresso__in {
+			grid-template-columns: 1fr;
+		}
+		.ingresso__foto {
+			width: min(86%, 380px);
+			margin-top: 20px;
+		}
+		.ingresso__bollo--uno {
+			left: -20px;
+		}
+		.ingresso__bollo--due {
+			right: -14px;
+		}
+	}
+</style>
