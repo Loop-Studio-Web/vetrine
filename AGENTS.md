@@ -103,6 +103,24 @@ dominio dedicato il sito sta alla radice: `astro.config.mjs` ha `site` sul sotto
 nuovo. Deploy automatico via GitHub Actions (`.github/workflows/deploy.yml`) a ogni push su
 `main`, nessuno step manuale. In locale il sito sta su `http://localhost:4321/`.
 
+## Due PC: controllare SEMPRE l'allineamento con git
+
+Si lavora da due computer diversi su questa repo (e sul sito madre
+`Loop-Studio`). Prima di iniziare qualunque lavoro, e di nuovo prima di
+committare, verificare che questo PC sia allineato al remoto e al deploy:
+
+1. `git fetch --all --prune`, poi `git status` e `git rev-list --left-right --count HEAD...@{u}`
+   (a sinistra i commit solo locali, a destra quelli solo remoti).
+2. Se ci sono commit remoti non scaricati: leggerli (`git log HEAD..@{u}`) e fare
+   `git pull --ff-only` PRIMA di toccare qualsiasi file. Se non è un fast-forward
+   o ci sono modifiche locali non committate che confliggono: fermarsi e
+   chiedere, mai forzare né risolvere in silenzio.
+3. Prima di un push, ripetere il controllo: l'altro PC può aver pubblicato nel
+   frattempo. Mai `push --force`.
+4. Il deploy parte da ogni push su `main` (GitHub Actions): ciò che è online è
+   ciò che sta su `origin/main`, non ciò che c'è sul PC. Dire sempre
+   all'utente se una modifica è solo locale o già pubblicata.
+
 ## Timeline
 
 Nessuna fretta: si costruisce un concept alla volta, con la cura che serve
