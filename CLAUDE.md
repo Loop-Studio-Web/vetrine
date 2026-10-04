@@ -6,7 +6,7 @@ Homepage concept dimostrative, non siti di clienti reali: materiale di
 portfolio per attrarre nuovi clienti, linkato dal Lab del sito principale
 (theloopstudio.org/lab/). Organizzate per macrocategoria di attività (es.
 "Ristorazione"), con più varianti/archetipi dentro ciascuna (es. Grande
-ristorante di classe, Home restaurant, Trattoria, RistoPub) per intercettare
+ristorante di classe, Trattoria, RistoPub) per intercettare
 il maggior numero possibile di tipologie di cliente.
 
 Repo gemella di [Loop-Studio-Web/lab](https://github.com/Loop-Studio-Web/lab)
@@ -50,7 +50,11 @@ d'ingresso, con il marchio dello studio (nero e rosso, Bricolage Grotesque e Han
 Grotesk, tema scuro e chiaro come theloopstudio.org). Vive in `src/hub/` ed è separato
 dai concept. I contenuti sono in `src/hub/data.ts`: a ogni nuova pubblicazione si
 aggiunge una voce lì (con le immagini in `src/assets/hub/`) e il concept compare da solo
-nella "via" in alto e nella sezione delle vetrine. Indicizzabile; i concept restano `noindex`.
+nella "via" in alto (a scorrimento orizzontale su telefono) e nella sezione delle vetrine, filtrabile per
+macrocategoria (`macros` in `data.ts`). Ogni concept ha anche una pagina di dettaglio indicizzabile
+(`src/pages/<macro>/<variante>/info.astro`, 5 righe che usano `src/hub/Dettaglio.astro`; i testi sono in
+`data.ts`) da aggiungere anche in `public/sitemap.xml`. I concept restano `noindex`. Ogni pagina ha anche
+il proprio menù su mobile (hub: pannello a cerchio; Trattoria: cartoncino che si srotola; Ossidiana: sipario).
 
 ## Convenzioni di un concept
 
@@ -110,16 +114,17 @@ accettati dai nuovi clienti.
 
 Senza ordine fisso tra macrocategorie:
 
-- **Ristorazione** — 4 varianti: Grande ristorante di classe, Home
-  restaurant, Trattoria, RistoPub. Proposta di partire da Trattoria (bacino
-  di clienti potenziali più ampio), da confermare.
+- **Ristorazione** — 3 varianti: Grande ristorante di classe, Trattoria,
+  RistoPub (Home restaurant scartata: troppo vicina alla Trattoria). Obiettivo:
+  3 concept totalmente diversi per ogni macrocategoria. Si è partiti da Trattoria (bacino
+  di clienti potenziali più ampio).
 - Legale/professionale
 - Beauty & wellness
 - Negozio/e-commerce locale
 
 Altre macrocategorie si aggiungeranno nel tempo.
 
-**Punto di partenza per Ristorante/Home restaurant:** esiste una base tecnica
+**Punto di partenza per i concept di Ristorazione:** esiste una base tecnica
 Astro già pronta in repo private, nata per un altro progetto. Riusabile solo
 come base tecnica/architetturale (la versione Astro, non quella WordPress —
 non gira su GitHub Pages), mai con nome, foto o dati reali di terzi: contenuti

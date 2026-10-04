@@ -3,82 +3,20 @@
 // Segue il design system dello studio (nero, rosso, Bricolage Grotesque e Hanken Grotesk).
 // I concept restano indipendenti tra loro: qui vive solo l'ingresso, in src/hub/.
 // Questa pagina è indicizzabile; i singoli concept restano `noindex, nofollow`.
-import '@fontsource-variable/bricolage-grotesque';
-import '@fontsource-variable/hanken-grotesk';
-import '../hub/hub.css';
-import Header from '../hub/Header.astro';
+import Layout from '../hub/Layout.astro';
 import Hero from '../hub/Hero.astro';
 import Concepts from '../hub/Concepts.astro';
 import Metodo from '../hub/Metodo.astro';
 import Prossime from '../hub/Prossime.astro';
-import Footer from '../hub/Footer.astro';
 
-const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const title = 'Vetrine — homepage concept per attività locali | Loop Studio';
 const description =
 	'Homepage complete per attività locali, ognuna con la propria identità: dalla trattoria al ristorante da menù degustazione. Concept dimostrativi di Loop Studio.';
-const ogImage = new URL(`${base}/images/hub/og.jpg`, Astro.site).href;
-const pageUrl = new URL(`${base}/`, Astro.site).href;
 ---
 
-<html lang="it">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
-		<link rel="apple-touch-icon" href={`${base}/images/hub/apple-touch-icon.png`} />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
-		<meta name="description" content={description} />
-		<link rel="canonical" href={pageUrl} />
-		<meta name="robots" content="index, follow" />
-		<meta name="theme-color" content="#000000" />
-		<meta property="og:type" content="website" />
-		<meta property="og:locale" content="it_IT" />
-		<meta property="og:site_name" content="Loop Studio" />
-		<meta property="og:title" content={title} />
-		<meta property="og:description" content={description} />
-		<meta property="og:url" content={pageUrl} />
-		<meta property="og:image" content={ogImage} />
-		<meta property="og:image:width" content="1200" />
-		<meta property="og:image:height" content="630" />
-		<meta property="og:image:alt" content="Vetrine di Loop Studio: una via di negozi con le tende, due vetrine accese" />
-		<meta name="twitter:card" content="summary_large_image" />
-		<script is:inline>
-			document.documentElement.classList.add('js');
-			// Tema prima del primo paint: come il sito dello studio, scuro di default
-			try {
-				var t = localStorage.getItem('vetrine-theme');
-				if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
-			} catch (e) {}
-		</script>
-	</head>
-	<body>
-		<a href="#main" class="skip-link">Vai al contenuto</a>
-		<Header />
-		<main id="main">
-			<Hero />
-			<Concepts />
-			<Metodo />
-			<Prossime />
-		</main>
-		<Footer />
-
-		<script>
-			// Rivela le sezioni quando entrano in vista
-			const els = document.querySelectorAll('[data-reveal]');
-			const io = new IntersectionObserver(
-				(entries) => {
-					for (const e of entries) {
-						if (e.isIntersecting) {
-							e.target.classList.add('is-visible');
-							io.unobserve(e.target);
-						}
-					}
-				},
-				{ threshold: 0.12 },
-			);
-			els.forEach((el) => io.observe(el));
-		</script>
-	</body>
-</html>
+<Layout title={title} description={description} path="/">
+	<Hero />
+	<Concepts />
+	<Metodo />
+	<Prossime />
+</Layout>

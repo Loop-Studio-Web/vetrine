@@ -26,7 +26,7 @@ const principi = [
 	<div class="wrap">
 		<header class="metodo__head" data-reveal>
 			<p class="eyebrow">Come le costruiamo</p>
-			<h2 id="metodo-title" class="h2">Una vetrina funziona se si nota. E se funziona.</h2>
+			<h2 id="metodo-title" class="h2">Una vetrina funziona se si nota. <span class="metodo__2">E se funziona.</span></h2>
 		</header>
 
 		<ul class="numeri" role="list">
@@ -130,6 +130,14 @@ const principi = [
 		color: var(--muted);
 	}
 	@media (min-width: 800px) {
+		/* Su schermi larghi il titolo sta su due righe, senza una colonna stretta e vuota accanto */
+		.metodo__head {
+			max-width: none;
+		}
+		.metodo__2 {
+			display: block;
+			color: var(--muted);
+		}
 		.numeri {
 			grid-template-columns: repeat(4, 1fr);
 		}

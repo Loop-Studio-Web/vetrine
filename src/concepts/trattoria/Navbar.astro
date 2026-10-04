@@ -26,10 +26,35 @@ import emblema from '../../assets/trattoria/brand/emblema.png';
 					<circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2" />
 					<path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
 				</svg>
-			</button>
+					</button>
+				<button class="navbar__burger" type="button" aria-expanded="false" aria-controls="menu-mobile" aria-label="Apri il menù" data-burger>
+					<span class="navbar__bar"></span>
+					<span class="navbar__bar"></span>
+					<span class="navbar__bar"></span>
+				</button>
+			</div>
 		</div>
-	</div>
-</nav>
+		<div class="navbar__panel" id="menu-mobile" data-panel inert>
+			<ul class="navbar__plist">
+				<li style="--i:0"><a href="#hero" class="navbar__plink">Home</a></li>
+				<li style="--i:1"><a href="#menu" class="navbar__plink">Menu</a></li>
+				<li style="--i:2"><a href="#reviews" class="navbar__plink">Recensioni</a></li>
+				<li style="--i:3"><a href="#info" class="navbar__plink">Contatti</a></li>
+			</ul>
+			<div class="navbar__pfoot" style="--i:4">
+				<a href="#prenota" class="navbar__cta navbar__plink">Prenota un tavolo</a>
+				<button class="theme-switcher theme-switcher--panel" type="button" aria-label="Passa al tema scuro" title="Passa al tema scuro">
+					<svg class="theme-switcher__icon theme-switcher__icon--moon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+						<path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+					</svg>
+					<svg class="theme-switcher__icon theme-switcher__icon--sun" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+						<circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2" />
+						<path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+					</svg>
+				</button>
+			</div>
+		</div>
+	</nav>
 
 <style>
 	/* Navbar */
@@ -211,46 +236,190 @@ import emblema from '../../assets/trattoria/brand/emblema.png';
 		}
 	}
 
-	@media (max-width: 480px) {
-		.navbar__menu {
+	/* Menù su schermi stretti: un cartoncino del menù che si srotola dalla barra */
+	.navbar__burger {
+		display: none;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		gap: 4px;
+		width: 40px;
+		height: 38px;
+		padding: 0;
+		background: var(--bg-secondary);
+		border: 1px solid var(--border-color);
+		border-radius: 8px;
+		color: var(--text-primary);
+		cursor: pointer;
+		transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+	}
+	.navbar__burger:focus-visible {
+		outline: 2px solid var(--accent-primary);
+		outline-offset: 2px;
+	}
+	.navbar__bar {
+		display: block;
+		width: 18px;
+		height: 2px;
+		border-radius: 2px;
+		background: currentColor;
+		transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s;
+	}
+	.navbar__burger[aria-expanded='true'] {
+		background: var(--accent-primary);
+		border-color: var(--accent-primary);
+		color: var(--on-accent);
+	}
+	.navbar__burger[aria-expanded='true'] .navbar__bar:nth-child(1) {
+		transform: translateY(6px) rotate(45deg);
+	}
+	.navbar__burger[aria-expanded='true'] .navbar__bar:nth-child(2) {
+		opacity: 0;
+	}
+	.navbar__burger[aria-expanded='true'] .navbar__bar:nth-child(3) {
+		transform: translateY(-6px) rotate(-45deg);
+	}
+
+	.navbar__panel {
+		display: none;
+	}
+
+	@media (max-width: 768px) {
+		.navbar__menu,
+		.navbar__actions > .theme-switcher {
 			display: none;
+		}
+		.navbar__burger {
+			display: inline-flex;
+		}
+		.navbar__panel {
+			display: block;
+			position: absolute;
+			top: 100%;
+			left: 12px;
+			right: 12px;
+			margin-top: 6px;
+			padding: 10px 24px 22px;
+			background: var(--bg-main);
+			border: 1px solid var(--border-color);
+			border-radius: 16px;
+			box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.35);
+			clip-path: inset(0 0 100% 0 round 16px);
+			visibility: hidden;
+			transition: clip-path 0.55s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s 0.55s;
+		}
+		.navbar__panel.is-open {
+			clip-path: inset(0 0 0 0 round 16px);
+			visibility: visible;
+			transition: clip-path 0.55s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s;
+		}
+		.navbar__plist {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+		.navbar__plist li {
+			border-bottom: 1px dashed var(--border-color);
+		}
+		.navbar__panel .navbar__plink:not(.navbar__cta) {
+			display: block;
+			padding: 14px 0;
+			font-family: var(--font-display);
+			font-size: 28px;
+			font-weight: 600;
+			letter-spacing: -0.3px;
+			color: var(--text-primary);
+			text-decoration: none;
+		}
+		.navbar__panel .navbar__plink:not(.navbar__cta):hover {
+			color: var(--accent-primary);
+		}
+		.navbar__pfoot {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			margin-top: 20px;
+		}
+		.navbar__pfoot .navbar__cta {
+			flex: 1;
+			text-align: center;
+		}
+		.navbar__plist li,
+		.navbar__pfoot {
+			opacity: 0;
+			transform: translateY(12px);
+			transition: opacity 0.3s, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+		}
+		.navbar__panel.is-open .navbar__plist li,
+		.navbar__panel.is-open .navbar__pfoot {
+			opacity: 1;
+			transform: none;
+			transition-delay: calc(0.15s + var(--i) * 0.06s);
+		}
+		/* Con il pannello aperto la barra non resta trasparente sul video */
+		.navbar.is-menu-open {
+			background: var(--glass-backdrop);
+			border-bottom-color: var(--border-color);
+		}
+		.navbar.is-menu-open .navbar__logo {
+			color: var(--text-primary);
+		}
+		:global(html.menu-open) {
+			overflow: hidden;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.navbar__container {
+			padding-inline: 16px;
+			gap: 10px;
 		}
 
 		.navbar__logo {
-			font-size: 17px;
+			font-size: 16px;
 			gap: 8px;
 		}
 
 		.navbar__emblem {
-			height: 38px;
+			height: 36px;
+		}
+
+		.navbar__cta {
+			padding: 9px 14px;
+			font-size: 15px;
 		}
 	}
 </style>
 
 <script>
 	// Theme switcher
-	const themeSwitcher = document.querySelector('.theme-switcher') as HTMLButtonElement;
+	const themeSwitchers = document.querySelectorAll<HTMLButtonElement>('.theme-switcher');
 	const html = document.documentElement;
 
 	// Il tema iniziale è già applicato dallo script inline in <head> (evita il lampo)
 	const isDark = () => html.getAttribute('data-theme') === 'dark';
 	const syncLabel = () => {
 		const label = isDark() ? 'Passa al tema chiaro' : 'Passa al tema scuro';
-		themeSwitcher?.setAttribute('aria-label', label);
-		themeSwitcher?.setAttribute('title', label);
+		themeSwitchers.forEach((b) => {
+			b.setAttribute('aria-label', label);
+			b.setAttribute('title', label);
+		});
 	};
 	syncLabel();
 
-	themeSwitcher?.addEventListener('click', () => {
-		const newTheme = isDark() ? 'light' : 'dark';
-		html.setAttribute('data-theme', newTheme);
-		try {
-			localStorage.setItem('theme', newTheme);
-		} catch {
-			// storage non disponibile (es. navigazione privata): il tema vale solo per la sessione
-		}
-		syncLabel();
-	});
+	themeSwitchers.forEach((b) =>
+		b.addEventListener('click', () => {
+			const newTheme = isDark() ? 'light' : 'dark';
+			html.setAttribute('data-theme', newTheme);
+			try {
+				localStorage.setItem('theme', newTheme);
+			} catch {
+				// storage non disponibile (es. navigazione privata): il tema vale solo per la sessione
+			}
+			syncLabel();
+		}),
+	);
 
 	// Navbar scroll effect
 	const navbar = document.querySelector('.navbar') as HTMLElement;
@@ -263,12 +432,35 @@ import emblema from '../../assets/trattoria/brand/emblema.png';
 		}
 	});
 
+	// Menù su schermi stretti: apri/chiudi, Esc, voci, ritorno del focus
+	const burger = document.querySelector<HTMLButtonElement>('[data-burger]');
+	const panel = document.querySelector<HTMLElement>('[data-panel]');
+	const setMenu = (open: boolean) => {
+		if (!burger || !panel) return;
+		panel.classList.toggle('is-open', open);
+		panel.toggleAttribute('inert', !open);
+		navbar.classList.toggle('is-menu-open', open);
+		html.classList.toggle('menu-open', open);
+		burger.setAttribute('aria-expanded', String(open));
+		burger.setAttribute('aria-label', open ? 'Chiudi il menù' : 'Apri il menù');
+		if (open) panel.querySelector<HTMLElement>('a')?.focus({ preventScroll: true });
+	};
+	burger?.addEventListener('click', () => setMenu(burger.getAttribute('aria-expanded') !== 'true'));
+	window.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape' && burger?.getAttribute('aria-expanded') === 'true') {
+			setMenu(false);
+			burger.focus();
+		}
+	});
+	window.matchMedia('(min-width: 769px)').addEventListener('change', (e) => e.matches && setMenu(false));
+
 	// Smooth scroll per navbar links
-	document.querySelectorAll<HTMLAnchorElement>('.navbar__link').forEach(link => {
+	document.querySelectorAll<HTMLAnchorElement>('.navbar__link, .navbar__plink').forEach(link => {
 		link.addEventListener('click', (e) => {
 			const href = link.getAttribute('href');
 			if (href && href.startsWith('#')) {
 				e.preventDefault();
+				setMenu(false);
 				const target = document.querySelector(href);
 				if (target) {
 					target.scrollIntoView({ behavior: 'smooth' });

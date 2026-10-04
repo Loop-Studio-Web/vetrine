@@ -16,7 +16,24 @@ import simbolo from '../../assets/ossidiana/brand/simbolo.png';
 		<a href="#sala">La sala</a>
 	</nav>
 	<a class="nav__cta" href="#prenota">Prenota</a>
+	<button class="nav__burger" type="button" aria-expanded="false" aria-controls="sipario" aria-label="Apri il menù" data-burger>
+		<span class="nav__line"></span>
+		<span class="nav__line"></span>
+	</button>
 </header>
+
+<!-- Menù su schermi stretti: un sipario. Due tende si chiudono al centro, poi compaiono le voci. -->
+<div class="curtain" id="sipario" data-curtain inert>
+	<span class="curtain__half curtain__half--l" aria-hidden="true"></span>
+	<span class="curtain__half curtain__half--r" aria-hidden="true"></span>
+	<nav class="curtain__in" aria-label="Sezioni">
+		<a href="#percorso" style="--i:0"><span class="curtain__n" aria-hidden="true">I</span>Il percorso</a>
+		<a href="#chef" style="--i:1"><span class="curtain__n" aria-hidden="true">II</span>Lo chef</a>
+		<a href="#produttori" style="--i:2"><span class="curtain__n" aria-hidden="true">III</span>I produttori</a>
+		<a href="#sala" style="--i:3"><span class="curtain__n" aria-hidden="true">IV</span>La sala</a>
+		<a class="curtain__cta" href="#prenota" style="--i:4">Prenota un tavolo</a>
+	</nav>
+</div>
 
 <style>
 	.nav {
@@ -100,9 +117,141 @@ import simbolo from '../../assets/ossidiana/brand/simbolo.png';
 		background: var(--wine);
 		border-color: var(--wine);
 	}
+	/* Pulsante del menù: due fili d'avorio che si incrociano */
+	.nav__burger {
+		display: grid;
+		place-content: center;
+		gap: 7px;
+		width: 44px;
+		height: 44px;
+		padding: 0;
+		margin-right: -8px;
+		background: none;
+		border: 0;
+		color: var(--ivory);
+		cursor: pointer;
+	}
+	.nav__line {
+		display: block;
+		width: 26px;
+		height: 1px;
+		background: currentColor;
+		transition: transform 0.6s cubic-bezier(0.7, 0, 0.2, 1);
+	}
+	.nav__burger[aria-expanded='true'] .nav__line:first-child {
+		transform: translateY(4px) rotate(45deg);
+	}
+	.nav__burger[aria-expanded='true'] .nav__line:last-child {
+		transform: translateY(-4px) rotate(-45deg);
+	}
+
+	/* Il sipario sta sotto la barra (z 50): marchio, Prenota e pulsante restano visibili */
+	.curtain {
+		position: fixed;
+		inset: 0;
+		z-index: 49;
+		display: grid;
+		place-items: center;
+		visibility: hidden;
+		transition: visibility 0s 0.9s;
+	}
+	.curtain.is-open {
+		visibility: visible;
+		transition: visibility 0s;
+	}
+	.curtain__half {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		width: 50.5%;
+		background:
+			linear-gradient(to bottom, rgba(122, 20, 38, 0.18), transparent 40%),
+			var(--ink-2);
+		transition: transform 0.85s cubic-bezier(0.7, 0, 0.2, 1);
+	}
+	.curtain__half--l {
+		left: 0;
+		transform: translateX(-101%);
+	}
+	.curtain__half--r {
+		right: 0;
+		transform: translateX(101%);
+	}
+	.curtain.is-open .curtain__half {
+		transform: none;
+	}
+	.curtain__in {
+		position: relative;
+		display: grid;
+		width: min(100%, 420px);
+		padding: 80px var(--gutter) 40px;
+		text-align: center;
+	}
+	.curtain__in a {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 2px;
+		padding: 14px 0;
+		font-family: var(--serif);
+		font-size: clamp(1.9rem, 8.5vw, 2.6rem);
+		font-weight: 400;
+		line-height: 1.1;
+		text-decoration: none;
+		color: var(--ivory);
+		opacity: 0;
+		transform: translateY(14px);
+		transition: opacity 0.3s, transform 0.3s;
+	}
+	.curtain.is-open .curtain__in a {
+		opacity: 1;
+		transform: none;
+		transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+		transition-delay: calc(0.6s + var(--i) * 0.09s);
+	}
+	.curtain__n {
+		font-family: var(--serif);
+		font-style: italic;
+		font-size: 0.85rem;
+		letter-spacing: 0.2em;
+		color: var(--wine-text);
+	}
+	.curtain__in .curtain__cta {
+		margin-top: 22px;
+		justify-self: center;
+		padding: 15px 34px;
+		border: 1px solid var(--wine);
+		background: var(--wine);
+		font-family: var(--sans);
+		font-size: 0.8rem;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+	}
+	:global(html.menu-open) {
+		overflow: hidden;
+	}
+
+	@media (max-width: 899px) {
+		.nav {
+			gap: 12px;
+		}
+		.nav__brand {
+			gap: 10px;
+			letter-spacing: 0.26em;
+			margin-right: auto;
+		}
+		.nav__cta {
+			padding: 10px 14px;
+			letter-spacing: 0.14em;
+		}
+	}
 	@media (min-width: 900px) {
 		.nav__links {
 			display: flex;
+		}
+		.nav__burger,
+		.curtain {
+			display: none;
 		}
 	}
 </style>
@@ -126,5 +275,28 @@ import simbolo from '../../assets/ossidiana/brand/simbolo.png';
 			{ passive: true },
 		);
 		update();
+	}
+
+	// Sipario: apri/chiudi, Esc, voci, ritorno del focus, blocco dello scorrimento
+	const burger = document.querySelector<HTMLButtonElement>('[data-burger]');
+	const curtain = document.querySelector<HTMLElement>('[data-curtain]');
+	if (burger && curtain) {
+		const set = (open: boolean) => {
+			curtain.classList.toggle('is-open', open);
+			curtain.toggleAttribute('inert', !open);
+			document.documentElement.classList.toggle('menu-open', open);
+			burger.setAttribute('aria-expanded', String(open));
+			burger.setAttribute('aria-label', open ? 'Chiudi il menù' : 'Apri il menù');
+			if (open) curtain.querySelector<HTMLElement>('a')?.focus({ preventScroll: true });
+		};
+		burger.addEventListener('click', () => set(burger.getAttribute('aria-expanded') !== 'true'));
+		curtain.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => set(false)));
+		window.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') {
+				set(false);
+				burger.focus();
+			}
+		});
+		window.matchMedia('(min-width: 900px)').addEventListener('change', (e) => e.matches && set(false));
 	}
 </script>

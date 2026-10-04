@@ -2,6 +2,8 @@
 import logoDark from '../assets/hub/loop-logo-on-dark.svg';
 import logoLight from '../assets/hub/loop-logo-on-light.svg';
 import { SITE, CONTACT } from './data';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <header class="hdr" data-hdr>
@@ -11,8 +13,8 @@ import { SITE, CONTACT } from './data';
 			<img class="logo logo--light" src={logoLight.src} alt="" width="95" height="50" />
 		</a>
 		<nav class="hdr__nav" aria-label="Sezioni">
-			<a href="#vetrine">Le vetrine</a>
-			<a href="#prossime">Prossime</a>
+			<a href={`${base}/#vetrine`}>Le vetrine</a>
+			<a href={`${base}/#prossime`}>Prossime</a>
 			<a href={SITE}>Sito dello studio <span aria-hidden="true">↗</span></a>
 		</nav>
 		<div class="hdr__tools">
@@ -24,10 +26,23 @@ import { SITE, CONTACT } from './data';
 					><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path></svg
 				>
 			</button>
-			<a class="btn btn--sm" href={CONTACT}>Parliamone</a>
+			<a class="btn btn--sm hdr__cta" href={CONTACT}>Parliamone</a>
+			<button type="button" class="hdr__burger" aria-expanded="false" aria-controls="hub-menu" aria-label="Apri il menu" data-burger>
+				<span class="hdr__bar"></span>
+				<span class="hdr__bar"></span>
+			</button>
 		</div>
 	</div>
 </header>
+
+<nav class="menu" id="hub-menu" aria-label="Menu" data-menu inert>
+	<div class="menu__nav">
+		<a href={`${base}/#vetrine`} style="--i:0"><span class="menu__n" aria-hidden="true">01</span>Le vetrine</a>
+		<a href={`${base}/#prossime`} style="--i:1"><span class="menu__n" aria-hidden="true">02</span>Prossime</a>
+		<a href={SITE} style="--i:2"><span class="menu__n" aria-hidden="true">03</span>Il sito dello studio <span aria-hidden="true">↗</span></a>
+	</div>
+	<a class="btn menu__cta" href={CONTACT} style="--i:3">Parliamone <span aria-hidden="true">→</span></a>
+</nav>
 
 <style>
 	.hdr {
@@ -123,9 +138,121 @@ import { SITE, CONTACT } from './data';
 	:global(:root[data-theme='light']) .ico--moon {
 		display: block;
 	}
+	/* Menu su telefono: il pannello si apre a cerchio dal pulsante, le voci salgono una dopo l'altra */
+	.hdr__burger {
+		display: grid;
+		place-content: center;
+		gap: 6px;
+		width: 42px;
+		height: 42px;
+		border-radius: 50%;
+		border: 1px solid var(--border);
+		background: transparent;
+		color: var(--text);
+		cursor: pointer;
+		transition: background 0.25s, border-color 0.25s;
+	}
+	.hdr__burger:hover {
+		background: var(--surface);
+	}
+	.hdr__bar {
+		display: block;
+		width: 18px;
+		height: 2px;
+		border-radius: 2px;
+		background: currentColor;
+		transition: transform 0.45s cubic-bezier(0.7, 0, 0.2, 1);
+	}
+	.hdr__burger[aria-expanded='true'] {
+		background: var(--accent-strong);
+		border-color: var(--accent-strong);
+		color: var(--on-accent);
+	}
+	.hdr__burger[aria-expanded='true'] .hdr__bar:first-child {
+		transform: translateY(4px) rotate(45deg);
+	}
+	.hdr__burger[aria-expanded='true'] .hdr__bar:last-child {
+		transform: translateY(-4px) rotate(-45deg);
+	}
+	.menu {
+		position: fixed;
+		inset: 0;
+		z-index: 99;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 36px;
+		padding: 96px var(--gutter) 40px;
+		background: var(--bg);
+		clip-path: circle(0 at calc(100% - 40px) 40px);
+		visibility: hidden;
+		transition: clip-path 0.7s cubic-bezier(0.7, 0, 0.2, 1), visibility 0s 0.7s;
+	}
+	.menu::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background: radial-gradient(ellipse 70% 50% at 100% 0%, color-mix(in srgb, var(--accent) 24%, transparent), transparent 70%);
+	}
+	.menu.is-open {
+		clip-path: circle(150% at calc(100% - 40px) 40px);
+		visibility: visible;
+		transition: clip-path 0.7s cubic-bezier(0.7, 0, 0.2, 1), visibility 0s;
+	}
+	.menu__nav {
+		display: grid;
+	}
+	.menu__nav a {
+		display: flex;
+		align-items: baseline;
+		gap: 16px;
+		padding: 16px 0;
+		border-bottom: 1px solid var(--border);
+		font-family: var(--display);
+		font-weight: 800;
+		font-size: clamp(2rem, 9vw, 3rem);
+		line-height: 1.05;
+		letter-spacing: -0.03em;
+		text-decoration: none;
+	}
+	.menu__n {
+		font-family: var(--sans);
+		font-weight: 600;
+		font-size: 0.8rem;
+		letter-spacing: 0.1em;
+		color: var(--accent);
+	}
+	.menu__nav a,
+	.menu__cta {
+		opacity: 0;
+		transform: translateY(24px);
+		transition: opacity 0.4s, transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+	}
+	.menu.is-open .menu__nav a,
+	.menu.is-open .menu__cta {
+		opacity: 1;
+		transform: none;
+		transition-delay: calc(0.3s + var(--i) * 0.08s);
+	}
+	.menu__cta {
+		align-self: flex-start;
+	}
+	:global(html.menu-open) {
+		overflow: hidden;
+	}
+	@media (max-width: 520px) {
+		.hdr__cta {
+			display: none;
+		}
+	}
 	@media (min-width: 900px) {
 		.hdr__nav {
 			display: flex;
+		}
+		.hdr__burger,
+		.menu {
+			display: none;
 		}
 	}
 </style>
@@ -139,6 +266,34 @@ import { SITE, CONTACT } from './data';
 		const upd = () => hdr.classList.toggle('is-scrolled', scrollY > 24);
 		addEventListener('scroll', upd, { passive: true });
 		upd();
+	}
+
+	// Menu su telefono: apri/chiudi, Esc, link, ritorno del focus, blocco dello scorrimento
+	const burger = document.querySelector<HTMLButtonElement>('[data-burger]');
+	const menu = document.querySelector<HTMLElement>('[data-menu]');
+	if (burger && menu) {
+		const set = (open: boolean) => {
+			menu.classList.toggle('is-open', open);
+			menu.toggleAttribute('inert', !open);
+			root.classList.toggle('menu-open', open);
+			burger.setAttribute('aria-expanded', String(open));
+			burger.setAttribute('aria-label', open ? 'Chiudi il menu' : 'Apri il menu');
+			if (open) menu.querySelector<HTMLElement>('a')?.focus({ preventScroll: true });
+		};
+		burger.addEventListener('click', () => set(burger.getAttribute('aria-expanded') !== 'true'));
+		menu.querySelectorAll('a').forEach((a) =>
+			a.addEventListener('click', () => {
+				// Chiude subito: l'ancora scorre la pagina sotto il pannello che si ritira
+				set(false);
+			}),
+		);
+		addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') {
+				set(false);
+				burger.focus();
+			}
+		});
+		matchMedia('(min-width: 900px)').addEventListener('change', (e) => e.matches && set(false));
 	}
 
 	if (btn) {

@@ -30,6 +30,8 @@
 > [!NOTE]
 > The pages are in Italian, because that is the audience they are built for. All businesses, people, addresses and reviews are fictional and declared as such.
 
+**How the entrance is organised.** The street is grouped by category: one labelled row of windows per category (a horizontal scroller on phones, with a neon arrow hinting that it moves), and categories still without a concept collect in a final "coming soon" row. Below it, the full list can be filtered by category (the filter lives in the URL hash, so it can be shared) and every concept has an indexable detail page at `/<category>/<archetype>/info/` that explains the idea, who it is for and what is inside. The concepts themselves stay `noindex`.
+
 <br>
 
 ### 01 · Trattoria del Borgo
@@ -74,7 +76,6 @@
 
 | Category | Archetype | Status |
 |---|---|---|
-| Food & drink | Home restaurant | Planned |
 | Food & drink | RistoPub | Planned |
 | Legal & professional | to be decided | Planned |
 | Beauty & wellness | to be decided | Planned |
@@ -114,6 +115,7 @@ Before a concept goes on the street, it has to clear the same gate:
 | **Builds** | `astro build` is clean | ✅ | ✅ |
 | **Accessible** | `axe-core`: zero violations | ✅ | ✅ |
 | **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ |
+| **Menu on phones** | A real menu with its own open/close effect, keyboard and Escape friendly (a curtain for Ossidiana, an unrolling card for the Trattoria) | ✅ | ✅ |
 | **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ |
 | **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ |
 | **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ |

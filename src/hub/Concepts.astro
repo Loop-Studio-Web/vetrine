@@ -1,89 +1,91 @@
 ---
 import { Image } from 'astro:assets';
-import { concepts, CONTACT } from './data';
+import { concepts, macros, prossime, CONTACT } from './data';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const live = (slug: string) => concepts.filter((c) => c.macro === slug).length;
 ---
 
 <section class="concepts" id="vetrine" aria-labelledby="vetrine-title">
 	<div class="wrap">
 		<header class="concepts__head" data-reveal>
-			<p class="eyebrow">Ristorazione · 2 archetipi su 4</p>
+			<p class="eyebrow">Le vetrine, per tipo di attività</p>
 			<h2 id="vetrine-title" class="h2">Le vetrine aperte</h2>
 			<p class="concepts__lead">
-				Ogni vetrina è una homepage completa e funzionante: si naviga, si prenota, si scorre. Entra, guarda con
-				calma, poi dicci quale somiglia di più alla tua attività.
+				Ogni vetrina è una homepage completa e funzionante: si naviga, si prenota, si scorre. Scegli il tipo di
+				attività, entra, guarda con calma, poi dicci quale somiglia di più alla tua.
 			</p>
 		</header>
 
+		<div class="filtri" role="group" aria-label="Filtra per tipo di attività" data-filtri>
+			<button type="button" class="chip" data-macro="tutte" aria-pressed="true">
+				Tutte <span class="chip__n">{concepts.length}</span>
+			</button>
+			{
+				macros.map((m) => (
+					<button type="button" class="chip" data-macro={m.slug} aria-pressed="false">
+						{m.nome}
+						<span class="chip__n">{live(m.slug) || 'presto'}</span>
+					</button>
+				))
+			}
+		</div>
+		<p class="sr-only" role="status" aria-live="polite" data-stato></p>
+
 		<div class="concepts__list">
 			{
-				concepts.map((c, i) => (
-					<article class={`concept ${i % 2 ? 'concept--rev' : ''}`} id={c.slug} style={`--glow:${c.glow}`}>
-						<a class="concept__media" href={`${base}${c.path}`} tabindex="-1" aria-hidden="true" data-reveal>
+				concepts.map((c) => (
+					<article class="card" id={c.slug} data-macro={c.macro} style={`--glow:${c.glow}`}>
+						<a class="card__media" href={`${base}${c.path}`} tabindex="-1" aria-hidden="true">
 							<Image
 								src={c.card}
 								alt=""
-								widths={[700, 1100, 1600]}
-								sizes="(min-width: 1000px) 56vw, 100vw"
+								widths={[480, 760, 1100]}
+								sizes="(min-width: 1000px) 560px, (min-width: 700px) 46vw, 100vw"
 								loading="lazy"
-								class="concept__img"
+								class="card__img"
 							/>
 						</a>
-						<div class="concept__body" data-reveal style="--d: 0.12s">
-							<p class="concept__cat">
-								<span class="concept__num">{String(i + 1).padStart(2, '0')}</span>
+						<div class="card__body">
+							<p class="card__cat">
 								{c.categoria} · {c.archetipo}
 							</p>
-							<h3 class="concept__name">{c.nome}</h3>
-							<p class="concept__claim">{c.claim}</p>
-
-							<dl class="concept__facts">
-								<div>
-									<dt>Atmosfera</dt>
-									<dd>{c.mood}</dd>
-								</div>
-								<div>
-									<dt>Caratteri</dt>
-									<dd>{c.caratteri}</dd>
-								</div>
-								<div>
-									<dt>Colori</dt>
-									<dd>
-										<span class="swatches" role="img" aria-label="Palette dei colori della vetrina">
-											{c.palette.map((p) => <span class="sw" style={`--c:${p}`} />)}
-										</span>
-									</dd>
-								</div>
-							</dl>
-
-							<h4 class="concept__sub">Cosa trovi dentro</h4>
-							<ul class="concept__punti">
-								{c.punti.map((p) => <li>{p}</li>)}
-							</ul>
-
-							<ul class="metrics" aria-label="Risultati dei test Lighthouse su mobile">
-								{
-									c.metriche.map((m) => (
-										<li>
-											<strong>{m.valore}</strong>
-											<span>{m.label}</span>
-										</li>
-									))
-								}
-							</ul>
-
-							<div class="concept__cta">
-								<a class="btn" href={`${base}${c.path}`}>
-									Entra nella vetrina <span aria-hidden="true">→</span>
+							<h3 class="card__name">{c.nome}</h3>
+							<p class="card__claim">{c.claim}</p>
+							<div class="card__cta">
+								<a class="btn btn--sm" href={`${base}${c.path}`}>
+									Entra <span aria-hidden="true">→</span>
 								</a>
-								<a class="btn btn--ghost" href={`${CONTACT}?concept=${c.slug}`}>Ne voglio una così</a>
+								<a class="btn btn--sm btn--ghost" href={`${base}${c.infoPath}`}>
+									Scopri di più<span class="sr-only"> su {c.nome}</span>
+								</a>
 							</div>
+							<a class="card__want" href={`${CONTACT}?concept=${c.slug}`}>
+								Ne voglio una così
+							</a>
 						</div>
 					</article>
 				))
 			}
 		</div>
+
+		{
+			macros
+				.filter((m) => !live(m.slug))
+				.map((m) => (
+					<div class="vuoto" data-vuoto={m.slug} hidden>
+						<p class="vuoto__t">Nessuna vetrina di {m.nome.toLowerCase()} per ora.</p>
+						<p class="vuoto__d">
+							In costruzione, una alla volta:{' '}
+							{prossime
+								.filter((p) => p.macro === m.slug)
+								.map((p) => p.nome)
+								.join(', ')}
+							. Se è la tua attività, <a href={CONTACT}>raccontacela</a>.
+						</p>
+					</div>
+				))
+		}
 	</div>
 </section>
 
@@ -104,178 +106,192 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 		color: var(--muted);
 		font-size: 1.15rem;
 	}
-	.concepts__list {
-		display: grid;
-		gap: clamp(70px, 10vw, 140px);
-		margin-top: clamp(48px, 7vw, 90px);
+
+	/* Filtri: a capo, mai a scorrimento orizzontale */
+	.filtri {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+		margin-top: clamp(32px, 5vw, 52px);
+	}
+	.chip {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		min-height: 44px;
+		padding: 8px 18px;
+		border-radius: 999px;
+		border: 1px solid var(--border);
+		background: transparent;
+		color: var(--text);
+		font: inherit;
+		font-size: 0.95rem;
+		font-weight: 600;
+		cursor: pointer;
+		transition: background 0.25s, border-color 0.25s, color 0.25s;
+	}
+	.chip:hover {
+		border-color: var(--text);
+	}
+	.chip[aria-pressed='true'] {
+		background: var(--text);
+		border-color: var(--text);
+		color: var(--bg);
+	}
+	.chip__n {
+		font-size: 0.78rem;
+		font-weight: 600;
+		color: var(--muted);
+	}
+	.chip[aria-pressed='true'] .chip__n {
+		color: var(--bg);
+		opacity: 0.7;
 	}
 
-	.concept {
+	.concepts__list {
 		display: grid;
-		gap: 36px;
-		align-items: center;
+		gap: clamp(36px, 5vw, 56px) 28px;
+		margin-top: clamp(32px, 5vw, 52px);
 	}
-	.concept__media {
+	.card {
+		display: flex;
+		flex-direction: column;
+		gap: 22px;
+	}
+	.card[hidden] {
+		display: none;
+	}
+	.card__media {
 		display: block;
-		border-radius: 22px;
+		border-radius: 18px;
 		overflow: hidden;
 		border: 1px solid var(--border);
 		box-shadow: var(--shadow);
 		transition: box-shadow 0.6s, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
 	}
-	.concept__media:hover {
+	.card__media:hover {
 		box-shadow: 0 40px 110px -30px var(--glow);
 		transform: translateY(-4px);
 	}
-	.concept__img {
+	.card__img {
 		width: 100%;
 		height: auto;
 		aspect-ratio: 5 / 3;
 		object-fit: cover;
 	}
-	.concept__cat {
-		font-size: 0.85rem;
+	.card__cat {
+		font-size: 0.78rem;
 		font-weight: 600;
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
 		color: var(--muted);
 	}
-	.concept__num {
-		margin-right: 10px;
-		color: var(--accent);
-	}
-	.concept__name {
-		margin-top: 12px;
+	.card__name {
+		margin-top: 10px;
 		font-family: var(--display);
 		font-weight: 800;
-		font-size: clamp(2.2rem, 4.4vw, 3.6rem);
-		line-height: 1;
+		font-size: clamp(1.8rem, 3vw, 2.4rem);
+		line-height: 1.05;
 		letter-spacing: -0.03em;
 	}
-	.concept__claim {
-		margin-top: 16px;
-		font-size: 1.2rem;
-		line-height: 1.45;
-		max-width: 34ch;
-	}
-	.concept__facts {
-		display: grid;
-		gap: 14px;
-		margin-top: 28px;
-		padding-top: 24px;
-		border-top: 1px solid var(--border);
-	}
-	.concept__facts > div {
-		display: grid;
-		grid-template-columns: 110px 1fr;
-		gap: 16px;
-		align-items: baseline;
-	}
-	.concept__facts dt {
-		font-size: 0.78rem;
-		font-weight: 600;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		color: var(--muted);
-	}
-	.concept__facts dd {
-		font-size: 0.98rem;
-	}
-	.swatches {
-		display: inline-flex;
-		border-radius: 999px;
-		overflow: hidden;
-		border: 1px solid var(--border);
-		vertical-align: middle;
-	}
-	.sw {
-		display: block;
-		width: 30px;
-		height: 22px;
-		background: var(--c);
-	}
-	.concept__sub {
-		margin-top: 28px;
-		font-size: 0.78rem;
-		font-weight: 600;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		color: var(--muted);
-	}
-	.concept__punti {
-		display: grid;
-		gap: 8px;
+	.card__claim {
 		margin-top: 12px;
+		max-width: 38ch;
+		color: var(--muted);
 	}
-	.concept__punti li {
-		position: relative;
-		padding-left: 22px;
-		font-size: 0.98rem;
-	}
-	.concept__punti li::before {
-		content: '';
-		position: absolute;
-		left: 0;
-		top: 0.62em;
-		width: 9px;
-		height: 2px;
-		background: var(--accent);
-	}
-	.metrics {
+	.card__cta {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 10px;
-		margin-top: 26px;
+		margin-top: 22px;
 	}
-	.metrics li {
-		display: flex;
-		align-items: baseline;
-		gap: 8px;
-		padding: 8px 16px;
-		border-radius: 999px;
-		border: 1px solid var(--border);
-		background: var(--surface);
-	}
-	.metrics strong {
-		font-family: var(--display);
-		font-weight: 800;
-		font-size: 1.15rem;
+	.card__want {
+		display: inline-block;
+		margin-top: 14px;
+		padding: 8px 0;
+		font-size: 0.95rem;
+		font-weight: 600;
 		color: var(--accent);
-	}
-	.metrics span {
-		font-size: 0.8rem;
-		color: var(--muted);
-	}
-	.concept__cta {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 12px;
-		margin-top: 34px;
+		text-underline-offset: 4px;
 	}
 
-	@media (min-width: 1000px) {
-		.concept {
-			grid-template-columns: 7fr 5fr;
-			gap: clamp(40px, 6vw, 96px);
-		}
-		.concept--rev {
-			grid-template-columns: 5fr 7fr;
-		}
-		.concept--rev .concept__media {
-			order: 2;
-		}
-		.concept {
-			align-items: start;
-		}
-		.concept__media {
-			position: sticky;
-			top: 110px;
-		}
+	.vuoto {
+		margin-top: 28px;
+		padding: 36px 28px;
+		border: 1px dashed var(--border);
+		border-radius: 18px;
+		text-align: center;
 	}
-	@media (max-width: 480px) {
-		.concept__facts > div {
-			grid-template-columns: 1fr;
-			gap: 2px;
+	.vuoto[hidden] {
+		display: none;
+	}
+	.vuoto__t {
+		font-family: var(--display);
+		font-weight: 700;
+		font-size: 1.3rem;
+	}
+	.vuoto__d {
+		margin: 10px auto 0;
+		max-width: 52ch;
+		color: var(--muted);
+	}
+
+	@media (min-width: 700px) {
+		.concepts__list {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 	}
 </style>
+
+<script>
+	// Filtro per macrocategoria: stato nell'indirizzo (#ristorazione), senza JS si vede tutto.
+	const wrap = document.querySelector<HTMLElement>('[data-filtri]');
+	if (wrap) {
+		const chips = [...wrap.querySelectorAll<HTMLButtonElement>('.chip')];
+		const slugs = chips.map((c) => c.dataset.macro!);
+		const items = document.querySelectorAll<HTMLElement>('.card[data-macro]');
+		const vuoti = document.querySelectorAll<HTMLElement>('[data-vuoto]');
+		const stato = document.querySelector<HTMLElement>('[data-stato]');
+
+		const apply = (macro: string) => {
+			let n = 0;
+			chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.macro === macro)));
+			items.forEach((el) => {
+				const show = macro === 'tutte' || el.dataset.macro === macro;
+				el.hidden = !show;
+				if (show && el.classList.contains('card')) n++;
+			});
+			vuoti.forEach((v) => (v.hidden = v.dataset.vuoto !== macro));
+			if (stato) {
+				const nome = chips.find((c) => c.dataset.macro === macro)?.firstChild?.textContent?.trim() ?? '';
+				stato.textContent = n ? `${n} vetrine: ${nome}` : `Nessuna vetrina per ora: ${nome}`;
+			}
+		};
+
+		const fromHash = () => {
+			const h = location.hash.slice(1);
+			return slugs.includes(h) ? h : null;
+		};
+
+		chips.forEach((c) =>
+			c.addEventListener('click', () => {
+				const m = c.dataset.macro!;
+				apply(m);
+				history.replaceState(null, '', m === 'tutte' ? location.pathname + location.search : `#${m}`);
+			}),
+		);
+		addEventListener('hashchange', () => {
+			const m = fromHash();
+			if (m) {
+				apply(m);
+				document.getElementById('vetrine')?.scrollIntoView();
+			}
+		});
+
+		const initial = fromHash();
+		if (initial) {
+			apply(initial);
+			requestAnimationFrame(() => document.getElementById('vetrine')?.scrollIntoView());
+		}
+	}
+</script>

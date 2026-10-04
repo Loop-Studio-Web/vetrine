@@ -19,7 +19,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 		</div>
 		<div class="hero-video__frame">
 			<video class="hero-video__iframe" autoplay muted loop playsinline preload="auto" poster={`${base}/images/trattoria/hero-poster.jpg`}>
-				<source src={`${base}/videos/trattoria-hero.f616.mp4`} type="video/mp4" />
+				<source src={`${base}/videos/trattoria-hero.mp4`} type="video/mp4" />
 				Il tuo browser non supporta il tag video.
 			</video>
 		</div>
@@ -161,6 +161,30 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 
 	@media (max-width: 768px) {
+		/* La hero cresce con la scheda e lascia sempre libera la navbar fissa (alta circa 75 px) */
+		.hero-video {
+			height: auto;
+			min-height: 100vh;
+			min-height: 100svh;
+		}
+
+		.hero-video__container {
+			position: relative;
+			min-height: inherit;
+			padding: 104px 16px 40px;
+		}
+
+		.hero-video__frame {
+			inset: 0;
+			width: 100%;
+			height: 100%;
+			transform: none;
+		}
+
+		.hero-video__content {
+			padding: 36px 24px;
+		}
+
 		.hero-video__title {
 			font-size: 48px;
 		}
@@ -175,10 +199,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 	}
 
 	@media (max-width: 480px) {
-		.hero-video {
-			height: 80vh;
-		}
-
 		.hero-video__title {
 			font-size: 36px;
 		}
@@ -199,5 +219,13 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 		const video = document.querySelector<HTMLVideoElement>('.hero-video__iframe');
 		video?.removeAttribute('autoplay');
 		video?.pause();
+	} else {
+		// Se il browser rifiuta l'avvio automatico (risparmio energetico, iOS), riprova al primo gesto
+		const video = document.querySelector<HTMLVideoElement>('.hero-video__iframe');
+		video?.play().catch(() => {
+			const retry = () => video.play().catch(() => {});
+			addEventListener('touchstart', retry, { once: true, passive: true });
+			addEventListener('scroll', retry, { once: true, passive: true });
+		});
 	}
 </script>

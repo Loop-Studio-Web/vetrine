@@ -1,0 +1,373 @@
+---
+// Pagina di dettaglio di una vetrina: descrizione, a chi serve, scelte di design, test.
+// Indicizzabile (a differenza del concept, che resta noindex). Un solo impianto per tutte
+// le pagine di questo tipo: i testi vivono in data.ts, uno per concept.
+import { Image } from 'astro:assets';
+import Layout from './Layout.astro';
+import { concepts, macros, CONTACT } from './data';
+
+interface Props {
+	slug: string;
+}
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const c = concepts.find((x) => x.slug === Astro.props.slug)!;
+const macro = macros.find((m) => m.slug === c.macro)!;
+const altri = concepts.filter((x) => x.slug !== c.slug);
+const title = `${c.titoloSeo} | Loop Studio`;
+---
+
+<Layout
+	title={title}
+	description={c.descrizioneSeo}
+	path={c.infoPath}
+	ogImage={`/images/${c.slug}/og.jpg`}
+	ogAlt={`${c.nome}: ${c.archetipo.toLowerCase()}, concept dimostrativo di Loop Studio`}
+>
+	<article class="det" style={`--glow:${c.glow}`}>
+		<header class="det__top wrap">
+			<nav class="crumbs" aria-label="Percorso">
+				<a href={`${base}/`}>Vetrine</a>
+				<span aria-hidden="true">/</span>
+				<a href={`${base}/#${macro.slug}`}>{macro.nome}</a>
+				<span aria-hidden="true">/</span>
+				<span aria-current="page">{c.nome}</span>
+			</nav>
+			<p class="eyebrow">{c.categoria} · {c.archetipo}</p>
+			<h1 class="det__title">{c.nome}</h1>
+			<p class="det__claim">{c.claim}</p>
+			<div class="det__cta">
+				<a class="btn" href={`${base}${c.path}`}>Entra nella vetrina <span aria-hidden="true">→</span></a>
+				<a class="btn btn--ghost" href={`${CONTACT}?concept=${c.slug}`}>Ne voglio una così</a>
+			</div>
+		</header>
+
+		<div class="wrap">
+			<a class="det__media" href={`${base}${c.path}`} aria-label={`Apri la vetrina ${c.nome}`}>
+				<Image
+					src={c.card}
+					alt={c.cardAlt}
+					widths={[700, 1100, 1600]}
+					sizes="(min-width: 1280px) 1120px, 100vw"
+					loading="eager"
+					class="det__img"
+				/>
+			</a>
+		</div>
+
+		<div class="wrap det__grid">
+			<section class="det__intro" aria-labelledby="det-idea">
+				<h2 id="det-idea" class="det__h">L’idea</h2>
+				{c.intro.map((p) => <p>{p}</p>)}
+				<h2 class="det__h det__h--next">Per chi è</h2>
+				<p>{c.perChi}</p>
+			</section>
+
+			<aside class="det__facts" aria-label="Scheda tecnica">
+				<dl>
+					<div>
+						<dt>Atmosfera</dt>
+						<dd>{c.mood}</dd>
+					</div>
+					<div>
+						<dt>Caratteri</dt>
+						<dd>{c.caratteri}</dd>
+					</div>
+					<div>
+						<dt>Colori</dt>
+						<dd>
+							<span class="swatches" role="img" aria-label="Palette dei colori della vetrina">
+								{c.palette.map((p) => <span class="sw" style={`--c:${p}`} />)}
+							</span>
+						</dd>
+					</div>
+				</dl>
+				<ul class="metrics" aria-label="Risultati dei test Lighthouse su mobile">
+					{
+						c.metriche.map((m) => (
+							<li>
+								<strong>{m.valore}</strong>
+								<span>{m.label}</span>
+							</li>
+						))
+					}
+				</ul>
+			</aside>
+		</div>
+
+		<section class="det__sez wrap" aria-labelledby="det-dentro">
+			<h2 id="det-dentro" class="det__h">Cosa trovi dentro</h2>
+			<ol class="sezioni">
+				{
+					c.sezioni.map((s, i) => (
+						<li>
+							<span class="sezioni__n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+							<div>
+								<h3>{s.t}</h3>
+								<p>{s.d}</p>
+							</div>
+						</li>
+					))
+				}
+			</ol>
+		</section>
+
+		<p class="wrap det__nota">
+			Concept dimostrativo di Loop Studio: nomi, indirizzi, piatti e recensioni sono di fantasia. Le foto
+			provengono da Unsplash e sono usate secondo la sua licenza.
+		</p>
+
+		{
+			altri.length > 0 && (
+				<section class="det__altre wrap" aria-labelledby="det-altre">
+					<h2 id="det-altre" class="det__h">Altre vetrine aperte</h2>
+					<ul>
+						{altri.map((a) => (
+							<li>
+								<a href={`${base}${a.infoPath}`}>
+									<span>{a.nome}</span>
+									<small>{a.archetipo}</small>
+								</a>
+							</li>
+						))}
+					</ul>
+				</section>
+			)
+		}
+	</article>
+</Layout>
+
+<style>
+	.det {
+		padding: clamp(110px, 14vw, 170px) 0 clamp(56px, 8vw, 100px);
+	}
+	.crumbs {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		margin-bottom: 28px;
+		font-size: 0.88rem;
+		color: var(--muted);
+	}
+	.crumbs a {
+		padding: 6px 0;
+		text-underline-offset: 3px;
+	}
+	.crumbs [aria-current] {
+		padding: 6px 0;
+		color: var(--text);
+	}
+	.det__title {
+		margin-top: 14px;
+		font-family: var(--display);
+		font-weight: 800;
+		font-size: clamp(2.6rem, 7vw, 5.6rem);
+		line-height: 1;
+		letter-spacing: -0.035em;
+	}
+	.det__claim {
+		margin-top: 20px;
+		max-width: 36ch;
+		font-size: clamp(1.15rem, 2vw, 1.5rem);
+		line-height: 1.4;
+		color: var(--muted);
+	}
+	.det__cta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px;
+		margin-top: 32px;
+	}
+	.det__media {
+		display: block;
+		margin-top: clamp(40px, 6vw, 72px);
+		border-radius: 22px;
+		overflow: hidden;
+		border: 1px solid var(--border);
+		box-shadow: var(--shadow);
+		transition: box-shadow 0.6s;
+	}
+	.det__media:hover {
+		box-shadow: 0 40px 110px -30px var(--glow);
+	}
+	.det__img {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 5 / 3;
+		object-fit: cover;
+	}
+
+	.det__grid {
+		display: grid;
+		gap: 44px;
+		margin-top: clamp(48px, 7vw, 96px);
+	}
+	.det__h {
+		font-size: 0.8rem;
+		font-weight: 600;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--accent);
+	}
+	.det__h--next {
+		margin-top: 40px;
+	}
+	.det__intro p {
+		margin-top: 16px;
+		max-width: 62ch;
+		font-size: 1.12rem;
+	}
+	.det__facts {
+		align-self: start;
+		padding: 26px;
+		border: 1px solid var(--border);
+		border-radius: 18px;
+		background: var(--bg-2);
+	}
+	.det__facts dl {
+		display: grid;
+		gap: 18px;
+	}
+	.det__facts dt {
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--muted);
+	}
+	.det__facts dd {
+		margin-top: 4px;
+		font-size: 0.98rem;
+	}
+	.swatches {
+		display: inline-flex;
+		border-radius: 999px;
+		overflow: hidden;
+		border: 1px solid var(--border);
+	}
+	.sw {
+		display: block;
+		width: 30px;
+		height: 22px;
+		background: var(--c);
+	}
+	.metrics {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+		margin-top: 26px;
+		padding-top: 22px;
+		border-top: 1px solid var(--border);
+	}
+	.metrics li {
+		display: flex;
+		align-items: baseline;
+		gap: 8px;
+		padding: 8px 16px;
+		border-radius: 999px;
+		border: 1px solid var(--border);
+		background: var(--surface);
+	}
+	.metrics strong {
+		font-family: var(--display);
+		font-weight: 800;
+		font-size: 1.15rem;
+		color: var(--accent);
+	}
+	.metrics span {
+		font-size: 0.8rem;
+		color: var(--muted);
+	}
+
+	.det__sez {
+		margin-top: clamp(56px, 8vw, 110px);
+	}
+	.sezioni {
+		display: grid;
+		margin-top: 8px;
+	}
+	.sezioni li {
+		display: grid;
+		grid-template-columns: 44px 1fr;
+		gap: 14px;
+		padding: 26px 0;
+		border-bottom: 1px solid var(--border);
+	}
+	.sezioni li:first-child {
+		border-top: 1px solid var(--border);
+		margin-top: 18px;
+	}
+	.sezioni__n {
+		font-family: var(--display);
+		font-weight: 800;
+		font-size: 0.9rem;
+		color: var(--accent);
+	}
+	.sezioni h3 {
+		font-family: var(--display);
+		font-weight: 700;
+		font-size: clamp(1.25rem, 2.4vw, 1.6rem);
+		line-height: 1.2;
+		letter-spacing: -0.02em;
+	}
+	.sezioni p {
+		margin-top: 8px;
+		max-width: 60ch;
+		color: var(--muted);
+	}
+
+	.det__nota {
+		margin-top: 40px;
+		font-size: 0.85rem;
+		color: var(--muted);
+		max-width: 70ch;
+		margin-inline: auto;
+	}
+	.det__altre {
+		margin-top: clamp(48px, 7vw, 90px);
+	}
+	.det__altre ul {
+		display: grid;
+		gap: 12px;
+		margin-top: 18px;
+	}
+	.det__altre a {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 6px 18px;
+		padding: 18px 22px;
+		border: 1px solid var(--border);
+		border-radius: 14px;
+		text-decoration: none;
+		font-family: var(--display);
+		font-weight: 700;
+		font-size: 1.25rem;
+		transition: border-color 0.25s, background 0.25s;
+	}
+	.det__altre a:hover {
+		border-color: var(--text);
+		background: var(--surface);
+	}
+	.det__altre small {
+		font-family: var(--sans);
+		font-weight: 400;
+		font-size: 0.88rem;
+		color: var(--muted);
+	}
+
+	@media (min-width: 900px) {
+		.det__grid {
+			grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+			gap: clamp(40px, 7vw, 100px);
+		}
+		.det__facts {
+			position: sticky;
+			top: 110px;
+		}
+		.det__altre ul {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+</style>

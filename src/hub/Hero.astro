@@ -1,8 +1,22 @@
 ---
 import { Image } from 'astro:assets';
-import { concepts, prossime, CONTACT } from './data';
+import logoDark from '../assets/hub/loop-logo-on-dark.svg';
+import logoLight from '../assets/hub/loop-logo-on-light.svg';
+import { concepts, macros, prossime, CONTACT } from './data';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// La via è divisa per macrocategoria: una riga per ogni categoria che ha vetrine aperte
+// (con accanto le sue "in arrivo"); le categorie ancora senza vetrine finiscono insieme in una riga finale.
+const gruppi = macros
+	.map((m) => ({
+		slug: m.slug as string,
+		nome: m.nome as string,
+		live: concepts.filter((c) => c.macro === m.slug),
+		soon: prossime.filter((p) => p.macro === m.slug),
+	}))
+	.filter((g) => g.live.length > 0);
+const soloInArrivo = prossime.filter((p) => !gruppi.some((g) => g.slug === p.macro));
 
 // Tenda a strisce con il bordo a scalloni, uguale per ogni negozio ma nei colori del concept
 function awning([a, b]: [string, string] | string[]) {
@@ -21,7 +35,13 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 <section class="hero" aria-labelledby="hero-title">
 	<div class="hero__glow" aria-hidden="true"></div>
 	<div class="wrap hero__top">
-		<p class="eyebrow hero__eyebrow">Vetrine · homepage concept di Loop Studio</p>
+		<p class="hero__eyebrow">
+			<span class="hero__eyebrow-a">Vetrine</span>
+			<span class="hero__sep" aria-hidden="true"></span>
+			<span class="hero__eyebrow-b">Homepage concept di</span>
+			<img class="hero__logo hero__logo--dark" src={logoDark.src} alt="Loop Studio" width="95" height="50" />
+			<img class="hero__logo hero__logo--light" src={logoLight.src} alt="Loop Studio" width="95" height="50" />
+		</p>
 		<h1 id="hero-title" class="hero__title">
 			Ogni attività ha una vetrina.
 			<span class="hero__accent">La tua dovrebbe sembrare solo tua.</span>
@@ -39,46 +59,83 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 
 	<div class="wrap">
 		<div class="street" data-reveal>
-			<p class="street__neon" aria-hidden="true">Aperto</p>
-			<ul class="street__row" role="list">
-				{
-					concepts.map((c) => (
-						<li class="shop shop--live" style={`--glow:${c.glow}`}>
-							<a class="shop__link" href={`${base}${c.path}`} aria-label={`${c.nome}, ${c.archetipo.toLowerCase()}: entra nella vetrina`}>
-								<span class="shop__awning" set:html={awning(c.awning)} />
-								<span class="shop__window">
-									<Image
-										src={c.shot}
-										alt={c.shotAlt}
-										widths={[320, 520, 760]}
-										sizes="(min-width: 1100px) 24vw, 46vw"
-										loading="eager"
-										class="shop__img"
-										style={`object-position:${c.crop}`}
-									/>
-									<span class="shop__open">Entra <span aria-hidden="true">→</span></span>
-								</span>
-								<span class="shop__name">{c.nome}</span>
-								<span class="shop__cat">{c.categoria}</span>
-							</a>
-						</li>
-					))
-				}
-				{
-					prossime.map((p) => (
-						<li class="shop shop--soon">
-							<div class="shop__link">
-								<span class="shop__awning" set:html={soonAwning} />
-								<span class="shop__window" aria-hidden="true">
-									<span class="shop__plus">+</span>
-								</span>
-								<span class="shop__name">{p.nome}</span>
-								<span class="shop__cat">In arrivo</span>
-							</div>
-						</li>
-					))
-				}
-			</ul>
+			<div class="street__sign" aria-hidden="true">
+				<p class="street__neon">Aperto</p>
+				<span class="street__arrow">
+					<svg viewBox="0 0 36 16" width="36" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"
+						><path d="M2 8h31M26 2l7 6-7 6"></path></svg
+					>
+				</span>
+			</div>
+			{
+				gruppi.map((g) => (
+					<div class="street__group">
+						<p class="street__tag" id={`via-${g.slug}`}>
+							<a href={`#${g.slug}`}>{g.nome}</a>
+							<span class="street__n">{g.live.length} {g.live.length === 1 ? 'vetrina aperta' : 'vetrine aperte'}</span>
+						</p>
+						<ul class="street__row" role="list" aria-labelledby={`via-${g.slug}`}>
+							{g.live.map((c) => (
+								<li class="shop shop--live" style={`--glow:${c.glow}`}>
+									<a class="shop__link" href={`${base}${c.path}`} aria-label={`${c.nome}, ${c.archetipo.toLowerCase()}: entra nella vetrina`}>
+										<span class="shop__awning" set:html={awning(c.awning)} />
+										<span class="shop__window">
+											<Image
+												src={c.shot}
+												alt={c.shotAlt}
+												widths={[320, 520, 760]}
+												sizes="(min-width: 1100px) 24vw, (min-width: 700px) 22vw, min(62vw, 280px)"
+												loading="eager"
+												class="shop__img"
+												style={`object-position:${c.crop}`}
+											/>
+											<span class="shop__open">Entra <span aria-hidden="true">→</span></span>
+										</span>
+										<span class="shop__name">{c.nome}</span>
+										<span class="shop__cat">{c.archetipo}</span>
+									</a>
+								</li>
+							))}
+							{g.soon.map((p) => (
+								<li class="shop shop--soon">
+									<div class="shop__link">
+										<span class="shop__awning" set:html={soonAwning} />
+										<span class="shop__window" aria-hidden="true">
+											<span class="shop__plus">+</span>
+										</span>
+										<span class="shop__name">{p.nome}</span>
+										<span class="shop__cat">In arrivo</span>
+									</div>
+								</li>
+							))}
+						</ul>
+					</div>
+				))
+			}
+			{
+				soloInArrivo.length > 0 && (
+					<div class="street__group street__group--soon">
+						<p class="street__tag" id="via-presto">
+							<span>In arrivo</span>
+							<span class="street__n">{soloInArrivo.length} categorie in costruzione</span>
+						</p>
+						<ul class="street__row" role="list" aria-labelledby="via-presto">
+							{soloInArrivo.map((p) => (
+								<li class="shop shop--soon">
+									<div class="shop__link">
+										<span class="shop__awning" set:html={soonAwning} />
+										<span class="shop__window" aria-hidden="true">
+											<span class="shop__plus">+</span>
+										</span>
+										<span class="shop__name">{p.nome}</span>
+										<span class="shop__cat">{p.categoria}</span>
+									</div>
+								</li>
+							))}
+						</ul>
+					</div>
+				)
+			}
 			<div class="street__ground" aria-hidden="true"></div>
 		</div>
 	</div>
@@ -100,8 +157,49 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 			radial-gradient(ellipse 55% 60% at 80% 10%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%),
 			radial-gradient(ellipse 40% 50% at 10% 0%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 70%);
 	}
+	/* Su telefono l'intestazione è su tre righe, centrate: "Vetrine", "Homepage concept di", il logo dello studio */
 	.hero__eyebrow {
-		margin-bottom: 22px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 6px;
+		margin-bottom: 30px;
+		text-align: center;
+	}
+	.hero__eyebrow-a {
+		font-family: var(--display);
+		font-weight: 800;
+		font-size: clamp(1.9rem, 9vw, 2.6rem);
+		line-height: 1;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		margin-right: -0.2em; /* compensa lo spazio dopo l'ultima lettera, per centrare davvero */
+		color: var(--text); /* bianco nel tema scuro, nero nel chiaro */
+	}
+	.hero__eyebrow-b {
+		font-size: 0.8rem;
+		font-weight: 600;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--accent);
+	}
+	.hero__sep {
+		display: none;
+	}
+	.hero__logo {
+		display: block;
+		height: 46px;
+		width: auto;
+		margin-top: 4px;
+	}
+	.hero__logo--light {
+		display: none;
+	}
+	:global(:root[data-theme='light']) .hero__logo--dark {
+		display: none;
+	}
+	:global(:root[data-theme='light']) .hero__logo--light {
+		display: block;
 	}
 	.hero__title {
 		font-family: var(--display);
@@ -133,10 +231,40 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 		position: relative;
 		margin-top: clamp(56px, 8vw, 100px);
 	}
+	/* Su telefono l'insegna sta nel flusso, centrata, con una freccia al neon che invita a scorrere */
+	.street__sign {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 14px;
+		margin-bottom: 28px;
+		transition: opacity 0.5s;
+	}
+	.street.is-scrolled .street__sign .street__arrow {
+		animation: none; /* altrimenti lo sfarfallio riporta l'opacità a 1 */
+		opacity: 0;
+	}
+	/* La freccia è una targa gemella di "Aperto": stesso bordo, stesso alone, stesso sfarfallio (sfasato) */
+	.street__arrow {
+		display: inline-flex;
+		align-items: center;
+		padding: 7px 14px;
+		border: 2px solid #ff3b30;
+		border-radius: 10px;
+		color: #ff3b30;
+		filter: drop-shadow(0 0 4px rgba(255, 59, 48, 0.6));
+		box-shadow: 0 0 14px rgba(255, 59, 48, 0.5), inset 0 0 10px rgba(255, 59, 48, 0.3);
+		animation: neon 7s infinite -3.2s;
+		transition: opacity 0.5s;
+	}
+	.street__arrow svg {
+		display: block;
+		animation: swipe 1.6s ease-in-out infinite;
+	}
+	:global(:root[data-theme='light']) .street__arrow {
+		background: #0a0a0a;
+	}
 	.street__neon {
-		position: absolute;
-		right: 0;
-		top: -34px;
 		margin: 0;
 		padding: 5px 16px;
 		border: 2px solid #ff3b30;
@@ -153,10 +281,59 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 	:global(:root[data-theme='light']) .street__neon {
 		background: #0a0a0a;
 	}
+	/* La via è divisa per macrocategoria: un'etichetta (tag) e sotto la sua riga di vetrine */
+	.street__group + .street__group {
+		margin-top: 38px;
+	}
+	.street__tag {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 4px 14px;
+		margin-bottom: 14px;
+	}
+	.street__tag > :first-child {
+		font-family: var(--display);
+		font-weight: 800;
+		font-size: 1.3rem;
+		letter-spacing: -0.02em;
+		text-decoration: none;
+		transition: color 0.25s;
+	}
+	.street__tag a:hover {
+		color: var(--accent);
+	}
+	.street__n {
+		font-size: 0.8rem;
+		font-weight: 600;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--muted);
+	}
+	.street__group--soon .shop__window {
+		aspect-ratio: 4 / 3;
+	}
+	/* Su telefono la via è una riga a scorrimento orizzontale, a tutto schermo, con snap */
 	.street__row {
-		display: grid;
-		grid-template-columns: repeat(2, 1fr);
-		gap: 22px 16px;
+		display: flex;
+		gap: 16px;
+		margin-inline: calc(var(--gutter) * -1);
+		padding: 6px var(--gutter) 14px;
+		overflow-x: auto;
+		overscroll-behavior-x: contain;
+		scroll-snap-type: x mandatory;
+		scroll-padding-inline: var(--gutter);
+		-webkit-overflow-scrolling: touch;
+		scrollbar-width: thin;
+		scrollbar-color: var(--border) transparent;
+	}
+	.street__row > .shop {
+		flex: 0 0 62%;
+		/* Senza questo la larghezza minima segue l'immagine scelta dal browser (su iPhone, a densità 3,
+		   la più grande) e le schede si allargano da sole mentre si scorre */
+		min-width: 0;
+		max-width: 280px;
+		scroll-snap-align: start;
 	}
 	.shop__link {
 		display: flex;
@@ -263,6 +440,10 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 		height: 1px;
 		background: linear-gradient(to right, transparent, var(--border) 15%, var(--border) 85%, transparent);
 	}
+	@keyframes swipe {
+		0%, 100% { transform: translateX(0); }
+		50% { transform: translateX(8px); }
+	}
 	@keyframes neon {
 		0%, 90%, 100% { opacity: 1; }
 		92% { opacity: 0.3; }
@@ -273,24 +454,69 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 
 	@media (min-width: 700px) {
 		.street__row {
-			grid-template-columns: repeat(4, 1fr);
+			display: grid;
+			grid-template-columns: repeat(4, minmax(0, 1fr));
+			gap: 22px 16px;
+			margin-inline: 0;
+			padding: 0;
+			overflow: visible;
+			scroll-snap-type: none;
+		}
+		.street__row > .shop {
+			max-width: none;
+		}
+		/* Le categorie ancora vuote sono segnaposto: schede piccole, sei per riga */
+		.street__group--soon .street__row {
+			grid-template-columns: repeat(6, minmax(0, 1fr));
+		}
+		.street__group--soon .shop__name {
+			font-size: 0.92rem;
+		}
+		/* Su schermi larghi una riga sola, a sinistra: Vetrine | Homepage concept di + logo */
+		.hero__eyebrow {
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: flex-start;
+			gap: 14px 20px;
+			text-align: left;
+		}
+		.hero__eyebrow-a {
+			margin-right: 0;
+			font-size: 1.5rem;
+		}
+		.hero__sep {
+			display: block;
+			width: 1px;
+			height: 28px;
+			background: var(--border);
+		}
+		.hero__logo {
+			height: 34px;
+			margin: 0 0 0 -6px;
+		}
+		/* Su schermi larghi l'insegna è più grande e centrata sopra la via */
+		.street__sign {
+			margin-bottom: 44px;
+		}
+		.street__neon {
+			padding: 9px 34px;
+			border-width: 3px;
+			border-radius: 14px;
+			font-size: 1.35rem;
+			text-shadow: 0 0 14px rgba(255, 59, 48, 0.85);
+			box-shadow: 0 0 22px rgba(255, 59, 48, 0.55), inset 0 0 14px rgba(255, 59, 48, 0.3);
+		}
+		.street__arrow {
+			display: none;
 		}
 	}
 	@media (min-width: 1100px) {
 		.street__row {
-			grid-template-columns: 1.55fr 1.55fr repeat(5, 1fr);
 			gap: 22px 18px;
 			align-items: start;
 		}
-		.shop--soon .shop__window {
-			aspect-ratio: 3 / 4;
-		}
-		.shop--soon .shop__name {
-			font-size: 0.9rem;
-		}
 	}
-	@media (hover: none) {
-		/* Sul touch non c'è hover: le vetrine aperte restano accese */
+	@media (hover: none) {		/* Sul touch non c'è hover: le vetrine aperte restano accese */
 		.shop--live .shop__img {
 			filter: none;
 			transform: none;
@@ -301,3 +527,21 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 		}
 	}
 </style>
+
+<script>
+	// La freccia al neon sparisce quando la via viene scorsa per la prima volta
+	const street = document.querySelector<HTMLElement>('.street');
+	const rows = street?.querySelectorAll<HTMLElement>('.street__row') ?? [];
+	rows.forEach((row) =>
+		row.addEventListener('scroll', () => street!.classList.add('is-scrolled'), { passive: true, once: true }),
+	);
+	// Una riga che scorre ma non ha link (le "in arrivo") deve poter ricevere il focus, per scorrerla da tastiera
+	const focusable = () =>
+		rows.forEach((row) => {
+			if (row.querySelector('a')) return;
+			if (row.scrollWidth > row.clientWidth + 1) row.setAttribute('tabindex', '0');
+			else row.removeAttribute('tabindex');
+		});
+	focusable();
+	addEventListener('resize', focusable);
+</script>

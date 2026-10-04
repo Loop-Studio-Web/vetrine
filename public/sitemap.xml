@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Solo l'ingresso: i singoli concept sono noindex per scelta. -->
+  <!-- Ingresso e pagine di dettaglio: i concept veri e propri sono noindex per scelta. -->
   <url><loc>https://vetrine.theloopstudio.org/</loc></url>
+  <url><loc>https://vetrine.theloopstudio.org/ristorazione/trattoria/info/</loc></url>
+  <url><loc>https://vetrine.theloopstudio.org/ristorazione/grande-ristorante/info/</loc></url>
 </urlset>
