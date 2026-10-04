@@ -1,0 +1,88 @@
+---
+// Icona "loop" che accompagna la freccia del mouse, ferma di default e che ruota di 360° a ogni click.
+// Copia di CustomCursor.astro del sito dello studio (stessi due tracciati dell'infinito del logo: anello
+// sinistro rosso, destro sul colore del testo, così segue il tema). Solo desktop con mouse reale e senza
+// "riduci animazioni". Qui non servono le View Transitions, quindi niente transition:persist.
+---
+
+<div id="custom-cursor" class="custom-cursor" aria-hidden="true">
+	<svg viewBox="521 1413 1465 753">
+		<path
+			style="fill: var(--accent)"
+			d="M1255.524 1631.138c7.94 8.89 14.16 18.729 20.53 28.786 75.91 119.898 157.1 324.287 323.57 331.995 172.52 7.987 279.68-203.057 158.07-337.307a202.97 202.97 0 0 0-141.09-67.904c-79.85-3.783-140.81 40.206-191.25 98.107-11.68 13.404-21.97 28.34-33.99 41.37-2.55-.383-2.84-.053-4.24-2.516-16.94-29.768-33.16-59.35-50.86-88.77-5.3-8.795-10.17-16.355-16.51-25.717-6.19-9.132-22.84-27.216-21.76-39.212.43-4.836 13.44-16.22 16.92-20.02 31.35-31.006 67.1-62.206 105.34-84.21 45.83-26.38 96.6-45.56 149.4-51.396 14.65-1.62 29.57-.73 44.14-.925 32.25-.431 63.78 4.203 94.92 12.879a374.08 374.08 0 0 1 226.99 174.595 378.36 378.36 0 0 1 36.55 287.835c-56.86 201.184-260.01 317.992-461.97 264.215-96.44-25.679-192.11-110.354-251.51-188.536-16.71-21.984-100.26-151.977-103.46-172.55 3.03-5.887 11.96-18.331 16.04-25.076l56.86-92.81c4.18-6.833 23.25-39.02 27.31-42.833"
+		></path>
+		<path
+			style="fill: var(--text)"
+			d="M890.438 1412.87c-48.33 1.012-96.625 11.164-140.042 29.047-18.2 7.497-26.468 13.028-42.84 22.272-149.854 84.605-218.458 264.966-172.972 429.13 4.932 17.803 13.219 35.84 19.586 53.243 25.819 59.682 78.3 118.798 132.16 154.619 4.876 3.244 16.417 12.28 19.922 13.828 20.216 8.918 35.067 18.016 56.336 26.178 82.399 31.623 183.514 34.53 265.617.957 58-23.721 111.159-62.01 154.469-107.037 7.37-7.664 21.67-20.801 27.59-29.13-14.72-18.453-27.769-39.936-41.569-59.087-1.8-2.5-3.63-9.76-5.24-11.637-20.66-23.986-32.01-56.35-49.42-82.017-49.79 63.614-104.001 126.45-189.351 137.263-113.637 14.397-217.653-71.729-227.038-185.373-9.297-112.572 78.046-211.35 190.112-218.797 111.504-7.41 188.706 82.285 243.166 167.502 4.7 7.385 18.44 34.192 24.39 38.026 3.03-5.888 11.96-18.332 16.04-25.077l56.86-92.81c4.18-6.833 23.25-39.018 27.31-42.832-6.65-16.662-15.42-24.234-26.44-38.443a501 501 0 0 0-198.389-154.028c-43.56-18.678-91.928-26.808-140.258-25.797"
+		></path>
+	</svg>
+</div>
+
+<style>
+	.custom-cursor {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 17.14px;
+		height: 8.81px;
+		pointer-events: none;
+		z-index: 9999;
+		opacity: 0;
+		visibility: hidden;
+		transition: opacity 0.15s ease;
+		will-change: transform;
+	}
+	.custom-cursor.is-enabled {
+		visibility: visible;
+	}
+	.custom-cursor.is-visible {
+		opacity: 1;
+	}
+	.custom-cursor svg {
+		width: 100%;
+		height: 100%;
+		display: block;
+	}
+	.custom-cursor.is-spinning svg {
+		animation: cursor-spin 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+	}
+	@keyframes cursor-spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+</style>
+
+<script>
+	const cursor = document.getElementById('custom-cursor');
+	const canHover = matchMedia('(hover: hover) and (pointer: fine)').matches;
+	const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	if (cursor && canHover && !reduceMotion) {
+		cursor.classList.add('is-enabled');
+
+		// la scatola coincide con il disegno: l'icona sta un po' più in basso a destra della punta, come un badge
+		const OFFSET_X = 12.48;
+		const OFFSET_Y = 19.78;
+		let x = 0;
+		let y = 0;
+		let raf = 0;
+		const render = () => {
+			cursor.style.transform = `translate3d(${x + OFFSET_X}px, ${y + OFFSET_Y}px, 0)`;
+			raf = 0;
+		};
+
+		addEventListener('mousemove', (e) => {
+			x = e.clientX;
+			y = e.clientY;
+			cursor.classList.add('is-visible');
+			if (!raf) raf = requestAnimationFrame(render);
+		});
+		document.addEventListener('mouseleave', () => cursor.classList.remove('is-visible'));
+		addEventListener('click', () => {
+			cursor.classList.remove('is-spinning');
+			void cursor.offsetWidth; // fa ripartire l'animazione anche su click ravvicinati
+			cursor.classList.add('is-spinning');
+		});
+	}
+</script>

@@ -6,6 +6,7 @@ import '@fontsource-variable/hanken-grotesk';
 import './hub.css';
 import Header from './Header.astro';
 import Footer from './Footer.astro';
+import Cursore from './Cursore.astro';
 
 interface Props {
 	title: string;
@@ -61,11 +62,13 @@ const pageUrl = new URL(`${base}${path}`, Astro.site).href;
 	</head>
 	<body>
 		<a href="#main" class="skip-link">Vai al contenuto</a>
+		<div class="scroll-progress" aria-hidden="true"></div>
 		<Header />
 		<main id="main">
 			<slot />
 		</main>
 		<Footer />
+		<Cursore />
 
 		<script>
 			// Rivela le sezioni quando entrano in vista

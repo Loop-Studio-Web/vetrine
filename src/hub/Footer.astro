@@ -1,7 +1,33 @@
 ---
 import logoDark from '../assets/hub/loop-logo-on-dark.svg';
 import logoLight from '../assets/hub/loop-logo-on-light.svg';
-import { SITE, CONTACT, LAB, REPO } from './data';
+import face from '../assets/hub/social/face.webp';
+import insta from '../assets/hub/social/insta.webp';
+import gmail from '../assets/hub/social/gmail.webp';
+import { SITE, CONTACT, LAB, REPO, concepts } from './data';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const year = new Date().getFullYear();
+
+// Colonne del piè di pagina come sul sito dello studio (stessa struttura e stessi testi): le voci della prima sono le vetrine.
+const vetrine = [
+	{ href: `${base}/#vetrine`, label: 'Le vetrine' },
+	{ href: `${base}/#prossime`, label: 'Prossime' },
+	...concepts.map((c) => ({ href: `${base}${c.infoPath}`, label: c.nome })),
+];
+const naviga = [
+	{ href: SITE, label: 'Home' },
+	{ href: `${SITE}portfolio/`, label: 'Portfolio' },
+	{ href: LAB, label: 'Lab' },
+	{ href: `${SITE}pacchetti/`, label: 'Pacchetti' },
+	{ href: `${SITE}articoli/`, label: 'Articoli' },
+	{ href: CONTACT, label: 'Contatti' },
+];
+const social = [
+	{ href: 'https://www.facebook.com/LoopStudioWeb', label: 'Facebook', icon: face.src },
+	{ href: 'https://www.instagram.com/loopstudioweb/', label: 'Instagram', icon: insta.src },
+	{ href: 'mailto:info@theloopstudio.org', label: 'Email', icon: gmail.src },
+];
 ---
 
 <section class="cta" aria-labelledby="cta-title">
@@ -22,22 +48,66 @@ import { SITE, CONTACT, LAB, REPO } from './data';
 				<img class="logo logo--dark" src={logoDark.src} alt="" width="95" height="50" />
 				<img class="logo logo--light" src={logoLight.src} alt="" width="95" height="50" />
 			</a>
-			<p>Diamo forma alla tua presenza online.</p>
+			<p class="ftr__claim">Siti web, foto e video, social. Tutto in loop, tutto coerente.</p>
 		</div>
-		<nav class="ftr__links" aria-label="Link dello studio">
-			<a href={SITE}>Sito dello studio</a>
-			<a href={LAB}>Lab: esperimenti e componenti</a>
-			<a href={CONTACT}>Contatti</a>
-			<a href={REPO} rel="noopener">Il codice su GitHub</a>
+
+		<nav class="ftr__col" aria-label="Le vetrine">
+			<h2 class="ftr__title">Vetrine</h2>
+			<ul>
+				{vetrine.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+			</ul>
+		</nav>
+
+		<nav class="ftr__col" aria-label="Il sito dello studio">
+			<h2 class="ftr__title">Naviga</h2>
+			<ul>
+				{naviga.map((l) => <li><a href={l.href}>{l.label} <span aria-hidden="true">↗</span></a></li>)}
+			</ul>
+		</nav>
+
+		<nav class="ftr__col ftr__col--social" aria-label="Seguici">
+			<h2 class="ftr__title">Seguici</h2>
+			<ul>
+				{
+					social.map((l) => (
+						<li>
+							<a href={l.href} target="_blank" rel="noopener noreferrer" class="social-link">
+								<img src={l.icon} alt="" class="social-icon" width="24" height="24" />
+								<span>{l.label}</span>
+								<span class="sr-only">(si apre in una nuova scheda)</span>
+							</a>
+						</li>
+					))
+				}
+				<li><a href={REPO} rel="noopener">Il codice su GitHub</a></li>
+			</ul>
 		</nav>
 	</div>
-	<div class="wrap">
-		<p class="ftr__note">
-			Le vetrine sono concept dimostrativi: attività, nomi, indirizzi e recensioni sono di fantasia. Le foto
-			provengono da Unsplash e sono usate secondo la sua licenza.
-		</p>
+
+	<div class="wrap ftr__bottom">
+		<div class="ftr__legal">
+			<p class="ftr__copy">&copy; <span id="ftr-year">{year}</span> Loop Studio. Tutti i diritti riservati.</p>
+			<p class="ftr__notice">
+				È severamente vietata la riproduzione, la distribuzione o il riutilizzo, anche parziale, di testi, fotografie, video,
+				elementi grafici e codice sorgente senza esplicita autorizzazione scritta.
+			</p>
+			<p class="ftr__notice">
+				Le vetrine sono concept dimostrativi: attività, nomi, indirizzi e recensioni sono di fantasia. Le foto provengono da
+				Unsplash e sono usate secondo la sua licenza.
+			</p>
+		</div>
+		<div class="ftr__links">
+			<a class="ftr__privacy" href={`${SITE}privacy/`}>Privacy Policy</a>
+			<p class="ftr__made">Fatto in loop ∞</p>
+		</div>
 	</div>
 </footer>
+
+<script is:inline>
+	// l'anno stampato in build resterebbe indietro dopo Capodanno: lo corregge il browser
+	var y = document.getElementById('ftr-year');
+	if (y) y.textContent = String(new Date().getFullYear());
+</script>
 
 <style>
 	.cta {
@@ -74,23 +144,97 @@ import { SITE, CONTACT, LAB, REPO } from './data';
 		font-size: 1.15rem;
 	}
 
+	/* Piè di pagina: stessa struttura e stile di quello del sito dello studio (copia, non componente condiviso) */
 	.ftr {
-		padding: 48px 0 36px;
-		border-top: 1px solid var(--border);
+		position: relative;
+		overflow: hidden;
+		background: var(--surface);
+		padding-top: 64px;
+		--on-surface: var(--accent);
+	}
+	:global(:root[data-theme='light']) .ftr {
+		--on-surface: color-mix(in srgb, var(--accent-strong) 92%, black);
+	}
+	/* filo rosso animato in cima: due copie del gradiente che scorrono con transform, poi un'espansione dal centro */
+	.ftr::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 200%;
+		height: 2px;
+		background-image: linear-gradient(90deg, transparent, var(--accent), transparent), linear-gradient(90deg, transparent, var(--accent), transparent);
+		background-size: 50% 100%;
+		background-position: 0% 0, 50% 0;
+		background-repeat: no-repeat;
+		animation: ftr-slide 12s linear infinite;
+	}
+	.ftr::after {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 2px;
+		background-image: linear-gradient(90deg, transparent, var(--accent), transparent);
+		transform-origin: center;
+		animation: ftr-burst 12s linear infinite;
+	}
+	@keyframes ftr-slide {
+		0% {
+			opacity: 1;
+			transform: translateX(0%);
+		}
+		33.33% {
+			opacity: 1;
+			transform: translateX(-50%);
+		}
+		66.66% {
+			opacity: 1;
+			transform: translateX(0%);
+		}
+		66.67% {
+			opacity: 0;
+			transform: translateX(0%);
+		}
+		100% {
+			opacity: 0;
+			transform: translateX(0%);
+		}
+	}
+	@keyframes ftr-burst {
+		0%,
+		66.66% {
+			opacity: 0;
+			transform: scaleX(0);
+		}
+		66.67% {
+			opacity: 1;
+			transform: scaleX(0);
+		}
+		86% {
+			opacity: 1;
+			transform: scaleX(1);
+		}
+		100% {
+			opacity: 0;
+			transform: scaleX(1);
+		}
 	}
 	.ftr__in {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: space-between;
-		gap: 32px;
+		display: grid;
+		grid-template-columns: 2fr 1fr 1fr 1fr;
+		gap: 3rem 2rem;
+		padding-bottom: 56px;
 	}
 	.ftr__logo {
 		display: inline-flex;
 		line-height: 0;
 	}
 	.logo {
-		height: 40px;
+		height: 44px;
 		width: auto;
+		margin-bottom: 1rem;
 	}
 	.logo--light {
 		display: none;
@@ -101,32 +245,106 @@ import { SITE, CONTACT, LAB, REPO } from './data';
 	:global(:root[data-theme='light']) .logo--light {
 		display: block;
 	}
-	.ftr__brand p {
-		margin-top: 14px;
+	.ftr__claim {
 		color: var(--muted);
-		font-size: 0.95rem;
+		max-width: 30ch;
+	}
+	.ftr__title {
+		font-family: var(--sans);
+		font-size: 0.85rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+		color: var(--text);
+		margin: 0 0 1rem;
+	}
+	.ftr__col ul {
+		display: flex;
+		flex-direction: column;
+		gap: 0.6rem;
+	}
+	.ftr__col a {
+		text-decoration: none;
+		color: var(--text);
+		transition:
+			color 0.2s ease,
+			padding-left 0.2s ease;
+	}
+	.ftr__col a:hover {
+		color: var(--accent);
+	}
+	.ftr__col:not(.ftr__col--social) a:hover {
+		padding-left: 4px;
+	}
+	.social-link {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+	}
+	.social-icon {
+		width: 24px;
+		height: 24px;
+		flex-shrink: 0;
+		transition: transform 0.25s ease;
+	}
+	.social-link:hover .social-icon {
+		transform: scale(1.15);
+	}
+	.ftr__bottom {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		gap: 1rem;
+		padding-block: 32px;
+		border-top: 1px solid color-mix(in srgb, var(--border) 20%, transparent);
+		color: var(--muted);
+		font-size: 0.85rem;
+	}
+	.ftr__legal {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.35rem;
+		max-width: 60ch;
+	}
+	.ftr__copy {
+		color: var(--on-surface);
+	}
+	.ftr__notice {
+		font-size: 0.75rem;
+		color: var(--muted);
 	}
 	.ftr__links {
-		display: grid;
-		gap: 4px;
-		align-content: start;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1rem;
+		flex-wrap: wrap;
 	}
-	.ftr__links a {
-		padding: 6px 0;
-		text-decoration: none;
+	.ftr__privacy {
 		color: var(--muted);
-		font-size: 0.95rem;
-		transition: color 0.25s;
+		text-decoration: underline;
+		text-underline-offset: 3px;
 	}
-	.ftr__links a:hover {
-		color: var(--text);
+	.ftr__privacy:hover {
+		color: var(--accent);
 	}
-	.ftr__note {
-		max-width: 70ch;
-		margin-top: 36px;
-		padding-top: 24px;
-		border-top: 1px solid var(--border);
-		font-size: 0.82rem;
-		color: var(--muted);
+	.ftr__made {
+		color: var(--on-surface);
+	}
+	@media (max-width: 48rem) {
+		.ftr__in {
+			grid-template-columns: 1fr 1fr;
+		}
+		.ftr__brand {
+			grid-column: 1 / -1;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.ftr::before,
+		.ftr::after {
+			animation: none;
+		}
 	}
 </style>

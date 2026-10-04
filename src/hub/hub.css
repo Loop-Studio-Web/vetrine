@@ -144,21 +144,20 @@ a {
 	justify-content: center;
 	gap: 10px;
 	padding: 15px 28px;
-	border-radius: 999px;
+	border-radius: 4px; /* come i bottoni del sito dello studio */
 	border: 1px solid var(--accent-strong);
 	background: var(--accent-strong);
 	color: var(--on-accent);
 	font: inherit;
-	font-weight: 600;
+	font-weight: 700;
 	font-size: 1rem;
 	text-decoration: none;
 	cursor: pointer;
-	transition: transform 0.25s, background 0.25s, border-color 0.25s, color 0.25s;
+	transition: transform 0.15s, box-shadow 0.15s, background 0.25s, border-color 0.25s, color 0.25s;
 }
 .btn:hover {
 	transform: translateY(-2px);
-	background: color-mix(in srgb, var(--accent-strong) 82%, black);
-	border-color: color-mix(in srgb, var(--accent-strong) 82%, black);
+	box-shadow: 0 8px 24px color-mix(in srgb, var(--accent) 40%, transparent);
 }
 .btn--ghost {
 	background: transparent;
@@ -166,8 +165,9 @@ a {
 	border-color: var(--border);
 }
 .btn--ghost:hover {
-	background: var(--surface);
-	border-color: var(--text);
+	border-color: var(--accent);
+	color: var(--accent);
+	box-shadow: none;
 }
 .btn--sm {
 	padding: 10px 20px;
@@ -213,4 +213,48 @@ a {
 
 [hidden] {
 	display: none !important;
+}
+
+/* Barra di scorrimento, selezione del testo e colori di sistema: gli stessi del sito dello studio
+   (copia da src/styles/global.css del sito madre). La proprietà standard vale per Firefox e Chrome
+   recenti; le pseudo-classi -webkit coprono Safari e il resto, stessi colori. */
+html {
+	scrollbar-color: var(--accent) var(--bg-2);
+}
+::-webkit-scrollbar {
+	width: 10px;
+}
+::-webkit-scrollbar-track {
+	background: var(--bg-2);
+}
+::-webkit-scrollbar-thumb {
+	background-color: var(--accent);
+	border-radius: 999px;
+	border: 2px solid var(--bg-2);
+}
+::-webkit-scrollbar-thumb:hover {
+	background-color: var(--accent-strong);
+}
+::selection {
+	background-color: var(--accent-strong);
+	color: #fff;
+}
+:root {
+	accent-color: var(--accent);
+}
+input,
+textarea {
+	caret-color: var(--accent);
+}
+
+/* Barra di avanzamento dello scroll in cima, come sul sito dello studio (--scroll lo aggiorna lo script dell'header) */
+.scroll-progress {
+	position: fixed;
+	inset: 0 0 auto 0;
+	height: 3px;
+	transform-origin: left;
+	transform: scaleX(var(--scroll, 0));
+	background: var(--accent);
+	z-index: 150;
+	pointer-events: none;
 }
