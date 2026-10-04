@@ -1,0 +1,188 @@
+---
+import { Image } from 'astro:assets';
+import vapore from '../../assets/barbiere/vapore.jpg';
+import barba from '../../assets/barbiere/barba.jpg';
+import { servizi } from './turni';
+---
+
+<section class="listino" id="listino">
+	<div class="listino__in">
+		<div class="listino__bacheca" data-reveal>
+			<div class="bacheca">
+				<p class="bacheca__sopra">Tariffario della bottega</p>
+				<h2>Il listino</h2>
+				<ul class="bacheca__righe">
+					{
+						servizi.map((s) => (
+							<li>
+								<div class="riga">
+									<span class="riga__nome">{s.nome}</span>
+									<span class="riga__guida" aria-hidden="true" />
+									<span class="riga__prezzo">
+										<span class="sr-only">{s.prezzo} euro</span>
+										<span aria-hidden="true">€ {s.prezzo}</span>
+									</span>
+								</div>
+								<p class="riga__nota">
+									{s.nota} · <span>{s.durata}</span>
+								</p>
+							</li>
+						))
+					}
+				</ul>
+				<p class="bacheca__fine">Prezzi di esempio. Si paga a fine turno, in contanti o con carta.</p>
+			</div>
+		</div>
+
+		<div class="listino__foto">
+			<figure class="foto foto--alta" data-reveal>
+				<Image
+					src={vapore}
+					alt="Un barbiere tatuato passa il pennello con la schiuma sul viso di un cliente, mentre sale il vapore dell'asciugamano caldo"
+					widths={[360, 540, 720]}
+					sizes="(max-width: 920px) 70vw, 340px"
+				/>
+			</figure>
+			<figure class="foto foto--larga" data-reveal>
+				<Image
+					src={barba}
+					alt="Primo piano in bianco e nero di una barba insaponata con il pennello"
+					widths={[360, 540, 720]}
+					sizes="(max-width: 920px) 80vw, 380px"
+				/>
+			</figure>
+		</div>
+	</div>
+</section>
+
+<style>
+	.listino {
+		padding: clamp(72px, 10vw, 128px) var(--gutter);
+	}
+	.listino__in {
+		max-width: var(--max);
+		margin-inline: auto;
+		display: grid;
+		grid-template-columns: 1.15fr 0.85fr;
+		gap: clamp(32px, 6vw, 88px);
+		align-items: center;
+	}
+	.bacheca {
+		position: relative;
+		padding: clamp(28px, 5vw, 56px);
+		background-color: var(--verde);
+		background-image: radial-gradient(ellipse at 20% 0%, rgb(255 255 255 / 0.08), transparent 60%);
+		color: var(--crema);
+		border-radius: 6px;
+		box-shadow:
+			0 0 0 6px var(--bg),
+			0 0 0 9px var(--ottone),
+			0 24px 40px -18px rgb(0 0 0 / 0.45);
+	}
+	:global(:root[data-tema='scuro']) .bacheca {
+		background-color: var(--verde);
+	}
+	.bacheca__sopra {
+		font-size: 0.78rem;
+		font-weight: 700;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--ottone-chiaro);
+	}
+	h2 {
+		font-size: clamp(2.4rem, 5vw, 3.6rem);
+		font-weight: 900;
+		margin: 6px 0 24px;
+	}
+	.bacheca__righe {
+		list-style: none;
+	}
+	.bacheca__righe li {
+		padding: 14px 0;
+		border-top: 1px solid rgb(242 232 213 / 0.22);
+	}
+	.riga {
+		display: flex;
+		align-items: baseline;
+		gap: 10px;
+	}
+	.riga__nome {
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: clamp(1.25rem, 2.6vw, 1.6rem);
+	}
+	.riga__guida {
+		flex: 1;
+		min-width: 24px;
+		border-bottom: 2px dotted rgb(242 232 213 / 0.5);
+		transform: translateY(-5px);
+	}
+	.riga__prezzo {
+		font-family: var(--titoli);
+		font-weight: 800;
+		font-size: clamp(1.25rem, 2.6vw, 1.6rem);
+		color: var(--ottone-chiaro);
+		white-space: nowrap;
+	}
+	.riga__nota {
+		margin-top: 2px;
+		font-size: 0.92rem;
+		opacity: 0.82;
+	}
+	.riga__nota span {
+		white-space: nowrap;
+	}
+	.bacheca__fine {
+		margin-top: 22px;
+		font-size: 0.85rem;
+		font-style: italic;
+		opacity: 0.75;
+	}
+
+	.listino__foto {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		gap: 26px;
+	}
+	.foto {
+		margin: 0;
+		overflow: hidden;
+		border-radius: 10px;
+		box-shadow: 0 18px 30px -16px rgb(0 0 0 / 0.5);
+	}
+	.foto :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+	.foto--alta {
+		width: 72%;
+		aspect-ratio: 3 / 4;
+	}
+	.foto--larga {
+		width: 82%;
+		margin-left: auto;
+		aspect-ratio: 3 / 2;
+	}
+
+	@media (max-width: 920px) {
+		.listino__in {
+			grid-template-columns: 1fr;
+		}
+		.listino__foto {
+			flex-direction: row;
+			align-items: flex-start;
+		}
+		.foto--alta,
+		.foto--larga {
+			width: 50%;
+			margin: 0;
+		}
+		.foto--larga {
+			margin-top: 36px;
+			aspect-ratio: 3 / 4;
+		}
+	}
+</style>

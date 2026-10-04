@@ -1,0 +1,663 @@
+---
+import { servizi, sedie } from './turni';
+---
+
+<section class="turno" id="turno">
+	<div class="turno__in">
+		<header class="turno__testa" data-reveal>
+			<p class="sopra">Prenotazione a turno</p>
+			<h2>Prendi il numero.</h2>
+			<p class="turno__lead">
+				Come in bottega: scegli cosa fare, da chi sederti e a che ora. Il numerino ti aspetta sul bancone. Qui la
+				prenotazione è una dimostrazione: non viene inviato niente a nessuno.
+			</p>
+		</header>
+
+		<form class="modulo" data-modulo novalidate data-reveal>
+			<fieldset>
+				<legend><span>1</span> Che servizio?</legend>
+				<div class="scelte">
+					{
+						servizi.map((s, i) => (
+							<label class="scelta">
+								<input type="radio" name="servizio" value={s.id} checked={i === 0} />
+								<span class="scelta__box">
+									<strong>{s.nome}</strong>
+									<small>
+										€ {s.prezzo} · {s.durata}
+									</small>
+								</span>
+							</label>
+						))
+					}
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<legend><span>2</span> Da chi ti siedi?</legend>
+				<div class="scelte scelte--sedie">
+					<label class="scelta">
+						<input type="radio" name="sedia" value="0" checked />
+						<span class="scelta__box">
+							<strong>La prima libera</strong>
+							<small>Si parte prima</small>
+						</span>
+					</label>
+					{
+						sedie.map((s) => (
+							<label class="scelta">
+								<input type="radio" name="sedia" value={s.n} />
+								<span class="scelta__box">
+									<strong>
+										{s.n} · {s.nome}
+									</strong>
+									<small>{s.mestiere}</small>
+								</span>
+							</label>
+						))
+					}
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<legend><span>3</span> Quando?</legend>
+				<div class="giorni" data-giorni role="group" aria-label="Giorno"></div>
+				<div class="ore" data-ore role="group" aria-label="Orario"></div>
+				<p class="ore__vuoto" data-ore-vuoto hidden>Quel giorno è tutto pieno: prova con un altro, o con «La prima libera».</p>
+				<noscript><p>Per scegliere l'orario serve JavaScript attivo.</p></noscript>
+				<p class="errore" data-err="ora" role="alert" hidden>Scegli un orario.</p>
+			</fieldset>
+
+			<fieldset>
+				<legend><span>4</span> A che nome?</legend>
+				<div class="campi">
+					<div class="campo">
+						<label for="trr-nome">Nome</label>
+						<input id="trr-nome" name="nome" type="text" autocomplete="given-name" maxlength="40" aria-describedby="err-nome" />
+						<p class="errore" id="err-nome" data-err="nome" role="alert" hidden>Scrivi il tuo nome (almeno due lettere).</p>
+					</div>
+					<div class="campo">
+						<label for="trr-tel">Telefono</label>
+						<input id="trr-tel" name="tel" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" aria-describedby="err-tel" />
+						<p class="errore" id="err-tel" data-err="tel" role="alert" hidden>Controlla il numero: servono da 8 a 14 cifre.</p>
+					</div>
+				</div>
+			</fieldset>
+
+			<button type="submit" class="invio">Prendi il numero <span aria-hidden="true">→</span></button>
+		</form>
+
+		<aside class="biglietto-wrap" aria-label="Il tuo numerino" data-reveal>
+			<div class="biglietto" data-biglietto>
+				<p class="biglietto__testa">Bottega Tre Rasoi</p>
+				<p class="biglietto__num" data-b-num aria-live="polite"><span>N°</span> <b data-b-numero>—</b></p>
+				<div class="biglietto__strappo" aria-hidden="true"></div>
+				<dl class="biglietto__dati">
+					<div>
+						<dt>Servizio</dt>
+						<dd data-b-servizio>—</dd>
+					</div>
+					<div>
+						<dt>Sedia</dt>
+						<dd data-b-sedia>—</dd>
+					</div>
+					<div>
+						<dt>Quando</dt>
+						<dd data-b-quando>—</dd>
+					</div>
+					<div>
+						<dt>A nome di</dt>
+						<dd data-b-nome>—</dd>
+					</div>
+				</dl>
+				<p class="biglietto__stato" data-b-stato>Bozza: scegli e compila.</p>
+			</div>
+			<p class="biglietto__nota" data-b-nota hidden>
+				Numerino stampato! In una bottega vera, adesso arriverebbe la conferma per telefono. Questa è una vetrina
+				dimostrativa: nessun dato è stato inviato.
+				<button type="button" data-b-modifica>Modifica il turno</button>
+			</p>
+		</aside>
+	</div>
+</section>
+
+<style>
+	.turno {
+		padding: clamp(72px, 10vw, 128px) var(--gutter);
+		background: var(--verde);
+		color: var(--crema);
+		position: relative;
+	}
+	:global(:root[data-tema='scuro']) .turno {
+		background: #0a1912;
+	}
+	.turno::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: -14px;
+		height: 14px;
+		background: repeating-conic-gradient(var(--verde) 0 25%, var(--bg) 0 50%) 0 0 / 28px 28px;
+	}
+	:global(:root[data-tema='scuro']) .turno::before {
+		background: repeating-conic-gradient(#0a1912 0 25%, var(--bg) 0 50%) 0 0 / 28px 28px;
+	}
+	.turno__in {
+		max-width: var(--max);
+		margin-inline: auto;
+		display: grid;
+		grid-template-columns: 1.25fr 0.75fr;
+		grid-template-areas:
+			'testa testa'
+			'modulo biglietto';
+		gap: 40px clamp(32px, 6vw, 80px);
+		align-items: start;
+	}
+	.turno__testa {
+		grid-area: testa;
+		max-width: 44em;
+	}
+	.sopra {
+		font-size: 0.82rem;
+		font-weight: 700;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--ottone-chiaro);
+		margin-bottom: 14px;
+	}
+	h2 {
+		font-size: clamp(2.4rem, 5.5vw, 4rem);
+		font-weight: 900;
+	}
+	.turno__lead {
+		margin-top: 16px;
+		opacity: 0.88;
+		font-size: 1.1rem;
+	}
+
+	.modulo {
+		grid-area: modulo;
+		display: grid;
+		gap: 30px;
+	}
+	fieldset {
+		border: 0;
+		min-width: 0;
+	}
+	legend {
+		font-family: var(--titoli);
+		font-weight: 800;
+		font-size: 1.35rem;
+		margin-bottom: 14px;
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+	legend span {
+		display: inline-grid;
+		place-items: center;
+		width: 30px;
+		height: 30px;
+		border-radius: 50%;
+		background: var(--ottone-chiaro);
+		color: var(--verde-scuro);
+		font-family: var(--testo);
+		font-size: 0.9rem;
+	}
+	.scelte {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+		gap: 10px;
+	}
+	.scelta {
+		position: relative;
+		display: block;
+		cursor: pointer;
+	}
+	.scelta input {
+		position: absolute;
+		opacity: 0;
+		inset: 0;
+	}
+	.scelta__box {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		height: 100%;
+		padding: 13px 16px;
+		border: 1.5px solid rgb(242 232 213 / 0.35);
+		border-radius: 12px;
+		transition:
+			background 0.2s ease,
+			border-color 0.2s ease,
+			color 0.2s ease;
+	}
+	.scelta__box small {
+		opacity: 0.8;
+		font-size: 0.85rem;
+	}
+	.scelta:hover .scelta__box {
+		border-color: var(--ottone-chiaro);
+	}
+	.scelta input:checked + .scelta__box {
+		background: var(--crema);
+		border-color: var(--crema);
+		color: var(--verde-scuro);
+	}
+	.scelta input:focus-visible + .scelta__box {
+		outline: 3px solid var(--ottone-chiaro);
+		outline-offset: 3px;
+	}
+
+	.giorni,
+	.ore {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+	.ore {
+		margin-top: 14px;
+	}
+	:global(.giorni button),
+	:global(.ore button) {
+		font: inherit;
+		color: inherit;
+		background: none;
+		border: 1.5px solid rgb(242 232 213 / 0.35);
+		border-radius: 10px;
+		cursor: pointer;
+		transition:
+			background 0.2s ease,
+			border-color 0.2s ease;
+	}
+	:global(.giorni button) {
+		padding: 9px 14px;
+		text-align: center;
+		line-height: 1.2;
+		min-width: 74px;
+	}
+	:global(.giorni button small) {
+		display: block;
+		font-size: 0.78rem;
+		opacity: 0.8;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+	}
+	:global(.giorni button strong) {
+		font-family: var(--titoli);
+		font-size: 1.15rem;
+	}
+	:global(.ore button) {
+		padding: 8px 12px;
+		min-width: 64px;
+		font-variant-numeric: tabular-nums;
+		font-weight: 600;
+	}
+	:global(.giorni button:hover),
+	:global(.ore button:hover:not(:disabled)) {
+		border-color: var(--ottone-chiaro);
+	}
+	:global(.giorni button[aria-pressed='true']),
+	:global(.ore button[aria-pressed='true']) {
+		background: var(--crema);
+		color: var(--verde-scuro);
+		border-color: var(--crema);
+	}
+	:global(.ore button:disabled) {
+		opacity: 0.4;
+		text-decoration: line-through;
+		cursor: not-allowed;
+	}
+	.ore__vuoto {
+		margin-top: 12px;
+		font-style: italic;
+	}
+
+	.campi {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 14px;
+	}
+	.campo label {
+		display: block;
+		font-weight: 600;
+		font-size: 0.92rem;
+		margin-bottom: 6px;
+	}
+	.campo input {
+		width: 100%;
+		padding: 13px 14px;
+		font: inherit;
+		color: var(--inchiostro);
+		background: var(--crema);
+		border: 2px solid transparent;
+		border-radius: 10px;
+	}
+	.campo input[aria-invalid='true'] {
+		border-color: #ff9d8f;
+	}
+	.errore {
+		margin-top: 6px;
+		font-size: 0.88rem;
+		font-weight: 600;
+		color: #ffc2b8;
+	}
+	.invio {
+		justify-self: start;
+		padding: 16px 34px;
+		font: inherit;
+		font-weight: 800;
+		font-size: 1.05rem;
+		color: var(--verde-scuro);
+		background: var(--ottone-chiaro);
+		border: 0;
+		border-radius: 999px;
+		cursor: pointer;
+		transition:
+			transform 0.25s ease,
+			background 0.25s ease;
+	}
+	.invio:hover {
+		transform: translateY(-2px);
+		background: #e8c06c;
+	}
+
+	/* il numerino: biglietto con le tacche laterali e la linea di strappo */
+	.biglietto-wrap {
+		grid-area: biglietto;
+		position: sticky;
+		top: calc(var(--nav-h) + 28px);
+	}
+	.biglietto {
+		position: relative;
+		padding: 26px 26px 22px;
+		background: #f4ecda;
+		color: var(--inchiostro);
+		border-radius: 8px;
+		-webkit-mask:
+			radial-gradient(circle 11px at 0 var(--tacca, 118px), transparent 98%, #000) left / 51% 100% no-repeat,
+			radial-gradient(circle 11px at 100% var(--tacca, 118px), transparent 98%, #000) right / 51% 100% no-repeat;
+		mask:
+			radial-gradient(circle 11px at 0 var(--tacca, 118px), transparent 98%, #000) left / 51% 100% no-repeat,
+			radial-gradient(circle 11px at 100% var(--tacca, 118px), transparent 98%, #000) right / 51% 100% no-repeat;
+		box-shadow: 0 20px 40px -16px rgb(0 0 0 / 0.6);
+		transform: rotate(1.4deg);
+		transition: transform 0.6s cubic-bezier(0.3, 1.4, 0.5, 1);
+	}
+	.biglietto.is-stampato {
+		animation: esce 0.9s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+	}
+	@keyframes esce {
+		from {
+			transform: translateY(-40px) rotate(-3deg);
+			opacity: 0.2;
+		}
+		to {
+			transform: rotate(1.4deg);
+			opacity: 1;
+		}
+	}
+	.biglietto__testa {
+		font-size: 0.78rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--verde);
+	}
+	.biglietto__num {
+		margin-top: 4px;
+		font-family: var(--titoli);
+		display: flex;
+		align-items: baseline;
+		gap: 10px;
+		line-height: 1;
+	}
+	.biglietto__num span {
+		font-size: 1.5rem;
+		font-weight: 700;
+		color: var(--ottone);
+	}
+	.biglietto__num b {
+		font-size: clamp(3.6rem, 9vw, 5.6rem);
+		font-weight: 900;
+		letter-spacing: -0.03em;
+		color: var(--verde);
+	}
+	.biglietto__strappo {
+		margin: 14px -26px;
+		border-top: 2px dashed rgb(31 77 58 / 0.4);
+	}
+	.biglietto__dati {
+		display: grid;
+		gap: 9px;
+	}
+	.biglietto__dati div {
+		display: flex;
+		justify-content: space-between;
+		gap: 12px;
+		font-size: 0.95rem;
+	}
+	.biglietto__dati dt {
+		color: var(--inchiostro-2);
+		font-size: 0.82rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		padding-top: 2px;
+	}
+	.biglietto__dati dd {
+		font-weight: 700;
+		text-align: right;
+	}
+	.biglietto__stato {
+		margin-top: 16px;
+		font-size: 0.85rem;
+		font-style: italic;
+		color: var(--inchiostro-2);
+	}
+	.biglietto.is-stampato .biglietto__stato {
+		color: var(--verde);
+		font-weight: 700;
+		font-style: normal;
+	}
+	.biglietto__nota {
+		margin-top: 22px;
+		font-size: 0.92rem;
+		opacity: 0.9;
+	}
+	.biglietto__nota button {
+		display: block;
+		margin-top: 10px;
+		padding: 0;
+		font: inherit;
+		font-weight: 700;
+		color: var(--ottone-chiaro);
+		background: none;
+		border: 0;
+		border-bottom: 2px solid var(--ottone-chiaro);
+		cursor: pointer;
+	}
+
+	@media (max-width: 520px) {
+		.scelte {
+			grid-template-columns: 1fr 1fr;
+		}
+		.scelta__box {
+			padding: 11px 12px;
+		}
+	}
+	@media (max-width: 920px) {
+		.turno__in {
+			grid-template-columns: 1fr;
+			grid-template-areas:
+				'testa'
+				'modulo'
+				'biglietto';
+		}
+		.biglietto-wrap {
+			position: static;
+			width: min(100%, 420px);
+		}
+		.campi {
+			grid-template-columns: 1fr;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.biglietto.is-stampato {
+			animation: none;
+		}
+	}
+</style>
+
+<script>
+	import { servizi, sedie, ORE, giorniAperti, giornoBreve, meseBreve, nomeGiorno, chiave, occupato, passato } from './turni';
+
+	const modulo = document.querySelector<HTMLFormElement>('[data-modulo]')!;
+	const boxGiorni = modulo.querySelector<HTMLElement>('[data-giorni]')!;
+	const boxOre = modulo.querySelector<HTMLElement>('[data-ore]')!;
+	const vuoto = modulo.parentElement!.querySelector<HTMLElement>('[data-ore-vuoto]')!;
+	const bigl = document.querySelector<HTMLElement>('[data-biglietto]')!;
+	const q = <T extends HTMLElement>(s: string) => document.querySelector<T>(s)!;
+	const nota = q('[data-b-nota]');
+
+	const giorni = giorniAperti(new Date(), 6);
+	let giornoSel = giorni[0];
+	let oraSel = '';
+	let inviato = false;
+
+	const sedia = () => Number((modulo.elements.namedItem('sedia') as RadioNodeList).value);
+	const servizio = () => servizi.find((s) => s.id === (modulo.elements.namedItem('servizio') as RadioNodeList).value)!;
+
+	// quali sedie sono libere a quell'ora (rispetta la sedia scelta)
+	const libere = (g: Date, ora: string) =>
+		sedie.filter((s) => (sedia() === 0 || s.n === sedia()) && !occupato(g, s.n, ora)).map((s) => s.n);
+
+	const disegnaGiorni = () => {
+		boxGiorni.innerHTML = '';
+		giorni.forEach((g) => {
+			const b = document.createElement('button');
+			b.type = 'button';
+			b.setAttribute('aria-pressed', String(chiave(g) === chiave(giornoSel)));
+			b.innerHTML = `<small>${giornoBreve(g)}</small><strong>${g.getDate()}</strong><small>${meseBreve(g)}</small>`;
+			b.setAttribute('aria-label', `${nomeGiorno(g)} ${g.getDate()} ${meseBreve(g)}`);
+			b.addEventListener('click', () => {
+				giornoSel = g;
+				oraSel = '';
+				disegnaGiorni();
+				disegnaOre();
+				aggiorna();
+			});
+			boxGiorni.append(b);
+		});
+	};
+
+	const disegnaOre = () => {
+		boxOre.innerHTML = '';
+		let n = 0;
+		ORE.forEach((ora) => {
+			const ok = !passato(giornoSel, ora) && libere(giornoSel, ora).length > 0;
+			if (ok) n++;
+			const b = document.createElement('button');
+			b.type = 'button';
+			b.textContent = ora;
+			b.disabled = !ok;
+			b.setAttribute('aria-pressed', String(ora === oraSel));
+			if (!ok) b.setAttribute('aria-label', `${ora}, non disponibile`);
+			b.addEventListener('click', () => {
+				oraSel = ora;
+				q('[data-err="ora"]').hidden = true;
+				disegnaOre();
+				aggiorna();
+			});
+			boxOre.append(b);
+		});
+		vuoto.hidden = n > 0;
+	};
+
+	const sedieTesto = () => {
+		if (!oraSel) return sedia() === 0 ? 'La prima libera' : sedie.find((s) => s.n === sedia())!.nome;
+		const l = libere(giornoSel, oraSel)[0];
+		return sedie.find((s) => s.n === l)!.nome + ` (${l})`;
+	};
+
+	const aggiorna = () => {
+		const nome = (modulo.elements.namedItem('nome') as HTMLInputElement).value.trim();
+		q('[data-b-servizio]').textContent = `${servizio().nome} · € ${servizio().prezzo}`;
+		q('[data-b-sedia]').textContent = sedieTesto();
+		q('[data-b-quando]').textContent = oraSel ? `${nomeGiorno(giornoSel)} ${giornoSel.getDate()} ${meseBreve(giornoSel)}, ${oraSel}` : '—';
+		q('[data-b-nome]').textContent = nome || '—';
+	};
+
+	modulo.addEventListener('change', (e) => {
+		const t = e.target as HTMLInputElement;
+		if (t.name === 'sedia') {
+			// cambiando sedia gli orari disponibili cambiano
+			if (oraSel && libere(giornoSel, oraSel).length === 0) oraSel = '';
+			disegnaOre();
+		}
+		aggiorna();
+	});
+	modulo.addEventListener('input', aggiorna);
+
+	// "Siediti da…" nella sezione delle sedie precompila la scelta
+	document.addEventListener('trr:scegli-sedia', (e) => {
+		const n = (e as CustomEvent<number>).detail;
+		const r = modulo.querySelector<HTMLInputElement>(`input[name="sedia"][value="${n}"]`);
+		if (r) {
+			r.checked = true;
+			r.dispatchEvent(new Event('change', { bubbles: true }));
+		}
+	});
+
+	const errore = (campo: string, mostra: boolean) => {
+		const el = q(`[data-err="${campo}"]`);
+		el.hidden = !mostra;
+		const input = modulo.elements.namedItem(campo) as HTMLInputElement | null;
+		input?.setAttribute?.('aria-invalid', String(mostra));
+	};
+
+	modulo.addEventListener('submit', (e) => {
+		e.preventDefault();
+		const nome = (modulo.elements.namedItem('nome') as HTMLInputElement).value.trim();
+		const tel = (modulo.elements.namedItem('tel') as HTMLInputElement).value.replace(/[\s().-]/g, '').replace(/^\+/, '');
+		const okNome = nome.length >= 2;
+		const okTel = /^\d{8,14}$/.test(tel);
+		const okOra = !!oraSel;
+		errore('nome', !okNome);
+		errore('tel', !okTel);
+		errore('ora', !okOra);
+		if (!(okNome && okTel && okOra)) {
+			const primo = !okOra ? boxOre : !okNome ? modulo.elements.namedItem('nome') : modulo.elements.namedItem('tel');
+			(primo as HTMLElement).scrollIntoView?.({ block: 'center', behavior: 'smooth' });
+			if (primo instanceof HTMLInputElement) primo.focus({ preventScroll: true });
+			return;
+		}
+		// il numero del turno: tre cifre ricavate dal momento e dai dati scelti
+		const seme = (Date.now() / 1000 + nome.length * 7 + Number(oraSel.replace(':', ''))) | 0;
+		const numero = String(10 + (seme % 89)).padStart(3, '0');
+		q('[data-b-numero]').textContent = numero;
+		aggiorna();
+		q('[data-b-stato]').textContent = `Stampato. Ci vediamo ${nomeGiorno(giornoSel)} alle ${oraSel}, ${nome}.`;
+		bigl.classList.remove('is-stampato');
+		void bigl.offsetWidth;
+		bigl.classList.add('is-stampato');
+		nota.hidden = false;
+		inviato = true;
+		bigl.scrollIntoView({ block: 'center', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+	});
+
+	nota.querySelector('[data-b-modifica]')!.addEventListener('click', () => {
+		if (!inviato) return;
+		bigl.classList.remove('is-stampato');
+		q('[data-b-numero]').textContent = '—';
+		q('[data-b-stato]').textContent = 'Bozza: scegli e compila.';
+		nota.hidden = true;
+		inviato = false;
+		(modulo.elements.namedItem('nome') as HTMLInputElement).focus();
+	});
+
+	disegnaGiorni();
+	disegnaOre();
+	aggiorna();
+</script>

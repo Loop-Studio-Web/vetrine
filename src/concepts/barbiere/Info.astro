@@ -1,0 +1,192 @@
+---
+const orari = [
+	{ g: 'Lunedì', o: 'Chiuso', n: 1 },
+	{ g: 'Martedì', o: '9:00–12:30 · 14:30–19:30', n: 2 },
+	{ g: 'Mercoledì', o: '9:00–12:30 · 14:30–19:30', n: 3 },
+	{ g: 'Giovedì', o: '9:00–12:30 · 14:30–19:30', n: 4 },
+	{ g: 'Venerdì', o: '9:00–12:30 · 14:30–19:30', n: 5 },
+	{ g: 'Sabato', o: '9:00–19:00 continuato', n: 6 },
+	{ g: 'Domenica', o: 'Chiuso', n: 0 },
+];
+---
+
+<section class="dove" id="dove">
+	<div class="dove__in">
+		<div class="dove__testo" data-reveal>
+			<p class="sopra">Dove siamo</p>
+			<h2>Sotto il palo che gira.</h2>
+			<p class="dove__lead">
+				Via dei Fornaci 14, nel borgo vecchio. Cerca il palo con le righe verdi: è l'unico della via. Se la panca è
+				piena, il bar di fianco fa un buon caffè.
+			</p>
+			<p class="dove__avviso">Indirizzo e telefono di fantasia: questa è una vetrina dimostrativa di Loop Studio.</p>
+
+			<dl class="contatti">
+				<div>
+					<dt>Telefono</dt>
+					<dd>000 000 0000 <small>(di esempio)</small></dd>
+				</div>
+				<div>
+					<dt>Come si arriva</dt>
+					<dd>A piedi dalla piazza, 3 minuti. Parcheggio in piazza del Mercato.</dd>
+				</div>
+			</dl>
+		</div>
+
+		<div class="dove__lato" data-reveal>
+			<table class="orari">
+				<caption class="sr-only">Orari di apertura</caption>
+				<tbody>
+					{
+						orari.map((r) => (
+							<tr data-giorno={r.n} class:list={{ chiuso: r.o === 'Chiuso' }}>
+								<th scope="row">{r.g}</th>
+								<td>{r.o}</td>
+							</tr>
+						))
+					}
+				</tbody>
+			</table>
+			<svg class="mappa" viewBox="0 0 400 200" role="img" aria-label="Piantina stilizzata: la bottega è all'incrocio tra via dei Fornaci e via del Mercato">
+				<rect width="400" height="200" fill="var(--bg-2)"></rect>
+				<g stroke="var(--testo-c)" stroke-opacity="0.22" stroke-width="14" fill="none" stroke-linecap="round">
+					<path d="M-10 70 H410"></path>
+					<path d="M-10 150 H410"></path>
+					<path d="M110 -10 V210"></path>
+					<path d="M280 -10 V210"></path>
+					<path d="M20 210 L190 -10"></path>
+				</g>
+				<g stroke="var(--bg-2)" stroke-width="2" fill="none" stroke-dasharray="8 8">
+					<path d="M-10 70 H410"></path>
+					<path d="M110 -10 V210"></path>
+				</g>
+				<text x="150" y="62" font-size="11" fill="var(--testo-2)" font-family="Figtree Variable, sans-serif" font-weight="700">VIA DEI FORNACI</text>
+				<text x="292" y="30" font-size="11" fill="var(--testo-2)" font-family="Figtree Variable, sans-serif" font-weight="700" transform="rotate(90 292 30)">VIA DEL MERCATO</text>
+				<g transform="translate(110 70)">
+					<circle r="22" fill="var(--ottone)" opacity="0.25"></circle>
+					<path d="M0 -4 C-14 -28 14 -28 0 -4 Z" fill="none"></path>
+					<rect x="-7" y="-26" width="14" height="30" rx="7" fill="var(--verde)"></rect>
+					<path d="M-7 -14 L7 -8 M-7 -6 L7 0" stroke="var(--crema)" stroke-width="3"></path>
+				</g>
+			</svg>
+		</div>
+	</div>
+</section>
+
+<style>
+	.dove {
+		padding: clamp(72px, 10vw, 128px) var(--gutter);
+	}
+	.dove__in {
+		max-width: var(--max);
+		margin-inline: auto;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: clamp(32px, 6vw, 88px);
+		align-items: start;
+	}
+	.sopra {
+		font-size: 0.82rem;
+		font-weight: 700;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: #735010;
+		margin-bottom: 14px;
+	}
+	:global(:root[data-tema='scuro']) .sopra {
+		color: var(--ottone-chiaro);
+	}
+	h2 {
+		font-size: clamp(2.2rem, 5vw, 3.6rem);
+		font-weight: 900;
+	}
+	.dove__lead {
+		margin-top: 18px;
+		font-size: 1.1rem;
+		color: var(--testo-2);
+		max-width: 32em;
+	}
+	.dove__avviso {
+		margin-top: 14px;
+		font-size: 0.9rem;
+		font-style: italic;
+		color: var(--testo-2);
+	}
+	.contatti {
+		margin-top: 30px;
+		display: grid;
+		gap: 16px;
+	}
+	.contatti dt {
+		font-size: 0.78rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--testo-2);
+	}
+	.contatti dd {
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: 1.1rem;
+	}
+	.contatti small {
+		font-family: var(--testo);
+		font-size: 0.8rem;
+		font-weight: 500;
+	}
+	.orari {
+		width: 100%;
+		border-collapse: collapse;
+	}
+	.orari th,
+	.orari td {
+		padding: 11px 0;
+		border-bottom: 1px dashed color-mix(in srgb, var(--testo-c) 30%, transparent);
+		text-align: left;
+	}
+	.orari th {
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: 1.1rem;
+		width: 40%;
+	}
+	.orari td {
+		font-variant-numeric: tabular-nums;
+	}
+	.orari .chiuso td {
+		color: var(--testo-2);
+		font-style: italic;
+	}
+	.orari tr.oggi th {
+		color: #1c5a40;
+	}
+	:global(:root[data-tema='scuro']) .orari tr.oggi th {
+		color: var(--ottone-chiaro);
+	}
+	.orari tr.oggi th::after {
+		content: ' · oggi';
+		font-family: var(--testo);
+		font-size: 0.78rem;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+	.mappa {
+		margin-top: 28px;
+		width: 100%;
+		height: auto;
+		border-radius: 12px;
+		border: 1.5px solid color-mix(in srgb, var(--testo-c) 18%, transparent);
+	}
+	@media (max-width: 920px) {
+		.dove__in {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>
+
+<script>
+	// evidenzia il giorno di oggi nella tabella degli orari
+	const oggi = String(new Date().getDay());
+	document.querySelector(`[data-giorno="${oggi}"]`)?.classList.add('oggi');
+</script>

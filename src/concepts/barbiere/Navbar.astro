@@ -1,0 +1,508 @@
+---
+import simbolo from '../../assets/barbiere/brand/simbolo.svg';
+import simboloChiaro from '../../assets/barbiere/brand/simbolo-chiaro.svg';
+
+const voci = [
+	{ href: '#listino', t: 'Listino' },
+	{ href: '#sedie', t: 'Le sedie' },
+	{ href: '#turno', t: 'Il turno' },
+	{ href: '#dove', t: 'Dove siamo' },
+];
+---
+
+<header class="nav" data-nav>
+	<div class="nav__in">
+		<a href="#top" class="nav__logo" aria-label="Bottega Tre Rasoi, torna in cima">
+			<img src={simbolo.src} alt="" width="34" height="38" class="nav__mark nav__mark--chiaro" />
+			<img src={simboloChiaro.src} alt="" width="34" height="38" class="nav__mark nav__mark--scuro" />
+			<span class="nav__nome">Bottega <em>Tre</em> Rasoi</span>
+		</a>
+
+		<nav class="nav__voci" aria-label="Sezioni della pagina">
+			{voci.map((v) => <a href={v.href}>{v.t}</a>)}
+		</nav>
+
+		<div class="nav__azioni">
+			<button type="button" class="tema" data-tema-toggle aria-pressed="false">
+				<span class="tema__icona" aria-hidden="true"></span>
+				<span class="tema__testo">Chiusura serale</span>
+			</button>
+			<a href="#turno" class="nav__cta">Prendi il numero</a>
+			<button type="button" class="burger" data-toggle aria-expanded="false" aria-controls="asciugamano" aria-label="Apri il menù">
+				<span class="burger__righe" aria-hidden="true"></span>
+			</button>
+		</div>
+	</div>
+	<div class="nav__palo" aria-hidden="true"><span data-progresso></span></div>
+</header>
+
+<div class="asciugamano" id="asciugamano" data-asciugamano role="region" aria-label="Menù" inert>
+	<div class="asciugamano__telo">
+		<nav class="asciugamano__voci" aria-label="Menù">
+			{
+				voci.map((v, i) => (
+					<a href={v.href} data-chiudi style={`--i:${i}`}>
+						<small aria-hidden="true">{String(i + 1).padStart(2, '0')}</small>
+						{v.t}
+					</a>
+				))
+			}
+		</nav>
+		<div class="asciugamano__piede">
+			<a href="#turno" class="nav__cta" data-chiudi>Prendi il numero</a>
+			<button type="button" class="tema tema--telo" data-tema-toggle aria-pressed="false">
+				<span class="tema__icona" aria-hidden="true"></span>
+				<span class="tema__testo">Chiusura serale</span>
+			</button>
+		</div>
+	</div>
+</div>
+
+<style is:global>
+	:root {
+		--nav-h: 68px;
+	}
+</style>
+
+<style>
+	.nav {
+		position: fixed;
+		top: var(--fascia, 0px);
+		left: 0;
+		right: 0;
+		z-index: 200;
+		height: var(--nav-h);
+		background: color-mix(in srgb, var(--bg) 0%, transparent);
+		transition:
+			background 0.4s ease,
+			box-shadow 0.4s ease;
+	}
+	.nav.is-scrolled,
+	:global(body.menu-aperto) .nav {
+		background: color-mix(in srgb, var(--bg) 94%, transparent);
+		backdrop-filter: blur(8px);
+		box-shadow: 0 1px 0 color-mix(in srgb, var(--testo-c) 14%, transparent);
+	}
+	.nav__in {
+		max-width: var(--max);
+		height: 100%;
+		margin-inline: auto;
+		padding-inline: var(--gutter);
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 20px;
+	}
+	.nav__logo {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		text-decoration: none;
+		flex-shrink: 0;
+	}
+	.nav__mark {
+		width: auto;
+		height: 38px;
+	}
+	.nav__mark--scuro {
+		display: none;
+	}
+	:global(:root[data-tema='scuro']) .nav__mark--chiaro {
+		display: none;
+	}
+	:global(:root[data-tema='scuro']) .nav__mark--scuro {
+		display: block;
+	}
+	.nav__nome {
+		font-family: var(--titoli);
+		font-weight: 800;
+		font-size: 1.3rem;
+		letter-spacing: -0.01em;
+		white-space: nowrap;
+	}
+	.nav__nome em {
+		font-style: italic;
+		font-weight: 500;
+		color: #735010;
+	}
+	:global(:root[data-tema='scuro']) .nav__nome em {
+		color: var(--ottone-chiaro);
+	}
+	.nav__voci {
+		display: flex;
+		gap: 28px;
+		font-weight: 600;
+		font-size: 0.95rem;
+	}
+	.nav__voci a {
+		text-decoration: none;
+		padding: 6px 0;
+		background: linear-gradient(var(--ottone), var(--ottone)) no-repeat 0 100% / 0 2px;
+		transition: background-size 0.35s ease;
+	}
+	.nav__voci a:hover {
+		background-size: 100% 2px;
+	}
+	.nav__azioni {
+		display: flex;
+		align-items: center;
+		gap: 14px;
+	}
+	.nav__cta {
+		display: inline-block;
+		padding: 10px 20px;
+		background: var(--verde);
+		color: var(--crema);
+		border-radius: 999px;
+		font-weight: 700;
+		font-size: 0.92rem;
+		text-decoration: none;
+		white-space: nowrap;
+		border: 2px solid var(--verde);
+		transition:
+			background 0.25s ease,
+			color 0.25s ease;
+	}
+	.nav__cta:hover {
+		background: transparent;
+		color: var(--testo-c);
+	}
+	:global(:root[data-tema='scuro']) .nav__cta {
+		background: var(--ottone-chiaro);
+		border-color: var(--ottone-chiaro);
+		color: var(--verde-scuro);
+	}
+	:global(:root[data-tema='scuro']) .nav__cta:hover {
+		background: transparent;
+		color: var(--testo-c);
+	}
+
+	/* interruttore del tema: la lampada della bottega */
+	.tema {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		padding: 7px 12px 7px 8px;
+		background: none;
+		border: 1.5px solid color-mix(in srgb, var(--testo-c) 40%, transparent);
+		border-radius: 999px;
+		color: inherit;
+		font: inherit;
+		font-size: 0.82rem;
+		font-weight: 600;
+		cursor: pointer;
+	}
+	.tema__icona {
+		width: 18px;
+		height: 18px;
+		border-radius: 50%;
+		background: var(--ottone);
+		box-shadow: inset -5px -3px 0 0 var(--bg);
+		transition: box-shadow 0.4s ease;
+	}
+	.tema[aria-pressed='true'] .tema__icona {
+		box-shadow: inset 0 0 0 0 var(--bg);
+		background: var(--ottone-chiaro);
+	}
+	.tema:hover {
+		border-color: var(--ottone);
+	}
+
+	/* il palo come barra di avanzamento: righe diagonali che scorrono, lente */
+	.nav__palo {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: 4px;
+		pointer-events: none;
+	}
+	.nav__palo span {
+		display: block;
+		height: 100%;
+		width: calc(var(--p, 0) * 100%);
+		background: repeating-linear-gradient(135deg, var(--verde) 0 8px, var(--crema) 8px 16px, var(--ottone) 16px 24px, var(--crema) 24px 32px);
+		background-size: 45px 45px;
+		animation: palo 3s linear infinite;
+		opacity: 0;
+		transition: opacity 0.3s ease;
+	}
+	.nav__palo span.is-visibile {
+		opacity: 1;
+	}
+	@keyframes palo {
+		to {
+			background-position: 45px 0;
+		}
+	}
+
+	.burger {
+		display: none;
+		width: 46px;
+		height: 46px;
+		background: var(--verde);
+		border: 0;
+		border-radius: 50%;
+		cursor: pointer;
+		position: relative;
+	}
+	.burger__righe,
+	.burger__righe::before,
+	.burger__righe::after {
+		position: absolute;
+		left: 50%;
+		width: 20px;
+		height: 2px;
+		margin-left: -10px;
+		background: var(--crema);
+		transition:
+			transform 0.4s ease,
+			opacity 0.2s ease;
+	}
+	.burger__righe {
+		top: 50%;
+	}
+	.burger__righe::before,
+	.burger__righe::after {
+		content: '';
+		left: 0;
+		margin-left: 0;
+	}
+	.burger__righe::before {
+		top: -7px;
+	}
+	.burger__righe::after {
+		top: 7px;
+	}
+	.burger[aria-expanded='true'] .burger__righe {
+		background: transparent;
+	}
+	.burger[aria-expanded='true'] .burger__righe::before {
+		transform: translateY(7px) rotate(45deg);
+	}
+	.burger[aria-expanded='true'] .burger__righe::after {
+		transform: translateY(-7px) rotate(-45deg);
+	}
+	:global(:root[data-tema='scuro']) .burger {
+		background: var(--ottone-chiaro);
+	}
+	:global(:root[data-tema='scuro']) .burger__righe,
+	:global(:root[data-tema='scuro']) .burger__righe::before,
+	:global(:root[data-tema='scuro']) .burger__righe::after {
+		background: var(--verde-scuro);
+	}
+	:global(:root[data-tema='scuro']) .burger[aria-expanded='true'] .burger__righe {
+		background: transparent;
+	}
+
+	/* menù mobile: un asciugamano caldo che si stende dall'alto e si ripiega alla chiusura */
+	.asciugamano {
+		position: fixed;
+		inset: 0;
+		z-index: 190;
+		pointer-events: none;
+		overflow: hidden;
+		visibility: hidden;
+		transition: visibility 0s 0.8s;
+	}
+	.asciugamano.is-aperto {
+		pointer-events: auto;
+		visibility: visible;
+		transition: visibility 0s;
+	}
+	.asciugamano__telo {
+		position: absolute;
+		inset: 0 0 -18px 0;
+		padding: calc(var(--nav-h) + var(--fascia-h, 34px) + 28px) var(--gutter) 56px;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		background-color: #f4ecda;
+		background-image:
+			repeating-linear-gradient(90deg, rgb(31 77 58 / 0.05) 0 2px, transparent 2px 7px),
+			repeating-linear-gradient(0deg, rgb(31 77 58 / 0.04) 0 2px, transparent 2px 7px);
+		color: var(--inchiostro);
+		transform: translateY(-104%);
+		transition: transform 0.8s cubic-bezier(0.5, 0, 0.2, 1);
+		border-radius: 0 0 26px 26px;
+	}
+	/* il bordo del telo: due strisce verdi e l'orlo arrotolato */
+	.asciugamano__telo::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 34px;
+		height: 14px;
+		background: linear-gradient(var(--verde) 0 4px, transparent 4px 10px, var(--verde) 10px 14px);
+		opacity: 0.85;
+	}
+	.asciugamano__telo::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: 26px;
+		border-radius: 0 0 26px 26px;
+		background: linear-gradient(#e8dcc0, #f6efdf 45%, #d9cba9);
+		box-shadow: 0 10px 18px rgb(0 0 0 / 0.22);
+	}
+	.asciugamano.is-aperto .asciugamano__telo {
+		transform: none;
+	}
+	.asciugamano__voci {
+		display: flex;
+		flex-direction: column;
+	}
+	.asciugamano__voci a {
+		display: flex;
+		align-items: baseline;
+		gap: 16px;
+		padding: 14px 0;
+		font-family: var(--titoli);
+		font-weight: 800;
+		font-size: clamp(2rem, 9vw, 2.8rem);
+		line-height: 1.05;
+		text-decoration: none;
+		border-bottom: 1px dashed rgb(31 77 58 / 0.35);
+		opacity: 0;
+		transform: translateY(-10px);
+		transition:
+			opacity 0.5s ease,
+			transform 0.5s ease;
+	}
+	.asciugamano__voci small {
+		font-family: var(--testo);
+		font-size: 0.78rem;
+		font-weight: 700;
+		color: var(--ottone);
+		letter-spacing: 0.1em;
+	}
+	.asciugamano.is-aperto .asciugamano__voci a {
+		opacity: 1;
+		transform: none;
+		transition-delay: calc(0.35s + var(--i) * 0.08s);
+	}
+	.asciugamano__piede {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 14px;
+		padding-bottom: 14px;
+	}
+	.asciugamano__piede .nav__cta {
+		background: var(--verde);
+		color: var(--crema);
+	}
+	.tema--telo {
+		color: var(--inchiostro);
+		border-color: rgb(23 33 28 / 0.4);
+	}
+	.tema--telo .tema__icona {
+		box-shadow: inset -5px -3px 0 0 #f4ecda;
+	}
+	.tema--telo[aria-pressed='true'] .tema__icona {
+		box-shadow: none;
+	}
+
+	@media (max-width: 1040px) {
+		.nav__voci {
+			display: none;
+		}
+	}
+	@media (max-width: 920px) {
+		.burger {
+			display: block;
+		}
+		.nav__azioni > .nav__cta,
+		.nav__azioni > .tema {
+			display: none;
+		}
+	}
+	@media (max-width: 400px) {
+		.nav__nome {
+			font-size: 1.1rem;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.asciugamano__telo,
+		.asciugamano__voci a {
+			transition-duration: 0.01s;
+			transition-delay: 0s !important;
+		}
+		.nav__palo span {
+			animation: none;
+		}
+	}
+</style>
+
+<script>
+	const nav = document.querySelector<HTMLElement>('[data-nav]')!;
+	const telo = document.querySelector<HTMLElement>('[data-asciugamano]')!;
+	const toggle = document.querySelector<HTMLButtonElement>('[data-toggle]')!;
+
+	const imposta = (aperta: boolean) => {
+		telo.classList.toggle('is-aperto', aperta);
+		telo.toggleAttribute('inert', !aperta);
+		toggle.setAttribute('aria-expanded', String(aperta));
+		toggle.setAttribute('aria-label', aperta ? 'Chiudi il menù' : 'Apri il menù');
+		document.body.classList.toggle('menu-aperto', aperta);
+	};
+	toggle.addEventListener('click', () => imposta(!telo.classList.contains('is-aperto')));
+	telo.querySelectorAll('[data-chiudi]').forEach((a) => a.addEventListener('click', () => imposta(false)));
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape' && telo.classList.contains('is-aperto')) {
+			imposta(false);
+			toggle.focus();
+		}
+	});
+	matchMedia('(min-width: 921px)').addEventListener('change', (m) => m.matches && imposta(false));
+
+	// tema: chiaro di giorno, "chiusura serale" a scelta (ricordata nel browser)
+	const radice = document.documentElement;
+	const bottoni = document.querySelectorAll<HTMLButtonElement>('[data-tema-toggle]');
+	const sincronizza = () => {
+		const scuro = radice.dataset.tema === 'scuro';
+		bottoni.forEach((b) => b.setAttribute('aria-pressed', String(scuro)));
+		document.querySelector('meta[name="theme-color"]')?.setAttribute('content', scuro ? '#0f2219' : '#1f4d3a');
+	};
+	bottoni.forEach((b) =>
+		b.addEventListener('click', () => {
+			const scuro = radice.dataset.tema !== 'scuro';
+			if (scuro) radice.dataset.tema = 'scuro';
+			else delete radice.dataset.tema;
+			try {
+				localStorage.setItem('trr-tema', scuro ? 'scuro' : 'chiaro');
+			} catch (e) {}
+			sincronizza();
+		}),
+	);
+	sincronizza();
+
+	const scroll = () => nav.classList.toggle('is-scrolled', window.scrollY > 24);
+	scroll();
+	addEventListener('scroll', scroll, { passive: true });
+
+	// barra di avanzamento: il palo si riempie scorrendo la pagina
+	const barra = document.querySelector<HTMLElement>('[data-progresso]')!;
+	let attesa = false;
+	const avanza = () => {
+		attesa = false;
+		const max = document.documentElement.scrollHeight - innerHeight;
+		const p = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
+		nav.style.setProperty('--p', p.toFixed(4));
+		barra.classList.toggle('is-visibile', p > 0.004);
+	};
+	addEventListener(
+		'scroll',
+		() => {
+			if (!attesa) {
+				attesa = true;
+				requestAnimationFrame(avanza);
+			}
+		},
+		{ passive: true },
+	);
+	avanza();
+</script>

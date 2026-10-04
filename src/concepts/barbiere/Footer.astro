@@ -1,0 +1,82 @@
+---
+import simbolo from '../../assets/barbiere/brand/simbolo-chiaro.svg';
+import logo from '../../assets/hub/loop-logo-on-dark.svg';
+---
+
+<footer class="piede">
+	<div class="piede__in">
+		<p class="piede__nome">
+			<img src={simbolo.src} alt="" width="40" height="44" />
+			<span>Bottega <em>Tre</em> Rasoi</span>
+		</p>
+		<p class="piede__copy">
+			&copy; 2026 Bottega Tre Rasoi. Barbiere di fantasia: concept dimostrativo. Il locale, i barbieri, i prezzi e gli indirizzi
+			non esistono; le foto vengono da Unsplash.
+		</p>
+		<a class="piede__credito" href="https://theloopstudio.org/" target="_blank" rel="noopener">
+			<span>Sito ideato da</span>
+			<img src={logo.src} width="84" height="44" alt="Loop Studio" />
+			<span class="sr-only">(si apre in una nuova scheda)</span>
+		</a>
+	</div>
+</footer>
+
+<style>
+	.piede {
+		background: var(--verde-scuro);
+		color: var(--crema);
+		padding: 44px var(--gutter);
+	}
+	:global(:root[data-tema='scuro']) .piede {
+		background: #08140e;
+	}
+	.piede__in {
+		max-width: var(--max);
+		margin-inline: auto;
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		align-items: center;
+		gap: 16px 36px;
+	}
+	.piede__nome {
+		display: flex;
+		align-items: center;
+		gap: 14px;
+		font-family: var(--titoli);
+		font-weight: 800;
+		font-size: 1.5rem;
+		line-height: 1;
+	}
+	.piede__nome img {
+		height: 46px;
+		width: auto;
+	}
+	.piede__nome em {
+		font-weight: 400;
+		color: var(--ottone-chiaro);
+	}
+	.piede__copy {
+		font-size: 0.88rem;
+		opacity: 0.85;
+		max-width: 52em;
+	}
+	.piede__credito {
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		text-decoration: none;
+		font-size: 0.85rem;
+	}
+	.piede__credito img {
+		height: 40px;
+		width: auto;
+	}
+	.piede__credito:hover {
+		opacity: 0.75;
+	}
+	@media (max-width: 860px) {
+		.piede__in {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

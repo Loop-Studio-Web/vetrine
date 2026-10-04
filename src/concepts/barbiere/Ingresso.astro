@@ -1,0 +1,325 @@
+---
+import { Image } from 'astro:assets';
+import hero from '../../assets/barbiere/hero.jpg';
+import tondo from '../../assets/barbiere/brand/tondo.svg';
+---
+
+<section class="ingresso" id="top">
+	<div class="ingresso__in">
+		<div class="ingresso__testo">
+			<p class="ingresso__sopra" data-reveal>Barbiere di quartiere · aperto dal 1962</p>
+			<h1>Taglio, barba e rasoio. <em>Senza fretta.</em></h1>
+			<p class="ingresso__lead" data-reveal>
+				Tre sedie, un palo che gira da sessant'anni e un solo modo di lavorare: bene, e con calma. Si entra anche senza
+				prenotare, ma col numero si salta la panca.
+			</p>
+			<div class="ingresso__cta" data-reveal>
+				<a href="#turno" class="btn btn--pieno">Prendi il numero</a>
+				<a href="#listino" class="btn btn--vuoto">Guarda il listino</a>
+			</div>
+			<p class="libera" data-libera data-reveal>
+				<span class="libera__punto" aria-hidden="true"></span>
+				<span data-libera-testo>Il primo turno libero lo trovi nella sezione «Il turno».</span>
+			</p>
+		</div>
+
+		<div class="ingresso__scena">
+			<div class="palo" aria-hidden="true">
+				<span class="palo__cima"></span>
+				<span class="palo__vetro"></span>
+				<span class="palo__base"></span>
+			</div>
+			<div class="arco">
+				<Image
+					src={hero}
+					alt="Un barbiere con cappello e bretelle sistema il ciuffo di un cliente avvolto nella mantellina a righe verdi e bianche"
+					widths={[480, 720, 960]}
+					sizes="(max-width: 920px) 90vw, 470px"
+					loading="eager"
+					fetchpriority="high"
+					class="arco__img"
+				/>
+			</div>
+			<img src={tondo.src} alt="" width="132" height="122" class="timbro" />
+		</div>
+	</div>
+
+	<ul class="fatti" aria-label="In breve">
+		<li><strong>Martedì–sabato</strong> 9:00–19:30</li>
+		<li><strong>Tre sedie</strong> tre modi di tagliare</li>
+		<li><strong>Il primo caffè</strong> lo offre Nino</li>
+	</ul>
+</section>
+
+<style>
+	.ingresso {
+		padding: calc(var(--nav-h) + var(--fascia-h, 34px) + 44px) var(--gutter) 0;
+		overflow-x: clip;
+	}
+	.ingresso__in {
+		max-width: var(--max);
+		margin-inline: auto;
+		display: grid;
+		grid-template-columns: 1.05fr 0.95fr;
+		gap: clamp(32px, 6vw, 88px);
+		align-items: center;
+		padding-bottom: 72px;
+	}
+	.ingresso__sopra {
+		font-size: 0.82rem;
+		font-weight: 700;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--ottone);
+		margin-bottom: 18px;
+	}
+	:global(:root:not([data-tema='scuro'])) .ingresso__sopra {
+		color: #735010;
+	}
+	h1 {
+		font-size: clamp(2.8rem, 6.4vw, 5.4rem);
+		line-height: 0.98;
+		font-weight: 900;
+		letter-spacing: -0.025em;
+	}
+	h1 em {
+		display: block;
+		font-weight: 400;
+		font-style: italic;
+		color: var(--verde);
+	}
+	:global(:root[data-tema='scuro']) h1 em {
+		color: var(--ottone-chiaro);
+	}
+	.ingresso__lead {
+		margin-top: 24px;
+		max-width: 31em;
+		font-size: 1.15rem;
+		color: var(--testo-2);
+	}
+	.ingresso__cta {
+		margin-top: 32px;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 14px;
+	}
+	.btn {
+		display: inline-block;
+		padding: 15px 28px;
+		border-radius: 999px;
+		font-weight: 700;
+		text-decoration: none;
+		border: 2px solid var(--verde);
+		transition:
+			background 0.25s ease,
+			color 0.25s ease,
+			transform 0.25s ease;
+	}
+	.btn:hover {
+		transform: translateY(-2px);
+	}
+	.btn--pieno {
+		background: var(--verde);
+		color: var(--crema);
+	}
+	.btn--pieno:hover {
+		background: var(--verde-scuro);
+	}
+	.btn--vuoto {
+		color: var(--testo-c);
+	}
+	.btn--vuoto:hover {
+		background: var(--verde);
+		color: var(--crema);
+	}
+	:global(:root[data-tema='scuro']) .btn {
+		border-color: var(--ottone-chiaro);
+	}
+	:global(:root[data-tema='scuro']) .btn--pieno {
+		background: var(--ottone-chiaro);
+		color: var(--verde-scuro);
+	}
+	:global(:root[data-tema='scuro']) .btn--vuoto:hover {
+		background: var(--ottone-chiaro);
+		color: var(--verde-scuro);
+	}
+
+	.libera {
+		margin-top: 28px;
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		padding: 11px 18px;
+		background: var(--bg-2);
+		border-radius: 12px;
+		font-size: 0.95rem;
+		font-weight: 600;
+	}
+	.libera__punto {
+		flex: none;
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
+		background: #2f9e5b;
+		box-shadow: 0 0 0 0 rgb(47 158 91 / 0.5);
+		animation: respiro 2.8s ease-out infinite;
+	}
+	@keyframes respiro {
+		70%,
+		100% {
+			box-shadow: 0 0 0 10px rgb(47 158 91 / 0);
+		}
+	}
+
+	/* la scena: arco con la foto e il palo accanto */
+	.ingresso__scena {
+		position: relative;
+		justify-self: center;
+		width: min(100%, 470px);
+		padding-left: 62px;
+	}
+	.arco {
+		aspect-ratio: 4 / 5;
+		overflow: hidden;
+		border-radius: 999px 999px 18px 18px;
+		background: var(--verde);
+		box-shadow: 0 0 0 8px var(--bg), 0 0 0 10px var(--ottone);
+	}
+	.arco :global(.arco__img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 50% 32%;
+	}
+	.timbro {
+		position: absolute;
+		right: -22px;
+		bottom: -26px;
+		width: 124px;
+		height: auto;
+		transform: rotate(-8deg);
+		filter: drop-shadow(0 6px 10px rgb(0 0 0 / 0.25));
+		background: var(--crema);
+		border-radius: 50%;
+		padding: 6px;
+	}
+
+	.palo {
+		position: absolute;
+		left: 0;
+		top: 14%;
+		width: 44px;
+		height: 72%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	.palo__cima,
+	.palo__base {
+		flex: none;
+		width: 52px;
+		height: 26px;
+		background: linear-gradient(90deg, #8a6416, var(--ottone-chiaro) 40%, #8a6416);
+		border-radius: 12px 12px 4px 4px;
+	}
+	.palo__base {
+		border-radius: 4px 4px 12px 12px;
+	}
+	.palo__vetro {
+		position: relative;
+		flex: 1;
+		width: 44px;
+		background-color: var(--crema);
+		background-image: repeating-linear-gradient(45deg, var(--verde) 0 10.36px, var(--crema) 10.36px 20.73px, var(--ottone) 20.73px 31.1px);
+		background-size: 44px 44px;
+		animation: gira 3.2s linear infinite;
+		box-shadow: inset 0 0 0 2px rgb(0 0 0 / 0.15);
+	}
+	.palo__vetro::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(90deg, rgb(0 0 0 / 0.28), rgb(255 255 255 / 0.4) 28%, transparent 46%, rgb(0 0 0 / 0.22));
+	}
+	@keyframes gira {
+		to {
+			background-position: 0 44px;
+		}
+	}
+
+	/* striscia dei fatti, con il bordo a piastrelle a scacchi del pavimento */
+	.fatti {
+		list-style: none;
+		margin: 0 calc(var(--gutter) * -1);
+		padding: 30px var(--gutter);
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 14px 56px;
+		background: var(--verde);
+		color: var(--crema);
+		font-size: 1rem;
+		position: relative;
+	}
+	.fatti::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: -14px;
+		height: 14px;
+		background: repeating-conic-gradient(var(--verde) 0 25%, var(--bg) 0 50%) 0 0 / 28px 28px;
+	}
+	:global(:root[data-tema='scuro']) .fatti {
+		background: var(--bg-2);
+	}
+	:global(:root[data-tema='scuro']) .fatti::before {
+		background: repeating-conic-gradient(var(--bg-2) 0 25%, var(--bg) 0 50%) 0 0 / 28px 28px;
+	}
+	.fatti strong {
+		font-family: var(--titoli);
+		font-weight: 800;
+		font-size: 1.15rem;
+		margin-right: 8px;
+		color: var(--ottone-chiaro);
+	}
+
+	@media (max-width: 920px) {
+		.ingresso__in {
+			grid-template-columns: 1fr;
+			padding-bottom: 56px;
+		}
+		.ingresso__scena {
+			order: -1;
+			width: min(100%, 360px);
+			margin-top: 8px;
+		}
+		.arco {
+			aspect-ratio: 5 / 4.4;
+		}
+	}
+	@media (max-width: 520px) {
+		.fatti {
+			justify-content: flex-start;
+		}
+		.timbro {
+			width: 96px;
+			right: -8px;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.palo__vetro,
+		.libera__punto {
+			animation: none;
+		}
+	}
+</style>
+
+<script>
+	import { prossimaLibera, quando } from './turni';
+	const testo = document.querySelector<HTMLElement>('[data-libera-testo]');
+	if (testo) {
+		const l = prossimaLibera();
+		if (l) testo.textContent = `Prima sedia libera: ${quando(l)} · sedia ${l.sedia.n} (${l.sedia.nome})`;
+	}
+</script>

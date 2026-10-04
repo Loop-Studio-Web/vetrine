@@ -1,0 +1,192 @@
+/* Bottega Tre Rasoi — token, reset e animazioni. Tema chiaro (crema e verde bottiglia) con variante scura "chiusura serale". */
+:root {
+	--crema: #f2e8d5;
+	--crema-2: #e8dbc0;
+	--verde: #1f4d3a;
+	--verde-scuro: #143426;
+	--ottone: #b8892f;
+	--ottone-chiaro: #d9ae55;
+	--inchiostro: #17211c;
+	--inchiostro-2: #46514a;
+	--rosso: #a3362a;
+
+	--bg: var(--crema);
+	--bg-2: var(--crema-2);
+	--testo-c: var(--inchiostro);
+	--testo-2: var(--inchiostro-2);
+
+	--titoli: 'Fraunces Variable', Georgia, serif;
+	--testo: 'Figtree Variable', system-ui, sans-serif;
+
+	--gutter: clamp(18px, 5vw, 56px);
+	--max: 1200px;
+	--nav-h: 68px;
+}
+
+/* Chiusura serale: il locale di notte, verde profondo e ottone acceso */
+:root[data-tema='scuro'] {
+	--bg: #0f2219;
+	--bg-2: #173226;
+	--testo-c: #f2e8d5;
+	--testo-2: #b9c2b4;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	scroll-behavior: smooth;
+	scroll-padding-top: calc(var(--nav-h) + 12px);
+	-webkit-text-size-adjust: 100%;
+}
+
+body {
+	background: var(--bg);
+	color: var(--testo-c);
+	font-family: var(--testo);
+	font-size: 1.05rem;
+	line-height: 1.55;
+	overflow-x: clip;
+}
+
+body.menu-aperto {
+	overflow: hidden;
+}
+
+img {
+	display: block;
+	max-width: 100%;
+	height: auto;
+}
+
+a {
+	color: inherit;
+}
+
+h1,
+h2,
+h3 {
+	font-family: var(--titoli);
+	font-weight: 800;
+	line-height: 1.05;
+	letter-spacing: -0.01em;
+}
+
+:focus-visible {
+	outline: 3px solid var(--ottone);
+	outline-offset: 3px;
+}
+
+.skip-link {
+	position: absolute;
+	left: 12px;
+	top: -60px;
+	z-index: 400;
+	padding: 10px 16px;
+	background: var(--verde);
+	color: var(--crema);
+	text-decoration: none;
+	font-weight: 700;
+}
+.skip-link:focus {
+	top: 12px;
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+
+/* Rivelazione in vista: parte quando l'elemento entra nello schermo, mai al caricamento */
+.js [data-reveal] {
+	opacity: 0;
+	transform: translateY(18px);
+	transition:
+		opacity 0.8s ease,
+		transform 0.8s ease;
+}
+.js [data-reveal].is-visible {
+	opacity: 1;
+	transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+	.js [data-reveal] {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
+}
+
+/* Barra di scorrimento: il cursore è un palo, righe diagonali verde, crema e ottone.
+   Attenzione: dove il browser conosce ::-webkit-scrollbar (Chrome, Edge, Safari) la proprietà standard
+   scrollbar-color lo disattiverebbe, quindi si usa solo in Firefox. */
+::-webkit-scrollbar {
+	width: 16px;
+}
+::-webkit-scrollbar-track {
+	background: var(--bg-2);
+	border-left: 1px solid color-mix(in srgb, var(--testo-c) 14%, transparent);
+}
+::-webkit-scrollbar-thumb {
+	background: repeating-linear-gradient(135deg, var(--verde) 0 7px, var(--crema) 7px 14px, var(--ottone) 14px 21px);
+	border: 2px solid var(--bg-2);
+	border-radius: 9px;
+	box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.25);
+}
+@supports not selector(::-webkit-scrollbar) {
+	html {
+		scrollbar-color: var(--verde) var(--bg-2);
+	}
+}
+
+/* Cursore a forbici: sono il puntatore vero (punta = punto di click). Socchiuse di base, aperte su ciò che si può premere, chiuse mentre si preme.
+   Restano i cursori di sistema per il testo e per ciò che è disabilitato. Su touch non si applica. */
+@media (hover: hover) and (pointer: fine) {
+	:root {
+		--forbici: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2234%22%20height%3D%2234%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cpath%20d%3D%22M3%206.5%20L16.7%2012.6%20L13.3%2017.4%20Z%22%20fill%3D%22%23f2e8d5%22%20stroke%3D%22%2317211c%22%20stroke-width%3D%220.9%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cpath%20d%3D%22M15%2015%20L22.5%2019.3%22%20stroke%3D%22%2317211c%22%20stroke-width%3D%224.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M15%2015%20L22.5%2019.3%22%20stroke%3D%22%23d9ae55%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2225.5%22%20cy%3D%2221%22%20r%3D%223.4%22%20fill%3D%22none%22%20stroke%3D%22%2317211c%22%20stroke-width%3D%224.4%22%2F%3E%3Ccircle%20cx%3D%2225.5%22%20cy%3D%2221%22%20r%3D%223.4%22%20fill%3D%22none%22%20stroke%3D%22%23d9ae55%22%20stroke-width%3D%222%22%2F%3E%3Cpath%20d%3D%22M6.5%203%20L17.4%2013.3%20L12.6%2016.7%20Z%22%20fill%3D%22%23f2e8d5%22%20stroke%3D%22%2317211c%22%20stroke-width%3D%220.9%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cpath%20d%3D%22M15%2015%20L19.3%2022.5%22%20stroke%3D%22%2317211c%22%20stroke-width%3D%224.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M15%2015%20L19.3%2022.5%22%20stroke%3D%22%23d9ae55%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2221%22%20cy%3D%2225.5%22%20r%3D%223.4%22%20fill%3D%22none%22%20stroke%3D%22%2317211c%22%20stroke-width%3D%224.4%22%2F%3E%3Ccircle%20cx%3D%2221%22%20cy%3D%2225.5%22%20r%3D%223.4%22%20fill%3D%22none%22%20stroke%3D%22%23d9ae55%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%2215%22%20cy%3D%2215%22%20r%3D%221.6%22%20fill%3D%22%2317211c%22%2F%3E%3C%2Fsvg%3E") 3 3, auto;
+		--forbici-aperte: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2234%22%20height%3D%2234%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cpath%20d%3D%22M1.5%209.5%20L16.1%2012.2%20L13.9%2017.8%20Z%22%20fill%3D%22%23f2e8d5%22%20stroke%3D%22%2317211c%22%20stroke-width%3D%220.9%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cpath%20d%3D%22M15%2015%20L22.9%2018.2%22%20stroke%3D%22%2317211c%22%20stroke-width%3D%224.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M15%2015%20L22.9%2018.2%22%20stroke%3D%22%23d9ae55%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2226%22%20cy%3D%2219.5%22%20r%3D%223.4%22%20fill%3D%22none%22%20stroke%3D%22%2317211c%22%20stroke-width%3D%224.4%22%2F%3E%3Ccircle%20cx%3D%2226%22%20cy%3D%2219.5%22%20r%3D%223.4%22%20fill%3D%22none%22%20stroke%3D%22%23d9ae55%22%20stroke-width%3D%222%22%2F%3E%3Cpath%20d%3D%22M9.5%201.5%20L17.8%2013.9%20L12.2%2016.1%20Z%22%20fill%3D%22%23f2e8d5%22%20stroke%3D%22%2317211c%22%20stroke-width%3D%220.9%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cpath%20d%3D%22M15%2015%20L18.2%2022.9%22%20stroke%3D%22%2317211c%22%20stroke-width%3D%224.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M15%2015%20L18.2%2022.9%22%20stroke%3D%22%23d9ae55%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2219.5%22%20cy%3D%2226%22%20r%3D%223.4%22%20fill%3D%22none%22%20stroke%3D%22%2317211c%22%20stroke-width%3D%224.4%22%2F%3E%3Ccircle%20cx%3D%2219.5%22%20cy%3D%2226%22%20r%3D%223.4%22%20fill%3D%22none%22%20stroke%3D%22%23d9ae55%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%2215%22%20cy%3D%2215%22%20r%3D%221.6%22%20fill%3D%22%2317211c%22%2F%3E%3C%2Fsvg%3E") 2 2, pointer;
+		--forbici-chiuse: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2234%22%20height%3D%2234%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cpath%20d%3D%22M3.5%204.5%20L17.0%2012.8%20L13.0%2017.2%20Z%22%20fill%3D%22%23f2e8d5%22%20stroke%3D%22%2317211c%22%20stroke-width%3D%220.9%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cpath%20d%3D%22M15%2015%20L22.5%2021.7%22%20stroke%3D%22%2317211c%22%20stroke-width%3D%224.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M15%2015%20L22.5%2021.7%22%20stroke%3D%22%23d9ae55%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2225%22%20cy%3D%2224%22%20r%3D%223.4%22%20fill%3D%22none%22%20stroke%3D%22%2317211c%22%20stroke-width%3D%224.4%22%2F%3E%3Ccircle%20cx%3D%2225%22%20cy%3D%2224%22%20r%3D%223.4%22%20fill%3D%22none%22%20stroke%3D%22%23d9ae55%22%20stroke-width%3D%222%22%2F%3E%3Cpath%20d%3D%22M4.5%203.5%20L17.2%2013.0%20L12.8%2017.0%20Z%22%20fill%3D%22%23f2e8d5%22%20stroke%3D%22%2317211c%22%20stroke-width%3D%220.9%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cpath%20d%3D%22M15%2015%20L21.7%2022.5%22%20stroke%3D%22%2317211c%22%20stroke-width%3D%224.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M15%2015%20L21.7%2022.5%22%20stroke%3D%22%23d9ae55%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2224%22%20cy%3D%2225%22%20r%3D%223.4%22%20fill%3D%22none%22%20stroke%3D%22%2317211c%22%20stroke-width%3D%224.4%22%2F%3E%3Ccircle%20cx%3D%2224%22%20cy%3D%2225%22%20r%3D%223.4%22%20fill%3D%22none%22%20stroke%3D%22%23d9ae55%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%2215%22%20cy%3D%2215%22%20r%3D%221.6%22%20fill%3D%22%2317211c%22%2F%3E%3C%2Fsvg%3E") 3 3, pointer;
+	}
+	html,
+	html * {
+		cursor: var(--forbici) !important;
+	}
+	html a,
+	html button,
+	html label,
+	html summary,
+	html select,
+	html [role='button'],
+	html input[type='radio'],
+	html input[type='checkbox'] {
+		cursor: var(--forbici-aperte) !important;
+	}
+	html a:active,
+	html button:active,
+	html label:active,
+	html summary:active,
+	html [role='button']:active {
+		cursor: var(--forbici-chiuse) !important;
+	}
+	html input:not([type='radio']):not([type='checkbox']):not([type='submit']),
+	html textarea {
+		cursor: text !important;
+	}
+	html button:disabled,
+	html input:disabled {
+		cursor: not-allowed !important;
+	}
+}

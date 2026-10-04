@@ -1,0 +1,329 @@
+---
+import { Image } from 'astro:assets';
+import sedieFoto from '../../assets/barbiere/sedie.jpg';
+import { sedie } from './turni';
+
+// posizione dei segnaposto sopra le tre poltrone della foto (in % della foto)
+const posti = [
+	{ x: 12, y: 53 },
+	{ x: 51, y: 55 },
+	{ x: 88, y: 55 },
+];
+---
+
+<section class="sedie" id="sedie">
+	<div class="sedie__in">
+		<header class="sedie__testa" data-reveal>
+			<p class="sopra">Tre sedie, tre mani</p>
+			<h2>Scegli da chi sederti.</h2>
+			<p class="sedie__lead">
+				Ogni sedia ha il suo barbiere e il suo modo di lavorare. Non sai quale? Prendi la prima che si libera: sono tutti
+				bravi, ma ognuno è bravissimo in una cosa.
+			</p>
+		</header>
+
+		<figure class="sala" data-reveal>
+			<Image
+				src={sedieFoto}
+				alt="Tre poltrone da barbiere in pelle nera davanti a un muro di mattoni, con grandi specchi e lampade a sospensione"
+				widths={[640, 960, 1280, 1600]}
+				sizes="(max-width: 1240px) 92vw, 1130px"
+				class="sala__img"
+			/>
+			<ul class="sala__posti">
+				{
+					sedie.map((s, i) => (
+						<li style={`--x:${posti[i].x}%; --y:${posti[i].y}%`} data-posto={s.n}>
+							<a href="#turno" data-scegli={s.n} aria-label={`Siediti da ${s.nome}, sedia ${s.n}`}>
+								<span class="posto__num">{s.n}</span>
+								<span class="posto__nome">{s.nome}</span>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</figure>
+
+		<ol class="sedie__lista">
+			{
+				sedie.map((s) => (
+					<li class="sedia" data-reveal data-sedia={s.n}>
+						<span class="sedia__num" aria-hidden="true">
+							{s.n}
+						</span>
+						<div class="sedia__corpo">
+							<h3>
+								<span class="sr-only">Sedia {s.n}: </span>
+								{s.nome} <em>{s.mestiere}</em>
+							</h3>
+							<p>{s.testo}</p>
+							<p class="sedia__libera">
+								<span class="sedia__punto" aria-hidden="true" />
+								<span data-sedia-libera>Controlla gli orari nel turno</span>
+							</p>
+							<a href="#turno" class="sedia__scelta" data-scegli={s.n}>
+								Siediti da {s.nome} <span aria-hidden="true">→</span>
+							</a>
+						</div>
+					</li>
+				))
+			}
+		</ol>
+	</div>
+</section>
+
+<style>
+	.sedie {
+		padding: clamp(72px, 10vw, 128px) var(--gutter);
+		background: var(--bg-2);
+	}
+	.sedie__in {
+		max-width: var(--max);
+		margin-inline: auto;
+		display: grid;
+		gap: 40px;
+	}
+	.sopra {
+		font-size: 0.82rem;
+		font-weight: 700;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: #735010;
+		margin-bottom: 14px;
+	}
+	:global(:root[data-tema='scuro']) .sopra {
+		color: var(--ottone-chiaro);
+	}
+	h2 {
+		font-size: clamp(2.2rem, 5vw, 3.6rem);
+		font-weight: 900;
+	}
+	.sedie__lead {
+		margin-top: 16px;
+		max-width: 34em;
+		color: var(--testo-2);
+		font-size: 1.1rem;
+	}
+
+	/* la sala: la foto con un numero su ogni poltrona */
+	.sala {
+		position: relative;
+		margin: 0;
+		border-radius: 14px;
+		overflow: hidden;
+		aspect-ratio: 3 / 2;
+		box-shadow:
+			0 0 0 6px var(--bg-2),
+			0 0 0 8px var(--ottone),
+			0 26px 44px -22px rgb(0 0 0 / 0.55);
+	}
+	.sala :global(.sala__img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.sala__posti {
+		list-style: none;
+	}
+	.sala__posti li {
+		position: absolute;
+		left: var(--x);
+		top: var(--y);
+		transform: translate(-50%, -50%);
+	}
+	.sala__posti a {
+		display: flex;
+		align-items: center;
+		gap: 0;
+		padding: 5px;
+		background: var(--crema);
+		color: var(--verde-scuro);
+		border-radius: 999px;
+		text-decoration: none;
+		box-shadow:
+			0 0 0 3px var(--ottone),
+			0 8px 18px rgb(0 0 0 / 0.5);
+		transition:
+			transform 0.3s ease,
+			background 0.3s ease;
+	}
+	.posto__num {
+		display: grid;
+		place-items: center;
+		width: 34px;
+		height: 34px;
+		border-radius: 50%;
+		background: var(--verde);
+		color: var(--crema);
+		font-family: var(--titoli);
+		font-weight: 900;
+		font-size: 1.15rem;
+	}
+	.posto__nome {
+		max-width: 0;
+		overflow: hidden;
+		white-space: nowrap;
+		font-weight: 700;
+		font-size: 0.95rem;
+		transition:
+			max-width 0.4s ease,
+			padding 0.4s ease;
+	}
+	.sala__posti a:hover,
+	.sala__posti a:focus-visible,
+	.sala__posti li.is-acceso a {
+		transform: scale(1.08);
+		background: var(--ottone-chiaro);
+	}
+	.sala__posti a:hover .posto__nome,
+	.sala__posti a:focus-visible .posto__nome,
+	.sala__posti li.is-acceso .posto__nome {
+		max-width: 6em;
+		padding: 0 12px 0 10px;
+	}
+
+	.sedie__lista {
+		list-style: none;
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 18px;
+	}
+	.sedia {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		gap: 18px;
+		padding: 24px 24px 22px;
+		background: var(--bg);
+		border-radius: 14px;
+		border: 1.5px solid color-mix(in srgb, var(--testo-c) 16%, transparent);
+		transition:
+			transform 0.3s ease,
+			border-color 0.3s ease;
+	}
+	.sedia:hover,
+	.sedia:focus-within,
+	.sedia.is-acceso {
+		transform: translateY(-4px);
+		border-color: var(--ottone);
+	}
+	.sedia__num {
+		font-family: var(--titoli);
+		font-weight: 900;
+		font-size: clamp(3.4rem, 6vw, 4.4rem);
+		line-height: 0.85;
+		color: var(--verde);
+	}
+	:global(:root[data-tema='scuro']) .sedia__num {
+		color: var(--ottone-chiaro);
+	}
+	h3 {
+		font-size: clamp(1.35rem, 2.4vw, 1.6rem);
+		font-weight: 800;
+	}
+	h3 em {
+		display: block;
+		font-weight: 400;
+		font-style: italic;
+		color: var(--testo-2);
+		font-size: 0.85em;
+	}
+	.sedia__corpo > p:first-of-type {
+		margin-top: 8px;
+		color: var(--testo-2);
+		font-size: 0.98rem;
+	}
+	.sedia__libera {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		margin-top: 14px;
+		font-size: 0.9rem;
+		font-weight: 600;
+	}
+	.sedia__punto {
+		flex: none;
+		width: 9px;
+		height: 9px;
+		border-radius: 50%;
+		background: #2f9e5b;
+	}
+	.sedia__scelta {
+		display: inline-block;
+		margin-top: 14px;
+		font-weight: 700;
+		text-decoration: none;
+		padding-bottom: 2px;
+		border-bottom: 2px solid var(--ottone);
+	}
+	.sedia__scelta:hover {
+		color: var(--verde);
+	}
+	:global(:root[data-tema='scuro']) .sedia__scelta:hover {
+		color: var(--ottone-chiaro);
+	}
+
+	@media (max-width: 920px) {
+		.sedie__lista {
+			grid-template-columns: 1fr;
+		}
+		.sala {
+			aspect-ratio: 4 / 3;
+		}
+		.posto__num {
+			width: 28px;
+			height: 28px;
+			font-size: 1rem;
+		}
+	}
+	@media (max-width: 520px) {
+		.sedia {
+			grid-template-columns: 1fr;
+			gap: 6px;
+		}
+		.sedia__num {
+			font-size: 3rem;
+		}
+		.sala__posti li:nth-child(1) {
+			--x: 15%;
+		}
+		.sala__posti li:nth-child(3) {
+			--x: 85%;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.sala__posti a,
+		.posto__nome,
+		.sedia {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	import { prossimaLibera, quando } from './turni';
+	// per ogni sedia, il prossimo posto libero
+	document.querySelectorAll<HTMLElement>('[data-sedia]').forEach((el) => {
+		const n = Number(el.dataset.sedia);
+		const t = el.querySelector<HTMLElement>('[data-sedia-libera]');
+		const l = prossimaLibera(new Date(), n);
+		if (t && l) t.textContent = `Libera ${quando(l)}`;
+	});
+	// "Siediti da…" (scheda o segnaposto sulla foto) precompila il turno
+	document.querySelectorAll<HTMLElement>('[data-scegli]').forEach((a) =>
+		a.addEventListener('click', () => {
+			document.dispatchEvent(new CustomEvent('trr:scegli-sedia', { detail: Number(a.dataset.scegli) }));
+		}),
+	);
+	// passando su una scheda si accende il numero sulla poltrona, e viceversa
+	const acceso = (n: string, on: boolean) => {
+		document.querySelector(`[data-posto="${n}"]`)?.classList.toggle('is-acceso', on);
+		document.querySelector(`.sedia[data-sedia="${n}"]`)?.classList.toggle('is-acceso', on);
+	};
+	document.querySelectorAll<HTMLElement>('[data-sedia], [data-posto]').forEach((el) => {
+		const n = el.dataset.sedia ?? el.dataset.posto!;
+		el.addEventListener('mouseenter', () => acceso(n, true));
+		el.addEventListener('mouseleave', () => acceso(n, false));
+		el.addEventListener('focusin', () => acceso(n, true));
+		el.addEventListener('focusout', () => acceso(n, false));
+	});
+</script>
