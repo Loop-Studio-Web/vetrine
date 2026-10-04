@@ -1,0 +1,130 @@
+---
+import { Image } from 'astro:assets';
+import simbolo from '../../assets/ossidiana/brand/simbolo.png';
+// Barra minimale: marchio e poche voci. Su schermi stretti restano solo marchio e "Prenota".
+---
+
+<header class="nav">
+	<a class="nav__brand" href="#ingresso" aria-label="Ossidiana, torna all'inizio">
+		<Image src={simbolo} alt="" width={26} densities={[2, 3]} class="nav__mark" />
+		<span>Ossidiana</span>
+	</a>
+	<nav class="nav__links" aria-label="Sezioni">
+		<a href="#percorso">Il percorso</a>
+		<a href="#chef">Lo chef</a>
+		<a href="#produttori">I produttori</a>
+		<a href="#sala">La sala</a>
+	</nav>
+	<a class="nav__cta" href="#prenota">Prenota</a>
+</header>
+
+<style>
+	.nav {
+		position: fixed;
+		inset: 0 0 auto 0;
+		z-index: 50;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 24px;
+		padding: 22px var(--gutter);
+		background: linear-gradient(to bottom, rgba(11, 11, 12, 0.85), rgba(11, 11, 12, 0));
+		pointer-events: none;
+		transition: padding 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+	}
+	/* Dopo l'ingresso la barra prende corpo: velo scuro con sfocatura e un filo di luce */
+	.nav::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background: rgba(11, 11, 12, 0.72);
+		-webkit-backdrop-filter: blur(14px) saturate(1.15);
+		backdrop-filter: blur(14px) saturate(1.15);
+		border-bottom: 1px solid rgba(239, 233, 221, 0.08);
+		opacity: 0;
+		transition: opacity 0.5s ease;
+	}
+	.nav.is-scrolled {
+		padding-block: 13px;
+		background: none;
+	}
+	.nav.is-scrolled::before {
+		opacity: 1;
+	}
+	.nav > * {
+		pointer-events: auto;
+	}
+	.nav__brand {
+		display: inline-flex;
+		align-items: center;
+		gap: 14px;
+		font-family: var(--serif);
+		font-size: 0.95rem;
+		letter-spacing: 0.34em;
+		text-transform: uppercase;
+		text-decoration: none;
+		padding: 8px 0;
+	}
+	.nav__mark {
+		height: 28px;
+		width: auto;
+	}
+	.nav__links {
+		display: none;
+		gap: 34px;
+	}
+	.nav__links a {
+		font-size: 0.78rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		text-decoration: none;
+		color: var(--ivory-dim);
+		padding: 10px 0;
+		transition: color 0.3s;
+	}
+	.nav__links a:hover {
+		color: var(--ivory);
+	}
+	.nav__cta {
+		font-size: 0.78rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		text-decoration: none;
+		padding: 11px 22px;
+		border: 1px solid var(--ivory-faint);
+		background: rgba(11, 11, 12, 0.5);
+		transition: background 0.3s, border-color 0.3s;
+	}
+	.nav__cta:hover {
+		background: var(--wine);
+		border-color: var(--wine);
+	}
+	@media (min-width: 900px) {
+		.nav__links {
+			display: flex;
+		}
+	}
+</style>
+
+<script>
+	const nav = document.querySelector<HTMLElement>('.nav');
+	if (nav) {
+		let ticking = false;
+		const update = () => {
+			nav.classList.toggle('is-scrolled', window.scrollY > 24);
+			ticking = false;
+		};
+		window.addEventListener(
+			'scroll',
+			() => {
+				if (!ticking) {
+					ticking = true;
+					requestAnimationFrame(update);
+				}
+			},
+			{ passive: true },
+		);
+		update();
+	}
+</script>

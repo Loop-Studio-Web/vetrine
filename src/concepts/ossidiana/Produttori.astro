@@ -1,0 +1,518 @@
+---
+import { Image } from 'astro:assets';
+import asparagi from '../../assets/ossidiana/produttori/asparagi.jpg';
+import aglio from '../../assets/ossidiana/produttori/aglio.jpg';
+import zucche from '../../assets/ossidiana/produttori/zucche.jpg';
+import cavolo from '../../assets/ossidiana/produttori/cavolo.jpg';
+import colline from '../../assets/ossidiana/produttori/colline.jpg';
+
+// Produttori e luoghi di fantasia (concept dimostrativo).
+const stagioni = [
+	{
+		id: 'primavera',
+		nome: 'Primavera',
+		prodotto: 'Asparagi verdi',
+		produttore: 'Orto di Colle Verde',
+		luogo: 'Colline del Tanaro',
+		km: 38,
+		testo: 'Raccolti all’alba e in cucina entro mezzogiorno. Arrivano sul piatto del pesce, con il limone e il risotto.',
+		img: asparagi,
+		alt: 'Un mazzo di asparagi verdi su fondo nero',
+		pos: '50% 50%',
+		x: 62,
+		y: 28,
+	},
+	{
+		id: 'estate',
+		nome: 'Estate',
+		prodotto: 'Aglio rosa',
+		produttore: 'Azienda Pietrasanta',
+		luogo: 'Piana di Sotto',
+		km: 14,
+		testo: 'Lasciato asciugare al sole in treccia. Lo usiamo poco e tardi: un profumo, mai un sapore da coprire.',
+		img: aglio,
+		alt: 'Spicchi e bulbi d’aglio su una superficie scura di ardesia',
+		pos: '50% 55%',
+		x: 30,
+		y: 62,
+	},
+	{
+		id: 'autunno',
+		nome: 'Autunno',
+		prodotto: 'Zucche antiche',
+		produttore: 'Cascina Zucca d’Oro',
+		luogo: 'Valle Alta',
+		km: 52,
+		testo: 'Varietà che nessuno semina più. Cotte lente, con la buccia, fino a diventare quasi un dolce.',
+		img: zucche,
+		alt: 'Zucche di varietà diverse su fondo nero',
+		pos: '50% 60%',
+		x: 74,
+		y: 70,
+	},
+	{
+		id: 'inverno',
+		nome: 'Inverno',
+		prodotto: 'Cavolo viola',
+		produttore: 'Orti del Lago',
+		luogo: 'Riva Fredda',
+		km: 27,
+		testo: 'Il gelo lo addolcisce. Lo serviamo crudo, sottile, accanto alla carne, per tenere il piatto vivo.',
+		img: cavolo,
+		alt: 'Una foglia di cavolo viola su una parete scura',
+		pos: '50% 55%',
+		x: 22,
+		y: 26,
+	},
+];
+---
+
+<section class="atlante" id="produttori" aria-labelledby="atlante-titolo">
+	<div class="atlante__hero">
+		<Image
+			src={colline}
+			alt=""
+			widths={[900, 1400, 2000]}
+			sizes="100vw"
+			loading="lazy"
+			class="atlante__hero-img"
+		/>
+		<div class="atlante__hero-text" data-reveal>
+			<p class="atlante__kicker">Atlante</p>
+			<h2 id="atlante-titolo" class="atlante__title">Chi coltiva ciò che mangi</h2>
+			<p class="atlante__lead">
+				Quattro produttori, quattro stagioni. Il menù si scrive a partire da loro, non il contrario.
+			</p>
+		</div>
+	</div>
+
+	<div class="atlante__body">
+		<div class="atlante__map" data-reveal>
+			<svg viewBox="0 0 100 100" role="group" aria-label="Mappa illustrata: scegli un produttore" preserveAspectRatio="xMidYMid slice">
+				<g fill="none" stroke="rgba(239,233,221,0.14)" stroke-width="0.3">
+					<path d="M-5 78 C 12 62, 24 72, 40 60 S 70 48, 105 58"></path>
+					<path d="M-5 68 C 14 52, 26 62, 42 50 S 72 38, 105 48"></path>
+					<path d="M-5 58 C 16 42, 28 52, 44 40 S 74 28, 105 38"></path>
+					<path d="M-5 48 C 18 32, 30 42, 46 30 S 76 18, 105 28"></path>
+					<path d="M-5 88 C 10 72, 22 82, 38 70 S 68 58, 105 68"></path>
+					<path d="M-5 98 C 8 82, 20 92, 36 80 S 66 68, 105 78"></path>
+					<path d="M-5 38 C 20 22, 32 32, 48 20 S 78 8, 105 18"></path>
+				</g>
+				<path d="M44 108 C 46 84, 54 70, 52 52 S 46 30, 56 -8" fill="none" stroke="rgba(239,233,221,0.28)" stroke-width="0.5" stroke-dasharray="1.4 1.4"></path>
+				<g class="atlante__ristorante">
+					<circle cx="50" cy="50" r="1.8" fill="#efe9dd"></circle>
+					<circle cx="50" cy="50" r="3.6" fill="none" stroke="#efe9dd" stroke-width="0.3"></circle>
+				</g>
+				<g class="atlante__links" aria-hidden="true">
+					{
+						stagioni.map((s) => (
+							<line x1={s.x} y1={s.y} x2="50" y2="50" stroke="rgba(239,233,221,0.18)" stroke-width="0.25" stroke-dasharray="0.8 0.8"></line>
+						))
+					}
+				</g>
+				<g data-pins>
+					{
+						stagioni.map((s, i) => (
+							<g
+								class="atlante__pin"
+								data-pin={s.id}
+								role="button"
+								tabindex="0"
+								aria-pressed="false"
+								aria-label={`${s.nome}: ${s.prodotto}, ${s.produttore}`}
+								transform={`translate(${s.x} ${s.y})`}
+							>
+								<circle r="7.5" class="atlante__pin-hit"></circle>
+								<circle r="4" class="atlante__pin-ring"></circle>
+								<circle r="2.2" class="atlante__pin-dot"></circle>
+								<text y="1" text-anchor="middle" class="atlante__pin-num">{i + 1}</text>
+								<text y="8.4" text-anchor="middle" class="atlante__pin-name">{s.nome}</text>
+							</g>
+						))
+					}
+				</g>
+			</svg>
+			<p class="atlante__map-note">Mappa illustrata, luoghi di fantasia. Il punto al centro è Ossidiana. Tocca un numero per cambiare stagione.</p>
+		</div>
+
+		<div class="atlante__stage">
+			<div class="atlante__tabs" role="tablist" aria-label="Stagione">
+				{
+					stagioni.map((s, i) => (
+						<button
+							type="button"
+							role="tab"
+							class="atlante__tab"
+							id={`tab-${s.id}`}
+							aria-controls={`panel-${s.id}`}
+							aria-selected={i === 0 ? 'true' : 'false'}
+							tabindex={i === 0 ? 0 : -1}
+							data-tab={s.id}
+						>
+							<span class="atlante__tab-n">{i + 1}</span>
+							{s.nome}
+						</button>
+					))
+				}
+			</div>
+
+			<div class="atlante__panels">
+				{
+					stagioni.map((s, i) => (
+						<div
+							class="atlante__panel"
+							role="tabpanel"
+							id={`panel-${s.id}`}
+							aria-labelledby={`tab-${s.id}`}
+							hidden={i !== 0}
+							data-panel={s.id}
+						>
+							<div class="atlante__photo">
+								<Image
+									src={s.img}
+									alt={s.alt}
+									widths={[500, 800, 1100]}
+									sizes="(min-width: 900px) 24vw, 80vw"
+									loading="lazy"
+									class="atlante__photo-img"
+									style={`object-position: ${s.pos};`}
+								/>
+							</div>
+							<div class="atlante__info">
+								<h3 class="atlante__prodotto">{s.prodotto}</h3>
+								<p class="atlante__testo">{s.testo}</p>
+								<dl class="atlante__dati">
+									<div>
+										<dt>Produttore</dt>
+										<dd>{s.produttore}</dd>
+									</div>
+									<div>
+										<dt>Luogo</dt>
+										<dd>{s.luogo}</dd>
+									</div>
+									<div>
+										<dt>Distanza</dt>
+										<dd>{s.km} km</dd>
+									</div>
+								</dl>
+							</div>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.atlante {
+		background: var(--ink);
+	}
+	.atlante__hero {
+		position: relative;
+		min-height: 62svh;
+		display: flex;
+		align-items: flex-end;
+		padding: 120px var(--gutter) 64px;
+		overflow: hidden;
+		isolation: isolate;
+	}
+	.atlante__hero-img {
+		position: absolute;
+		inset: 0;
+		z-index: -2;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		filter: saturate(0.7) brightness(0.8);
+	}
+	.atlante__hero::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background:
+			linear-gradient(to top, var(--ink) 4%, rgba(11, 11, 12, 0.35) 60%, rgba(11, 11, 12, 0.7)),
+			linear-gradient(to right, rgba(11, 11, 12, 0.7), transparent 70%);
+	}
+	.atlante__kicker {
+		font-family: var(--sans);
+		font-size: 0.78rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--wine-text);
+		margin-bottom: 16px;
+	}
+	.atlante__title {
+		font-family: var(--serif);
+		font-weight: 400;
+		font-size: clamp(2.2rem, 6vw, 4.8rem);
+		line-height: 1.05;
+		letter-spacing: -0.01em;
+		max-width: 16ch;
+	}
+	.atlante__lead {
+		margin-top: 20px;
+		max-width: 40ch;
+		font-size: 1.15rem;
+		color: var(--ivory-dim);
+	}
+
+	.atlante__body {
+		display: grid;
+		gap: 40px;
+		padding: 56px var(--gutter) clamp(80px, 12vw, 150px);
+	}
+	.atlante__map {
+		position: relative;
+	}
+	.atlante__map svg {
+		display: block;
+		width: 100%;
+		aspect-ratio: 1 / 1;
+		max-height: 520px;
+		background: var(--ink-2);
+		border: 1px solid var(--ivory-faint);
+	}
+	.atlante__map-note {
+		margin-top: 12px;
+		font-family: var(--sans);
+		font-size: 0.68rem;
+		letter-spacing: 0.06em;
+		color: var(--ivory-dim);
+	}
+	.atlante__pin {
+		cursor: pointer;
+		outline: none;
+	}
+	.atlante__pin-hit {
+		fill: transparent;
+	}
+	.atlante__pin-name {
+		font-family: var(--sans);
+		font-size: 2.6px;
+		letter-spacing: 0.3px;
+		text-transform: uppercase;
+		fill: var(--ivory-dim);
+		transition: fill 0.4s;
+	}
+	.atlante__pin:hover .atlante__pin-ring {
+		stroke: var(--ivory);
+		fill: var(--ink-3);
+	}
+	.atlante__pin:hover .atlante__pin-name,
+	.atlante__pin.is-on .atlante__pin-name {
+		fill: var(--ivory);
+	}
+	.atlante__pin:focus-visible .atlante__pin-ring {
+		stroke: var(--wine-text);
+		stroke-width: 0.9;
+	}
+	.atlante__pin-ring {
+		fill: rgba(11, 11, 12, 0.9);
+		stroke: var(--ivory-dim);
+		stroke-width: 0.35;
+		transition: stroke 0.4s, fill 0.4s;
+	}
+	.atlante__pin-dot {
+		fill: transparent;
+	}
+	.atlante__pin-num {
+		font-family: var(--sans);
+		font-size: 3px;
+		fill: var(--ivory-dim);
+		transition: fill 0.4s;
+	}
+	.atlante__pin.is-on .atlante__pin-ring {
+		fill: var(--wine);
+		stroke: var(--wine-text);
+	}
+	.atlante__pin.is-on .atlante__pin-num {
+		fill: var(--ivory);
+	}
+
+	.atlante__tabs {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		border-bottom: 1px solid var(--ivory-faint);
+		margin-bottom: 28px;
+	}
+	.atlante__tab {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		padding: 14px 4px;
+		border: 0;
+		border-bottom: 2px solid transparent;
+		margin-bottom: -1px;
+		background: none;
+		color: var(--ivory-dim);
+		font-family: var(--sans);
+		font-size: 0.7rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		cursor: pointer;
+		transition: color 0.3s, border-color 0.3s;
+	}
+	.atlante__tab:hover {
+		color: var(--ivory);
+	}
+	.atlante__tab[aria-selected='true'] {
+		color: var(--ivory);
+		border-bottom-color: var(--wine-text);
+	}
+	.atlante__tab-n {
+		display: none;
+		color: var(--wine-text);
+	}
+
+	.atlante__panel {
+		display: grid;
+		gap: 28px;
+		animation: entra 0.8s both;
+	}
+	.atlante__panel[hidden] {
+		display: none;
+	}
+	.atlante__photo {
+		aspect-ratio: 4 / 3;
+		overflow: hidden;
+	}
+	.atlante__photo-img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transform: scale(1.02);
+	}
+	.atlante__prodotto {
+		font-family: var(--serif);
+		font-weight: 400;
+		font-size: clamp(1.8rem, 3.4vw, 2.8rem);
+		line-height: 1.1;
+	}
+	.atlante__testo {
+		margin-top: 14px;
+		max-width: 44ch;
+		color: var(--ivory-dim);
+	}
+	.atlante__dati {
+		display: grid;
+		grid-template-columns: repeat(3, auto);
+		justify-content: start;
+		gap: 12px 32px;
+		margin: 24px 0 0;
+		padding-top: 18px;
+		border-top: 1px solid var(--ivory-faint);
+		font-family: var(--sans);
+		font-size: 0.7rem;
+		line-height: 1.45;
+	}
+	.atlante__dati dt {
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--ivory-dim);
+		margin-bottom: 2px;
+	}
+	.atlante__dati dd {
+		margin: 0;
+		font-family: var(--hand);
+		font-size: 1.2rem;
+		line-height: 1.25;
+	}
+	@keyframes entra {
+		from {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+	}
+	.atlante__stage.is-inview .atlante__photo-img {
+		animation: avvicina 32s cubic-bezier(0.35, 0.35, 0.5, 1) forwards;
+	}
+	@keyframes avvicina {
+		to {
+			transform: scale(1.2);
+		}
+	}
+	@media (min-width: 900px) {
+		.atlante__body {
+			grid-template-columns: minmax(300px, 5fr) 7fr;
+			gap: clamp(40px, 6vw, 100px);
+			align-items: start;
+		}
+		.atlante__tab-n {
+			display: inline;
+		}
+		.atlante__tab {
+			font-size: 0.76rem;
+		}
+		.atlante__panel {
+			grid-template-columns: 5fr 6fr;
+			align-items: center;
+		}
+		.atlante__photo {
+			aspect-ratio: 3 / 4;
+		}
+	}
+	@media (max-width: 480px) {
+		.atlante__dati {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.atlante__stage.is-inview .atlante__photo-img,
+		.atlante__panel {
+			animation: none;
+		}
+	}
+</style>
+
+<script>
+	const tabs = [...document.querySelectorAll<HTMLButtonElement>('[data-tab]')];
+	const panels = [...document.querySelectorAll<HTMLElement>('[data-panel]')];
+	const pins = [...document.querySelectorAll<SVGGElement>('[data-pin]')];
+
+	const show = (id: string, focus = false) => {
+		tabs.forEach((t) => {
+			const on = t.dataset.tab === id;
+			t.setAttribute('aria-selected', String(on));
+			t.tabIndex = on ? 0 : -1;
+			if (on && focus) t.focus();
+		});
+		panels.forEach((p) => (p.hidden = p.dataset.panel !== id));
+		pins.forEach((p) => {
+			const on = p.dataset.pin === id;
+			p.classList.toggle('is-on', on);
+			p.setAttribute('aria-pressed', String(on));
+		});
+	};
+
+	tabs.forEach((t, i) => {
+		t.addEventListener('click', () => show(t.dataset.tab!));
+		t.addEventListener('keydown', (e) => {
+			let n = -1;
+			if (e.key === 'ArrowRight') n = (i + 1) % tabs.length;
+			else if (e.key === 'ArrowLeft') n = (i - 1 + tabs.length) % tabs.length;
+			else if (e.key === 'Home') n = 0;
+			else if (e.key === 'End') n = tabs.length - 1;
+			if (n >= 0) {
+				e.preventDefault();
+				show(tabs[n].dataset.tab!, true);
+			}
+		});
+	});
+	pins.forEach((p) => {
+		p.addEventListener('click', () => show(p.dataset.pin!));
+		p.addEventListener('keydown', (e) => {
+			if (e.key === 'Enter' || e.key === ' ') {
+				e.preventDefault();
+				show(p.dataset.pin!);
+			}
+		});
+	});
+	const stage = document.querySelector<HTMLElement>('.atlante__stage');
+	if (stage) {
+		new IntersectionObserver(([e]) => stage.classList.toggle('is-inview', e.isIntersecting), { threshold: 0.35 }).observe(stage);
+	}
+	show('primavera');
+</script>

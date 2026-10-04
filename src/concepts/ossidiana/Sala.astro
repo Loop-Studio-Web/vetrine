@@ -1,0 +1,200 @@
+---
+import { Image } from 'astro:assets';
+import salaRossa from '../../assets/ossidiana/sala/sala-rossa.jpg';
+import tavoloRosso from '../../assets/ossidiana/sala/tavolo-rosso.jpg';
+import terrazza from '../../assets/ossidiana/sala/terrazza.jpg';
+import bar from '../../assets/ossidiana/sala/bar.jpg';
+import corridoio from '../../assets/ossidiana/cantina/corridoio.jpg';
+import vetrina from '../../assets/ossidiana/cantina/vetrina.jpg';
+import botti from '../../assets/ossidiana/cantina/botti.jpg';
+import volta from '../../assets/ossidiana/cantina/volta.jpg';
+
+const sala = [
+	{ src: salaRossa, alt: 'La sala con le sedute rosse e una lampada a parete accesa', cls: 'a', pos: '50% 50%' },
+	{ src: tavoloRosso, alt: 'Un tavolo apparecchiato accanto a una poltrona rossa', cls: 'b', pos: '50% 60%' },
+	{ src: bar, alt: 'Il bancone del bar nella luce calda della sera', cls: 'c', pos: '50% 50%' },
+	{ src: terrazza, alt: 'Tavoli nel dehors, con lumi bassi tra le piante', cls: 'd', pos: '50% 40%' },
+];
+const cantina = [
+	{ src: corridoio, alt: 'Un lungo corridoio di bottiglie illuminato da una luce arancione', cls: 'a', pos: '50% 50%' },
+	{ src: vetrina, alt: 'Una parete di vetro con centinaia di bottiglie illuminate', cls: 'b', pos: '50% 40%' },
+	{ src: botti, alt: 'Una galleria in pietra con file di botti', cls: 'c', pos: '50% 50%' },
+	{ src: volta, alt: 'Una volta in mattoni con botti di rovere ai lati', cls: 'd', pos: '50% 50%' },
+];
+---
+
+<section class="sala" id="sala" aria-labelledby="sala-titolo">
+	<div class="sala__intro" data-reveal>
+		<p class="sala__kicker">La sala</p>
+		<h2 id="sala-titolo" class="sala__title">Quattordici tavoli, nessuna fretta</h2>
+		<p class="sala__lead">
+			Luce bassa, tavoli distanti, un servizio che si fa notare solo quando serve. Si cena in due ore e mezza,
+			senza secondi turni.
+		</p>
+	</div>
+	<ul class="sala__grid" role="list">
+		{
+			sala.map((f) => (
+				<li class={`sala__item sala__item--${f.cls}`} data-reveal>
+					<Image
+						src={f.src}
+						alt={f.alt}
+						widths={[500, 800, 1200]}
+						sizes="(min-width: 900px) 40vw, 100vw"
+						loading="lazy"
+						class="sala__img"
+						style={`object-position: ${f.pos};`}
+					/>
+				</li>
+			))
+		}
+	</ul>
+
+	<div class="sala__intro sala__intro--cantina" data-reveal>
+		<p class="sala__kicker">La cantina</p>
+		<h2 class="sala__title">Seicento etichette, una sola regola</h2>
+		<p class="sala__lead">
+			Piccoli produttori, annate ferme, poche bottiglie a testa. Il sommelier consiglia in base al piatto e
+			non al prezzo. <span class="sala__note">(Numeri e cantina di esempio.)</span>
+		</p>
+	</div>
+	<ul class="sala__grid sala__grid--cantina" role="list">
+		{
+			cantina.map((f) => (
+				<li class={`sala__item sala__item--${f.cls}`} data-reveal>
+					<Image
+						src={f.src}
+						alt={f.alt}
+						widths={[500, 800, 1200]}
+						sizes="(min-width: 900px) 40vw, 100vw"
+						loading="lazy"
+						class="sala__img"
+						style={`object-position: ${f.pos};`}
+					/>
+				</li>
+			))
+		}
+	</ul>
+</section>
+
+<style>
+	.sala {
+		padding: clamp(70px, 10vw, 140px) var(--gutter);
+		background: var(--ink-2);
+	}
+	.sala__intro {
+		max-width: 720px;
+	}
+	.sala__intro--cantina {
+		margin-top: clamp(80px, 11vw, 160px);
+	}
+	.sala__kicker {
+		font-family: var(--sans);
+		font-size: 0.78rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--wine-text);
+		margin-bottom: 16px;
+	}
+	.sala__title {
+		font-family: var(--serif);
+		font-weight: 400;
+		font-size: clamp(2rem, 5vw, 3.8rem);
+		line-height: 1.08;
+		letter-spacing: -0.01em;
+	}
+	.sala__lead {
+		margin-top: 20px;
+		max-width: 46ch;
+		color: var(--ivory-dim);
+	}
+	.sala__note {
+		font-family: var(--sans);
+		font-size: 0.72rem;
+	}
+
+	.sala__grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		grid-auto-rows: clamp(150px, 38vw, 260px);
+		gap: 10px;
+		margin: 40px 0 0;
+		padding: 0;
+		list-style: none;
+	}
+	.sala__item {
+		position: relative;
+		overflow: hidden;
+		background: var(--ink-3);
+	}
+	.sala__img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transform: scale(1.14);
+		transition: transform 2.2s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.8s;
+		filter: brightness(0.9);
+	}
+	.sala__item.is-visible .sala__img {
+		transform: scale(1);
+	}
+	.sala__item.is-visible:hover .sala__img {
+		transform: scale(1.1);
+		transition-duration: 4s;
+		filter: brightness(1.08);
+	}
+	/* Mosaico: sul telefono due colonne, il primo scatto a tutta larghezza */
+	.sala__item--a {
+		grid-column: 1 / -1;
+	}
+	.sala__item--b,
+	.sala__item--d {
+		grid-row: span 2;
+	}
+	@media (min-width: 900px) {
+		.sala__grid {
+			grid-template-columns: repeat(12, 1fr);
+			grid-auto-rows: clamp(120px, 15vw, 220px);
+			gap: 14px;
+		}
+		.sala__item--a {
+			grid-column: 1 / span 6;
+			grid-row: 1 / span 3;
+		}
+		.sala__item--b {
+			grid-column: 7 / span 3;
+			grid-row: 1 / span 2;
+		}
+		.sala__item--d {
+			grid-column: 10 / span 3;
+			grid-row: 1 / span 2;
+		}
+		.sala__item--c {
+			grid-column: 7 / span 6;
+			grid-row: 3;
+		}
+		.sala__grid--cantina .sala__item--a {
+			grid-column: 1 / span 8;
+			grid-row: 1 / span 2;
+		}
+		.sala__grid--cantina .sala__item--b {
+			grid-column: 9 / span 4;
+			grid-row: 1 / span 4;
+		}
+		.sala__grid--cantina .sala__item--c {
+			grid-column: 1 / span 4;
+			grid-row: 3 / span 2;
+		}
+		.sala__grid--cantina .sala__item--d {
+			grid-column: 5 / span 4;
+			grid-row: 3 / span 2;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.sala__img,
+		.sala__item.is-visible .sala__img {
+			transform: none;
+			transition: none;
+		}
+	}
+</style>

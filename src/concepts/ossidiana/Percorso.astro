@@ -1,0 +1,606 @@
+---
+import { Image } from 'astro:assets';
+import antipasto from '../../assets/ossidiana/piatti/antipasto.jpg';
+import primo from '../../assets/ossidiana/piatti/primo.jpg';
+import pesce from '../../assets/ossidiana/piatti/pesce.jpg';
+import carne from '../../assets/ossidiana/piatti/carne.jpg';
+import dolce from '../../assets/ossidiana/piatti/dolce.jpg';
+
+// Portate di fantasia: nomi, produttori e luoghi inventati (concept dimostrativo).
+const atti = [
+	{
+		num: 'I',
+		nome: 'Antipasto',
+		piatto: 'Crudo di mare, zafferano e fiori',
+		desc: 'Un taglio sottile di pescato del mattino, crema calda di zafferano, erbe e petali raccolti la sera prima.',
+		ingrediente: 'Zafferano',
+		luogo: 'Azienda Colle Alto, Abruzzo',
+		stagione: 'Primavera',
+		vino: 'Franciacorta Satèn, esempio',
+		img: antipasto,
+		alt: 'Piatto fondo in penombra con crudo di mare, crema allo zafferano ed erbe, accanto a un calice di vino bianco',
+		pos: '55% 90%',
+	},
+	{
+		num: 'II',
+		nome: 'Primo',
+		piatto: 'Spaghettone al burro di nocciola',
+		desc: 'Pasta trafilata al bronzo, mantecata con burro nocciola, scorza di limone e polvere di capperi.',
+		ingrediente: 'Grano duro',
+		luogo: 'Pastificio dei Monti Lattari, Campania',
+		stagione: 'Tutto l’anno',
+		vino: 'Fiano di Avellino, esempio',
+		img: primo,
+		alt: 'Spaghettone in una ciotola nera su fondo scuro, illuminato da una luce laterale',
+		pos: '50% 30%',
+	},
+	{
+		num: 'III',
+		nome: 'Pesce',
+		piatto: 'Ombrina scottata, limone e asparagi',
+		desc: 'Il pescato del giorno, cotto sulla sola pelle, con risotto al limone, asparagi e germogli.',
+		ingrediente: 'Ombrina',
+		luogo: 'Cooperativa Mare di Levante, Liguria',
+		stagione: 'Primavera-estate',
+		vino: 'Vermentino di Gallura, esempio',
+		img: pesce,
+		alt: 'Filetto di pesce scottato su risotto e asparagi, in un piatto blu con un limone grigliato',
+		pos: '66% 50%',
+	},
+	{
+		num: 'IV',
+		nome: 'Carne',
+		piatto: 'Petto d’anatra laccato, patata fondente',
+		desc: 'Maturato otto giorni, cotto sul grasso e servito con la sua riduzione al vino rosso.',
+		ingrediente: 'Anatra',
+		luogo: 'Allevamento Valle del Tanaro, Piemonte',
+		stagione: 'Autunno-inverno',
+		vino: 'Nebbiolo Langhe, esempio',
+		img: carne,
+		alt: 'Uno chef versa una riduzione con un cucchiaio su un petto d’anatra e una patata, su fondo nero',
+		pos: '50% 62%',
+	},
+	{
+		num: 'V',
+		nome: 'Dolce',
+		piatto: 'Millefoglie al cioccolato e lamponi',
+		desc: 'Sfoglie sottilissime di cioccolato fondente, crema leggera e lamponi freschi appena spezzati.',
+		ingrediente: 'Lamponi',
+		luogo: 'Cascina Aurora, Trentino',
+		stagione: 'Estate',
+		vino: 'Moscato d’Asti, esempio',
+		img: dolce,
+		alt: 'Millefoglie di cioccolato con crema e lamponi su un piatto scuro, con briciole di cacao sul tavolo',
+		pos: '50% 55%',
+	},
+];
+---
+
+<section class="percorso" id="percorso" aria-labelledby="percorso-titolo">
+	<h2 id="percorso-titolo" class="sr-only">Il percorso: cinque portate</h2>
+
+	<div
+		class="percorso__track"
+		data-track
+		tabindex="0"
+		role="region"
+		aria-roledescription="carosello"
+		aria-label="Menù degustazione: scorri tra le cinque portate"
+	>
+		{
+			atti.map((a, i) => (
+				<div
+					class="atto"
+					data-atto
+					data-num={a.num}
+					data-nome={a.nome}
+					role="group"
+					aria-roledescription="portata"
+					aria-label={`${i + 1} di ${atti.length}: ${a.nome}`}
+				>
+					<div class="atto__frame">
+						<div class="atto__parallax">
+							<Image
+								src={a.img}
+								alt={a.alt}
+								widths={[700, 1100, 1600]}
+								sizes="(min-width: 900px) 52vw, 100vw"
+								loading={i === 0 ? 'eager' : 'lazy'}
+								class="atto__img"
+								style={`object-position: ${a.pos}; transform-origin: ${a.pos};`}
+							/>
+						</div>
+					</div>
+					<div class="atto__text">
+						<p class="atto__kicker">
+							<span>{a.num}</span> {a.nome}
+						</p>
+						<h3 class="atto__title">{a.piatto}</h3>
+						<p class="atto__desc">{a.desc}</p>
+						<dl class="atto__prov">
+							<div>
+								<dt>Ingrediente</dt>
+								<dd>{a.ingrediente}</dd>
+							</div>
+							<div>
+								<dt>Provenienza</dt>
+								<dd>{a.luogo}</dd>
+							</div>
+							<div>
+								<dt>Stagione</dt>
+								<dd>{a.stagione}</dd>
+							</div>
+							<div>
+								<dt>In abbinamento</dt>
+								<dd>{a.vino}</dd>
+							</div>
+						</dl>
+					</div>
+				</div>
+			))
+		}
+	</div>
+
+	<button type="button" class="percorso__peek" data-peek tabindex="-1" aria-hidden="true">
+		<span class="percorso__peek-n" data-peek-n></span>
+		<span class="percorso__peek-t" data-peek-t></span>
+		<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"
+			><path d="M4 12h16m0 0-6-6m6 6-6 6"></path></svg
+		>
+	</button>
+	<p class="percorso__hint" data-hint aria-hidden="true">
+		<span>Scorri per le altre portate</span>
+		<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"
+			><path d="M4 12h16m0 0-6-6m6 6-6 6"></path></svg
+		>
+	</p>
+
+	<div class="percorso__nav">
+		<button type="button" class="percorso__arrow" data-prev aria-label="Portata precedente">
+			<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"
+				><path d="M20 12H4m0 0 6-6m-6 6 6 6"></path></svg
+			>
+		</button>
+		<ol class="percorso__ticks">
+			{
+				atti.map((a, i) => (
+					<li>
+						<button type="button" class="percorso__tick" data-go={i} aria-label={`Vai a ${a.nome}`}>
+							<span class="percorso__tick-bar" aria-hidden="true" />
+							<span class="percorso__tick-label">{a.nome}</span>
+						</button>
+					</li>
+				))
+			}
+		</ol>
+		<button type="button" class="percorso__arrow" data-next aria-label="Portata successiva">
+			<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"
+				><path d="M4 12h16m0 0-6-6m6 6-6 6"></path></svg
+			>
+		</button>
+	</div>
+</section>
+
+<style>
+	.percorso {
+		position: relative;
+		height: 100svh;
+		min-height: 640px;
+		background: var(--ink);
+		display: flex;
+		flex-direction: column;
+		overflow: clip;
+	}
+	.percorso__track {
+		flex: 1;
+		display: flex;
+		overflow-x: auto;
+		overflow-y: hidden;
+		scroll-snap-type: x mandatory;
+		scrollbar-width: none;
+		overscroll-behavior-x: contain;
+	}
+	.percorso__track::-webkit-scrollbar {
+		display: none;
+	}
+	.atto {
+		flex: 0 0 100%;
+		scroll-snap-align: start;
+		scroll-snap-stop: always;
+		position: relative;
+		display: grid;
+		grid-template-columns: 1fr;
+		min-width: 0;
+	}
+
+	/* La foto: un riquadro illuminato nel buio */
+	.atto__frame {
+		position: absolute;
+		inset: 0 0 auto 0;
+		height: 50%;
+		overflow: hidden;
+	}
+	.atto__parallax {
+		position: absolute;
+		inset: -4%;
+		transform: translate3d(calc(var(--px, 0) * -10px), calc(var(--py, 0) * -10px), 0);
+		transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+	}
+	.atto__img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transform: scale(1.02);
+	}
+	/* Zoom lentissimo: parte quando la portata entra in scena */
+	.percorso.is-inview .atto.is-active .atto__img {
+		animation: avvicina 36s cubic-bezier(0.35, 0.35, 0.5, 1) forwards;
+	}
+	@keyframes avvicina {
+		to {
+			transform: scale(1.22);
+		}
+	}
+	.atto__frame::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background:
+			linear-gradient(to top, var(--ink) 0%, rgba(11, 11, 12, 0) 38%),
+			linear-gradient(to bottom, rgba(11, 11, 12, 0.55) 0%, rgba(11, 11, 12, 0) 22%);
+	}
+
+	.atto__text {
+		position: relative;
+		align-self: end;
+		padding: 0 var(--gutter) 20px;
+		max-width: 640px;
+	}
+	.atto__kicker {
+		font-family: var(--sans);
+		font-size: 0.78rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--wine-text);
+		margin-bottom: 14px;
+	}
+	.atto__kicker span {
+		color: var(--ivory);
+		margin-right: 8px;
+	}
+	.atto__title {
+		font-family: var(--serif);
+		font-weight: 400;
+		font-size: clamp(1.9rem, 4.6vw, 3.6rem);
+		line-height: 1.08;
+		letter-spacing: -0.01em;
+	}
+	.atto__desc {
+		margin-top: 16px;
+		max-width: 46ch;
+		color: var(--ivory-dim);
+	}
+	.atto__prov {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 14px 24px;
+		margin: 24px 0 0;
+		padding-top: 20px;
+		border-top: 1px solid var(--ivory-faint);
+		font-family: var(--sans);
+		font-size: 0.7rem;
+		line-height: 1.45;
+	}
+	.atto__prov dt {
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--ivory-dim);
+		margin-bottom: 2px;
+	}
+	.atto__prov dd {
+		margin: 0;
+		color: var(--ivory);
+		font-family: var(--hand);
+		font-size: 1.2rem;
+		line-height: 1.25;
+	}
+
+	/* Suggerimenti: il percorso si scorre in orizzontale */
+	.percorso__hint {
+		position: absolute;
+		z-index: 5;
+		right: var(--gutter);
+		top: calc(50% - 124px);
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		margin: 0;
+		padding: 9px 16px;
+		border: 1px solid var(--ivory-faint);
+		background: rgba(11, 11, 12, 0.6);
+		-webkit-backdrop-filter: blur(6px);
+		backdrop-filter: blur(6px);
+		font-size: 0.7rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		pointer-events: none;
+		transition: opacity 0.6s;
+	}
+	.percorso__hint svg {
+		animation: spinge 2s ease-in-out infinite;
+	}
+	.percorso.is-used .percorso__hint {
+		opacity: 0;
+	}
+	.percorso__peek {
+		display: none;
+	}
+	.percorso:not(.is-used) .percorso__arrow[data-next] {
+		animation: pulsa 2.8s ease-out infinite;
+	}
+	@keyframes spinge {
+		50% {
+			transform: translateX(5px);
+		}
+	}
+	@keyframes pulsa {
+		0% {
+			box-shadow: 0 0 0 0 rgba(210, 86, 107, 0.55);
+		}
+		70%,
+		100% {
+			box-shadow: 0 0 0 14px rgba(210, 86, 107, 0);
+		}
+	}
+
+	/* Navigazione */
+	.percorso__nav {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		padding: 14px var(--gutter) 20px;
+		background: var(--ink);
+	}
+	.percorso__arrow {
+		flex: none;
+		width: 44px;
+		height: 44px;
+		display: grid;
+		place-items: center;
+		border: 1px solid var(--ivory-faint);
+		background: transparent;
+		color: var(--ivory);
+		cursor: pointer;
+		transition: background 0.3s, border-color 0.3s, opacity 0.3s;
+	}
+	.percorso__arrow:hover:not(:disabled) {
+		background: var(--wine);
+		border-color: var(--wine);
+	}
+	.percorso__arrow:disabled {
+		opacity: 0.3;
+		cursor: default;
+	}
+	.percorso__ticks {
+		flex: 1;
+		display: grid;
+		grid-template-columns: repeat(5, 1fr);
+		gap: 8px;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.percorso__tick {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		padding: 10px 0 0;
+		border: 0;
+		background: none;
+		color: var(--ivory-dim);
+		font: inherit;
+		cursor: pointer;
+		text-align: left;
+	}
+	.percorso__tick-bar {
+		position: relative;
+		display: block;
+		height: 2px;
+		background: var(--ivory-faint);
+	}
+	.percorso__tick-bar::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: var(--wine-text);
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 0.6s;
+	}
+	.percorso__tick-label {
+		font-family: var(--sans);
+		font-size: 0.68rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+	.percorso__tick[aria-current='true'] {
+		color: var(--ivory);
+	}
+	.percorso__tick[aria-current='true'] .percorso__tick-bar::after,
+	.percorso__tick.is-passed .percorso__tick-bar::after {
+		transform: scaleX(1);
+	}
+
+	/* Schermi larghi: foto a destra, testo a sinistra */
+	@media (min-width: 900px) {
+		.atto {
+			grid-template-columns: minmax(380px, 5fr) 6fr;
+		}
+		.atto__text {
+			grid-column: 1;
+			grid-row: 1;
+			align-self: center;
+			padding: 110px 40px 24px var(--gutter);
+		}
+		.atto__frame {
+			inset: 0 0 0 44%;
+			height: auto;
+		}
+		.atto__frame::after {
+			background:
+				linear-gradient(to right, var(--ink) 0%, rgba(11, 11, 12, 0.55) 22%, rgba(11, 11, 12, 0) 55%),
+				radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(11, 11, 12, 0.45) 100%);
+		}
+	}
+	@media (min-width: 900px) {
+		.percorso__hint {
+			top: auto;
+			bottom: 112px;
+		}
+		/* Linguetta sul bordo destro: anticipa la portata successiva */
+		.percorso__peek {
+			position: absolute;
+			z-index: 5;
+			right: 0;
+			top: calc(50% - 40px);
+			display: flex;
+			align-items: center;
+			gap: 14px;
+			padding: 16px 22px 16px 26px;
+			border: 1px solid var(--ivory-faint);
+			border-right: 0;
+			background: rgba(11, 11, 12, 0.6);
+			-webkit-backdrop-filter: blur(8px);
+			backdrop-filter: blur(8px);
+			color: var(--ivory);
+			font: inherit;
+			cursor: pointer;
+			transform: translateX(calc(100% - 64px));
+			transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.5s;
+		}
+		.percorso__peek:hover {
+			transform: none;
+		}
+		.percorso__peek-n {
+			font-family: var(--serif);
+			font-size: 1.1rem;
+			color: var(--wine-text);
+		}
+		.percorso__peek-t {
+			font-size: 0.74rem;
+			letter-spacing: 0.18em;
+			text-transform: uppercase;
+		}
+		.percorso.is-last .percorso__peek {
+			opacity: 0;
+			pointer-events: none;
+		}
+	}
+	@media (max-width: 899px) and (max-height: 720px) {
+		.atto__desc {
+			display: none;
+		}
+	}
+	@media (max-width: 480px) {
+		.percorso__tick-label {
+			font-size: 0.6rem;
+			letter-spacing: 0.04em;
+		}
+		.percorso__arrow {
+			width: 40px;
+			height: 40px;
+		}
+		.atto__prov {
+			font-size: 0.7rem;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.percorso.is-inview .atto.is-active .atto__img {
+			animation: none;
+		}
+		.atto__parallax {
+			transform: none;
+		}
+	}
+</style>
+
+<script>
+	const track = document.querySelector<HTMLElement>('[data-track]');
+	if (track) {
+		const atti = [...track.querySelectorAll<HTMLElement>('[data-atto]')];
+		const ticks = [...document.querySelectorAll<HTMLButtonElement>('[data-go]')];
+		const section = track.closest<HTMLElement>('.percorso')!;
+		const peek = section.querySelector<HTMLButtonElement>('[data-peek]')!;
+		// Lo zoom lento parte solo quando la sezione è davvero in vista, e riparte a ogni ritorno
+		new IntersectionObserver(([e]) => section.classList.toggle('is-inview', e.isIntersecting), { threshold: 0.4 }).observe(section);
+		const prev = document.querySelector<HTMLButtonElement>('[data-prev]')!;
+		const next = document.querySelector<HTMLButtonElement>('[data-next]')!;
+		let current = 0;
+
+		const goTo = (i: number) => {
+			markUsed();
+			const n = Math.max(0, Math.min(atti.length - 1, i));
+			track.scrollTo({ left: atti[n].offsetLeft, behavior: 'smooth' });
+		};
+
+		const setCurrent = (i: number) => {
+			current = i;
+			atti.forEach((a, k) => a.classList.toggle('is-active', k === i));
+			ticks.forEach((t, k) => {
+				if (k === i) t.setAttribute('aria-current', 'true');
+				else t.removeAttribute('aria-current');
+				t.classList.toggle('is-passed', k < i);
+			});
+			prev.disabled = i === 0;
+			next.disabled = i === atti.length - 1;
+			section.classList.toggle('is-last', i === atti.length - 1);
+			const nx = atti[i + 1];
+			if (nx) {
+				peek.querySelector('[data-peek-n]')!.textContent = nx.dataset.num ?? '';
+				peek.querySelector('[data-peek-t]')!.textContent = nx.dataset.nome ?? '';
+			}
+		};
+		// Appena l'utente ha capito come si scorre, i suggerimenti spariscono
+		const markUsed = () => section.classList.add('is-used');
+		track.addEventListener('pointerdown', markUsed, { once: true });
+		track.addEventListener('scroll', () => track.scrollLeft > 24 && markUsed(), { passive: true });
+
+		// Quale portata è in scena: quella visibile per più del 60%
+		const io = new IntersectionObserver(
+			(entries) => {
+				for (const e of entries) {
+					if (e.isIntersecting) setCurrent(atti.indexOf(e.target as HTMLElement));
+				}
+			},
+			{ root: track, threshold: 0.6 },
+		);
+		atti.forEach((a) => io.observe(a));
+		setCurrent(0);
+
+		peek.addEventListener('click', () => goTo(current + 1));
+		prev.addEventListener('click', () => goTo(current - 1));
+		next.addEventListener('click', () => goTo(current + 1));
+		ticks.forEach((t) => t.addEventListener('click', () => goTo(Number(t.dataset.go))));
+		track.addEventListener('keydown', (e) => {
+			if (e.key === 'ArrowRight') {
+				e.preventDefault();
+				goTo(current + 1);
+			} else if (e.key === 'ArrowLeft') {
+				e.preventDefault();
+				goTo(current - 1);
+			}
+		});
+
+		// Leggero spostamento della foto col cursore (solo mouse, non con movimento ridotto)
+		if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+			track.addEventListener('pointermove', (e) => {
+				if (e.pointerType !== 'mouse') return;
+				const a = atti[current];
+				const r = a.getBoundingClientRect();
+				a.style.setProperty('--px', (((e.clientX - r.left) / r.width) * 2 - 1).toFixed(3));
+				a.style.setProperty('--py', (((e.clientY - r.top) / r.height) * 2 - 1).toFixed(3));
+			});
+		}
+	}
+</script>

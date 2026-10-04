@@ -1,0 +1,438 @@
+---
+// Prenotazione formale: percorso, serata, ospiti e note. Widget di esempio: nessun dato viene inviato.
+const percorsi = [
+	{ id: 'breve', nome: 'Percorso breve', dettaglio: 'Tre portate e un dolce', prezzo: '95' },
+	{ id: 'lungo', nome: 'Percorso lungo', dettaglio: 'Le cinque portate del menù', prezzo: '140', consigliato: true },
+	{ id: 'vini', nome: 'Percorso lungo con vini', dettaglio: 'Cinque portate e cinque abbinamenti', prezzo: '205' },
+];
+const orari = ['19:30', '20:00', '20:30', '21:00'];
+---
+
+<section class="booking" id="prenota" aria-labelledby="booking-titolo">
+	<div class="booking__intro" data-reveal>
+		<p class="booking__kicker">Prenota</p>
+		<h2 id="booking-titolo" class="booking__title">Un tavolo per la serata</h2>
+		<p class="booking__lead">
+			Quattordici coperti a sera. Scrivici il percorso e le intolleranze: ti rispondiamo entro un giorno per
+			confermare.
+		</p>
+		<p class="booking__demo">Modulo dimostrativo: nessun dato viene inviato o salvato.</p>
+	</div>
+
+	<form class="booking__form" novalidate data-form data-reveal>
+		<fieldset class="booking__group">
+			<legend>1 · Percorso</legend>
+			<div class="booking__percorsi">
+				{
+					percorsi.map((p, i) => (
+						<label class="booking__card">
+							<input type="radio" name="percorso" value={p.id} checked={p.consigliato} required />
+							<span class="booking__card-body">
+								<span class="booking__card-nome">{p.nome}</span>
+								<span class="booking__card-det">{p.dettaglio}</span>
+								<span class="booking__card-prezzo">{p.prezzo} €</span>
+								{p.consigliato && <span class="booking__card-tag">Consigliato</span>}
+							</span>
+						</label>
+					))
+				}
+			</div>
+		</fieldset>
+
+		<fieldset class="booking__group">
+			<legend>2 · Serata</legend>
+			<div class="booking__row">
+				<label class="booking__field">
+					<span>Data</span>
+					<input type="date" name="data" required data-date />
+					<span class="booking__error" data-error="data"></span>
+				</label>
+				<label class="booking__field">
+					<span>Ospiti</span>
+					<select name="ospiti" required>
+						{[1, 2, 3, 4, 5, 6].map((n) => <option value={n} selected={n === 2}>{n} {n === 1 ? 'ospite' : 'ospiti'}</option>)}
+					</select>
+				</label>
+			</div>
+			<div class="booking__orari" role="radiogroup" aria-label="Orario">
+				{
+					orari.map((o, i) => (
+						<label class="booking__chip">
+							<input type="radio" name="orario" value={o} checked={i === 1} />
+							<span>{o}</span>
+						</label>
+					))
+				}
+			</div>
+		</fieldset>
+
+		<fieldset class="booking__group">
+			<legend>3 · I tuoi dati</legend>
+			<div class="booking__row">
+				<label class="booking__field">
+					<span>Nome e cognome</span>
+					<input type="text" name="nome" autocomplete="name" required />
+					<span class="booking__error" data-error="nome"></span>
+				</label>
+				<label class="booking__field">
+					<span>Email</span>
+					<input type="email" name="email" autocomplete="email" required />
+					<span class="booking__error" data-error="email"></span>
+				</label>
+			</div>
+			<label class="booking__field">
+				<span>Intolleranze, allergie, occasione (facoltativo)</span>
+				<textarea name="note" rows="3"></textarea>
+			</label>
+		</fieldset>
+
+		<div class="booking__submit">
+			<button type="submit" class="booking__btn">Richiedi il tavolo</button>
+			<p class="booking__riepilogo" data-riepilogo aria-live="polite"></p>
+		</div>
+	</form>
+
+	<div class="booking__done" data-done hidden tabindex="-1">
+		<p class="booking__kicker">Richiesta ricevuta</p>
+		<h3 class="booking__done-title">Grazie, <span data-done-nome></span>.</h3>
+		<p data-done-testo></p>
+		<p class="booking__demo">Questa è una vetrina: nessuna prenotazione è stata registrata.</p>
+		<button type="button" class="booking__link" data-reset>Fai un’altra richiesta</button>
+	</div>
+</section>
+
+<style>
+	.booking {
+		display: grid;
+		gap: 48px;
+		padding: clamp(80px, 11vw, 150px) var(--gutter);
+		background:
+			radial-gradient(ellipse at 90% 0%, rgba(122, 20, 38, 0.28), transparent 55%),
+			var(--ink);
+	}
+	.booking__kicker {
+		font-family: var(--sans);
+		font-size: 0.78rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--wine-text);
+		margin-bottom: 16px;
+	}
+	.booking__title {
+		font-family: var(--serif);
+		font-weight: 400;
+		font-size: clamp(2.2rem, 5.4vw, 4.2rem);
+		line-height: 1.05;
+		letter-spacing: -0.01em;
+	}
+	.booking__lead {
+		margin-top: 20px;
+		max-width: 40ch;
+		color: var(--ivory-dim);
+	}
+	.booking__demo {
+		margin-top: 18px;
+		font-family: var(--sans);
+		font-size: 0.7rem;
+		letter-spacing: 0.06em;
+		color: var(--ivory-dim);
+	}
+
+	.booking__form {
+		display: grid;
+		gap: 36px;
+		min-width: 0;
+	}
+	.booking__group {
+		border: 0;
+		margin: 0;
+		padding: 0;
+		min-width: 0;
+		display: grid;
+		gap: 18px;
+	}
+	.booking__group legend {
+		padding: 0;
+		margin-bottom: 14px;
+		font-family: var(--sans);
+		font-size: 0.74rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--ivory-dim);
+	}
+	.booking__percorsi {
+		display: grid;
+		gap: 10px;
+	}
+	.booking__card {
+		position: relative;
+		display: block;
+		cursor: pointer;
+	}
+	.booking__card input,
+	.booking__chip input {
+		position: absolute;
+		opacity: 0;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		cursor: pointer;
+	}
+	.booking__card-body {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 2px 16px;
+		padding: 18px 20px;
+		border: 1px solid var(--ivory-faint);
+		background: rgba(21, 21, 23, 0.6);
+		transition: border-color 0.3s, background 0.3s;
+	}
+	.booking__card:hover .booking__card-body {
+		border-color: rgba(239, 233, 221, 0.4);
+	}
+	.booking__card input:checked + .booking__card-body {
+		border-color: var(--wine-text);
+		background: rgba(122, 20, 38, 0.3);
+	}
+	.booking__card input:focus-visible + .booking__card-body,
+	.booking__chip input:focus-visible + span {
+		outline: 2px solid var(--wine-text);
+		outline-offset: 3px;
+	}
+	.booking__card-nome {
+		grid-column: 1;
+		font-family: var(--serif);
+		font-size: 1.25rem;
+	}
+	.booking__card-prezzo {
+		grid-column: 2;
+		grid-row: 1 / span 2;
+		align-self: center;
+		font-family: var(--serif);
+		font-size: 1.3rem;
+	}
+	.booking__card-det {
+		grid-column: 1;
+		font-size: 0.92rem;
+		color: var(--ivory-dim);
+	}
+	.booking__card-tag {
+		grid-column: 1 / -1;
+		margin-top: 6px;
+		font-family: var(--sans);
+		font-size: 0.64rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--wine-text);
+	}
+
+	.booking__row {
+		display: grid;
+		gap: 18px;
+	}
+	.booking__field {
+		display: grid;
+		gap: 6px;
+		min-width: 0;
+	}
+	.booking__field > span:first-child {
+		font-size: 0.82rem;
+		color: var(--ivory-dim);
+	}
+	.booking__field input,
+	.booking__field select,
+	.booking__field textarea {
+		width: 100%;
+		padding: 12px 0;
+		border: 0;
+		border-bottom: 1px solid rgba(239, 233, 221, 0.35);
+		border-radius: 0;
+		background: transparent;
+		color: var(--ivory);
+		font: inherit;
+		font-size: 1.05rem;
+	}
+	.booking__field select option {
+		background: var(--ink-2);
+		color: var(--ivory);
+	}
+	.booking__field input:focus,
+	.booking__field select:focus,
+	.booking__field textarea:focus {
+		outline: none;
+		border-bottom-color: var(--wine-text);
+	}
+	.booking__field input[aria-invalid='true'] {
+		border-bottom-color: #ff8a8a;
+	}
+	.booking__error {
+		min-height: 1.2em;
+		font-size: 0.8rem;
+		color: #ff9a9a;
+	}
+	.booking__orari {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+	.booking__chip {
+		position: relative;
+	}
+	.booking__chip span {
+		display: block;
+		padding: 10px 20px;
+		border: 1px solid var(--ivory-faint);
+		font-family: var(--sans);
+		font-size: 0.85rem;
+		transition: border-color 0.3s, background 0.3s;
+	}
+	.booking__chip input:checked + span {
+		border-color: var(--wine-text);
+		background: rgba(122, 20, 38, 0.3);
+	}
+
+	.booking__submit {
+		display: grid;
+		gap: 14px;
+		justify-items: start;
+	}
+	.booking__btn {
+		padding: 17px 34px;
+		border: 1px solid var(--wine);
+		background: var(--wine);
+		color: var(--ivory);
+		font: inherit;
+		font-size: 0.82rem;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		cursor: pointer;
+		transition: background 0.3s, border-color 0.3s;
+	}
+	.booking__btn:hover {
+		background: #94182f;
+		border-color: #94182f;
+	}
+	.booking__riepilogo {
+		min-height: 1.6em;
+		font-family: var(--hand);
+		font-size: 1.2rem;
+		color: var(--ivory);
+	}
+
+	.booking__done {
+		max-width: 520px;
+		padding: 40px 0;
+	}
+	.booking__done[hidden] {
+		display: none;
+	}
+	.booking__done-title {
+		font-family: var(--serif);
+		font-weight: 400;
+		font-size: clamp(1.8rem, 4vw, 2.8rem);
+		margin-bottom: 14px;
+	}
+	.booking__link {
+		margin-top: 24px;
+		padding: 0;
+		border: 0;
+		border-bottom: 1px solid var(--ivory-dim);
+		background: none;
+		color: var(--ivory);
+		font: inherit;
+		cursor: pointer;
+	}
+
+	@media (min-width: 640px) {
+		.booking__row {
+			grid-template-columns: 1fr 1fr;
+			gap: 28px;
+		}
+	}
+	@media (min-width: 960px) {
+		.booking {
+			grid-template-columns: 4fr 6fr;
+			gap: clamp(48px, 8vw, 130px);
+			align-items: start;
+		}
+		.booking__intro {
+			position: sticky;
+			top: 110px;
+		}
+		.booking__done {
+			grid-column: 2;
+		}
+	}
+</style>
+
+<script>
+	const form = document.querySelector<HTMLFormElement>('[data-form]');
+	const done = document.querySelector<HTMLElement>('[data-done]');
+	if (form && done) {
+		const percorsi: Record<string, string> = {
+			breve: 'percorso breve',
+			lungo: 'percorso lungo',
+			vini: 'percorso lungo con vini',
+		};
+		const dateInput = form.querySelector<HTMLInputElement>('[data-date]')!;
+		const riepilogo = form.querySelector<HTMLElement>('[data-riepilogo]')!;
+		const toISO = (d: Date) => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+		dateInput.min = toISO(new Date());
+
+		const val = (n: string) => (form.elements.namedItem(n) as HTMLInputElement | RadioNodeList).value;
+		const fmtData = (iso: string) =>
+			iso ? new Date(iso + 'T12:00').toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' }) : '';
+
+		const updateRiepilogo = () => {
+			const d = fmtData(val('data'));
+			riepilogo.textContent = d
+				? `${percorsi[val('percorso')]} · ${d} · ${val('orario')} · ${val('ospiti')} ${val('ospiti') === '1' ? 'ospite' : 'ospiti'}`
+				: '';
+		};
+		form.addEventListener('input', updateRiepilogo);
+		form.addEventListener('change', updateRiepilogo);
+
+		const setError = (name: string, msg: string) => {
+			const input = form.elements.namedItem(name) as HTMLInputElement;
+			const out = form.querySelector<HTMLElement>(`[data-error="${name}"]`)!;
+			out.textContent = msg;
+			if (msg) {
+				input.setAttribute('aria-invalid', 'true');
+				input.setAttribute('aria-describedby', out.id || (out.id = `err-${name}`));
+			} else {
+				input.removeAttribute('aria-invalid');
+				input.removeAttribute('aria-describedby');
+			}
+			return !msg;
+		};
+
+		form.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const email = val('email').trim();
+			const checks = [
+				setError('data', val('data') ? '' : 'Scegli una data.'),
+				setError('nome', val('nome').trim().length > 1 ? '' : 'Scrivi nome e cognome.'),
+				setError('email', /^\S+@\S+\.\S+$/.test(email) ? '' : 'Controlla l’indirizzo email.'),
+			];
+			if (checks.includes(false)) {
+				form.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
+				return;
+			}
+			done.querySelector('[data-done-nome]')!.textContent = val('nome').trim().split(/\s+/)[0];
+			done.querySelector('[data-done-testo]')!.textContent =
+				`Abbiamo preso nota di un ${percorsi[val('percorso')]} per ${fmtData(val('data'))} alle ${val('orario')}. Ti scriveremo a ${email} per confermare.`;
+			form.hidden = true;
+			done.hidden = false;
+			done.focus();
+		});
+
+		done.querySelector('[data-reset]')!.addEventListener('click', () => {
+			form.reset();
+			updateRiepilogo();
+			done.hidden = true;
+			form.hidden = false;
+			form.querySelector<HTMLElement>('input[name="data"]')?.focus();
+		});
+	}
+</script>

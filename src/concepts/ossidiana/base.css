@@ -1,0 +1,120 @@
+/* Ossidiana — token, reset e utilità. Solo tema scuro: è l'identità del concept. */
+:root {
+	--ink: #0b0b0c;
+	--ink-2: #151517;
+	--ink-3: #202023;
+	--ivory: #efe9dd;
+	--ivory-dim: rgba(239, 233, 221, 0.68);
+	--ivory-faint: rgba(239, 233, 221, 0.16);
+	--wine: #7a1426;
+	--wine-text: #d2566b;
+
+	--serif: 'Bodoni Moda Variable', 'Didot', 'Bodoni 72', Georgia, serif;
+	--sans: 'Jost Variable', 'Helvetica Neue', Arial, sans-serif;
+	--hand: 'Nothing You Could Do', 'Segoe Script', 'Bradley Hand', cursive;
+
+	--gutter: clamp(20px, 5vw, 72px);
+	color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	background: var(--ink);
+	scroll-behavior: smooth;
+	-webkit-text-size-adjust: 100%;
+}
+
+body {
+	margin: 0;
+	background: var(--ink);
+	color: var(--ivory);
+	font-family: var(--sans);
+	font-weight: 300;
+	font-size: 1.0625rem;
+	line-height: 1.6;
+	-webkit-font-smoothing: antialiased;
+	overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+p {
+	margin: 0;
+}
+
+img {
+	display: block;
+	max-width: 100%;
+}
+
+a {
+	color: inherit;
+}
+
+:focus-visible {
+	outline: 2px solid var(--wine-text);
+	outline-offset: 4px;
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+.skip-link {
+	position: fixed;
+	top: -80px;
+	left: 16px;
+	z-index: 100;
+	padding: 10px 16px;
+	background: var(--ivory);
+	color: var(--ink);
+	text-decoration: none;
+	font-size: 0.9rem;
+}
+.skip-link:focus {
+	top: 16px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.001ms !important;
+	}
+}
+
+/* Rivelazione allo scroll (solo se JS attivo) */
+.js [data-reveal] {
+	opacity: 0;
+	transform: translateY(18px);
+	transition: opacity 1.1s ease, transform 1.1s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.js [data-reveal].is-visible {
+	opacity: 1;
+	transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+	.js [data-reveal] {
+		opacity: 1;
+		transform: none;
+	}
+}

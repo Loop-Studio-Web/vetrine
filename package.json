@@ -12,8 +12,11 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@fontsource-variable/bodoni-moda": "^5.3.0",
+    "@fontsource-variable/jost": "^5.3.0",
     "@fontsource-variable/space-grotesk": "^5.3.0",
     "@fontsource/newsreader": "^5.3.0",
+    "@fontsource/nothing-you-could-do": "^5.3.0",
     "astro": "^7.3.5"
   },
   "allowScripts": {

@@ -1,0 +1,157 @@
+---
+import { Image } from 'astro:assets';
+import chef from '../../assets/ossidiana/chef/chef.jpg';
+---
+
+<section class="chef" id="chef" aria-labelledby="chef-titolo">
+	<div class="chef__photo" data-reveal>
+		<Image
+			src={chef}
+			alt="Uno chef in giacca bianca, il volto in ombra, porta un piatto di risotto illuminato nel buio"
+			widths={[600, 900, 1300]}
+			sizes="(min-width: 900px) 42vw, 100vw"
+			loading="lazy"
+			class="chef__img"
+		/>
+		<p class="chef__credit">Foto d’archivio: la persona ritratta non è lo chef di fantasia.</p>
+	</div>
+
+	<div class="chef__body" data-reveal>
+		<p class="chef__kicker">Lo chef</p>
+		<h2 id="chef-titolo" class="chef__title">Elia Roverandi</h2>
+		<blockquote class="chef__quote">
+			<p>Non cerco di aggiungere. Tolgo, finché il piatto dice una cosa sola, e la dice bene.</p>
+		</blockquote>
+		<div class="chef__text">
+			<p>
+				Quindici anni tra cucine di città e una cascina dell’entroterra. Poi una sala piccola, quattordici
+				tavoli, un solo menù che cambia con le settimane e non con le mode.
+			</p>
+			<p>
+				A Ossidiana la cucina è a vista ma la sala resta quasi al buio: la luce è per il piatto, una portata
+				alla volta.
+			</p>
+		</div>
+		<dl class="chef__facts">
+			<div>
+				<dt>In cucina dal</dt>
+				<dd>2009</dd>
+			</div>
+			<div>
+				<dt>Brigata</dt>
+				<dd>Sette persone</dd>
+			</div>
+			<div>
+				<dt>Coperti</dt>
+				<dd>Quattordici</dd>
+			</div>
+		</dl>
+	</div>
+</section>
+
+<style>
+	.chef {
+		display: grid;
+		gap: 48px;
+		padding: clamp(80px, 12vw, 160px) var(--gutter);
+		background: var(--ink);
+	}
+	.chef__photo {
+		position: relative;
+		margin: 0;
+		overflow: hidden;
+		aspect-ratio: 4 / 5;
+		max-height: 80svh;
+	}
+	.chef__img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 50% 60%;
+		transform: scale(1.04);
+		transition: transform 36s cubic-bezier(0.35, 0.35, 0.5, 1);
+	}
+	.chef__photo.is-visible .chef__img {
+		transform: scale(1.22);
+	}
+	.chef__credit {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		padding: 40px 16px 12px;
+		background: linear-gradient(to top, rgba(11, 11, 12, 0.9), rgba(11, 11, 12, 0));
+		font-family: var(--sans);
+		font-size: 0.66rem;
+		letter-spacing: 0.08em;
+		color: var(--ivory-dim);
+	}
+	.chef__kicker {
+		font-family: var(--sans);
+		font-size: 0.78rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--wine-text);
+		margin-bottom: 18px;
+	}
+	.chef__title {
+		font-family: var(--serif);
+		font-weight: 400;
+		font-size: clamp(2.4rem, 6vw, 4.6rem);
+		line-height: 1.04;
+		letter-spacing: -0.01em;
+	}
+	.chef__quote {
+		margin: 32px 0 0;
+		padding-left: 22px;
+		border-left: 2px solid var(--wine);
+		font-family: var(--serif);
+		font-style: italic;
+		font-size: clamp(1.25rem, 2.2vw, 1.7rem);
+		line-height: 1.4;
+		max-width: 28ch;
+	}
+	.chef__text {
+		margin-top: 32px;
+		max-width: 48ch;
+		color: var(--ivory-dim);
+		display: grid;
+		gap: 16px;
+	}
+	.chef__facts {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 28px 44px;
+		margin: 40px 0 0;
+		padding-top: 24px;
+		border-top: 1px solid var(--ivory-faint);
+		font-family: var(--sans);
+		font-size: 0.76rem;
+	}
+	.chef__facts dt {
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--ivory-dim);
+		margin-bottom: 2px;
+	}
+	.chef__facts dd {
+		margin: 0;
+		font-family: var(--hand);
+		font-size: 1.35rem;
+		line-height: 1.2;
+	}
+	@media (min-width: 900px) {
+		.chef {
+			grid-template-columns: 5fr 6fr;
+			gap: clamp(48px, 7vw, 120px);
+			align-items: center;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.chef__img,
+		.chef__photo.is-visible .chef__img {
+			transform: none;
+			transition: none;
+		}
+	}
+</style>

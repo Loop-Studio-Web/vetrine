@@ -80,6 +80,11 @@ mano a ogni nuova pubblicazione.
 
 - **Ristorazione / Trattoria** (Trattoria del Borgo): pubblicata. Da rifare il
   video dell'hero (il file attuale non è pertinente).
+- **Ristorazione / Grande ristorante** (Ossidiana): costruito in locale,
+  `build` ok, axe 0 violazioni, non ancora pubblicato. Solo tema scuro per
+  scelta; percorso a 5 portate in scroll-snap con zoom lento (Ken Burns) sulle
+  foto; font Bodoni Moda + Jost + IBM Plex Mono. Logo generato con AI
+  (simbolo ritagliato in `src/assets/ossidiana/brand/simbolo.png`).
 
 ## Deploy
 

@@ -1,0 +1,118 @@
+---
+// Dati di fantasia: indirizzo, telefono ed email non esistono (dominio .example).
+---
+
+<section class="info" id="info" aria-labelledby="info-titolo">
+	<h2 id="info-titolo" class="info__title" data-reveal>Dove e quando</h2>
+	<div class="info__grid">
+		<div class="info__col" data-reveal>
+			<h3>Orari</h3>
+			<ul>
+				<li><span>Martedì · Sabato</span><span>19:30 · 23:00</span></li>
+				<li><span>Sabato a pranzo</span><span>12:30 · 14:30</span></li>
+				<li><span>Domenica · Lunedì</span><span>Chiuso</span></li>
+			</ul>
+		</div>
+		<div class="info__col" data-reveal>
+			<h3>Indirizzo</h3>
+			<address>
+				Via dei Vetrai 14<br />
+				00000 Città di fantasia
+			</address>
+			<p class="info__small">Indirizzo di esempio: il luogo non esiste.</p>
+		</div>
+		<div class="info__col" data-reveal>
+			<h3>Contatti</h3>
+			<p>+39 000 000 0000</p>
+			<p>prenotazioni@ossidiana.example</p>
+			<p class="info__small">Numero e indirizzo di esempio.</p>
+		</div>
+		<div class="info__col" data-reveal>
+			<h3>Da sapere</h3>
+			<p>
+				Il menù è unico e cambia ogni settimana. Intolleranze e allergie vanno segnalate alla prenotazione.
+				Nessun dress code, solo un po’ di cura.
+			</p>
+		</div>
+	</div>
+</section>
+
+<style>
+	.info {
+		padding: clamp(70px, 9vw, 120px) var(--gutter);
+		background: var(--ink-2);
+		border-top: 1px solid var(--ivory-faint);
+	}
+	.info__title {
+		font-family: var(--serif);
+		font-weight: 400;
+		font-size: clamp(1.8rem, 4vw, 3rem);
+		margin-bottom: 44px;
+	}
+	.info__grid {
+		display: grid;
+		gap: 40px;
+	}
+	.info__col h3 {
+		font-family: var(--sans);
+		font-weight: 400;
+		font-size: 0.76rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--wine-text);
+		margin-bottom: 16px;
+	}
+	.info__col ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 10px;
+	}
+	.info__col li {
+		display: flex;
+		justify-content: space-between;
+		gap: 16px;
+		padding-bottom: 10px;
+		border-bottom: 1px solid var(--ivory-faint);
+		font-size: 0.98rem;
+	}
+	.info__col li span:last-child {
+		font-family: var(--hand);
+		font-size: 1.15rem;
+		color: var(--ivory);
+		white-space: nowrap;
+	}
+	.info__col address {
+		font-style: normal;
+		line-height: 1.7;
+	}
+	.info__col p {
+		margin: 0 0 6px;
+	}
+	.info__col p:not(.info__small) {
+		color: var(--ivory-dim);
+	}
+	.info__col address,
+	.info__col h3 + p {
+		color: var(--ivory);
+	}
+	.info__small {
+		margin-top: 12px !important;
+		font-family: var(--sans);
+		font-size: 0.68rem;
+		letter-spacing: 0.04em;
+		color: var(--ivory-dim);
+	}
+	@media (min-width: 640px) {
+		.info__grid {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+	@media (min-width: 1100px) {
+		.info__grid {
+			grid-template-columns: 1.3fr 1fr 1fr 1.2fr;
+			gap: 48px;
+		}
+	}
+</style>
