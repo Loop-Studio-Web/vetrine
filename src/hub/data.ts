@@ -359,7 +359,7 @@ export const concepts: Concept[] = [
 		crop: '75% 45%',
 		cardAlt: 'Aeterna su desktop e su telefono: titolo grande su fondo blu notte, una doppia elica di DNA luminosa in 3D, il menù mobile a scansione.',
 		mood: 'Laboratorio di notte: blu abisso, smeraldo e un filo d’oro, con pause chiare “ghiaccio”.',
-		caratteri: 'Sora, JetBrains Mono e Cinzel',
+		caratteri: 'Instrument Serif, Montserrat, JetBrains Mono e Cinzel',
 		palette: ['#060b14', '#0c1626', '#4e9f8e', '#86d6c3', '#d4af37', '#e2ece9'],
 		metriche: [
 			{ label: 'Performance', valore: '88' },

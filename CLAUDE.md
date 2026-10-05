@@ -124,7 +124,7 @@ il proprio menù su mobile (hub: pannello a cerchio; Trattoria: cartoncino che s
 - **Benessere / Clinica di longevità** (Aeterna, `src/pages/benessere/longevity/`, concept `src/concepts/aeterna/`):
   livello **High** della macro, pubblicata il 2026-10-05 (solo se già pushata: controllare `origin/main`). `build` ok, axe 0 violazioni
   (desktop, dopo flusso assessment/suite, drawer aperto, mobile con menù aperto), Lighthouse 88 mobile / 96 desktop. Idea-guida: laboratorio di notte
-  (blu abisso, smeraldo, filo d'oro, pause chiare "ghiaccio"); Sora + JetBrains Mono + Cinzel (solo marchio). Tecnologie: Three.js con shader GLSL
+  (blu abisso, smeraldo, filo d'oro, pause chiare "ghiaccio"); Instrument Serif (titoli) + Montserrat + JetBrains Mono (solo dati tecnici) + Cinzel (solo marchio). Tecnologie: Three.js con shader GLSL
   propri (`elica.ts`, import dinamico dopo il primo paint; su telefono solo alla prima interazione, poster SVG nel markup), GSAP + ScrollTrigger +
   Lenis (`motore.ts`; Lenis solo con mouse e senza reduced-motion), sezione protocolli bloccata con scorrimento orizzontale e lente
   sui disegni SVG (`disegni.ts`, `protocolli.ts`), Bio-Assessment a 4 passi con radar SVG in tempo reale, scanner prima/dopo in canvas, prenotazione

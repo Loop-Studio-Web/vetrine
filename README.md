@@ -139,7 +139,7 @@
 |---|---|
 | **Archetype** | The longevity clinic: the **high-key** tier of the Beauty & wellness window, where the budget buys real-time graphics, more code and more interaction than the barber and the beauty centre |
 | **Mood** | A laboratory at night: abyss blue, emerald and a thread of gold, with pale "ice" sections as rhythm. Dark by choice |
-| **Type** | Sora for titles, JetBrains Mono for data, Cinzel for the wordmark only |
+| **Type** | Instrument Serif for titles, Montserrat for text and labels, JetBrains Mono for technical data, Cinzel for the wordmark only |
 | **Palette** | <img src="docs/img/palette-aeterna.svg" alt="Abyss, navy, emerald, light emerald, gold and ice" height="22"> |
 | **Signature moves** | A **WebGL DNA helix** (Three.js, custom GLSL: chromatic dispersion on every point, depth of field, repulsion from the pointer, inertia) that unwinds as you scroll, with an SVG poster for slow phones and no-WebGL. A pinned section whose protocols **scroll sideways** while you scroll down, each with a technical drawing and a **magnifying lens** that follows the mouse. A **four-step bio-assessment** whose radar chart redraws live on every answer and ends in a report that pre-fills the booking. A **before/after cellular scanner** drawn in canvas, with a draggable blade of light and live readouts. A **suite booking** with real-time price and a side drawer. Magnetic buttons, a contextual cursor ring, glass cards lit by the pointer, a laser-scan mobile menu. Smooth scrolling on desktop only, never on touch |
 | **Lighthouse** | 88 performance on mobile, 96 on desktop, 100 on accessibility and best practices. Three.js loads after the first paint on desktop and only after the first touch on phones |
