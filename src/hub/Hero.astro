@@ -81,6 +81,9 @@ function skyline(seed: number, id: string, o: { h: number; min: number; max: num
 		: '';
 	return `<svg viewBox="0 0 ${W} ${o.h}" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false"><defs>${win}</defs><g class="sk-b">${body}</g>${o.details ? `<g class="sk-w" fill="url(#${id})">${body.replace(/<polygon[^>]*>/g, '').replace(/<rect x="[^"]*" y="[^"]*" width="(?:[0-9]|1[0-9]|2)"[^>]*>/g, '')}</g><g class="sk-l">${lit}</g>` : ''}</svg>`;
 }
+// Ogni categoria ha la sua ora del giorno: la via cambia luce passando da una all'altra
+const atmoDi = (slug: string) => ({ ristorazione: 'sera', benessere: 'alba', studi: 'giorno', commercio: 'giorno' } as Record<string, string>)[slug] ?? 'giorno';
+const gru = `<svg viewBox="0 0 120 160" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M52 160V28M64 160V28M52 140l12-14M52 118l12-14M52 96l12-14M52 74l12-14M52 52l12-14M64 140L52 126M64 118L52 104M64 96L52 82M64 74L52 60M64 52L52 38"/><path d="M6 28h108M6 28l52-22 52 22M58 6V28"/><path d="M22 28v14M96 28v36M96 64l-5 7h10z"/></g><rect x="10" y="38" width="22" height="10" fill="currentColor"/></svg>`;
 const stelle = (() => {
 	const r = rng(7);
 	let s = '';
@@ -149,7 +152,7 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 							<a href={`#${g.slug}`}>{g.nome}</a>
 							<span class="street__n">{g.live.length} {g.live.length === 1 ? 'vetrina aperta' : 'vetrine aperte'}</span>
 						</p>
-						<div class="block">
+						<div class="block" data-atmo={atmoDi(g.slug)}>
 						<div class="scene" aria-hidden="true">
 							<div class="sc sc--sky"></div>
 							<div class="sc sc--stars" set:html={stelle}></div>
@@ -164,7 +167,7 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 						<ul class="street__row" role="list" aria-labelledby={`via-${g.slug}`}>
 							{g.live.map((c) => (
 								<li class="shop shop--live" style={`--glow:${c.glow}`}>
-									<a class="shop__link" href={`${base}${c.path}`} target="_blank" rel="noopener" aria-label={`${c.nome}, ${c.archetipo.toLowerCase()}: entra nella vetrina (si apre in una nuova scheda)`}>
+									<a class="shop__link" href={`${base}${c.path}`} target="_blank" rel="noopener">
 										<span class="shop__awning" set:html={awning(c.awning)} />
 										<span class="shop__window">
 											<Image
@@ -179,7 +182,7 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 											<span class="shop__open">Entra <span aria-hidden="true">→</span></span>
 										</span>
 										<span class="shop__name">{c.nome}</span>
-										<span class="shop__cat">{c.archetipo}</span>
+										<span class="shop__cat">{c.archetipo}<span class="sr-only"> (si apre in una nuova scheda)</span></span>
 									</a>
 								</li>
 							))}
@@ -207,7 +210,7 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 							<span>{g.titolo}</span>
 							<span class="street__n">{g.conto(g.lista.length)}</span>
 						</p>
-						<div class="block">
+						<div class="block" data-atmo="cantiere">
 						<div class="scene" aria-hidden="true">
 							<div class="sc sc--sky"></div>
 							<div class="sc sc--stars" set:html={stelle}></div>
@@ -215,6 +218,7 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 							<div class="sc sc--sun"></div>
 							<div class="sc sc--cloud sc--c1"></div>
 							<div class="sc sc--cloud sc--c2"></div>
+							<div class="sc sc--crane" set:html={gru}></div>
 							<div class="sc sc--far" set:html={scenes[gruppi.length + gi].far}></div>
 							<div class="sc sc--near" set:html={scenes[gruppi.length + gi].near}></div>
 							<div class="sc sc--fill"></div>
@@ -883,6 +887,127 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 		fill: var(--win);
 	}
 	:global(:root[data-theme='light']) .sc :global(.sk-l) {
+		display: none;
+	}
+	/* ——— Atmosfere: l'ora del giorno di ogni categoria ——— */
+	.sc--crane {
+		display: none;
+		left: auto;
+		right: 18%;
+		top: 4px;
+		width: 120px;
+		height: 150px;
+		color: var(--sk-near);
+	}
+	[data-atmo='cantiere'] .sc--crane {
+		display: block;
+	}
+	[data-atmo='cantiere'] .sc--stars,
+	[data-atmo='cantiere'] .sc--moon,
+	[data-atmo='cantiere'] .sc--sun,
+	[data-atmo='cantiere'] .sc--fill::after,
+	[data-atmo='cantiere'] .sc :global(.sk-l) {
+		display: none;
+	}
+	[data-atmo='cantiere'] .sc--cloud {
+		display: block;
+		background: rgba(120, 120, 128, 0.35);
+		box-shadow: 34px -10px 0 -2px rgba(120, 120, 128, 0.35), 70px 2px 0 -4px rgba(120, 120, 128, 0.35);
+	}
+	/* Sera: tramonto, finestre accese per la cena */
+	[data-atmo='sera'] .scene {
+		--sky-mid: #2b0f08;
+		--sky-hz: #86310f;
+		--sk-far: #4a2014;
+		--sk-near: #0d0908;
+	}
+	[data-atmo='sera'] .sc--stars {
+		opacity: 0.3;
+	}
+	[data-atmo='sera'] .sc--moon {
+		right: 22%;
+		top: 26px;
+	}
+	/* Alba: viola e rosa, ultime stelle, poche luci accese */
+	[data-atmo='alba'] .scene {
+		--sky-mid: #14122b;
+		--sky-hz: #7a3f66;
+		--sk-far: #2a2142;
+		--sk-near: #0c0b14;
+	}
+	[data-atmo='alba'] .sc--fill::after,
+	[data-atmo='alba'] .sc :global(.sk-l) {
+		opacity: 0.35;
+	}
+	[data-atmo='alba'] .sc--moon {
+		right: auto;
+		left: 14%;
+		width: 22px;
+		height: 22px;
+	}
+	/* Giorno (studi, commercio): luce piena, cielo limpido e freddo */
+	[data-atmo='giorno'] .scene {
+		--sky-mid: #0a1522;
+		--sky-hz: #1d3a57;
+		--sk-far: #16283a;
+		--sk-near: #0a0e13;
+	}
+	[data-atmo='cantiere'] .scene {
+		--sky-mid: #121212;
+		--sky-hz: #262626;
+		--sk-far: #1d1d1d;
+		--sk-near: #0b0b0b;
+	}
+	:global(:root[data-theme='light']) [data-atmo='sera'] .scene {
+		--sky-mid: #ffd9b8;
+		--sky-hz: #ff9d6c;
+		--sk-far: #e5a88d;
+		--sk-near: #c7a898;
+	}
+	:global(:root[data-theme='light']) [data-atmo='sera'] .sc--sun {
+		top: 78px;
+		right: 26%;
+		width: 54px;
+		height: 54px;
+		background: radial-gradient(circle, #fff1cf 0 35%, #ffb36b 75%);
+		box-shadow: 0 0 80px 30px rgba(255, 140, 70, 0.55);
+	}
+	:global(:root[data-theme='light']) [data-atmo='alba'] .scene {
+		--sky-mid: #f7dcf0;
+		--sky-hz: #ffd3c4;
+		--sk-far: #e7c3d2;
+		--sk-near: #d4c7cf;
+	}
+	:global(:root[data-theme='light']) [data-atmo='alba'] .sc--sun {
+		right: auto;
+		left: 16%;
+		top: 66px;
+		width: 34px;
+		height: 34px;
+	}
+	:global(:root[data-theme='light']) [data-atmo='giorno'] .scene {
+		--sky-mid: #d9ecf9;
+		--sky-hz: #f2f9fe;
+		--sk-far: #c5d6e3;
+		--sk-near: #c8cdd2;
+	}
+	:global(:root[data-theme='light']) [data-atmo='giorno'] .sc--sun {
+		right: 45%;
+		top: 10px;
+		background: radial-gradient(circle, #fffef4 0 45%, #ffe9a6 75%);
+		box-shadow: 0 0 40px 12px rgba(255, 232, 150, 0.5);
+	}
+	:global(:root[data-theme='light']) [data-atmo='cantiere'] .scene {
+		--sky-mid: #e7e7e9;
+		--sky-hz: #d5d5d8;
+		--sk-far: #cacacd;
+		--sk-near: #b9b9bd;
+	}
+	:global(:root[data-theme='light']) [data-atmo='cantiere'] .sc--cloud {
+		background: rgba(255, 255, 255, 0.75);
+		box-shadow: 34px -10px 0 -2px rgba(255, 255, 255, 0.75), 70px 2px 0 -4px rgba(255, 255, 255, 0.75);
+	}
+	:global(:root[data-theme='light']) [data-atmo='cantiere'] .sc--sun {
 		display: none;
 	}
 	@keyframes twinkle {
