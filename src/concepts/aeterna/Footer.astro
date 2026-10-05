@@ -1,0 +1,76 @@
+---
+import Logo from './Logo.astro';
+import logo from '../../assets/hub/loop-logo-on-dark.svg';
+---
+
+<footer class="piede">
+	<div class="piede__in">
+		<div class="piede__marchio">
+			<Logo payoff />
+		</div>
+		<p class="piede__copy">
+			&copy; 2026 Aeterna. Clinica di longevità di fantasia: concept dimostrativo. La clinica, i protocolli, i medici, i valori, i prezzi e
+			gli indirizzi non esistono e nulla qui è un parere o una promessa medica. Le illustrazioni dei macchinari e le immagini del tessuto sono
+			disegnate nel browser.
+		</p>
+		<a class="piede__credito" href="https://theloopstudio.org/" target="_blank" rel="noopener">
+			<span>Sito ideato da</span>
+			<img src={logo.src} width="84" height="44" alt="Loop Studio" />
+			<span class="sr-only">(si apre in una nuova scheda)</span>
+		</a>
+	</div>
+</footer>
+
+<style>
+	.piede {
+		background: #02050a;
+		color: var(--ghiaccio);
+		padding: 48px var(--gutter);
+		border-top: 1px solid var(--linea);
+		position: relative;
+	}
+	.piede::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: -1px;
+		height: 1px;
+		background: linear-gradient(90deg, transparent, var(--smeraldo), var(--oro), transparent);
+		opacity: 0.7;
+	}
+	.piede__in {
+		max-width: var(--max);
+		margin-inline: auto;
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		align-items: center;
+		gap: 18px 40px;
+	}
+	.piede__copy {
+		font-size: 0.86rem;
+		color: var(--nebbia);
+		max-width: 56em;
+	}
+	.piede__credito {
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		text-decoration: none;
+		font-family: var(--mono);
+		font-size: 0.74rem;
+		letter-spacing: 0.06em;
+	}
+	.piede__credito img {
+		height: 40px;
+		width: auto;
+	}
+	.piede__credito:hover {
+		opacity: 0.75;
+	}
+	@media (max-width: 900px) {
+		.piede__in {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

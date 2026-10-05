@@ -1,0 +1,862 @@
+---
+// Bio-Assessment: configuratore a quattro passi, senza ricaricare la pagina. Il radar a destra si aggiorna in tempo reale
+// a ogni risposta; alla fine arriva il report con il protocollo consigliato, che precompila la prenotazione.
+// Il calcolo è dimostrativo e vive tutto nel browser: non è una valutazione medica.
+import { assi } from './protocolli';
+
+const N = assi.length;
+const CX = 150;
+const CY = 150;
+const RAGGIO = 104;
+const punto = (i: number, r: number) => {
+	const a = -Math.PI / 2 + (i * 2 * Math.PI) / N;
+	return [CX + Math.cos(a) * r, CY + Math.sin(a) * r] as const;
+};
+const anello = (f: number) => assi.map((_, i) => punto(i, RAGGIO * f).map((n) => n.toFixed(1)).join(',')).join(' ');
+const etichette = assi.map((a, i) => ({ ...a, pos: punto(i, RAGGIO + 26), asse: punto(i, RAGGIO) }));
+---
+
+<section class="ass sez" id="assessment" aria-labelledby="ass-titolo" data-ass>
+	<div class="sez__in">
+		<div class="ass__testa">
+			<p class="etichetta" data-rivela>Bio-Assessment</p>
+			<h2 class="titolo" id="ass-titolo" data-split>Quattro domande. <em>Un profilo.</em></h2>
+			<p class="lead" data-rivela>
+				Rispondi in un minuto: il radar si ridisegna a ogni risposta e alla fine ricevi un report con il percorso consigliato. Il calcolo
+				avviene nel tuo browser, nulla viene inviato.
+			</p>
+		</div>
+
+		<div class="ass__box">
+			<div class="ass__form vetro" data-rivela>
+				<form novalidate data-form aria-labelledby="ass-titolo">
+					<div class="ass__prog" aria-hidden="true">
+						<i class="is-su"></i><i></i><i></i><i></i>
+					</div>
+					<p class="ass__passo" data-passo-t aria-live="polite">Passo 1 di 4 · Età</p>
+
+					<fieldset class="step" data-step="0">
+						<legend class="step__t">Quanti anni hai?</legend>
+						<div class="eta">
+							<output class="eta__n" for="eta" data-out="eta">42</output>
+							<span class="eta__u">anni</span>
+						</div>
+						<input class="rng" type="range" id="eta" name="eta" min="18" max="85" value="42" aria-label="Età in anni" data-rng />
+						<div class="rng__scala" aria-hidden="true"><span>18</span><span>50</span><span>85</span></div>
+					</fieldset>
+
+					<fieldset class="step" data-step="1" hidden>
+						<legend class="step__t">Come ti senti in una settimana tipo?</legend>
+						<div class="cursori">
+							<div class="cursore">
+								<label for="en">Energia nel pomeriggio</label>
+								<input class="rng" type="range" id="en" name="en" min="1" max="5" value="3" data-rng />
+								<div class="rng__scala" aria-hidden="true"><span>Scarica</span><span>Piena</span></div>
+							</div>
+							<div class="cursore">
+								<label for="so">Qualità del sonno</label>
+								<input class="rng" type="range" id="so" name="so" min="1" max="5" value="3" data-rng />
+								<div class="rng__scala" aria-hidden="true"><span>Spezzato</span><span>Profondo</span></div>
+							</div>
+							<div class="cursore">
+								<label for="st">Livello di stress</label>
+								<input class="rng" type="range" id="st" name="st" min="1" max="5" value="3" data-rng />
+								<div class="rng__scala" aria-hidden="true"><span>Basso</span><span>Alto</span></div>
+							</div>
+						</div>
+						<div class="interr">
+							<input type="checkbox" id="esami" name="esami" class="sr-only" data-esami />
+							<label for="esami" class="interr__l"><span class="interr__t" aria-hidden="true"><i></i></span> Ho esami del sangue degli ultimi 6 mesi</label>
+						</div>
+					</fieldset>
+
+					<fieldset class="step" data-step="2" hidden>
+						<legend class="step__t">Che abitudini hai?</legend>
+						<p class="step__sub" id="mov-l">Movimento a settimana</p>
+						<div class="opz-gruppo" role="radiogroup" aria-labelledby="mov-l">
+							<label class="opz"><input type="radio" name="mov" value="0" /><span><b>0–1</b> sedute</span></label>
+							<label class="opz"><input type="radio" name="mov" value="1" /><span><b>2–3</b> sedute</span></label>
+							<label class="opz"><input type="radio" name="mov" value="2" /><span><b>4 o più</b> sedute</span></label>
+						</div>
+						<p class="step__sub" id="ali-l">Alimentazione</p>
+						<div class="opz-gruppo" role="radiogroup" aria-labelledby="ali-l">
+							<label class="opz"><input type="radio" name="ali" value="0" /><span><b>Irregolare</b> pasti saltati</span></label>
+							<label class="opz"><input type="radio" name="ali" value="1" /><span><b>Equilibrata</b> senza regole</span></label>
+							<label class="opz"><input type="radio" name="ali" value="2" /><span><b>Curata</b> piano o nutrizionista</span></label>
+						</div>
+					</fieldset>
+
+					<fieldset class="step" data-step="3" hidden>
+						<legend class="step__t">Che cosa vorresti migliorare per primo?</legend>
+						<div class="opz-gruppo opz-gruppo--2" role="radiogroup" aria-label="Obiettivo">
+							<label class="opz"><input type="radio" name="ob" value="energia" /><span><b>Energia</b> arrivare a sera in forma</span></label>
+							<label class="opz"><input type="radio" name="ob" value="recupero" /><span><b>Recupero e sonno</b> riposare davvero</span></label>
+							<label class="opz"><input type="radio" name="ob" value="tessuti" /><span><b>Pelle e tessuti</b> cura e qualità</span></label>
+							<label class="opz"><input type="radio" name="ob" value="mente" /><span><b>Lucidità</b> concentrazione e calma</span></label>
+						</div>
+					</fieldset>
+
+					<p class="ass__err" role="alert" data-ass-err></p>
+					<div class="ass__azioni">
+						<button type="button" class="btn btn--vuoto" data-indietro hidden>← Indietro</button>
+						<button type="button" class="btn" data-avanti data-magnetico>Avanti <span aria-hidden="true">→</span></button>
+					</div>
+				</form>
+
+				<div class="report" data-report hidden tabindex="-1" aria-labelledby="rep-t">
+					<p class="etichetta">Report</p>
+					<h3 class="report__t" id="rep-t">Il tuo profilo di esempio</h3>
+					<dl class="report__num">
+						<div>
+							<dt>Indice di longevità</dt>
+							<dd><b data-r-indice>0</b><small> / 100</small></dd>
+						</div>
+						<div>
+							<dt>Età biologica stimata</dt>
+							<dd><b data-r-eta>—</b></dd>
+						</div>
+						<div>
+							<dt>Asse più fragile</dt>
+							<dd><b data-r-fragile>—</b></dd>
+						</div>
+					</dl>
+					<h4 class="report__sub">Percorso consigliato</h4>
+					<ol class="report__lista" data-r-lista></ol>
+					<div class="ass__azioni">
+						<a class="btn" href="#suite" data-r-prenota data-magnetico data-cursore="PRENOTA">Prenota con questo percorso <span aria-hidden="true">→</span></a>
+						<button type="button" class="btn btn--vuoto" data-ricomincia>Rifai il test</button>
+					</div>
+					<p class="report__avviso">Stima dimostrativa calcolata nel browser: non è una diagnosi né un parere medico.</p>
+				</div>
+			</div>
+
+			<figure class="ass__radar vetro" data-rivela>
+				<svg viewBox="0 0 300 300" role="img" aria-label="Radar del profilo" data-radar-svg>
+					<g fill="none" stroke="rgba(142,158,160,0.25)" stroke-width="1">
+						{[0.25, 0.5, 0.75, 1].map((f) => <polygon points={anello(f)}></polygon>)}
+						{etichette.map((e) => <line x1={CX} y1={CY} x2={e.asse[0]} y2={e.asse[1]}></line>)}
+					</g>
+					<polygon class="radar__area" points={anello(0.5)} data-radar-area></polygon>
+					{etichette.map((e, i) => <circle class="radar__punto" r="4" cx={CX} cy={CY} data-radar-punto={i}></circle>)}
+					{
+						etichette.map((e, i) => (
+							<text class="radar__et" x={e.pos[0]} y={e.pos[1]} text-anchor={i === 0 ? 'middle' : e.pos[0] > CX ? 'start' : 'end'} dy="0.35em">{e.nome}</text>
+						))
+					}
+					{
+						etichette.map((e, i) => (
+							<text class="radar__val" x={e.pos[0]} y={e.pos[1] + 14} text-anchor={i === 0 ? 'middle' : e.pos[0] > CX ? 'start' : 'end'} data-radar-val={i}></text>
+						))
+					}
+				</svg>
+				<figcaption class="radar__cap">
+					<span class="radar__stato" data-radar-stato>Stima provvisoria · si aggiorna mentre rispondi</span>
+				</figcaption>
+				<table class="sr-only" data-radar-tab>
+					<caption>Punteggi del profilo per asse</caption>
+					<tbody></tbody>
+				</table>
+			</figure>
+		</div>
+	</div>
+</section>
+
+<style>
+	.ass {
+		background:
+			radial-gradient(60% 50% at 85% 20%, rgba(26, 42, 64, 0.9), transparent 70%),
+			var(--navy);
+	}
+	.ass__testa {
+		display: grid;
+		gap: 22px;
+		max-width: 1000px;
+		margin-bottom: clamp(40px, 6vw, 80px);
+	}
+	.ass__box {
+		display: grid;
+		grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+		gap: 18px;
+		align-items: start;
+	}
+	.ass__form {
+		padding: clamp(24px, 3.4vw, 44px);
+		min-height: 480px;
+	}
+	.ass__prog {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 6px;
+		margin-bottom: 14px;
+	}
+	.ass__prog i {
+		height: 3px;
+		background: var(--linea);
+		position: relative;
+		overflow: hidden;
+	}
+	.ass__prog i::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(90deg, var(--smeraldo), var(--smeraldo-chiaro));
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 0.7s var(--ease);
+	}
+	.ass__prog i.is-su::after {
+		transform: none;
+	}
+	.ass__passo {
+		font-family: var(--mono);
+		font-size: 0.72rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--nebbia);
+		margin-bottom: 26px;
+	}
+	.step {
+		border: 0;
+		margin: 0;
+		padding: 0;
+		min-inline-size: 0;
+		min-height: 270px;
+	}
+	.step[hidden] {
+		display: none;
+	}
+	.step__t {
+		padding: 0;
+		font-weight: 200;
+		font-size: clamp(1.74rem, 3.02vw, 2.44rem);
+		line-height: 1.15;
+		letter-spacing: 0;
+		margin-bottom: 26px;
+	}
+	.step__sub {
+		font-family: var(--mono);
+		font-size: 0.7rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--smeraldo-chiaro);
+		margin: 0 0 10px;
+	}
+	.step__sub:not(:first-of-type) {
+		margin-top: 22px;
+	}
+	.eta {
+		display: flex;
+		align-items: baseline;
+		gap: 12px;
+		margin-bottom: 14px;
+	}
+	.eta__n {
+		font-weight: 200;
+		font-size: clamp(4.64rem, 9.28vw, 6.96rem);
+		line-height: 1;
+		letter-spacing: 0;
+		font-variant-numeric: tabular-nums;
+	}
+	.eta__u {
+		font-family: var(--mono);
+		font-size: 0.8rem;
+		letter-spacing: 0.14em;
+		color: var(--nebbia);
+	}
+	.cursori {
+		display: grid;
+		gap: 22px;
+	}
+	.cursore label {
+		display: block;
+		font-family: var(--mono);
+		font-size: 0.74rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		margin-bottom: 2px;
+	}
+
+	/* intervallo */
+	.rng {
+		-webkit-appearance: none;
+		appearance: none;
+		width: 100%;
+		height: 30px;
+		background: transparent;
+		margin: 0;
+		cursor: pointer;
+		--p: 50%;
+	}
+	.rng::-webkit-slider-runnable-track {
+		height: 2px;
+		background: linear-gradient(90deg, var(--smeraldo-chiaro) var(--p), var(--linea) var(--p));
+	}
+	.rng::-moz-range-track {
+		height: 2px;
+		background: linear-gradient(90deg, var(--smeraldo-chiaro) var(--p), var(--linea) var(--p));
+	}
+	.rng::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		width: 22px;
+		height: 22px;
+		margin-top: -10px;
+		border-radius: 50%;
+		background: var(--abisso);
+		border: 2px solid var(--smeraldo-chiaro);
+		box-shadow: 0 0 0 5px rgba(134, 214, 195, 0.14);
+		transition: box-shadow 0.3s var(--ease);
+	}
+	.rng::-moz-range-thumb {
+		width: 18px;
+		height: 18px;
+		border-radius: 50%;
+		background: var(--abisso);
+		border: 2px solid var(--smeraldo-chiaro);
+		box-shadow: 0 0 0 5px rgba(134, 214, 195, 0.14);
+	}
+	.rng:hover::-webkit-slider-thumb,
+	.rng:focus-visible::-webkit-slider-thumb {
+		box-shadow: 0 0 0 9px rgba(134, 214, 195, 0.2);
+	}
+	.rng:focus-visible {
+		outline-offset: 6px;
+	}
+	.rng__scala {
+		display: flex;
+		justify-content: space-between;
+		font-family: var(--mono);
+		font-size: 0.66rem;
+		letter-spacing: 0.1em;
+		color: var(--nebbia);
+	}
+
+	/* interruttore */
+	.interr {
+		margin-top: 26px;
+	}
+	.interr__l {
+		display: inline-flex;
+		align-items: center;
+		gap: 14px;
+		cursor: pointer;
+		font-size: 0.95rem;
+	}
+	.interr__t {
+		position: relative;
+		flex: none;
+		width: 44px;
+		height: 24px;
+		border: 1px solid var(--nebbia);
+		border-radius: 12px;
+		transition:
+			background-color 0.4s var(--ease),
+			border-color 0.4s var(--ease);
+	}
+	.interr__t i {
+		position: absolute;
+		left: 3px;
+		top: 3px;
+		width: 16px;
+		height: 16px;
+		border-radius: 50%;
+		background: var(--nebbia);
+		transition:
+			transform 0.4s var(--ease),
+			background-color 0.4s var(--ease);
+	}
+	input:checked + .interr__l .interr__t {
+		background: rgba(78, 159, 142, 0.25);
+		border-color: var(--smeraldo-chiaro);
+	}
+	input:checked + .interr__l .interr__t i {
+		transform: translateX(20px);
+		background: var(--smeraldo-chiaro);
+	}
+	input:focus-visible + .interr__l {
+		outline: 2px solid var(--smeraldo-chiaro);
+		outline-offset: 4px;
+	}
+
+	/* opzioni */
+	.opz-gruppo {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 10px;
+	}
+	.opz-gruppo--2 {
+		grid-template-columns: repeat(2, 1fr);
+	}
+	.opz {
+		position: relative;
+		display: block;
+		cursor: pointer;
+	}
+	.opz input {
+		position: absolute;
+		opacity: 0;
+		inset: 0;
+		cursor: pointer;
+		margin: 0;
+	}
+	.opz span {
+		display: grid;
+		gap: 4px;
+		height: 100%;
+		padding: 16px 16px 14px;
+		border: 1px solid var(--linea);
+		border-radius: 3px;
+		font-size: 0.84rem;
+		line-height: 1.35;
+		color: var(--nebbia);
+		transition:
+			border-color 0.35s var(--ease),
+			background-color 0.35s var(--ease),
+			transform 0.35s var(--ease);
+	}
+	.opz b {
+		font-weight: 400;
+		font-size: 1rem;
+		color: var(--bianco);
+	}
+	.opz:hover span {
+		border-color: rgba(134, 214, 195, 0.5);
+		transform: translateY(-2px);
+	}
+	.opz input:checked + span {
+		border-color: var(--smeraldo-chiaro);
+		background: rgba(78, 159, 142, 0.16);
+	}
+	.opz input:focus-visible + span {
+		outline: 2px solid var(--smeraldo-chiaro);
+		outline-offset: 3px;
+	}
+	.ass__err {
+		min-height: 1.5em;
+		margin: 18px 0 0;
+		font-family: var(--mono);
+		font-size: 0.76rem;
+		color: var(--errore);
+	}
+	.ass__azioni {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px;
+		margin-top: 14px;
+	}
+
+	/* report */
+	.report {
+		display: grid;
+		gap: 22px;
+		outline: none;
+	}
+	.report[hidden] {
+		display: none;
+	}
+	.report__t {
+		font-weight: 200;
+		font-size: clamp(1.97rem, 3.48vw, 2.78rem);
+		letter-spacing: 0;
+		line-height: 1.1;
+	}
+	.report__num {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 14px;
+	}
+	.report__num > div {
+		padding: 14px 0;
+		border-top: 1px solid var(--linea-oro);
+	}
+	.report__num dt {
+		font-family: var(--mono);
+		font-size: 0.64rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--nebbia);
+		margin-bottom: 6px;
+	}
+	.report__num dd {
+		margin: 0;
+	}
+	.report__num b {
+		font-weight: 200;
+		font-size: clamp(1.86rem, 3.48vw, 2.78rem);
+		line-height: 1.1;
+		letter-spacing: 0;
+	}
+	.report__num small {
+		font-family: var(--mono);
+		font-size: 0.74rem;
+		color: var(--nebbia);
+	}
+	.report__sub {
+		font-family: var(--mono);
+		font-weight: 400;
+		font-size: 0.72rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--smeraldo-chiaro);
+		margin: 4px 0 -10px;
+	}
+	.report__lista {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 10px;
+		counter-reset: p;
+	}
+	:global(.report__lista li) {
+		counter-increment: p;
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		gap: 4px 16px;
+		align-items: baseline;
+		padding: 14px 16px;
+		border: 1px solid var(--linea);
+		border-radius: 3px;
+	}
+	:global(.report__lista li::before) {
+		content: '0' counter(p);
+		font-family: var(--mono);
+		font-size: 0.78rem;
+		color: var(--oro);
+		grid-row: span 2;
+	}
+	:global(.report__lista strong) {
+		font-weight: 400;
+		font-size: 1.1rem;
+	}
+	:global(.report__lista span) {
+		grid-column: 2;
+		font-size: 0.86rem;
+		color: var(--nebbia);
+	}
+	:global(.report__lista em) {
+		grid-column: 3;
+		grid-row: 1 / span 2;
+		font-style: normal;
+		font-family: var(--mono);
+		font-size: 0.84rem;
+		color: var(--oro);
+	}
+	.report__avviso {
+		font-family: var(--mono);
+		font-size: 0.7rem;
+		letter-spacing: 0.04em;
+		color: var(--nebbia);
+	}
+
+	/* radar */
+	.ass__radar {
+		margin: 0;
+		padding: clamp(18px, 3vw, 32px);
+		position: sticky;
+		top: calc(var(--nav-h) + 20px);
+	}
+	.ass__radar svg {
+		width: 100%;
+		height: auto;
+		overflow: visible;
+	}
+	.radar__area {
+		fill: rgba(78, 159, 142, 0.22);
+		stroke: var(--smeraldo-chiaro);
+		stroke-width: 1.6;
+		stroke-linejoin: round;
+		stroke-dasharray: 5 4;
+		transition:
+			fill 0.6s var(--ease),
+			stroke-dasharray 0.6s var(--ease);
+	}
+	.is-finale .radar__area {
+		fill: rgba(78, 159, 142, 0.34);
+		stroke-dasharray: none;
+	}
+	.radar__punto {
+		fill: var(--oro);
+	}
+	.radar__et {
+		font-family: var(--mono);
+		font-size: 9.5px;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		fill: var(--ghiaccio);
+	}
+	.radar__val {
+		font-family: var(--mono);
+		font-size: 10px;
+		fill: var(--smeraldo-chiaro);
+		opacity: 0;
+		transition: opacity 0.6s var(--ease);
+	}
+	.is-finale .radar__val {
+		opacity: 1;
+	}
+	.radar__cap {
+		margin-top: 8px;
+		font-family: var(--mono);
+		font-size: 0.68rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--nebbia);
+		text-align: center;
+	}
+
+	@media (max-width: 980px) {
+		.ass__box {
+			grid-template-columns: 1fr;
+		}
+		.ass__radar {
+			position: relative;
+			top: 0;
+			max-width: 520px;
+			margin-inline: auto;
+		}
+	}
+	@media (max-width: 600px) {
+		.opz-gruppo {
+			grid-template-columns: 1fr;
+		}
+		.opz-gruppo--2 {
+			grid-template-columns: 1fr;
+		}
+		.report__num {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>
+
+<script>
+	import { gsap, ridotto, scramble, euro } from './motore';
+	import { assi, protocolli, type Asse } from './protocolli';
+
+	const sez = document.querySelector<HTMLElement>('[data-ass]')!;
+	const form = sez.querySelector<HTMLFormElement>('[data-form]')!;
+	const report = sez.querySelector<HTMLElement>('[data-report]')!;
+	const steps = Array.from(form.querySelectorAll<HTMLElement>('[data-step]'));
+	const barre = Array.from(form.querySelectorAll<HTMLElement>('.ass__prog i'));
+	const passoT = form.querySelector<HTMLElement>('[data-passo-t]')!;
+	const err = form.querySelector<HTMLElement>('[data-ass-err]')!;
+	const btnAvanti = form.querySelector<HTMLButtonElement>('[data-avanti]')!;
+	const btnIndietro = form.querySelector<HTMLButtonElement>('[data-indietro]')!;
+	const titoliPasso = ['Età', 'Segnali del corpo', 'Abitudini', 'Obiettivo'];
+
+	const svgRadar = sez.querySelector<SVGSVGElement>('[data-radar-svg]')!;
+	const area = sez.querySelector<SVGPolygonElement>('[data-radar-area]')!;
+	const punti = Array.from(sez.querySelectorAll<SVGCircleElement>('[data-radar-punto]'));
+	const valori = Array.from(sez.querySelectorAll<SVGTextElement>('[data-radar-val]'));
+	const stato = sez.querySelector<HTMLElement>('[data-radar-stato]')!;
+	const tab = sez.querySelector<HTMLTableSectionElement>('[data-radar-tab] tbody')!;
+	const figura = svgRadar.closest('figure')!;
+
+	const CX = 150;
+	const CY = 150;
+	const R = 104;
+	const N = assi.length;
+	const vertice = (i: number, f: number) => {
+		const a = -Math.PI / 2 + (i * 2 * Math.PI) / N;
+		return [CX + Math.cos(a) * R * f, CY + Math.sin(a) * R * f] as const;
+	};
+
+	// ---------- calcolo (dimostrativo) ----------
+	type Risposte = { eta: number; en: number; so: number; st: number; mov: number; ali: number; ob: Asse | ''; esami: boolean };
+	const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+	function leggi(): Risposte {
+		const d = new FormData(form);
+		return {
+			eta: Number(d.get('eta') ?? 42),
+			en: Number(d.get('en') ?? 3),
+			so: Number(d.get('so') ?? 3),
+			st: Number(d.get('st') ?? 3),
+			mov: Number(d.get('mov') ?? 1),
+			ali: Number(d.get('ali') ?? 1),
+			ob: (d.get('ob') as Asse) ?? '',
+			esami: !!d.get('esami'),
+		};
+	}
+	function punteggi(r: Risposte): Record<Asse, number> {
+		const en = (r.en - 1) / 4;
+		const so = (r.so - 1) / 4;
+		const st = 1 - (r.st - 1) / 4;
+		const mov = r.mov / 2;
+		const ali = r.ali / 2;
+		const eg = 1 - clamp((r.eta - 20) / 80) * 0.5;
+		const sc = (x: number, peso: number) => Math.round(clamp(22 + x * peso * 76, 18, 97));
+		return {
+			energia: sc((0.35 * en + 0.2 * mov + 0.15 * ali + 0.15 * so + 0.15 * st) * (0.7 + 0.3 * eg), 1.12),
+			recupero: sc((0.4 * so + 0.3 * st + 0.15 * mov + 0.15 * en) * (0.7 + 0.3 * eg), 1.12),
+			metabolismo: sc((0.4 * ali + 0.3 * mov + 0.15 * en + 0.15 * so) * (0.65 + 0.35 * eg), 1.12),
+			mente: sc((0.3 * st + 0.3 * so + 0.2 * en + 0.1 * ali + 0.1 * mov) * (0.75 + 0.25 * eg), 1.12),
+			tessuti: sc((0.25 * so + 0.25 * ali + 0.2 * st + 0.15 * mov + 0.15 * en) * (0.6 + 0.4 * eg), 1.12),
+		};
+	}
+
+	// ---------- radar animato ----------
+	const correnti = assi.map(() => 0);
+	const aria = () => {
+		svgRadar.setAttribute('aria-label', 'Radar del profilo: ' + assi.map((a, i) => `${a.nome} ${Math.round(correnti[i])}`).join(', '));
+	};
+	function disegna() {
+		const pts = assi.map((_, i) => vertice(i, correnti[i] / 100));
+		area.setAttribute('points', pts.map((p) => p.map((n) => n.toFixed(1)).join(',')).join(' '));
+		pts.forEach((p, i) => {
+			punti[i].setAttribute('cx', p[0].toFixed(1));
+			punti[i].setAttribute('cy', p[1].toFixed(1));
+		});
+	}
+	function verso(p: Record<Asse, number>, durata = 0.7) {
+		const fin = assi.map((a) => p[a.id]);
+		if (ridotto) {
+			fin.forEach((v, i) => (correnti[i] = v));
+			disegna();
+			aria();
+			return;
+		}
+		gsap.to(correnti, {
+			endArray: fin,
+			duration: durata,
+			ease: 'power3.out',
+			overwrite: true,
+			onUpdate: disegna,
+			onComplete: aria,
+		} as gsap.TweenVars);
+	}
+	function mostraValori(p: Record<Asse, number>) {
+		assi.forEach((a, i) => (valori[i].textContent = String(p[a.id])));
+		tab.innerHTML = assi.map((a) => `<tr><th scope="row">${a.nome}</th><td>${p[a.id]} su 100</td></tr>`).join('');
+	}
+
+	// ---------- percorso a passi ----------
+	let passo = 0;
+	function vaiA(i: number) {
+		passo = i;
+		steps.forEach((s, k) => (s.hidden = k !== i));
+		barre.forEach((b, k) => b.classList.toggle('is-su', k <= i));
+		passoT.textContent = `Passo ${i + 1} di 4 · ${titoliPasso[i]}`;
+		btnIndietro.hidden = i === 0;
+		btnAvanti.firstChild!.textContent = i === 3 ? 'Genera il report ' : 'Avanti ';
+		err.textContent = '';
+		if (!ridotto) gsap.fromTo(steps[i], { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out' });
+	}
+	function valido(): boolean {
+		const d = new FormData(form);
+		if (passo === 2 && !(d.get('mov') && d.get('ali'))) {
+			err.textContent = 'Scegli una risposta per il movimento e una per l’alimentazione.';
+			return false;
+		}
+		if (passo === 3 && !d.get('ob')) {
+			err.textContent = 'Scegli che cosa vorresti migliorare per primo.';
+			return false;
+		}
+		return true;
+	}
+
+	btnAvanti.addEventListener('click', () => {
+		if (!valido()) return;
+		if (passo < 3) vaiA(passo + 1);
+		else genera();
+	});
+	btnIndietro.addEventListener('click', () => passo > 0 && vaiA(passo - 1));
+	form.addEventListener('keydown', (e) => {
+		// Invio avanza (tranne sui pulsanti)
+		if (e.key === 'Enter' && (e.target as HTMLElement).tagName !== 'BUTTON') {
+			e.preventDefault();
+			btnAvanti.click();
+		}
+	});
+
+	// intervalli: percentuale del riempimento e valore a video
+	const aggiornaRng = (r: HTMLInputElement) => {
+		const min = Number(r.min);
+		const max = Number(r.max);
+		r.style.setProperty('--p', `${((Number(r.value) - min) / (max - min)) * 100}%`);
+		const out = sez.querySelector<HTMLOutputElement>(`[data-out="${r.id}"]`);
+		if (out) out.textContent = r.value;
+	};
+	form.querySelectorAll<HTMLInputElement>('[data-rng]').forEach((r) => aggiornaRng(r));
+	const provvisorio = () => {
+		if (figura.classList.contains('is-finale')) return;
+		const r = leggi();
+		const prov = punteggi({ ...r, mov: form.querySelector('[name=mov]:checked') ? r.mov : 1, ali: form.querySelector('[name=ali]:checked') ? r.ali : 1 });
+		verso(prov, 0.6);
+		mostraValori(prov);
+	};
+	form.addEventListener('input', (e) => {
+		const t = e.target as HTMLInputElement;
+		if (t.matches('[data-rng]')) aggiornaRng(t);
+		err.textContent = '';
+		provvisorio();
+	});
+
+	// ---------- report ----------
+	function genera() {
+		const r = leggi();
+		const p = punteggi(r);
+		const media = Math.round(assi.reduce((s, a) => s + p[a.id], 0) / N);
+		const delta = clamp((50 - media) * 0.14, -9, 9);
+		const fragile = assi.reduce((m, a) => (p[a.id] < p[m.id] ? a : m), assi[0]);
+		const proto = protocolli.find((x) => x.asse === r.ob && x.macchina) ?? protocolli[1];
+		const consigliati = r.esami ? [proto] : [protocolli[0], proto];
+
+		verso(p, 1.2);
+		mostraValori(p);
+		figura.classList.add('is-finale');
+		stato.textContent = 'Profilo di esempio · calcolato nel tuo browser';
+
+		const num = (sel: string) => report.querySelector<HTMLElement>(sel)!;
+		const iEl = num('[data-r-indice]');
+		const eEl = num('[data-r-eta]');
+		num('[data-r-fragile]').textContent = fragile.nome;
+		const o = { v: 0 };
+		const testoEta = `${delta <= 0 ? '−' : '+'}${Math.abs(delta).toFixed(1).replace('.', ',')} anni`;
+		if (ridotto) {
+			iEl.textContent = String(media);
+			eEl.textContent = testoEta;
+		} else {
+			gsap.to(o, { v: media, duration: 1.6, ease: 'expo.out', onUpdate: () => (iEl.textContent = String(Math.round(o.v))) });
+			scramble(eEl, testoEta, 900);
+		}
+
+		const lista = num('[data-r-lista]');
+		lista.innerHTML = consigliati
+			.map(
+				(c) =>
+					`<li><strong>${c.nome}</strong><span>${c.breve} · ${c.durata} minuti</span><em>${euro(c.prezzo)}</em></li>`,
+			)
+			.join('');
+		const a = num('[data-r-prenota]') as HTMLAnchorElement;
+		a.dataset.protocollo = consigliati[0].id;
+
+		form.hidden = true;
+		report.hidden = false;
+		report.focus({ preventScroll: true });
+		if (!ridotto) gsap.from(report.children, { opacity: 0, y: 18, duration: 0.8, stagger: 0.07, ease: 'expo.out' });
+		document.dispatchEvent(new CustomEvent('aeterna:profilo', { detail: { indice: media, protocollo: consigliati[0].id } }));
+	}
+	report.querySelector<HTMLAnchorElement>('[data-r-prenota]')!.addEventListener('click', (e) => {
+		const id = (e.currentTarget as HTMLElement).dataset.protocollo;
+		document.dispatchEvent(new CustomEvent('aeterna:protocollo', { detail: { id } }));
+	});
+	report.querySelector('[data-ricomincia]')!.addEventListener('click', () => {
+		form.reset();
+		form.querySelectorAll<HTMLInputElement>('[data-rng]').forEach((r) => aggiornaRng(r));
+		figura.classList.remove('is-finale');
+		stato.textContent = 'Stima provvisoria · si aggiorna mentre rispondi';
+		report.hidden = true;
+		form.hidden = false;
+		vaiA(0);
+		provvisorio();
+		form.querySelector<HTMLElement>('[data-step="0"] input')?.focus({ preventScroll: true });
+	});
+
+	// stato iniziale
+	vaiA(0);
+	const p0 = punteggi(leggi());
+	assi.forEach((a, i) => (correnti[i] = ridotto ? p0[a.id] : 0));
+	disegna();
+	mostraValori(p0);
+	aria();
+	if (!ridotto) verso(p0, 1.6);
+</script>

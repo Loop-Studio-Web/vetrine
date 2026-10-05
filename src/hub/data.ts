@@ -10,6 +10,8 @@ import cardBarbiere from '../assets/hub/card-barbiere.jpg';
 import shotBarbiere from '../assets/hub/shot-barbiere.jpg';
 import cardLumen from '../assets/hub/card-lumen.jpg';
 import shotLumen from '../assets/hub/shot-lumen.jpg';
+import cardAeterna from '../assets/hub/card-aeterna.jpg';
+import shotAeterna from '../assets/hub/shot-aeterna.jpg';
 
 export const SITE = 'https://theloopstudio.org/';
 export const CONTACT = 'https://theloopstudio.org/contatti';
@@ -313,12 +315,63 @@ export const concepts: Concept[] = [
 			{ label: 'Buone pratiche', valore: '100' },
 		],
 	},
+	{
+		slug: 'aeterna',
+		macro: 'benessere',
+		nome: 'Aeterna',
+		categoria: 'Benessere',
+		archetipo: 'La clinica di longevità, livello High',
+		claim: 'La longevità si misura e si progetta. Un’elica di DNA in 3D, un Bio-Assessment e una suite da prenotare.',
+		path: '/benessere/longevity/',
+		infoPath: '/benessere/longevity/info/',
+		titoloSeo: 'Sito web per clinica di longevità: homepage concept con WebGL, Bio-Assessment e prenotazione',
+		descrizioneSeo:
+			'Come potrebbe essere la homepage di una clinica di longevità: elica di DNA in WebGL, protocolli a scorrimento orizzontale, Bio-Assessment con grafico radar, scanner cellulare e prenotazione della suite. Concept dimostrativo di Loop Studio.',
+		intro: [
+			'Una clinica di longevità vende fiducia nei dati prima ancora dei trattamenti: chi arriva vuole capire che cosa viene misurato, con quale metodo e che cosa ne esce. Aeterna lo mette in scena con un linguaggio da laboratorio: un’elica di DNA che reagisce al mouse, indicatori biometrici, un percorso in cinque tempi.',
+			'È il livello più alto della macrocategoria Benessere e una vetrina dimostrativa: la clinica, i medici, i valori, i prezzi e gli indirizzi sono di fantasia, e nulla è un parere medico. Serve a mostrare fin dove si può spingere un sito quando c’è budget per animazioni, grafica in tempo reale e interazioni su misura.',
+		],
+		perChi:
+			'Cliniche private, centri di medicina estetica e della longevità, poliambulatori e brand del benessere premium che vogliono distinguersi con un’esperienza digitale memorabile e un percorso di prenotazione guidato.',
+		sezioni: [
+			{
+				t: 'Un’elica di DNA in WebGL',
+				d: 'Nell’apertura una doppia elica di particelle segue il mouse con inerzia, con profondità di campo e uno shader scritto per il progetto. Si scioglie mentre si scorre, e senza WebGL resta un poster in SVG.',
+			},
+			{
+				t: 'Protocolli a scorrimento orizzontale, con lente',
+				d: 'La sezione resta ferma e i quattro protocolli scorrono di lato mentre si scende. Su ogni disegno tecnico una lente d’ingrandimento rivela i dettagli minuscoli.',
+			},
+			{
+				t: 'Un Bio-Assessment con radar in tempo reale',
+				d: 'Quattro domande senza ricaricare la pagina: il grafico radar si ridisegna a ogni risposta e il report finale consiglia il percorso e precompila la prenotazione.',
+			},
+			{
+				t: 'Scanner cellulare e suite con caparra simulata',
+				d: 'Uno slider confronta lo stesso tessuto prima e dopo, con i dati che scorrono. La prenotazione della suite calcola il prezzo in tempo reale e si conferma in un pannello laterale.',
+			},
+		],
+		awning: ['#2b6a5c', '#0c1626'],
+		glow: 'rgba(78, 159, 142, 0.55)',
+		card: cardAeterna,
+		shot: shotAeterna,
+		shotAlt: '',
+		crop: '75% 45%',
+		cardAlt: 'Aeterna su desktop e su telefono: titolo grande su fondo blu notte, una doppia elica di DNA luminosa in 3D, il menù mobile a scansione.',
+		mood: 'Laboratorio di notte: blu abisso, smeraldo e un filo d’oro, con pause chiare “ghiaccio”.',
+		caratteri: 'Sora, JetBrains Mono e Cinzel',
+		palette: ['#060b14', '#0c1626', '#4e9f8e', '#86d6c3', '#d4af37', '#e2ece9'],
+		metriche: [
+			{ label: 'Performance', valore: '88' },
+			{ label: 'Accessibilità', valore: '100' },
+			{ label: 'Buone pratiche', valore: '100' },
+		],
+	},
 ];
 
 // stato: 'presto' = quasi pronta, 'cantiere' = ancora in costruzione (nessuna data promessa)
 export type StatoProssima = 'presto' | 'cantiere';
 export const prossime: { nome: string; categoria: string; macro: MacroSlug; stato: StatoProssima }[] = [
 	{ nome: 'Legale e professionale', categoria: 'Studi e servizi', macro: 'studi', stato: 'cantiere' },
-	{ nome: 'Spa e wellness resort', categoria: 'Benessere', macro: 'benessere', stato: 'presto' },
 	{ nome: 'Negozio locale', categoria: 'Commercio', macro: 'commercio', stato: 'cantiere' },
 ];

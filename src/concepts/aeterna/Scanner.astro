@@ -1,0 +1,586 @@
+---
+// Micro-Cellular Scanner: confronto "prima / dopo" su un tessuto simulato. Le due immagini sono disegnate in un canvas
+// (stesso tessuto, due stati), la mascherina è un clip-path aggiornato in tempo reale dal trascinamento.
+// Nessuna foto di persone e nessun dato clinico: è una simulazione grafica, dichiarata come tale.
+const letture = [
+	{ id: 'dens', nome: 'Densità cellulare', da: 61, a: 94, u: '%' },
+	{ id: 'reg', nome: 'Regolarità del tessuto', da: 48, a: 91, u: '%' },
+	{ id: 'en', nome: 'Attività energetica relativa', da: 52, a: 88, u: '%' },
+];
+---
+
+<section class="scan sez" id="scanner" aria-labelledby="scan-titolo" data-scanner>
+	<div class="sez__in">
+		<div class="scan__testa">
+			<div class="scan__t">
+				<p class="etichetta" data-rivela>Micro-Cellular Scanner</p>
+				<h2 class="titolo" id="scan-titolo" data-split>Il prima e il dopo, <em>a quaranta ingrandimenti.</em></h2>
+			</div>
+			<p class="lead" data-rivela>
+				Trascina la lama di luce: a sinistra il tessuto al giorno 0, a destra lo stesso tessuto dopo novanta giorni di protocollo. I dati
+				scorrono con te.
+			</p>
+		</div>
+
+		<div class="scan__banco" data-rivela>
+			<div class="scan__vista" data-vista data-cursore="TRASCINA">
+				<canvas class="scan__c scan__c--prima" data-c-prima aria-hidden="true"></canvas>
+				<canvas class="scan__c scan__c--dopo" data-c-dopo aria-hidden="true"></canvas>
+				<div class="scan__righe" aria-hidden="true"></div>
+				<div class="scan__lama" data-lama aria-hidden="true"></div>
+				<div class="scan__mirino" data-mirino aria-hidden="true"><i></i><i></i></div>
+
+				<p class="scan__tag scan__tag--sx" aria-hidden="true"><b>Giorno 0</b><span>Tessuto a riposo</span></p>
+				<p class="scan__tag scan__tag--dx" aria-hidden="true"><b>Giorno 90</b><span>Dopo il protocollo</span></p>
+				<p class="scan__scala" aria-hidden="true"><i></i>20 µm · 40×</p>
+
+				<button
+					type="button"
+					class="scan__presa"
+					data-presa
+					role="slider"
+					aria-label="Confronto tra il giorno 0 e il giorno 90"
+					aria-orientation="horizontal"
+					aria-valuemin="0"
+					aria-valuemax="100"
+					aria-valuenow="50"
+					aria-valuetext="Metà del tessuto al giorno 0, metà al giorno 90"
+				>
+					<span aria-hidden="true">‹ ›</span>
+				</button>
+			</div>
+
+			<dl class="scan__dati">
+				{
+					letture.map((l) => (
+						<div class="dato" data-dato data-da={l.da} data-a={l.a}>
+							<dt>{l.nome}</dt>
+							<dd>
+								<b data-valore>{Math.round((l.da + l.a) / 2)}</b><small>{l.u}</small>
+							</dd>
+							<div class="dato__barra" aria-hidden="true"><i data-barra></i></div>
+							<p class="dato__estremi" aria-hidden="true">
+								<span>g0 · {l.da}{l.u}</span><span>g90 · {l.a}{l.u}</span>
+							</p>
+						</div>
+					))
+				}
+			</dl>
+		</div>
+		<p class="scan__avviso" data-rivela>Simulazione grafica generata nel browser: non rappresenta tessuti reali né risultati clinici.</p>
+	</div>
+</section>
+
+<style>
+	.scan {
+		background: linear-gradient(180deg, var(--navy) 0%, var(--abisso) 22%, var(--abisso) 100%);
+		overflow: clip;
+	}
+	.scan__testa {
+		display: grid;
+		grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+		gap: 22px clamp(28px, 6vw, 100px);
+		align-items: end;
+		margin-bottom: clamp(36px, 5vw, 64px);
+	}
+	.scan__t {
+		display: grid;
+		gap: 22px;
+	}
+	.scan__banco {
+		display: grid;
+		gap: 18px;
+	}
+	.scan__vista {
+		--pos: 50%;
+		position: relative;
+		aspect-ratio: 16 / 8.2;
+		border: 1px solid var(--linea-oro);
+		border-radius: 4px;
+		overflow: hidden;
+		background: #040810;
+		touch-action: pan-y;
+		user-select: none;
+		-webkit-user-select: none;
+	}
+	.scan__c {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+	}
+	.scan__c--dopo {
+		clip-path: inset(0 0 0 var(--pos));
+	}
+	.scan__righe {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 3px);
+		mix-blend-mode: screen;
+	}
+	.scan__lama {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: var(--pos);
+		width: 2px;
+		margin-left: -1px;
+		background: linear-gradient(180deg, transparent, #fff 12%, #fff 88%, transparent);
+		box-shadow:
+			0 0 18px 3px rgba(134, 214, 195, 0.9),
+			0 0 70px 18px rgba(78, 159, 142, 0.4);
+		pointer-events: none;
+	}
+	.scan__lama::after {
+		content: '';
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 1px;
+		width: 90px;
+		background: linear-gradient(90deg, rgba(134, 214, 195, 0.16), transparent);
+	}
+	.scan__mirino {
+		position: absolute;
+		left: var(--pos);
+		top: 50%;
+		width: 74px;
+		height: 74px;
+		margin: -37px 0 0 -37px;
+		pointer-events: none;
+		border: 1px solid rgba(243, 248, 246, 0.7);
+		border-radius: 50%;
+		opacity: 0.85;
+		transition: transform 0.4s var(--ease);
+	}
+	.scan__mirino i {
+		position: absolute;
+		background: rgba(243, 248, 246, 0.7);
+	}
+	.scan__mirino i:first-child {
+		left: 50%;
+		top: -8px;
+		bottom: -8px;
+		width: 1px;
+	}
+	.scan__mirino i:last-child {
+		top: 50%;
+		left: -8px;
+		right: -8px;
+		height: 1px;
+	}
+	.is-presa .scan__mirino {
+		transform: scale(0.72);
+	}
+	.scan__tag {
+		position: absolute;
+		top: 16px;
+		display: grid;
+		gap: 2px;
+		font-family: var(--mono);
+		font-size: 0.7rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		pointer-events: none;
+		padding: 8px 12px;
+		background: rgba(6, 11, 20, 0.62);
+		-webkit-backdrop-filter: blur(8px);
+		backdrop-filter: blur(8px);
+		border: 1px solid var(--linea);
+	}
+	.scan__tag b {
+		font-weight: 400;
+		color: var(--bianco);
+	}
+	.scan__tag span {
+		color: var(--nebbia);
+		font-size: 0.62rem;
+	}
+	.scan__tag--sx {
+		left: 16px;
+	}
+	.scan__tag--dx {
+		right: 16px;
+		text-align: right;
+	}
+	.scan__tag--dx b {
+		color: var(--smeraldo-chiaro);
+	}
+	.scan__scala {
+		position: absolute;
+		left: 16px;
+		bottom: 14px;
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		font-family: var(--mono);
+		font-size: 0.64rem;
+		letter-spacing: 0.12em;
+		color: var(--ghiaccio);
+		pointer-events: none;
+	}
+	.scan__scala i {
+		width: 54px;
+		height: 5px;
+		border: 1px solid var(--ghiaccio);
+		border-top: 0;
+	}
+	.scan__presa {
+		position: absolute;
+		left: var(--pos);
+		bottom: 22px;
+		width: 62px;
+		height: 38px;
+		margin-left: -31px;
+		border: 1px solid rgba(243, 248, 246, 0.8);
+		border-radius: 19px;
+		background: rgba(6, 11, 20, 0.78);
+		-webkit-backdrop-filter: blur(8px);
+		backdrop-filter: blur(8px);
+		color: var(--bianco);
+		font-family: var(--mono);
+		font-size: 0.8rem;
+		letter-spacing: 0.2em;
+		display: grid;
+		place-items: center;
+		touch-action: none;
+		cursor: grab;
+		transition:
+			transform 0.35s var(--ease),
+			background-color 0.35s var(--ease);
+	}
+	.is-presa .scan__presa {
+		cursor: grabbing;
+		transform: scale(1.12);
+		background: var(--smeraldo);
+		color: var(--abisso);
+	}
+
+	.scan__dati {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 18px;
+	}
+	.dato {
+		display: grid;
+		gap: 6px;
+		padding-top: 14px;
+		border-top: 1px solid var(--linea-oro);
+	}
+	.dato dt {
+		font-family: var(--mono);
+		font-size: 0.7rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--nebbia);
+	}
+	.dato dd {
+		margin: 0;
+	}
+	.dato b {
+		font-weight: 200;
+		font-size: clamp(2.55rem, 4.64vw, 3.71rem);
+		line-height: 1;
+		letter-spacing: 0;
+		font-variant-numeric: tabular-nums;
+	}
+	.dato small {
+		font-family: var(--mono);
+		font-size: 0.8rem;
+		color: var(--smeraldo-chiaro);
+		margin-left: 4px;
+	}
+	.dato__barra {
+		height: 3px;
+		background: var(--linea);
+		position: relative;
+		overflow: hidden;
+	}
+	.dato__barra i {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(90deg, var(--smeraldo), var(--smeraldo-chiaro));
+		transform-origin: left;
+	}
+	.dato__estremi {
+		display: flex;
+		justify-content: space-between;
+		font-family: var(--mono);
+		font-size: 0.64rem;
+		letter-spacing: 0.08em;
+		color: var(--nebbia);
+	}
+	.scan__avviso {
+		margin-top: 22px;
+		font-family: var(--mono);
+		font-size: 0.7rem;
+		letter-spacing: 0.06em;
+		color: var(--nebbia);
+	}
+	@media (max-width: 900px) {
+		.scan__testa {
+			grid-template-columns: 1fr;
+		}
+		.scan__vista {
+			aspect-ratio: 4 / 4.6;
+		}
+		.scan__dati {
+			grid-template-columns: 1fr;
+		}
+		.scan__tag {
+			padding: 6px 9px;
+			font-size: 0.62rem;
+		}
+	}
+</style>
+
+<script>
+	import { gsap, ScrollTrigger, ridotto } from './motore';
+
+	const sez = document.querySelector<HTMLElement>('[data-scanner]')!;
+	const vista = sez.querySelector<HTMLElement>('[data-vista]')!;
+	const cPrima = sez.querySelector<HTMLCanvasElement>('[data-c-prima]')!;
+	const cDopo = sez.querySelector<HTMLCanvasElement>('[data-c-dopo]')!;
+	const presa = sez.querySelector<HTMLButtonElement>('[data-presa]')!;
+	const dati = Array.from(sez.querySelectorAll<HTMLElement>('[data-dato]'));
+
+	// ---------- tessuto simulato: stesse posizioni, due stati ----------
+	function seme(a: number) {
+		return () => {
+			a |= 0;
+			a = (a + 0x6d2b79f5) | 0;
+			let t = Math.imul(a ^ (a >>> 15), 1 | a);
+			t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+			return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+		};
+	}
+
+	function disegna() {
+		const r = vista.getBoundingClientRect();
+		const dpr = Math.min(devicePixelRatio || 1, 2);
+		const w = Math.max(2, Math.round(r.width));
+		const h = Math.max(2, Math.round(r.height));
+		for (const c of [cPrima, cDopo]) {
+			c.width = Math.round(w * dpr);
+			c.height = Math.round(h * dpr);
+		}
+		const celle = w < 600 ? 11 : 22; // colonne
+		const d = w / celle;
+		const dy = d * 0.866;
+		const righe = Math.ceil(h / dy) + 2;
+		const cols = celle + 2;
+
+		for (const stato of ['prima', 'dopo'] as const) {
+			const cv = stato === 'prima' ? cPrima : cDopo;
+			const ctx = cv.getContext('2d')!;
+			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+			const rnd = seme(90210); // stesso seme: lo stesso tessuto nei due stati
+			// sfondo
+			const sfondo = ctx.createRadialGradient(w * 0.5, h * 0.5, 0, w * 0.5, h * 0.5, Math.max(w, h) * 0.7);
+			if (stato === 'prima') {
+				sfondo.addColorStop(0, '#0e1a22');
+				sfondo.addColorStop(1, '#070d14');
+			} else {
+				sfondo.addColorStop(0, '#0b2a31');
+				sfondo.addColorStop(1, '#06141b');
+			}
+			ctx.fillStyle = sfondo;
+			ctx.fillRect(0, 0, w, h);
+
+			for (let j = -1; j < righe; j++) {
+				for (let i = -1; i < cols; i++) {
+					// numeri casuali sempre estratti nello stesso ordine
+					const rj = rnd();
+					const rj2 = rnd();
+					const rm = rnd();
+					const rr = rnd();
+					const rn = rnd();
+					const rn2 = rnd();
+					const rb = rnd();
+					let x = i * d + (j % 2 ? d / 2 : 0);
+					let y = j * dy;
+					let rad = d * 0.47;
+					if (stato === 'prima') {
+						x += (rj - 0.5) * d * 0.5;
+						y += (rj2 - 0.5) * d * 0.5;
+						rad *= 0.62 + rr * 0.55;
+						if (rm < 0.2) continue; // lacune
+					} else {
+						x += (rj - 0.5) * d * 0.06;
+						y += (rj2 - 0.5) * d * 0.06;
+						rad *= 0.96;
+					}
+					ctx.save();
+					ctx.translate(x, y);
+					if (stato === 'prima') {
+						// membrana irregolare, spenta
+						ctx.beginPath();
+						const pt = 9;
+						for (let k = 0; k <= pt; k++) {
+							const a = (k / pt) * Math.PI * 2;
+							const rr2 = rad * (0.82 + 0.2 * Math.sin(a * 3 + rb * 9) * rr + 0.1 * Math.cos(a * 5 + rn * 7));
+							const px = Math.cos(a) * rr2;
+							const py = Math.sin(a) * rr2 * (0.8 + rn2 * 0.25);
+							if (k === 0) ctx.moveTo(px, py);
+							else ctx.lineTo(px, py);
+						}
+						ctx.closePath();
+						ctx.fillStyle = `hsla(190, 14%, ${22 + rb * 10}%, 0.5)`;
+						ctx.fill();
+						ctx.strokeStyle = `hsla(190, 10%, ${40 + rb * 10}%, 0.45)`;
+						ctx.lineWidth = 1;
+						ctx.stroke();
+						// nucleo scuro, spostato
+						ctx.beginPath();
+						ctx.arc((rn - 0.5) * rad * 0.5, (rn2 - 0.5) * rad * 0.5, rad * (0.2 + rb * 0.12), 0, Math.PI * 2);
+						ctx.fillStyle = 'rgba(8, 14, 20, 0.85)';
+						ctx.fill();
+						// detriti
+						if (rb > 0.8) {
+							ctx.fillStyle = 'rgba(120, 130, 128, 0.35)';
+							ctx.fillRect(rad * 0.5, -rad * 0.2, 2, 2);
+							ctx.fillRect(-rad * 0.4, rad * 0.4, 1.5, 1.5);
+						}
+					} else {
+						// membrana regolare e luminosa
+						ctx.beginPath();
+						ctx.arc(0, 0, rad, 0, Math.PI * 2);
+						const g = ctx.createRadialGradient(0, 0, rad * 0.1, 0, 0, rad);
+						g.addColorStop(0, 'rgba(78, 159, 142, 0.34)');
+						g.addColorStop(1, 'rgba(78, 159, 142, 0.1)');
+						ctx.fillStyle = g;
+						ctx.fill();
+						ctx.shadowColor = 'rgba(134, 214, 195, 0.8)';
+						ctx.shadowBlur = 9;
+						ctx.strokeStyle = 'rgba(134, 214, 195, 0.92)';
+						ctx.lineWidth = 1.5;
+						ctx.stroke();
+						ctx.shadowBlur = 0;
+						// nucleo centrale dorato
+						ctx.beginPath();
+						ctx.arc(0, 0, rad * 0.3, 0, Math.PI * 2);
+						const n = ctx.createRadialGradient(-rad * 0.06, -rad * 0.06, 0, 0, 0, rad * 0.3);
+						n.addColorStop(0, 'rgba(255, 236, 170, 0.95)');
+						n.addColorStop(1, 'rgba(212, 175, 55, 0.75)');
+						ctx.fillStyle = n;
+						ctx.fill();
+						// mitocondri
+						ctx.fillStyle = 'rgba(226, 236, 233, 0.8)';
+						for (let k = 0; k < 5; k++) {
+							const a = (k / 5) * Math.PI * 2 + rb * 3;
+							ctx.beginPath();
+							ctx.arc(Math.cos(a) * rad * 0.62, Math.sin(a) * rad * 0.62, 1.4, 0, Math.PI * 2);
+							ctx.fill();
+						}
+					}
+					ctx.restore();
+				}
+			}
+			// velo e grana
+			const v = ctx.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.3, w / 2, h / 2, Math.max(w, h) * 0.75);
+			v.addColorStop(0, 'rgba(0,0,0,0)');
+			v.addColorStop(1, 'rgba(0,0,0,0.55)');
+			ctx.fillStyle = v;
+			ctx.fillRect(0, 0, w, h);
+		}
+	}
+
+	// ---------- mascherina e dati ----------
+	const stato = { pos: 50, mira: 50 };
+	function applica(p: number) {
+		const v = Math.min(100, Math.max(0, p));
+		vista.style.setProperty('--pos', `${v}%`);
+		const quota = v / 100; // quanta parte del tessuto è "prima"
+		const dopo = 1 - quota;
+		dati.forEach((d) => {
+			const da = Number(d.dataset.da);
+			const a = Number(d.dataset.a);
+			const cur = da + (a - da) * dopo;
+			d.querySelector<HTMLElement>('[data-valore]')!.textContent = String(Math.round(cur));
+			d.querySelector<HTMLElement>('[data-barra]')!.style.transform = `scaleX(${cur / 100})`;
+		});
+		presa.setAttribute('aria-valuenow', String(Math.round(v)));
+		presa.setAttribute(
+			'aria-valuetext',
+			v < 5 ? 'Tutto il tessuto al giorno 90' : v > 95 ? 'Tutto il tessuto al giorno 0' : `${Math.round(v)}% del tessuto al giorno 0, il resto al giorno 90`,
+		);
+	}
+	const imposta = (v: number) => {
+		stato.mira = Math.min(100, Math.max(0, v));
+		if (ridotto) {
+			stato.pos = stato.mira;
+			applica(stato.pos);
+		} else {
+			gsap.to(stato, { pos: stato.mira, duration: 0.45, ease: 'power3.out', overwrite: true, onUpdate: () => applica(stato.pos) });
+		}
+	};
+
+	let trascina = false;
+	const daEvento = (e: PointerEvent) => {
+		const r = vista.getBoundingClientRect();
+		return ((e.clientX - r.left) / r.width) * 100;
+	};
+	vista.addEventListener('pointerdown', (e) => {
+		if (e.button !== 0 && e.pointerType === 'mouse') return;
+		trascina = true;
+		vista.classList.add('is-presa');
+		vista.setPointerCapture(e.pointerId);
+		imposta(daEvento(e));
+		if ('vibrate' in navigator) navigator.vibrate?.(8);
+	});
+	vista.addEventListener('pointermove', (e) => {
+		if (trascina) imposta(daEvento(e));
+	});
+	const fine = () => {
+		trascina = false;
+		vista.classList.remove('is-presa');
+	};
+	vista.addEventListener('pointerup', fine);
+	vista.addEventListener('pointercancel', fine);
+	presa.addEventListener('keydown', (e) => {
+		const passo = e.shiftKey ? 10 : 3;
+		const mappa: Record<string, number> = {
+			ArrowLeft: stato.mira - passo,
+			ArrowDown: stato.mira - passo,
+			ArrowRight: stato.mira + passo,
+			ArrowUp: stato.mira + passo,
+			PageDown: stato.mira - 15,
+			PageUp: stato.mira + 15,
+			Home: 0,
+			End: 100,
+		};
+		if (e.key in mappa) {
+			e.preventDefault();
+			imposta(mappa[e.key]);
+		}
+	});
+
+	// ---------- disegno e scansione iniziale ----------
+	let t: number | undefined;
+	new ResizeObserver(() => {
+		clearTimeout(t);
+		t = window.setTimeout(disegna, 120);
+	}).observe(vista);
+	disegna();
+	applica(50);
+
+	if (!ridotto) {
+		// la lama attraversa il tessuto una volta quando entra in vista, poi si ferma al centro
+		ScrollTrigger.create({
+			trigger: vista,
+			start: 'top 70%',
+			once: true,
+			onEnter: () => {
+				stato.pos = 100;
+				stato.mira = 100;
+				applica(100);
+				gsap.timeline()
+					.to(stato, { pos: 0, duration: 2.4, ease: 'power2.inOut', onUpdate: () => applica(stato.pos) })
+					.to(stato, { pos: 50, duration: 1.4, ease: 'expo.out', onUpdate: () => applica(stato.pos), onComplete: () => (stato.mira = 50) });
+			},
+		});
+		stato.pos = 100;
+		applica(100);
+	}
+</script>

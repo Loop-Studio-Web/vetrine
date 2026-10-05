@@ -1,0 +1,259 @@
+---
+// Quattro indicatori in formato HUD: etichette che si decodificano, contatori e anelli che si riempiono
+// all'ingresso in vista. I valori sono di un profilo di esempio, dichiarati come tali.
+const metriche = [
+	{ id: 'vita', sigla: 'CEL-01', etichetta: 'Vitalità cellulare', valore: 94.2, dec: 1, pre: '', suf: '', unita: '/ 100', max: 100, nota: 'Indice sintetico di un profilo di esempio.' },
+	{ id: 'sonno', sigla: 'REC-02', etichetta: 'Recupero notturno', valore: 34, dec: 0, pre: '+', suf: '%', unita: 'in 90 giorni', max: 60, nota: 'Variazione del sonno profondo, dato dimostrativo.' },
+	{ id: 'eta', sigla: 'BIO-03', etichetta: 'Età biologica stimata', valore: 6.2, dec: 1, pre: '−', suf: '', unita: 'anni', max: 10, nota: 'Scarto stimato rispetto all’età anagrafica.' },
+	{ id: 'hrv', sigla: 'HRV-04', etichetta: 'Variabilità cardiaca', valore: 68, dec: 0, pre: '', suf: '', unita: 'ms', max: 100, nota: 'Media a riposo di un profilo di esempio.' },
+];
+const R = 46;
+const C = 2 * Math.PI * R;
+const parole = ['Telomeri', 'NAD+', 'HRV', 'VO₂ max', 'Omega-3 index', 'Glicemia a digiuno', 'Cortisolo', 'Vitamina D', 'Ferritina', 'IGF-1', 'Omocisteina', 'hs-CRP'];
+---
+
+<section class="met sez" id="metriche" aria-labelledby="met-titolo">
+	<div class="sez__in">
+		<div class="met__testa">
+			<p class="etichetta" data-rivela>Indicatori biometrici</p>
+			<h2 class="titolo met__titolo" id="met-titolo" data-split>Il corpo <em>produce dati.</em> Noi li trasformiamo in decisioni.</h2>
+		</div>
+
+		<ul class="met__griglia" role="list">
+			{
+				metriche.map((m) => (
+					<li class="scheda vetro luce" data-rivela style={`--ritardo:${metriche.indexOf(m) * 0.08}s`}>
+						<div class="scheda__alto">
+							<span class="scheda__sigla" aria-hidden="true">{m.sigla}</span>
+							<span class="scheda__led" aria-hidden="true"></span>
+						</div>
+						<svg class="scheda__anello" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+							<circle cx="60" cy="60" r={R} fill="none" stroke="rgba(142,158,160,0.18)" stroke-width="2"></circle>
+							<circle cx="60" cy="60" r={R + 8} fill="none" stroke="rgba(142,158,160,0.2)" stroke-width="1" stroke-dasharray="1 5"></circle>
+							<circle
+								class="scheda__arco"
+								cx="60"
+								cy="60"
+								r={R}
+								fill="none"
+								stroke="url(#ae-smeraldo)"
+								stroke-width="3"
+								stroke-linecap="round"
+								stroke-dasharray={C}
+								stroke-dashoffset={C * (1 - m.valore / m.max)}
+								transform="rotate(-90 60 60)"
+								data-arco={C * (1 - m.valore / m.max)}
+								data-circ={C}
+							/>
+						</svg>
+						<p class="scheda__valore" data-conta data-valore={m.valore} data-dec={m.dec} data-pre={m.pre} data-suf={m.suf}>
+							{m.pre}{m.valore.toLocaleString('it-IT', { minimumFractionDigits: m.dec, maximumFractionDigits: m.dec })}{m.suf}
+						</p>
+						<p class="scheda__unita">{m.unita}</p>
+						<h3 class="scheda__nome" data-scramble>{m.etichetta}</h3>
+						<p class="scheda__nota">{m.nota}</p>
+					</li>
+				))
+			}
+		</ul>
+		<p class="met__avviso" data-rivela>Valori dimostrativi di un profilo di fantasia: non sono misure reali né risultati clinici.</p>
+	</div>
+
+	<div class="nastro" aria-hidden="true">
+		<div class="nastro__pista">
+			{[0, 1].map(() => <ul>{parole.map((p) => <li>{p}</li>)}</ul>)}
+		</div>
+	</div>
+</section>
+
+<style>
+	.met {
+		background: var(--abisso);
+		overflow: clip;
+	}
+	.met__testa {
+		display: grid;
+		gap: 22px;
+		max-width: 1000px;
+		margin-bottom: clamp(48px, 7vw, 88px);
+	}
+	.met__titolo {
+		max-width: 20ch;
+	}
+	.met__griglia {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 16px;
+	}
+	.scheda {
+		padding: 22px 22px 26px;
+		display: grid;
+		justify-items: start;
+		gap: 4px;
+		min-height: 330px;
+	}
+	.scheda__alto {
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 14px;
+	}
+	.scheda__sigla {
+		font-family: var(--mono);
+		font-size: 0.66rem;
+		letter-spacing: 0.2em;
+		color: var(--oro);
+	}
+	.scheda__led {
+		width: 7px;
+		height: 7px;
+		border-radius: 50%;
+		background: var(--smeraldo-chiaro);
+		box-shadow: 0 0 10px var(--smeraldo-chiaro);
+		animation: ae-batti-m 2.4s ease-in-out infinite;
+	}
+	@keyframes ae-batti-m {
+		50% {
+			opacity: 0.3;
+		}
+	}
+	.scheda__anello {
+		position: absolute;
+		right: 14px;
+		top: 44px;
+		width: 104px;
+		height: 104px;
+		opacity: 0.95;
+	}
+	.scheda__valore {
+		margin-top: 54px;
+		font-weight: 200;
+		font-size: clamp(3.02rem, 4.64vw, 4.18rem);
+		line-height: 1;
+		letter-spacing: 0;
+		font-variant-numeric: tabular-nums;
+		min-width: 4ch;
+	}
+	.scheda__unita {
+		font-family: var(--mono);
+		font-size: 0.72rem;
+		letter-spacing: 0.1em;
+		color: var(--smeraldo-chiaro);
+		margin-bottom: 18px;
+	}
+	.scheda__nome {
+		font-family: var(--mono);
+		font-weight: 400;
+		font-size: 0.8rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		min-height: 2.6em;
+	}
+	.scheda__nota {
+		font-size: 0.9rem;
+		line-height: 1.55;
+		color: var(--nebbia);
+	}
+	.met__avviso {
+		margin-top: 26px;
+		font-family: var(--mono);
+		font-size: 0.7rem;
+		letter-spacing: 0.08em;
+		color: var(--nebbia);
+	}
+
+	.nastro {
+		margin-top: clamp(64px, 9vw, 120px);
+		border-block: 1px solid var(--linea);
+		overflow: hidden;
+		padding: 16px 0;
+	}
+	.nastro__pista {
+		display: flex;
+		width: max-content;
+		animation: ae-nastro 48s linear infinite;
+	}
+	.nastro ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex: none;
+	}
+	.nastro li {
+		font-family: var(--mono);
+		font-size: 0.8rem;
+		letter-spacing: 0.24em;
+		text-transform: uppercase;
+		color: var(--nebbia);
+		padding-right: 3.4rem;
+		white-space: nowrap;
+	}
+	.nastro li::after {
+		content: '◆';
+		margin-left: 3.4rem;
+		color: var(--oro);
+		font-size: 0.6rem;
+	}
+	@keyframes ae-nastro {
+		to {
+			transform: translateX(-50%);
+		}
+	}
+
+	@media (max-width: 1060px) {
+		.met__griglia {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+	@media (max-width: 560px) {
+		.met__griglia {
+			grid-template-columns: 1fr;
+		}
+		.scheda {
+			min-height: 0;
+		}
+	}
+</style>
+
+<script>
+	import { gsap, ScrollTrigger, ridotto, scramble } from './motore';
+
+	const fmt = (v: number, dec: number) => v.toLocaleString('it-IT', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+
+	document.querySelectorAll<HTMLElement>('.scheda').forEach((s) => {
+		const num = s.querySelector<HTMLElement>('[data-conta]')!;
+		const nome = s.querySelector<HTMLElement>('[data-scramble]')!;
+		const arco = s.querySelector<SVGCircleElement>('[data-arco]')!;
+		const finale = Number(num.dataset.valore);
+		const dec = Number(num.dataset.dec);
+		const pre = num.dataset.pre ?? '';
+		const suf = num.dataset.suf ?? '';
+		const testoNome = nome.textContent ?? '';
+		if (ridotto) return;
+		// stato iniziale (vuoto), poi riempimento all'ingresso in vista
+		num.textContent = `${pre}${fmt(0, dec)}${suf}`;
+		arco.style.strokeDashoffset = arco.dataset.circ!;
+		nome.textContent = testoNome.replace(/\S/g, '·');
+		ScrollTrigger.create({
+			trigger: s,
+			start: 'top 85%',
+			once: true,
+			onEnter: () => {
+				const o = { v: 0 };
+				gsap.to(o, {
+					v: finale,
+					duration: 2.2,
+					ease: 'expo.out',
+					onUpdate: () => (num.textContent = `${pre}${fmt(o.v, dec)}${suf}`),
+				});
+				gsap.to(arco, { strokeDashoffset: Number(arco.dataset.arco), duration: 2.4, ease: 'expo.out' });
+				scramble(nome, testoNome, 1200);
+			},
+		});
+	});
+</script>

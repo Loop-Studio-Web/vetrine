@@ -1,0 +1,312 @@
+---
+// Metodo: pausa chiara ("ghiaccio") tra le sezioni scure. A sinistra un quadrante fisso con cinque archi che
+// si accendono, a destra i cinque passaggi; il filo della linea del tempo si disegna con lo scorrimento.
+const passi = [
+	{
+		n: '01',
+		t: 'Consultazione',
+		d: 'Un’ora con il medico, senza fretta: storia clinica, abitudini, obiettivi. Si parte da come stai, non da cosa vendiamo.',
+		out: 'Mappa degli obiettivi',
+	},
+	{
+		n: '02',
+		t: 'Analisi',
+		d: 'Prelievo, pannello di biomarcatori e una settimana di dati da un sensore indossabile. Il profilo prende forma da numeri, non da impressioni.',
+		out: 'Report biomarcatori in 48 ore',
+	},
+	{
+		n: '03',
+		t: 'Progettazione',
+		d: 'Il medico traduce i dati in un piano di dodici settimane: quali protocolli, in che ordine, con quale ritmo, e che cosa fare a casa.',
+		out: 'Piano di 12 settimane',
+	},
+	{
+		n: '04',
+		t: 'Protocollo',
+		d: 'Le sedute nella suite privata, con un medico presente. Ogni seduta aggiorna il piano: si corregge in corsa, non a fine percorso.',
+		out: 'Sedute e diario dei dati',
+	},
+	{
+		n: '05',
+		t: 'Follow-up',
+		d: 'A novanta giorni si ripete l’analisi e si confronta con il punto di partenza. Si decide insieme se mantenere, ridurre o cambiare strada.',
+		out: 'Confronto prima e dopo',
+	},
+];
+const R = 88;
+const C = 2 * Math.PI * R;
+const SEG = C / 5;
+---
+
+<section class="met-d ghiaccio sez" id="metodo" aria-labelledby="metodo-titolo" data-metodo>
+	<div class="sez__in">
+		<div class="metodo__testa">
+			<p class="etichetta" data-rivela>Metodo</p>
+			<h2 class="titolo" id="metodo-titolo" data-split>Un percorso in <em>cinque tempi,</em> misurato a ogni passo.</h2>
+		</div>
+
+		<div class="metodo__corpo">
+			<div class="quadrante" data-quadrante aria-hidden="true">
+				<div class="quadrante__in">
+					<svg viewBox="0 0 220 220" class="quadrante__svg" focusable="false">
+						<circle cx="110" cy="110" r={R + 14} fill="none" stroke="rgba(12,22,38,.14)" stroke-width="1" stroke-dasharray="1 5"></circle>
+						<g transform="rotate(-90 110 110)">
+							{
+								passi.map((p, i) => (
+									<circle
+										class="quadrante__arco"
+										data-arco={i}
+										cx="110"
+										cy="110"
+										r={R}
+										fill="none"
+										stroke-width="6"
+										stroke-linecap="butt"
+										stroke-dasharray={`${SEG - 7} ${C - SEG + 7}`}
+										stroke-dashoffset={-(SEG * i)}
+									/>
+								))
+							}
+						</g>
+					</svg>
+					<div class="quadrante__centro">
+						<span class="quadrante__n" data-q-n>01</span>
+						<span class="quadrante__t" data-q-t>Consultazione</span>
+					</div>
+				</div>
+			</div>
+
+			<ol class="passi" role="list" data-passi>
+				<li class="passi__filo" aria-hidden="true"><i data-filo></i></li>
+				{
+					passi.map((p, i) => (
+						<li class="passo" data-passo={i} data-n={p.n} data-t={p.t}>
+							<span class="passo__nodo" aria-hidden="true"></span>
+							<p class="passo__n">{p.n}</p>
+							<h3 class="passo__t">{p.t}</h3>
+							<p class="passo__d">{p.d}</p>
+							<p class="passo__out"><span>Output</span> {p.out}</p>
+						</li>
+					))
+				}
+			</ol>
+		</div>
+	</div>
+</section>
+
+<style>
+	.metodo__testa {
+		display: grid;
+		gap: 22px;
+		max-width: 1000px;
+		margin-bottom: clamp(48px, 7vw, 96px);
+	}
+	.metodo__corpo {
+		display: grid;
+		grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+		gap: clamp(32px, 6vw, 110px);
+		align-items: start;
+	}
+	.quadrante {
+		position: sticky;
+		top: calc(var(--nav-h) + 28px);
+	}
+	.quadrante__in {
+		position: relative;
+		width: min(100%, 460px);
+		aspect-ratio: 1;
+		margin-inline: auto;
+	}
+	.quadrante__svg {
+		width: 100%;
+		height: 100%;
+		overflow: visible;
+	}
+	.quadrante__arco {
+		stroke: rgba(12, 22, 38, 0.14);
+		transition: stroke 0.7s var(--ease);
+	}
+	.quadrante__arco.is-acceso {
+		stroke: var(--smeraldo-scuro);
+	}
+	.quadrante__arco.is-corrente {
+		stroke: var(--navy);
+	}
+	.quadrante__centro {
+		position: absolute;
+		inset: 0;
+		display: grid;
+		place-content: center;
+		justify-items: center;
+		gap: 6px;
+		text-align: center;
+	}
+	.quadrante__n {
+		font-weight: 200;
+		font-size: clamp(5.1rem, 10.44vw, 8.58rem);
+		line-height: 1;
+		letter-spacing: 0;
+		font-variant-numeric: tabular-nums;
+	}
+	.quadrante__t {
+		font-family: var(--mono);
+		font-size: 0.78rem;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: var(--smeraldo-scuro);
+	}
+
+	.passi {
+		list-style: none;
+		margin: 0;
+		padding: 0 0 0 clamp(28px, 4vw, 56px);
+		position: relative;
+	}
+	.passi__filo {
+		position: absolute;
+		left: 0;
+		top: 12px;
+		bottom: 12px;
+		width: 1px;
+		background: rgba(12, 22, 38, 0.18);
+	}
+	.passi__filo i {
+		display: block;
+		width: 3px;
+		margin-left: -1px;
+		height: 100%;
+		background: linear-gradient(180deg, var(--smeraldo-scuro), var(--oro-scuro));
+		transform: scaleY(0);
+		transform-origin: top;
+	}
+	.passo {
+		position: relative;
+		min-height: 62vh;
+		display: grid;
+		align-content: center;
+		gap: 14px;
+		padding: 36px 0;
+		opacity: 1;
+		transition: opacity 0.7s var(--ease);
+	}
+	.passo.is-corrente {
+		opacity: 1;
+	}
+	.passo__nodo {
+		position: absolute;
+		left: calc(clamp(28px, 4vw, 56px) * -1 - 6px);
+		top: 50%;
+		width: 13px;
+		height: 13px;
+		border-radius: 50%;
+		background: var(--ghiaccio);
+		border: 1.5px solid rgba(12, 22, 38, 0.4);
+		transition:
+			background-color 0.5s var(--ease),
+			border-color 0.5s var(--ease),
+			transform 0.5s var(--ease);
+	}
+	.passo.is-corrente .passo__nodo {
+		background: var(--smeraldo-scuro);
+		border-color: var(--smeraldo-scuro);
+		transform: scale(1.5);
+	}
+	.passo__n {
+		font-family: var(--mono);
+		font-size: 0.78rem;
+		letter-spacing: 0.2em;
+		color: var(--smeraldo-scuro);
+	}
+	.passo__t {
+		font-weight: 200;
+		font-size: clamp(2.32rem, 4.64vw, 3.94rem);
+		line-height: 1.05;
+		letter-spacing: 0;
+	}
+	.passo__d {
+		max-width: 46ch;
+		color: var(--nebbia-scura);
+		font-size: 1.08rem;
+	}
+	.passo__out {
+		margin-top: 6px;
+		font-family: var(--mono);
+		font-size: 0.74rem;
+		letter-spacing: 0.06em;
+		padding-top: 14px;
+		border-top: 1px solid rgba(12, 22, 38, 0.18);
+		max-width: 46ch;
+	}
+	.passo__out span {
+		color: var(--smeraldo-scuro);
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		margin-right: 10px;
+	}
+
+	@media (max-width: 900px) {
+		.metodo__corpo {
+			grid-template-columns: 1fr;
+		}
+		.quadrante {
+			position: relative;
+			top: 0;
+		}
+		.quadrante__in {
+			width: min(64vw, 280px);
+		}
+		.passo {
+			min-height: 0;
+			padding: 28px 0;
+			opacity: 1;
+		}
+	}
+</style>
+
+<script>
+	import { gsap, ScrollTrigger, ridotto, scramble } from './motore';
+
+	const sez = document.querySelector<HTMLElement>('[data-metodo]')!;
+	const passi = Array.from(sez.querySelectorAll<HTMLElement>('[data-passo]'));
+	const archi = Array.from(sez.querySelectorAll<SVGCircleElement>('[data-arco]'));
+	const qn = sez.querySelector<HTMLElement>('[data-q-n]')!;
+	const qt = sez.querySelector<HTMLElement>('[data-q-t]')!;
+	const filo = sez.querySelector<HTMLElement>('[data-filo]')!;
+	const lista = sez.querySelector<HTMLElement>('[data-passi]')!;
+
+	let corrente = -1;
+	function imposta(i: number) {
+		if (i === corrente) return;
+		corrente = i;
+		passi.forEach((p, k) => p.classList.toggle('is-corrente', k === i));
+		archi.forEach((a, k) => {
+			a.classList.toggle('is-acceso', k < i);
+			a.classList.toggle('is-corrente', k === i);
+		});
+		if (i >= 0) {
+			qn.textContent = passi[i].dataset.n!;
+			scramble(qt, passi[i].dataset.t!, 700);
+		}
+	}
+
+	if (ridotto) {
+		filo.style.transform = 'scaleY(1)';
+		passi.forEach((p) => p.classList.add('is-corrente'));
+		archi.forEach((a) => a.classList.add('is-acceso'));
+	} else {
+		gsap.to(filo, {
+			scaleY: 1,
+			ease: 'none',
+			scrollTrigger: { trigger: lista, start: 'top 60%', end: 'bottom 60%', scrub: 0.6 },
+		});
+		passi.forEach((p, i) => {
+			ScrollTrigger.create({
+				trigger: p,
+				start: 'top 60%',
+				end: 'bottom 60%',
+				onToggle: (st) => st.isActive && imposta(i),
+			});
+		});
+		imposta(0);
+	}
+</script>

@@ -1,0 +1,77 @@
+---
+// Marchio Aeterna: simbolo ad anello (infinito / filamento) + logotipo. I gradienti stanno in un unico
+// blocco <defs> nascosto (vedi Navbar.astro), così non ci sono id duplicati.
+interface Props {
+	testo?: boolean;
+	payoff?: boolean;
+	class?: string;
+}
+const { testo = true, payoff = false, class: cl = '' } = Astro.props;
+---
+
+<span class:list={['logo', cl]}>
+	<svg class="logo__simbolo" viewBox="10 34 150 52" aria-hidden="true" focusable="false">
+		<path
+			class="logo__anello"
+			d="M 45 80 C 15 80, 15 40, 45 40 C 75 40, 85 80, 115 80 C 145 80, 145 40, 115 40 C 85 40, 75 80, 45 80 Z"
+			fill="none"
+			stroke="url(#ae-smeraldo)"
+			stroke-width="3.5"
+			stroke-linecap="round"
+			stroke-linejoin="round"></path>
+		<path
+			class="logo__filo"
+			d="M 45 40 C 15 40, 15 80, 45 80 C 75 80, 85 40, 115 40 C 145 40, 145 80, 115 80"
+			fill="none"
+			stroke="#4e9f8e"
+			stroke-opacity="0.45"
+			stroke-width="1.5"
+			stroke-dasharray="3 3"></path>
+		<circle cx="45" cy="40" r="3.5" fill="url(#ae-oro)"></circle>
+		<circle cx="115" cy="80" r="3.5" fill="url(#ae-oro)"></circle>
+		<circle cx="80" cy="60" r="2.5" fill="#e2ece9"></circle>
+	</svg>
+	{
+		testo && (
+			<span class="logo__testo">
+				<span class="logo__nome">AETERNA</span>
+				{payoff && <span class="logo__payoff">Biohacking &amp; Longevity Clinic</span>}
+			</span>
+		)
+	}
+</span>
+
+<style>
+	.logo {
+		display: inline-flex;
+		align-items: center;
+		gap: 14px;
+		line-height: 1;
+	}
+	.logo__simbolo {
+		height: 30px;
+		width: auto;
+		aspect-ratio: 150 / 52;
+		overflow: visible;
+	}
+	.logo__testo {
+		display: flex;
+		flex-direction: column;
+		gap: 7px;
+	}
+	.logo__nome {
+		font-family: var(--marchio);
+		font-weight: 500;
+		font-size: 1.28rem;
+		letter-spacing: 0.34em;
+		margin-right: -0.34em;
+		color: var(--ghiaccio);
+	}
+	.logo__payoff {
+		font-family: var(--mono);
+		font-size: 0.56rem;
+		letter-spacing: 0.3em;
+		text-transform: uppercase;
+		color: var(--nebbia);
+	}
+</style>

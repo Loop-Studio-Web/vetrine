@@ -1,0 +1,278 @@
+---
+// Dove e quando: dati di fantasia dichiarati come tali, con uno stato di apertura calcolato dall'ora locale
+// e una mappa schematica in SVG (nessun riquadro di terzi, nessun tracciamento).
+const orari = [
+	{ g: 'Lun – Ven', o: '08:00 – 20:00' },
+	{ g: 'Sabato', o: '09:00 – 14:00' },
+	{ g: 'Domenica', o: 'Chiuso' },
+];
+---
+
+<section class="info sez" id="contatti" aria-labelledby="info-titolo" data-info>
+	<div class="sez__in">
+		<div class="info__testa">
+			<p class="etichetta" data-rivela>Dove e quando</p>
+			<h2 class="titolo" id="info-titolo" data-split>La clinica è aperta. <em>Passa a vedere.</em></h2>
+		</div>
+
+		<div class="info__corpo">
+			<div class="info__dati">
+				<p class="stato" data-stato><i aria-hidden="true"></i><span data-stato-t>Controllo gli orari…</span></p>
+				<dl class="info__lista">
+					<div class="info__riga luce" data-rivela>
+						<dt>Indirizzo</dt>
+						<dd>Via dei Filamenti 12<br />00100 · Città di Esempio</dd>
+					</div>
+					<div class="info__riga luce" data-rivela>
+						<dt>Telefono</dt>
+						<dd>+39 000 000 0000</dd>
+					</div>
+					<div class="info__riga luce" data-rivela>
+						<dt>Email</dt>
+						<dd>ciao@aeterna.example</dd>
+					</div>
+					<div class="info__riga luce" data-rivela>
+						<dt>Orari</dt>
+						<dd>
+							<ul class="orari" role="list">
+								{orari.map((o) => <li><span>{o.g}</span><span>{o.o}</span></li>)}
+							</ul>
+						</dd>
+					</div>
+				</dl>
+				<p class="info__nota" data-rivela>Clinica, indirizzo, numeri e persone sono di fantasia: questa pagina è una vetrina dimostrativa.</p>
+			</div>
+
+			<figure class="mappa vetro" data-rivela>
+				<svg viewBox="0 0 520 420" role="img" aria-labelledby="mappa-t" focusable="false">
+					<title id="mappa-t">Mappa schematica di fantasia: la clinica si trova all’incrocio tra Via dei Filamenti e Viale Doppia Elica.</title>
+					<g fill="none" stroke="rgba(142,158,160,0.22)" stroke-width="1">
+						<path d="M0 90H520M0 210H520M0 330H520M110 0V420M260 0V420M410 0V420"></path>
+					</g>
+					<g fill="none" stroke="rgba(134,214,195,0.5)" stroke-width="2.4" stroke-linecap="round">
+						<path d="M0 270C120 270 170 190 260 190S420 120 520 130" class="mappa__via"></path>
+						<path d="M200 0C210 120 250 200 260 190S300 330 330 420" class="mappa__via"></path>
+					</g>
+					<g fill="rgba(26,42,64,0.7)" stroke="rgba(142,158,160,0.2)">
+						<rect x="130" y="40" width="100" height="60" rx="4"></rect>
+						<rect x="290" y="30" width="90" height="70" rx="4"></rect>
+						<rect x="40" y="110" width="50" height="70" rx="4"></rect>
+						<rect x="300" y="230" width="90" height="70" rx="4"></rect>
+						<rect x="130" y="240" width="110" height="64" rx="4"></rect>
+						<rect x="430" y="170" width="70" height="80" rx="4"></rect>
+					</g>
+					<g class="mappa__pin" transform="translate(260 190)">
+						<circle r="30" class="mappa__onda"></circle>
+						<circle r="30" class="mappa__onda mappa__onda--2"></circle>
+						<circle r="7" fill="#d4af37"></circle>
+						<circle r="2.6" fill="#060b14"></circle>
+					</g>
+					<text x="276" y="176" class="mappa__txt">AETERNA</text>
+					<text x="20" y="400" class="mappa__txt mappa__txt--dim">Via dei Filamenti</text>
+					<text x="420" y="116" class="mappa__txt mappa__txt--dim" text-anchor="end">Viale Doppia Elica</text>
+				</svg>
+				<figcaption>Mappa schematica di fantasia</figcaption>
+			</figure>
+		</div>
+	</div>
+</section>
+
+<style>
+	.info {
+		background: var(--abisso);
+	}
+	.info__testa {
+		display: grid;
+		gap: 22px;
+		max-width: 1000px;
+		margin-bottom: clamp(40px, 6vw, 80px);
+	}
+	.info__corpo {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+		gap: clamp(28px, 5vw, 80px);
+		align-items: start;
+	}
+	.stato {
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		margin-bottom: 26px;
+		font-family: var(--mono);
+		font-size: 0.74rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+	}
+	.stato i {
+		width: 9px;
+		height: 9px;
+		border-radius: 50%;
+		background: var(--nebbia);
+	}
+	.stato.is-aperto i {
+		background: var(--smeraldo-chiaro);
+		box-shadow: 0 0 12px var(--smeraldo-chiaro);
+		animation: ae-batti-i 1.8s ease-in-out infinite;
+	}
+	@keyframes ae-batti-i {
+		50% {
+			opacity: 0.35;
+		}
+	}
+	.info__lista {
+		display: grid;
+		gap: 0;
+	}
+	.info__riga {
+		display: grid;
+		grid-template-columns: 8.5rem 1fr;
+		gap: 16px;
+		padding: 20px 0;
+		border-top: 1px solid var(--linea);
+		transition: padding 0.5s var(--ease);
+	}
+	.info__riga:last-child {
+		border-bottom: 1px solid var(--linea);
+	}
+	.info__riga:hover {
+		padding-left: 14px;
+	}
+	.info__riga dt {
+		font-family: var(--mono);
+		font-size: 0.7rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--smeraldo-chiaro);
+		padding-top: 5px;
+	}
+	.info__riga dd {
+		margin: 0;
+		font-size: 1.15rem;
+		font-weight: 300;
+	}
+	.orari {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 6px;
+		font-size: 1rem;
+	}
+	.orari li {
+		display: flex;
+		justify-content: space-between;
+		gap: 24px;
+		max-width: 22rem;
+	}
+	.orari li span:first-child {
+		color: var(--nebbia);
+	}
+	.orari li.is-oggi span {
+		color: var(--smeraldo-chiaro);
+	}
+	.info__nota {
+		margin-top: 22px;
+		font-family: var(--mono);
+		font-size: 0.7rem;
+		letter-spacing: 0.04em;
+		color: var(--nebbia);
+	}
+	.mappa {
+		margin: 0;
+		padding: 14px;
+	}
+	.mappa svg {
+		width: 100%;
+		height: auto;
+		border-radius: 3px;
+		background: #070e1a;
+	}
+	.mappa figcaption {
+		margin-top: 10px;
+		font-family: var(--mono);
+		font-size: 0.66rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--nebbia);
+	}
+	.mappa__via {
+		stroke-dasharray: 700;
+		stroke-dashoffset: 700;
+	}
+	.mappa.is-visibile .mappa__via {
+		stroke-dashoffset: 0;
+		transition: stroke-dashoffset 2.6s var(--ease) 0.3s;
+	}
+	:global(.ridotto) .mappa__via {
+		stroke-dashoffset: 0;
+	}
+	.mappa__onda {
+		fill: none;
+		stroke: rgba(212, 175, 55, 0.7);
+		stroke-width: 1.2;
+		transform-origin: center;
+		animation: ae-onda 2.8s ease-out infinite;
+	}
+	.mappa__onda--2 {
+		animation-delay: 1.4s;
+	}
+	@keyframes ae-onda {
+		from {
+			transform: scale(0.2);
+			opacity: 1;
+		}
+		to {
+			transform: scale(1.4);
+			opacity: 0;
+		}
+	}
+	.mappa__txt {
+		font-family: var(--mono);
+		font-size: 11px;
+		letter-spacing: 0.2em;
+		fill: var(--ghiaccio);
+	}
+	.mappa__txt--dim {
+		font-size: 9px;
+		letter-spacing: 0.12em;
+		fill: var(--nebbia);
+	}
+	@media (max-width: 900px) {
+		.info__corpo {
+			grid-template-columns: 1fr;
+		}
+		.info__riga {
+			grid-template-columns: 1fr;
+			gap: 6px;
+		}
+	}
+</style>
+
+<script>
+	// stato di apertura dall'ora locale del visitatore (la clinica è di fantasia: vale come dimostrazione)
+	const sez = document.querySelector<HTMLElement>('[data-info]')!;
+	const stato = sez.querySelector<HTMLElement>('[data-stato]')!;
+	const testo = sez.querySelector<HTMLElement>('[data-stato-t]')!;
+	const righe = Array.from(sez.querySelectorAll<HTMLElement>('.orari li'));
+	const ora = new Date();
+	const g = ora.getDay(); // 0 = domenica
+	const minuti = ora.getHours() * 60 + ora.getMinutes();
+	const finestre: Record<number, [number, number] | null> = {
+		0: null,
+		1: [480, 1200],
+		2: [480, 1200],
+		3: [480, 1200],
+		4: [480, 1200],
+		5: [480, 1200],
+		6: [540, 840],
+	};
+	const f = finestre[g];
+	const aperto = !!f && minuti >= f[0] && minuti < f[1];
+	stato.classList.toggle('is-aperto', aperto);
+	const hh = (m: number) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+	if (aperto && f) testo.textContent = `Aperto ora · chiude alle ${hh(f[1])}`;
+	else if (f && minuti < f[0]) testo.textContent = `Chiuso ora · apre alle ${hh(f[0])}`;
+	else testo.textContent = 'Chiuso ora · riapriamo il prossimo giorno di apertura';
+	const indice = g === 0 ? 2 : g === 6 ? 1 : 0;
+	righe[indice]?.classList.add('is-oggi');
+</script>

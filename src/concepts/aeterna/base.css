@@ -1,0 +1,384 @@
+/* Aeterna — token, reset e utilità. Clinica "laboratorio": abisso blu, smeraldo, un filo d'oro.
+   Il tema è scuro per scelta; le sezioni "ghiaccio" fanno da pausa chiara (ritmo, non tema). */
+:root {
+	--abisso: #060b14;
+	--navy: #0c1626;
+	--navy-2: #11203a;
+	--navy-3: #1a2a40;
+	--linea: rgba(142, 158, 160, 0.18);
+	--linea-oro: rgba(212, 175, 55, 0.22);
+	--smeraldo: #4e9f8e;
+	--smeraldo-chiaro: #86d6c3;
+	--smeraldo-scuro: #2b6a5c;
+	--oro: #d4af37;
+	--oro-scuro: #8f6f10;
+	--ghiaccio: #e2ece9;
+	--ghiaccio-2: #d3e0dc;
+	--bianco: #f3f8f6;
+	--nebbia: #93a3a6;
+	--nebbia-scura: #4b5f64;
+	--errore: #ff8e83;
+	--errore-scuro: #a62d22;
+
+	--display: 'Instrument Serif', 'Cormorant Garamond', Georgia, serif;
+	--testo: 'Montserrat Variable', 'Segoe UI', system-ui, sans-serif;
+	/* --mono ora è la voce delle etichette (maiuscoletto spaziato in Montserrat): niente aria da terminale.
+	   Il vero monospazio resta solo nei dati strumentali (--tec). */
+	--mono: 'Montserrat Variable', 'Segoe UI', system-ui, sans-serif;
+	--tec: 'JetBrains Mono Variable', ui-monospace, Consolas, monospace;
+	--marchio: 'Cinzel', 'Cormorant Garamond', 'Times New Roman', serif;
+
+	--gutter: clamp(20px, 5vw, 80px);
+	--max: 1280px;
+	--fascia: 34px;
+	--nav-h: 76px;
+	--ease: cubic-bezier(0.22, 1, 0.36, 1);
+	color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	background: var(--abisso);
+	-webkit-text-size-adjust: 100%;
+	scroll-padding-top: calc(var(--nav-h) + 12px);
+}
+
+/* Lenis: scorrimento controllato dallo script, mai insieme a quello morbido del browser */
+html.lenis,
+html.lenis body {
+	height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+	overflow: clip;
+}
+.lenis [data-lenis-prevent] {
+	overscroll-behavior: contain;
+}
+
+body {
+	margin: 0;
+	background: var(--abisso);
+	color: var(--bianco);
+	font-family: var(--testo);
+	font-weight: 400;
+	font-size: 1.0625rem;
+	line-height: 1.65;
+	-webkit-font-smoothing: antialiased;
+	overflow-x: clip;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+dl,
+dd {
+	margin: 0;
+}
+
+img,
+svg,
+canvas {
+	display: block;
+	max-width: 100%;
+}
+
+a {
+	color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+	font: inherit;
+	color: inherit;
+}
+
+button {
+	cursor: pointer;
+}
+
+:focus-visible {
+	outline: 2px solid var(--smeraldo-chiaro);
+	outline-offset: 3px;
+	border-radius: 2px;
+}
+.ghiaccio :focus-visible {
+	outline-color: var(--smeraldo-scuro);
+}
+
+::selection {
+	background: var(--smeraldo);
+	color: var(--abisso);
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+.skip-link {
+	position: fixed;
+	left: 16px;
+	top: -80px;
+	z-index: 500;
+	background: var(--smeraldo-chiaro);
+	color: var(--abisso);
+	padding: 10px 16px;
+	font-family: var(--mono);
+	font-size: 0.85rem;
+	text-decoration: none;
+	transition: top 0.2s var(--ease);
+}
+.skip-link:focus {
+	top: 12px;
+}
+
+/* ---------- Tipografia di sezione (condivisa solo dentro Aeterna) ---------- */
+.sez {
+	position: relative;
+	padding: clamp(88px, 12vw, 168px) var(--gutter);
+}
+.sez__in {
+	max-width: var(--max);
+	margin-inline: auto;
+}
+.etichetta {
+	display: inline-flex;
+	align-items: center;
+	gap: 12px;
+	font-family: var(--mono);
+	font-weight: 600;
+	font-size: 0.72rem;
+	letter-spacing: 0.22em;
+	text-transform: uppercase;
+	color: var(--smeraldo-chiaro);
+}
+.etichetta::before {
+	content: '';
+	width: 28px;
+	height: 1px;
+	background: currentColor;
+	opacity: 0.8;
+}
+.titolo {
+	font-family: var(--display);
+	font-weight: 400;
+	font-size: clamp(2.5rem, 6vw, 5.2rem);
+	line-height: 1.02;
+	letter-spacing: 0;
+	text-wrap: balance;
+}
+.titolo em {
+	font-style: italic;
+	font-weight: 400;
+	color: var(--smeraldo-chiaro);
+}
+
+/* Voce editoriale: titoli, cifre grandi e voci di menù in serif; il resto in sans */
+h1,
+h2,
+h3,
+h4,
+.scheda__valore,
+.eta__n,
+.quadrante__n,
+.pannello__n,
+.report__num b,
+.riepilogo__n,
+.dato b,
+.menu__t,
+.prot__chiusa-t,
+.step__t,
+.blocco legend,
+.drawer__tot p:last-child {
+	font-family: var(--display);
+	font-weight: 400;
+}
+
+.lead {
+	font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+	line-height: 1.7;
+	color: var(--nebbia);
+	max-width: 56ch;
+}
+
+.ghiaccio {
+	background: var(--ghiaccio);
+	color: var(--navy);
+	color-scheme: light;
+}
+.ghiaccio .etichetta {
+	color: var(--smeraldo-scuro);
+}
+.ghiaccio .titolo em {
+	color: var(--smeraldo-scuro);
+}
+.ghiaccio .lead {
+	color: var(--nebbia-scura);
+}
+
+/* ---------- Bottoni ---------- */
+.btn {
+	--pad: 16px 28px;
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	padding: var(--pad);
+	border: 1px solid var(--smeraldo);
+	background: var(--smeraldo);
+	color: var(--abisso);
+	font-family: var(--mono);
+	font-weight: 700;
+	font-size: 0.78rem;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	text-decoration: none;
+	border-radius: 2px;
+	white-space: nowrap;
+	overflow: hidden;
+	isolation: isolate;
+	transition:
+		color 0.4s var(--ease),
+		border-color 0.4s var(--ease),
+		transform 0.3s var(--ease);
+	will-change: transform;
+}
+.btn::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background: var(--bianco);
+	transform: translateY(101%);
+	transition: transform 0.5s var(--ease);
+}
+.btn:hover::before,
+.btn:focus-visible::before {
+	transform: none;
+}
+.btn:hover {
+	border-color: var(--bianco);
+}
+.btn--vuoto {
+	background: transparent;
+	color: var(--bianco);
+	border-color: rgba(243, 248, 246, 0.35);
+}
+.btn--vuoto::before {
+	background: var(--smeraldo);
+}
+.btn--vuoto:hover {
+	color: var(--abisso);
+	border-color: var(--smeraldo);
+}
+.ghiaccio .btn {
+	background: var(--navy);
+	border-color: var(--navy);
+	color: var(--ghiaccio);
+}
+.ghiaccio .btn::before {
+	background: var(--smeraldo-scuro);
+}
+.ghiaccio .btn:hover {
+	border-color: var(--smeraldo-scuro);
+	color: var(--bianco);
+}
+.btn[disabled] {
+	opacity: 0.45;
+	pointer-events: none;
+}
+
+/* ---------- Vetro e luce che segue il mouse (bordo illuminato) ---------- */
+.vetro {
+	position: relative;
+	background: linear-gradient(160deg, rgba(26, 42, 64, 0.62), rgba(12, 22, 38, 0.5));
+	-webkit-backdrop-filter: blur(16px);
+	backdrop-filter: blur(16px);
+	border: 1px solid var(--linea-oro);
+	border-radius: 4px;
+}
+.luce {
+	--mx: 50%;
+	--my: 0%;
+	position: relative;
+}
+.luce::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	padding: 1px;
+	background: radial-gradient(240px circle at var(--mx) var(--my), rgba(134, 214, 195, 0.9), transparent 70%);
+	-webkit-mask:
+		linear-gradient(#000 0 0) content-box,
+		linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
+	mask:
+		linear-gradient(#000 0 0) content-box exclude,
+		linear-gradient(#000 0 0);
+	opacity: 0;
+	transition: opacity 0.4s var(--ease);
+	pointer-events: none;
+}
+.luce:hover::after {
+	opacity: 1;
+}
+
+/* ---------- Titoli che si rivelano riga per riga ---------- */
+.js:not(.ridotto) [data-split] {
+	opacity: 0;
+}
+.js:not(.ridotto) [data-split].is-pronto {
+	opacity: 1;
+}
+.maschera {
+	display: inline-block;
+	overflow: hidden;
+	vertical-align: top;
+	padding-bottom: 0.12em;
+	margin-bottom: -0.12em;
+}
+.maschera > span {
+	display: inline-block;
+	will-change: transform;
+}
+
+.js:not(.ridotto) [data-rivela] {
+	opacity: 0;
+	transform: translateY(28px);
+}
+.js:not(.ridotto) [data-rivela].is-visibile {
+	opacity: 1;
+	transform: none;
+	transition:
+		opacity 0.9s var(--ease) var(--ritardo, 0s),
+		transform 0.9s var(--ease) var(--ritardo, 0s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.001ms !important;
+	}
+}

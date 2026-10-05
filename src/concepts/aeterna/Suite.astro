@@ -1,0 +1,1091 @@
+---
+// Suite privata: prenotazione "concierge" in una pagina sola. Protocollo, specialista, giorno e ora (calcolati da oggi),
+// complementari e dati; il prezzo si aggiorna in tempo reale e la conferma si apre in un drawer laterale.
+// Tutto è simulato: nessun dato lascia il browser e la caparra non è un pagamento reale.
+import { protocolli, medici, complementari } from './protocolli';
+import { euro } from './formato';
+---
+
+<section class="suite ghiaccio sez" id="suite" aria-labelledby="suite-titolo" data-suite>
+	<div class="sez__in">
+		<div class="suite__testa">
+			<p class="etichetta" data-rivela>Suite privata</p>
+			<h2 class="titolo" id="suite-titolo" data-split>Una suite, un medico, <em>un’ora solo per te.</em></h2>
+			<p class="lead" data-rivela>
+				Scegli il protocollo, lo specialista e l’orario. Il totale si aggiorna a ogni scelta; la conferma è una simulazione, nessun
+				pagamento reale.
+			</p>
+		</div>
+
+		<div class="suite__corpo">
+			<form class="suite__form" novalidate data-form-suite aria-labelledby="suite-titolo">
+				<fieldset class="blocco">
+					<legend><span aria-hidden="true">01</span> Protocollo</legend>
+					<div class="griglia griglia--2" role="radiogroup" aria-label="Protocollo">
+						{
+							protocolli.map((p) => (
+								<label class="card" data-id={p.id}>
+									<input type="radio" name="protocollo" value={p.id} checked={p.id === 'checkup'} data-prezzo={p.prezzo} data-nome={p.nome} data-durata={p.durata} />
+									<span class="card__in luce">
+										<b>{p.nome}</b>
+										<em>{p.breve} · {p.durata}′</em>
+										<i>{euro(p.prezzo)}</i>
+										<u class="card__tag" hidden>Consigliato dal tuo profilo</u>
+									</span>
+								</label>
+							))
+						}
+					</div>
+				</fieldset>
+
+				<fieldset class="blocco">
+					<legend><span aria-hidden="true">02</span> Specialista</legend>
+					<div class="griglia griglia--3" role="radiogroup" aria-label="Specialista">
+						{
+							medici.map((m, i) => (
+								<label class="card">
+									<input type="radio" name="medico" value={m.id} checked={i === 0} data-extra={m.extra} data-nome={m.nome} />
+									<span class="card__in luce card__in--medico">
+										<span class="avatar" aria-hidden="true">{m.sigla}</span>
+										<b>{m.nome}</b>
+										<em>{m.ruolo}</em>
+										<i>{m.extra ? `+ ${euro(m.extra)}` : 'Incluso'}</i>
+									</span>
+								</label>
+							))
+						}
+					</div>
+				</fieldset>
+
+				<fieldset class="blocco">
+					<legend><span aria-hidden="true">03</span> Giorno e ora</legend>
+					<div class="giorni" role="radiogroup" aria-label="Giorno" data-giorni></div>
+					<p class="slot__t" id="slot-t" data-slot-t>Scegli prima un giorno.</p>
+					<div class="slots" role="radiogroup" aria-labelledby="slot-t" data-slots></div>
+				</fieldset>
+
+				<fieldset class="blocco">
+					<legend><span aria-hidden="true">04</span> Complementari <small>facoltativi</small></legend>
+					<div class="griglia griglia--2">
+						{
+							complementari.map((c) => (
+								<label class="card card--check">
+									<input type="checkbox" name="extra" value={c.id} data-prezzo={c.prezzo} data-nome={c.nome} />
+									<span class="card__in luce">
+										<b>{c.nome}</b>
+										<i>+ {euro(c.prezzo)}</i>
+									</span>
+								</label>
+							))
+						}
+					</div>
+				</fieldset>
+
+				<fieldset class="blocco">
+					<legend><span aria-hidden="true">05</span> I tuoi dati</legend>
+					<div class="campi">
+						<div class="campo">
+							<label for="s-nome">Nome e cognome</label>
+							<input id="s-nome" name="nome" type="text" autocomplete="name" aria-describedby="s-nome-e" required data-campo />
+							<p class="campo__e" id="s-nome-e" data-err="nome"></p>
+						</div>
+						<div class="campo">
+							<label for="s-mail">Email</label>
+							<input id="s-mail" name="mail" type="email" autocomplete="email" inputmode="email" aria-describedby="s-mail-e" required data-campo />
+							<p class="campo__e" id="s-mail-e" data-err="mail"></p>
+						</div>
+						<div class="campo">
+							<label for="s-tel">Telefono</label>
+							<input id="s-tel" name="tel" type="tel" autocomplete="tel" inputmode="tel" aria-describedby="s-tel-e" required data-campo />
+							<p class="campo__e" id="s-tel-e" data-err="tel"></p>
+						</div>
+					</div>
+					<div class="consenso">
+						<input type="checkbox" id="s-ok" name="ok" aria-describedby="s-ok-e" data-campo />
+						<label for="s-ok">Ho capito che è una vetrina di fantasia: i dati inseriti restano nel mio browser e non vengono inviati a nessuno.</label>
+						<p class="campo__e" id="s-ok-e" data-err="ok"></p>
+					</div>
+				</fieldset>
+
+				<p class="suite__errore" role="alert" data-errore-form></p>
+			</form>
+
+			<aside class="riepilogo" aria-label="Riepilogo della prenotazione" data-riepilogo>
+				<p class="riepilogo__tag">Riepilogo · <span>in tempo reale</span></p>
+				<dl class="riepilogo__righe" data-righe></dl>
+				<div class="riepilogo__tot">
+					<p>Totale</p>
+					<p class="riepilogo__n" data-totale aria-live="polite">€ 0</p>
+				</div>
+				<p class="riepilogo__cap">Caparra del 20 % simulata: <b data-caparra>€ 0</b></p>
+				<button type="button" class="btn riepilogo__btn" data-conferma data-magnetico data-cursore="CONFERMA">Rivedi e conferma <span aria-hidden="true">→</span></button>
+				<p class="riepilogo__nota">Simulazione: nessun pagamento reale e nessun dato inviato.</p>
+			</aside>
+		</div>
+	</div>
+
+	<dialog class="drawer" data-drawer aria-labelledby="dr-t">
+		<div class="drawer__in" data-drawer-in>
+			<button type="button" class="drawer__chiudi" data-chiudi aria-label="Chiudi">
+				<span aria-hidden="true">×</span>
+			</button>
+			<div data-dr-riepilogo>
+				<p class="etichetta">Conferma</p>
+				<h3 class="drawer__t" id="dr-t">Rivedi la prenotazione</h3>
+				<dl class="drawer__righe" data-dr-righe></dl>
+				<div class="drawer__tot">
+					<p>Totale</p>
+					<p data-dr-totale>€ 0</p>
+				</div>
+				<div class="drawer__cap">
+					<p>Caparra del 20 % <small>(simulata)</small></p>
+					<p data-dr-caparra>€ 0</p>
+				</div>
+				<p class="drawer__nota">Il saldo si paga in clinica. In questa vetrina non viene addebitato nulla.</p>
+				<div class="drawer__azioni">
+					<button type="button" class="btn" data-dr-ok data-magnetico>Conferma e blocca la suite</button>
+					<button type="button" class="btn btn--vuoto" data-chiudi>Torna ai dati</button>
+				</div>
+			</div>
+			<div data-dr-fatto hidden tabindex="-1">
+				<p class="etichetta">Suite bloccata · simulazione</p>
+				<h3 class="drawer__t" data-dr-fatto-t>Ci vediamo presto</h3>
+				<p class="drawer__fatto-p" data-dr-fatto-p></p>
+				<div class="drawer__pass">
+					<canvas width="132" height="132" data-dr-qr role="img" aria-label="Codice di esempio, non scansionabile"></canvas>
+					<div>
+						<p class="drawer__cod-l">Codice di esempio</p>
+						<p class="drawer__cod" data-dr-cod>AET-0000</p>
+					</div>
+				</div>
+				<div class="drawer__azioni">
+					<button type="button" class="btn" data-chiudi>Chiudi</button>
+					<button type="button" class="btn btn--vuoto" data-dr-nuova>Nuova prenotazione</button>
+				</div>
+			</div>
+		</div>
+	</dialog>
+</section>
+
+<style>
+	.suite__testa {
+		display: grid;
+		gap: 22px;
+		max-width: 1000px;
+		margin-bottom: clamp(40px, 6vw, 80px);
+	}
+	.suite__corpo {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(280px, 380px);
+		gap: clamp(28px, 5vw, 72px);
+		align-items: start;
+	}
+	.suite__form {
+		display: grid;
+		gap: 44px;
+	}
+	.blocco {
+		border: 0;
+		margin: 0;
+		padding: 0;
+		min-inline-size: 0;
+	}
+	.blocco legend {
+		padding: 0;
+		margin-bottom: 18px;
+		display: flex;
+		align-items: baseline;
+		gap: 14px;
+		font-weight: 300;
+		font-size: clamp(1.51rem, 2.55vw, 1.97rem);
+		letter-spacing: 0;
+	}
+	.blocco legend span {
+		font-family: var(--mono);
+		font-size: 0.75rem;
+		letter-spacing: 0.18em;
+		color: var(--smeraldo-scuro);
+	}
+	.blocco legend small {
+		font-family: var(--mono);
+		font-size: 0.66rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--nebbia-scura);
+	}
+	.griglia {
+		display: grid;
+		gap: 10px;
+	}
+	.griglia--2 {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+	.griglia--3 {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
+	/* schede selezionabili */
+	.card {
+		position: relative;
+		display: block;
+		cursor: pointer;
+	}
+	.card input {
+		position: absolute;
+		inset: 0;
+		opacity: 0;
+		margin: 0;
+		cursor: pointer;
+	}
+	.card__in {
+		position: relative;
+		display: grid;
+		gap: 3px;
+		height: 100%;
+		padding: 16px 18px 16px;
+		background: rgba(255, 255, 255, 0.45);
+		border: 1px solid rgba(12, 22, 38, 0.2);
+		border-radius: 3px;
+		transition:
+			background-color 0.35s var(--ease),
+			border-color 0.35s var(--ease),
+			transform 0.35s var(--ease),
+			box-shadow 0.35s var(--ease);
+	}
+	.card__in b {
+		font-weight: 400;
+		font-size: 1.02rem;
+		line-height: 1.25;
+	}
+	.card__in em {
+		font-style: normal;
+		font-size: 0.84rem;
+		color: var(--nebbia-scura);
+	}
+	.card__in i {
+		font-style: normal;
+		font-family: var(--mono);
+		font-size: 0.84rem;
+		color: var(--smeraldo-scuro);
+		margin-top: 6px;
+	}
+	.card:hover .card__in {
+		transform: translateY(-2px);
+		border-color: var(--navy);
+	}
+	.card input:checked + .card__in {
+		background: var(--navy);
+		border-color: var(--navy);
+		color: var(--ghiaccio);
+		box-shadow: 0 14px 30px -14px rgba(12, 22, 38, 0.6);
+	}
+	.card input:checked + .card__in em {
+		color: var(--nebbia);
+	}
+	.card input:checked + .card__in i {
+		color: var(--oro);
+	}
+	.card input:focus-visible + .card__in {
+		outline: 2px solid var(--smeraldo-scuro);
+		outline-offset: 3px;
+	}
+	.card__tag {
+		position: absolute;
+		top: -9px;
+		right: 12px;
+		text-decoration: none;
+		background: var(--oro);
+		color: var(--abisso);
+		font-family: var(--mono);
+		font-size: 0.6rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		padding: 3px 8px;
+		border-radius: 2px;
+	}
+	.card__tag[hidden] {
+		display: none;
+	}
+	.card__in--medico {
+		grid-template-columns: auto 1fr;
+		column-gap: 14px;
+		align-items: center;
+	}
+	.card__in--medico .avatar {
+		grid-row: span 3;
+	}
+	.avatar {
+		width: 44px;
+		height: 44px;
+		border-radius: 50%;
+		display: grid;
+		place-items: center;
+		background: linear-gradient(135deg, var(--smeraldo), var(--navy-3));
+		color: var(--bianco);
+		font-family: var(--mono);
+		font-size: 0.82rem;
+		letter-spacing: 0.06em;
+	}
+	.card__in--medico i {
+		grid-column: 2;
+	}
+
+	/* giorni e fasce */
+	.giorni {
+		display: flex;
+		gap: 8px;
+		overflow-x: auto;
+		padding: 4px 2px 10px;
+		margin-inline: -2px;
+		scrollbar-width: thin;
+	}
+	:global(.giorno) {
+		position: relative;
+		flex: none;
+		cursor: pointer;
+	}
+	:global(.giorno input),
+	:global(.slot input) {
+		position: absolute;
+		inset: 0;
+		opacity: 0;
+		margin: 0;
+		cursor: pointer;
+	}
+	:global(.giorno span) {
+		display: grid;
+		justify-items: center;
+		gap: 2px;
+		min-width: 76px;
+		padding: 12px 10px;
+		border: 1px solid rgba(12, 22, 38, 0.2);
+		border-radius: 3px;
+		background: rgba(255, 255, 255, 0.45);
+		font-size: 0.9rem;
+		transition:
+			background-color 0.35s var(--ease),
+			border-color 0.35s var(--ease),
+			transform 0.35s var(--ease);
+	}
+	:global(.giorno b) {
+		font-family: var(--mono);
+		font-weight: 400;
+		font-size: 0.68rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--smeraldo-scuro);
+	}
+	:global(.giorno input:checked + span),
+	:global(.slot input:checked + span) {
+		background: var(--navy);
+		border-color: var(--navy);
+		color: var(--ghiaccio);
+	}
+	:global(.giorno input:checked + span b) {
+		color: var(--oro);
+	}
+	:global(.giorno input:focus-visible + span),
+	:global(.slot input:focus-visible + span) {
+		outline: 2px solid var(--smeraldo-scuro);
+		outline-offset: 3px;
+	}
+	.slot__t {
+		margin: 12px 0 10px;
+		font-family: var(--mono);
+		font-size: 0.72rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--nebbia-scura);
+	}
+	.slots {
+		display: grid;
+		grid-template-columns: repeat(6, minmax(0, 1fr));
+		gap: 8px;
+	}
+	:global(.slot) {
+		position: relative;
+		cursor: pointer;
+	}
+	:global(.slot > span) {
+		display: block;
+		text-align: center;
+		padding: 12px 6px;
+		border: 1px solid rgba(12, 22, 38, 0.2);
+		border-radius: 3px;
+		background: rgba(255, 255, 255, 0.45);
+		font-family: var(--mono);
+		font-size: 0.86rem;
+		transition:
+			background-color 0.35s var(--ease),
+			border-color 0.35s var(--ease);
+	}
+	:global(.slot:hover > span) {
+		border-color: var(--navy);
+	}
+	:global(.slot--occupato) {
+		cursor: not-allowed;
+	}
+	:global(.slot--occupato > span) {
+		color: rgba(12, 22, 38, 0.45);
+		background: transparent;
+		text-decoration: line-through;
+		border-style: dashed;
+	}
+	:global(.slot--occupato:hover > span) {
+		border-color: rgba(12, 22, 38, 0.2);
+	}
+
+	/* campi */
+	.campi {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 16px;
+	}
+	.campo label {
+		display: block;
+		font-family: var(--mono);
+		font-size: 0.7rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		margin-bottom: 8px;
+		color: var(--nebbia-scura);
+	}
+	.campo input {
+		width: 100%;
+		padding: 13px 14px;
+		border: 1px solid rgba(12, 22, 38, 0.3);
+		border-radius: 3px;
+		background: rgba(255, 255, 255, 0.7);
+		color: var(--navy);
+		font-size: 1rem;
+		transition:
+			border-color 0.3s var(--ease),
+			box-shadow 0.3s var(--ease);
+	}
+	.campo input:focus {
+		outline: none;
+		border-color: var(--smeraldo-scuro);
+		box-shadow: 0 0 0 3px rgba(43, 106, 92, 0.2);
+	}
+	.campo input[aria-invalid='true'] {
+		border-color: var(--errore-scuro);
+	}
+	.campo__e {
+		min-height: 1.4em;
+		margin: 6px 0 0;
+		font-size: 0.8rem;
+		color: var(--errore-scuro);
+	}
+	.consenso {
+		margin-top: 8px;
+		display: grid;
+		grid-template-columns: auto 1fr;
+		gap: 4px 12px;
+		align-items: start;
+		font-size: 0.9rem;
+		color: var(--nebbia-scura);
+	}
+	.consenso input {
+		width: 20px;
+		height: 20px;
+		margin: 2px 0 0;
+		accent-color: var(--smeraldo-scuro);
+	}
+	.consenso .campo__e {
+		grid-column: 2;
+	}
+	.suite__errore {
+		min-height: 1.4em;
+		margin: 0;
+		font-family: var(--mono);
+		font-size: 0.8rem;
+		color: var(--errore-scuro);
+	}
+
+	/* riepilogo */
+	.riepilogo {
+		position: sticky;
+		top: calc(var(--nav-h) + 20px);
+		background: linear-gradient(170deg, var(--navy-2), var(--abisso));
+		color: var(--ghiaccio);
+		border: 1px solid var(--linea-oro);
+		border-radius: 4px;
+		padding: 26px 24px 24px;
+		box-shadow: 0 30px 60px -30px rgba(6, 11, 20, 0.7);
+	}
+	.riepilogo__tag {
+		font-family: var(--mono);
+		font-size: 0.7rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--oro);
+		margin-bottom: 18px;
+	}
+	.riepilogo__tag span {
+		color: var(--nebbia);
+	}
+	.riepilogo__righe {
+		display: grid;
+		gap: 0;
+		margin-bottom: 18px;
+	}
+	:global(.riga) {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 2px 14px;
+		padding: 11px 0;
+		border-top: 1px solid var(--linea);
+		font-size: 0.9rem;
+	}
+	:global(.riga dt) {
+		color: var(--nebbia);
+		font-family: var(--mono);
+		font-size: 0.66rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		grid-column: 1 / -1;
+	}
+	:global(.riga dd) {
+		margin: 0;
+	}
+	:global(.riga dd:last-child) {
+		font-family: var(--mono);
+		font-size: 0.84rem;
+		color: var(--smeraldo-chiaro);
+		text-align: right;
+	}
+	:global(.riga--vuota dd:first-of-type) {
+		color: var(--nebbia);
+		font-style: italic;
+	}
+	.riepilogo__tot {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		padding-top: 14px;
+		border-top: 1px solid var(--linea-oro);
+		font-family: var(--mono);
+		font-size: 0.74rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+	}
+	.riepilogo__n {
+		font-family: var(--display);
+		font-weight: 200;
+		font-size: 2.6rem;
+		letter-spacing: 0;
+		line-height: 1;
+		text-transform: none;
+		font-variant-numeric: tabular-nums;
+	}
+	.riepilogo__cap {
+		margin: 8px 0 20px;
+		font-size: 0.82rem;
+		color: var(--nebbia);
+	}
+	.riepilogo__cap b {
+		font-weight: 400;
+		color: var(--oro);
+		font-family: var(--mono);
+	}
+	.riepilogo__btn {
+		width: 100%;
+		background: var(--smeraldo);
+		border-color: var(--smeraldo);
+		color: var(--abisso);
+	}
+	.riepilogo__btn::before {
+		background: var(--bianco);
+	}
+	.riepilogo__btn:hover {
+		color: var(--abisso);
+		border-color: var(--bianco);
+	}
+	.riepilogo__nota {
+		margin-top: 14px;
+		font-family: var(--mono);
+		font-size: 0.64rem;
+		letter-spacing: 0.04em;
+		color: var(--nebbia);
+	}
+	.riepilogo.is-lampo {
+		animation: ae-lampo 0.9s var(--ease);
+	}
+	@keyframes ae-lampo {
+		0% {
+			box-shadow: 0 0 0 0 rgba(134, 214, 195, 0.8);
+		}
+		100% {
+			box-shadow: 0 0 0 26px rgba(134, 214, 195, 0);
+		}
+	}
+
+	/* drawer */
+	.drawer {
+		position: fixed;
+		inset: 0 0 0 auto;
+		margin: 0;
+		width: min(480px, 100vw);
+		max-width: none;
+		height: 100%;
+		max-height: none;
+		padding: 0;
+		border: 0;
+		border-left: 1px solid var(--linea-oro);
+		background: linear-gradient(170deg, var(--navy-2), var(--abisso) 70%);
+		color: var(--ghiaccio);
+		transform: translateX(100%);
+		transition:
+			transform 0.7s var(--ease),
+			overlay 0.7s allow-discrete,
+			display 0.7s allow-discrete;
+	}
+	.drawer[open] {
+		transform: none;
+	}
+	@starting-style {
+		.drawer[open] {
+			transform: translateX(100%);
+		}
+	}
+	.drawer::backdrop {
+		background: rgba(6, 11, 20, 0);
+		-webkit-backdrop-filter: blur(0);
+		backdrop-filter: blur(0);
+		transition:
+			background-color 0.7s var(--ease),
+			backdrop-filter 0.7s var(--ease),
+			overlay 0.7s allow-discrete,
+			display 0.7s allow-discrete;
+	}
+	.drawer[open]::backdrop {
+		background: rgba(6, 11, 20, 0.7);
+		-webkit-backdrop-filter: blur(6px);
+		backdrop-filter: blur(6px);
+	}
+	@starting-style {
+		.drawer[open]::backdrop {
+			background: rgba(6, 11, 20, 0);
+		}
+	}
+	.drawer__in {
+		position: relative;
+		height: 100%;
+		overflow-y: auto;
+		padding: 56px clamp(24px, 4vw, 40px) 36px;
+		display: grid;
+		align-content: start;
+	}
+	.drawer__chiudi {
+		position: absolute;
+		top: 14px;
+		right: 14px;
+		width: 44px;
+		height: 44px;
+		border-radius: 50%;
+		border: 1px solid var(--linea);
+		background: transparent;
+		font-size: 1.6rem;
+		line-height: 1;
+		color: var(--ghiaccio);
+		transition: border-color 0.3s var(--ease);
+	}
+	.drawer__chiudi:hover {
+		border-color: var(--smeraldo-chiaro);
+	}
+	.drawer :focus-visible {
+		outline-color: var(--smeraldo-chiaro);
+	}
+	.drawer .etichetta {
+		color: var(--smeraldo-chiaro);
+		margin-bottom: 14px;
+	}
+	.drawer__t {
+		font-weight: 200;
+		font-size: clamp(2.09rem, 4.64vw, 2.78rem);
+		letter-spacing: 0;
+		line-height: 1.1;
+		margin-bottom: 24px;
+	}
+	.drawer__righe {
+		display: grid;
+		margin-bottom: 18px;
+	}
+	.drawer__tot,
+	.drawer__cap {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		padding: 14px 0;
+		border-top: 1px solid var(--linea-oro);
+		font-family: var(--mono);
+		font-size: 0.8rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+	.drawer__tot p:last-child {
+		font-family: var(--display);
+		font-weight: 200;
+		font-size: 2rem;
+		letter-spacing: 0;
+		text-transform: none;
+	}
+	.drawer__cap p:last-child {
+		color: var(--oro);
+	}
+	.drawer__cap small {
+		color: var(--nebbia);
+		text-transform: none;
+		letter-spacing: 0;
+	}
+	.drawer__nota {
+		margin: 8px 0 26px;
+		font-size: 0.9rem;
+		color: var(--nebbia);
+	}
+	.drawer .btn {
+		background: var(--smeraldo);
+		border-color: var(--smeraldo);
+		color: var(--abisso);
+	}
+	.drawer .btn::before {
+		background: var(--bianco);
+	}
+	.drawer .btn:hover {
+		border-color: var(--bianco);
+		color: var(--abisso);
+	}
+	.drawer .btn--vuoto {
+		background: transparent;
+		border-color: rgba(243, 248, 246, 0.35);
+		color: var(--bianco);
+	}
+	.drawer .btn--vuoto::before {
+		background: var(--smeraldo);
+	}
+	.drawer .btn--vuoto:hover {
+		border-color: var(--smeraldo);
+	}
+	.drawer__azioni {
+		display: grid;
+		gap: 10px;
+		margin-top: 18px;
+	}
+	.drawer__fatto-p {
+		color: var(--nebbia);
+		margin-bottom: 26px;
+	}
+	.drawer__pass {
+		display: flex;
+		align-items: center;
+		gap: 22px;
+		padding: 20px;
+		border: 1px dashed var(--linea-oro);
+		border-radius: 3px;
+		margin-bottom: 8px;
+	}
+	.drawer__pass canvas {
+		width: 96px;
+		height: 96px;
+		background: var(--ghiaccio);
+		border-radius: 3px;
+		image-rendering: pixelated;
+	}
+	.drawer__cod-l {
+		font-family: var(--mono);
+		font-size: 0.64rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--nebbia);
+	}
+	.drawer__cod {
+		font-family: var(--mono);
+		font-size: 1.5rem;
+		letter-spacing: 0.08em;
+		color: var(--oro);
+	}
+
+	@media (max-width: 1000px) {
+		.suite__corpo {
+			grid-template-columns: 1fr;
+		}
+		.riepilogo {
+			position: relative;
+			top: 0;
+		}
+		.campi {
+			grid-template-columns: 1fr;
+		}
+	}
+	@media (max-width: 640px) {
+		.griglia--2,
+		.griglia--3 {
+			grid-template-columns: 1fr;
+		}
+		.slots {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+</style>
+
+<script>
+	import { gsap, ridotto, blocca, euro, luceBordo } from './motore';
+
+	const sez = document.querySelector<HTMLElement>('[data-suite]')!;
+	const form = sez.querySelector<HTMLFormElement>('[data-form-suite]')!;
+	const giorni = sez.querySelector<HTMLElement>('[data-giorni]')!;
+	const slots = sez.querySelector<HTMLElement>('[data-slots]')!;
+	const slotT = sez.querySelector<HTMLElement>('[data-slot-t]')!;
+	const righe = sez.querySelector<HTMLElement>('[data-righe]')!;
+	const totaleEl = sez.querySelector<HTMLElement>('[data-totale]')!;
+	const caparraEl = sez.querySelector<HTMLElement>('[data-caparra]')!;
+	const riepilogo = sez.querySelector<HTMLElement>('[data-riepilogo]')!;
+	const errForm = sez.querySelector<HTMLElement>('[data-errore-form]')!;
+	const drawer = sez.querySelector<HTMLDialogElement>('[data-drawer]')!;
+
+	const ORARI = ['09:00', '10:30', '12:00', '15:00', '16:30', '18:00'];
+	const GIORNI = ['dom', 'lun', 'mar', 'mer', 'gio', 'ven', 'sab'];
+	const MESI = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
+
+	// ---------- giorni: i prossimi sette di apertura, calcolati da oggi (la domenica è chiuso) ----------
+	const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+	const aperti: Date[] = [];
+	for (let k = 0; aperti.length < 7; k++) {
+		const d = new Date();
+		d.setDate(d.getDate() + k);
+		if (d.getDay() !== 0) aperti.push(d);
+	}
+	giorni.innerHTML = aperti
+		.map(
+			(d, i) =>
+				`<label class="giorno"><input type="radio" name="giorno" value="${iso(d)}" data-testo="${GIORNI[d.getDay()]} ${d.getDate()} ${MESI[d.getMonth()]}" /><span><b>${i === 0 ? 'oggi' : GIORNI[d.getDay()]}</b>${d.getDate()} ${MESI[d.getMonth()]}</span></label>`,
+		)
+		.join('');
+
+	// disponibilità deterministica per giorno + medico + ora (di fantasia)
+	const occupato = (g: string, m: string, o: string) => {
+		let h = 7;
+		for (const c of `${g}|${m}|${o}`) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+		return h % 100 < 34;
+	};
+	const val = (n: string) => form.querySelector<HTMLInputElement>(`[name="${n}"]:checked`);
+
+	function disegnaSlot() {
+		const g = val('giorno');
+		const m = val('medico');
+		if (!g || !m) {
+			slotT.textContent = 'Scegli prima un giorno.';
+			slots.innerHTML = '';
+			return;
+		}
+		const precedente = val('ora')?.value;
+		slotT.textContent = `Fasce libere · ${g.dataset.testo}`;
+		slots.innerHTML = ORARI.map((o) => {
+			const occ = occupato(g.value, m.value, o);
+			return `<label class="slot${occ ? ' slot--occupato' : ''}"><input type="radio" name="ora" value="${o}" ${occ ? 'disabled' : ''} ${o === precedente && !occ ? 'checked' : ''} /><span>${o}${occ ? '<span class="sr-only"> (occupato)</span>' : ''}</span></label>`;
+		}).join('');
+	}
+
+	// ---------- riepilogo e totali ----------
+	const conto = { v: 0 };
+	let ultimoTotale = 0;
+	function totale() {
+		const p = val('protocollo');
+		const m = val('medico');
+		const extra = Array.from(form.querySelectorAll<HTMLInputElement>('[name="extra"]:checked'));
+		const prezzoP = Number(p?.dataset.prezzo ?? 0);
+		const prezzoM = Number(m?.dataset.extra ?? 0);
+		const prezzoE = extra.reduce((s, e) => s + Number(e.dataset.prezzo), 0);
+		return { p, m, extra, tot: prezzoP + prezzoM + prezzoE, prezzoP, prezzoM, prezzoE };
+	}
+	function aggiorna(lampo = false) {
+		const t = totale();
+		const g = val('giorno');
+		const o = val('ora');
+		const riga = (k: string, v: string, prezzo: string, vuota = false) =>
+			`<div class="riga${vuota ? ' riga--vuota' : ''}"><dt>${k}</dt><dd>${v}</dd><dd>${prezzo}</dd></div>`;
+		const html = [
+			riga('Protocollo', t.p?.dataset.nome ?? '—', euro(t.prezzoP)),
+			riga('Specialista', t.m?.dataset.nome ?? '—', t.prezzoM ? `+ ${euro(t.prezzoM)}` : 'incluso'),
+			riga('Quando', g && o ? `${g.dataset.testo} · ${o.value}` : g ? `${g.dataset.testo} · scegli l’ora` : 'da scegliere', '', !(g && o)),
+			t.extra.length ? riga('Complementari', t.extra.map((e) => e.dataset.nome).join(' · '), `+ ${euro(t.prezzoE)}`) : '',
+		].join('');
+		righe.innerHTML = html;
+		caparraEl.textContent = euro(Math.round(t.tot * 0.2));
+		if (ridotto) totaleEl.textContent = euro(t.tot);
+		else {
+			conto.v = ultimoTotale;
+			gsap.to(conto, { v: t.tot, duration: 0.7, ease: 'power3.out', overwrite: true, onUpdate: () => (totaleEl.textContent = euro(Math.round(conto.v))) });
+		}
+		ultimoTotale = t.tot;
+		if (lampo && !ridotto) {
+			riepilogo.classList.remove('is-lampo');
+			void riepilogo.offsetWidth;
+			riepilogo.classList.add('is-lampo');
+		}
+	}
+
+	form.addEventListener('change', (e) => {
+		const t = e.target as HTMLInputElement;
+		if (t.name === 'giorno' || t.name === 'medico') disegnaSlot();
+		aggiorna(t.name === 'protocollo' || t.name === 'extra');
+		errForm.textContent = '';
+	});
+
+	// ---------- protocollo scelto altrove (sezione protocolli, Bio-Assessment) ----------
+	document.addEventListener('aeterna:protocollo', (e) => {
+		const id = (e as CustomEvent).detail?.id as string;
+		const r = form.querySelector<HTMLInputElement>(`[name="protocollo"][value="${id}"]`);
+		if (r) {
+			r.checked = true;
+			aggiorna(true);
+		}
+	});
+	document.addEventListener('aeterna:profilo', (e) => {
+		const id = (e as CustomEvent).detail?.protocollo as string;
+		sez.querySelectorAll<HTMLElement>('.card__tag').forEach((t) => (t.hidden = true));
+		sez.querySelector<HTMLElement>(`.card[data-id="${id}"] .card__tag`)?.removeAttribute('hidden');
+	});
+
+	// ---------- validazione ----------
+	const regole: Record<string, (v: string, el: HTMLInputElement) => string> = {
+		nome: (v) => (v.trim().length < 2 || !/\s|^\S{2,}/.test(v.trim()) ? 'Scrivi il tuo nome e cognome.' : ''),
+		mail: (v) => (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) ? '' : 'Scrivi un indirizzo email valido, ad esempio nome@dominio.it.'),
+		tel: (v) => (v.replace(/[^\d]/g, '').length >= 8 ? '' : 'Il telefono deve avere almeno 8 cifre.'),
+		ok: (_v, el) => (el.checked ? '' : 'Serve la tua conferma per continuare.'),
+	};
+	function controlla(el: HTMLInputElement): boolean {
+		const msg = regole[el.name]?.(el.value, el) ?? '';
+		const dest = sez.querySelector<HTMLElement>(`[data-err="${el.name}"]`)!;
+		dest.textContent = msg;
+		if (msg) el.setAttribute('aria-invalid', 'true');
+		else el.removeAttribute('aria-invalid');
+		return !msg;
+	}
+	form.querySelectorAll<HTMLInputElement>('[data-campo]').forEach((el) => {
+		el.addEventListener('blur', () => el.value && controlla(el));
+		el.addEventListener('input', () => el.hasAttribute('aria-invalid') && controlla(el));
+		el.addEventListener('change', () => el.hasAttribute('aria-invalid') && controlla(el));
+	});
+
+	// ---------- drawer ----------
+	const dr = {
+		righe: drawer.querySelector<HTMLElement>('[data-dr-righe]')!,
+		tot: drawer.querySelector<HTMLElement>('[data-dr-totale]')!,
+		cap: drawer.querySelector<HTMLElement>('[data-dr-caparra]')!,
+		riep: drawer.querySelector<HTMLElement>('[data-dr-riepilogo]')!,
+		fatto: drawer.querySelector<HTMLElement>('[data-dr-fatto]')!,
+		fattoP: drawer.querySelector<HTMLElement>('[data-dr-fatto-p]')!,
+		fattoT: drawer.querySelector<HTMLElement>('[data-dr-fatto-t]')!,
+		cod: drawer.querySelector<HTMLElement>('[data-dr-cod]')!,
+		qr: drawer.querySelector<HTMLCanvasElement>('[data-dr-qr]')!,
+	};
+	let apertoDa: HTMLElement | null = null;
+	function apriDrawer() {
+		apertoDa = document.activeElement as HTMLElement;
+		const t = totale();
+		const g = val('giorno')!;
+		const o = val('ora')!;
+		const riga = (k: string, v: string) => `<div class="riga"><dt>${k}</dt><dd>${v}</dd></div>`;
+		dr.righe.innerHTML = [
+			riga('Protocollo', `${t.p!.dataset.nome} · ${t.p!.dataset.durata}′`),
+			riga('Specialista', t.m!.dataset.nome!),
+			riga('Quando', `${g.dataset.testo} · ${o.value}`),
+			t.extra.length ? riga('Complementari', t.extra.map((e) => e.dataset.nome).join(', ')) : '',
+			riga('Intestata a', (form.elements.namedItem('nome') as HTMLInputElement).value.trim()),
+		].join('');
+		dr.tot.textContent = euro(t.tot);
+		dr.cap.textContent = euro(Math.round(t.tot * 0.2));
+		dr.riep.hidden = false;
+		dr.fatto.hidden = true;
+		drawer.showModal();
+		blocca(true);
+	}
+	function chiudiDrawer() {
+		drawer.close();
+	}
+	drawer.addEventListener('close', () => {
+		blocca(false);
+		apertoDa?.focus({ preventScroll: true });
+	});
+	drawer.addEventListener('click', (e) => {
+		// clic sullo sfondo oscurato
+		if (e.target === drawer) chiudiDrawer();
+	});
+	drawer.querySelectorAll('[data-chiudi]').forEach((b) => b.addEventListener('click', chiudiDrawer));
+
+	// codice di esempio (non scansionabile): griglia pseudo-casuale con i tre riquadri di orientamento
+	function disegnaCodice(seme: string) {
+		const ctx = dr.qr.getContext('2d')!;
+		const n = 21;
+		const s = dr.qr.width / n;
+		ctx.fillStyle = '#e2ece9';
+		ctx.fillRect(0, 0, dr.qr.width, dr.qr.height);
+		ctx.fillStyle = '#0c1626';
+		let h = 2166136261;
+		for (const c of seme) h = Math.imul(h ^ c.charCodeAt(0), 16777619);
+		const rnd = () => ((h = Math.imul(h ^ (h >>> 15), 2246822507) >>> 0), (h % 1000) / 1000);
+		const riserva = (x: number, y: number) => (x < 8 && y < 8) || (x > n - 9 && y < 8) || (x < 8 && y > n - 9);
+		for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) if (!riserva(x, y) && rnd() > 0.52) ctx.fillRect(x * s, y * s, s, s);
+		const occhio = (ox: number, oy: number) => {
+			ctx.fillStyle = '#0c1626';
+			ctx.fillRect(ox * s, oy * s, 7 * s, 7 * s);
+			ctx.fillStyle = '#e2ece9';
+			ctx.fillRect((ox + 1) * s, (oy + 1) * s, 5 * s, 5 * s);
+			ctx.fillStyle = '#0c1626';
+			ctx.fillRect((ox + 2) * s, (oy + 2) * s, 3 * s, 3 * s);
+		};
+		occhio(0, 0);
+		occhio(n - 7, 0);
+		occhio(0, n - 7);
+	}
+	drawer.querySelector('[data-dr-ok]')!.addEventListener('click', () => {
+		const t = totale();
+		const g = val('giorno')!;
+		const o = val('ora')!;
+		const nome = (form.elements.namedItem('nome') as HTMLInputElement).value.trim().split(/\s+/)[0];
+		const codice = `AET-${Math.abs((g.value + o.value + t.p!.value).split('').reduce((a, c) => (a * 33 + c.charCodeAt(0)) >>> 0, 5381))
+			.toString(36)
+			.toUpperCase()
+			.slice(0, 4)
+			.padEnd(4, '0')}`;
+		dr.fattoT.textContent = `Ci vediamo presto, ${nome}`;
+		dr.fattoP.textContent = `${t.p!.dataset.nome} con ${t.m!.dataset.nome}, ${g.dataset.testo} alle ${o.value}. Questa è una simulazione: nessuna suite è stata davvero riservata.`;
+		dr.cod.textContent = codice;
+		disegnaCodice(codice);
+		dr.riep.hidden = true;
+		dr.fatto.hidden = false;
+		dr.fatto.focus({ preventScroll: true });
+		if (!ridotto) gsap.from(dr.fatto.children, { opacity: 0, y: 18, duration: 0.8, stagger: 0.08, ease: 'expo.out' });
+	});
+	drawer.querySelector('[data-dr-nuova]')!.addEventListener('click', () => {
+		chiudiDrawer();
+		form.reset();
+		giorni.querySelectorAll<HTMLInputElement>('input').forEach((i) => (i.checked = false));
+		disegnaSlot();
+		aggiorna();
+	});
+
+	// ---------- invio: validazione completa, poi drawer ----------
+	sez.querySelector('[data-conferma]')!.addEventListener('click', () => {
+		const mancanti: string[] = [];
+		if (!val('protocollo')) mancanti.push('il protocollo');
+		if (!val('medico')) mancanti.push('lo specialista');
+		if (!val('giorno')) mancanti.push('il giorno');
+		else if (!val('ora')) mancanti.push('l’ora');
+		const campi = Array.from(form.querySelectorAll<HTMLInputElement>('[data-campo]'));
+		const nonValidi = campi.filter((c) => !controlla(c));
+		if (mancanti.length || nonValidi.length) {
+			errForm.textContent = mancanti.length ? `Manca ancora: ${mancanti.join(', ')}.` : 'Controlla i campi evidenziati.';
+			if (mancanti.length) (form.querySelector(`[name="${!val('giorno') ? 'giorno' : 'ora'}"]`) as HTMLElement | null)?.closest('fieldset')?.scrollIntoView({ block: 'center', behavior: ridotto ? 'auto' : 'smooth' });
+			else nonValidi[0].focus();
+			return;
+		}
+		errForm.textContent = '';
+		apriDrawer();
+	});
+
+	disegnaSlot();
+	aggiorna();
+	luceBordo(sez);
+</script>

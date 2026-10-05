@@ -1,0 +1,169 @@
+---
+// Cursore di Aeterna: un anello che insegue il puntatore con inerzia e porta un'etichetta contestuale
+// (ESPLORA, TRASCINA, SCEGLI…) sopra gli elementi interattivi. Solo con mouse e movimento consentito:
+// il cursore del sistema resta sempre visibile, l'anello è un di più.
+---
+
+<div class="cur" data-cur aria-hidden="true">
+	<span class="cur__punto" data-cur-punto></span>
+	<span class="cur__anello" data-cur-anello><span class="cur__t" data-cur-t></span></span>
+</div>
+
+<style is:global>
+	.cur {
+		position: fixed;
+		inset: 0;
+		z-index: 600;
+		pointer-events: none;
+		display: none;
+	}
+	.cur-attivo .cur {
+		display: block;
+	}
+	.cur__punto,
+	.cur__anello {
+		position: fixed;
+		left: 0;
+		top: 0;
+		border-radius: 50%;
+		will-change: transform;
+		opacity: 0;
+		transition: opacity 0.3s var(--ease);
+	}
+	.cur-visibile .cur__punto,
+	.cur-visibile .cur__anello {
+		opacity: 1;
+	}
+	.cur__punto {
+		width: 6px;
+		height: 6px;
+		margin: -3px 0 0 -3px;
+		background: var(--smeraldo-chiaro);
+		box-shadow: 0 0 12px var(--smeraldo-chiaro);
+	}
+	.cur__anello {
+		width: 38px;
+		height: 38px;
+		margin: -19px 0 0 -19px;
+		border: 1px solid rgba(134, 214, 195, 0.55);
+		display: grid;
+		place-items: center;
+		transition:
+			opacity 0.3s var(--ease),
+			width 0.45s var(--ease),
+			height 0.45s var(--ease),
+			margin 0.45s var(--ease),
+			background-color 0.45s var(--ease),
+			border-color 0.45s var(--ease);
+	}
+	.cur-su .cur__anello {
+		width: 58px;
+		height: 58px;
+		margin: -29px 0 0 -29px;
+		border-color: rgba(134, 214, 195, 0.9);
+		background: rgba(78, 159, 142, 0.12);
+	}
+	.cur-etichetta .cur__anello {
+		width: 92px;
+		height: 92px;
+		margin: -46px 0 0 -46px;
+		background: rgba(6, 11, 20, 0.5);
+		-webkit-backdrop-filter: blur(6px);
+		backdrop-filter: blur(6px);
+	}
+	.cur__t {
+		font-family: var(--mono);
+		font-size: 0.6rem;
+		letter-spacing: 0.16em;
+		color: var(--bianco);
+		opacity: 0;
+		transition: opacity 0.3s var(--ease);
+	}
+	.cur-etichetta .cur__t {
+		opacity: 1;
+	}
+	.cur-giu .cur__anello {
+		width: 30px;
+		height: 30px;
+		margin: -15px 0 0 -15px;
+	}
+	.cur-ghiaccio .cur__anello {
+		border-color: rgba(43, 106, 92, 0.8);
+	}
+	.cur-ghiaccio .cur__punto {
+		background: var(--smeraldo-scuro);
+		box-shadow: none;
+	}
+	.cur-ghiaccio.cur-etichetta .cur__t {
+		color: var(--navy);
+	}
+	.cur-ghiaccio.cur-etichetta .cur__anello {
+		background: rgba(226, 236, 233, 0.55);
+	}
+</style>
+
+<script>
+	import { gsap, ridotto, mouseFine } from './motore';
+
+	if (mouseFine && !ridotto) {
+		const html = document.documentElement;
+		const punto = document.querySelector<HTMLElement>('[data-cur-punto]')!;
+		const anello = document.querySelector<HTMLElement>('[data-cur-anello]')!;
+		const testo = document.querySelector<HTMLElement>('[data-cur-t]')!;
+		html.classList.add('cur-attivo');
+
+		const sposta = {
+			px: gsap.quickSetter(punto, 'x', 'px'),
+			py: gsap.quickSetter(punto, 'y', 'px'),
+			ax: gsap.quickSetter(anello, 'x', 'px'),
+			ay: gsap.quickSetter(anello, 'y', 'px'),
+		};
+		let x = innerWidth / 2;
+		let y = innerHeight / 2;
+		let ax = x;
+		let ay = y;
+		addEventListener(
+			'pointermove',
+			(e) => {
+				if (e.pointerType === 'touch') return;
+				x = e.clientX;
+				y = e.clientY;
+				sposta.px(x);
+				sposta.py(y);
+				html.classList.add('cur-visibile');
+			},
+			{ passive: true },
+		);
+		gsap.ticker.add(() => {
+			ax += (x - ax) * 0.18;
+			ay += (y - ay) * 0.18;
+			sposta.ax(ax);
+			sposta.ay(ay);
+		});
+		document.documentElement.addEventListener('pointerleave', () => html.classList.remove('cur-visibile'));
+		addEventListener('pointerdown', () => html.classList.add('cur-giu'));
+		addEventListener('pointerup', () => html.classList.remove('cur-giu'));
+
+		// stato in base a ciò che sta sotto il puntatore
+		document.addEventListener('pointerover', (e) => {
+			const t = e.target as HTMLElement;
+			const et = t.closest<HTMLElement>('[data-cursore]');
+			const su = t.closest('a, button, input, select, textarea, label, summary, [role="slider"]');
+			html.classList.toggle('cur-su', !!su || !!et);
+			html.classList.toggle('cur-etichetta', !!et);
+			if (et) testo.textContent = et.dataset.cursore ?? '';
+			html.classList.toggle('cur-ghiaccio', !!t.closest('.ghiaccio'));
+		});
+
+		// bottoni magnetici
+		document.querySelectorAll<HTMLElement>('[data-magnetico]').forEach((el) => {
+			el.addEventListener('pointermove', (e) => {
+				const r = el.getBoundingClientRect();
+				const dx = e.clientX - (r.left + r.width / 2);
+				const dy = e.clientY - (r.top + r.height / 2);
+				gsap.to(el, { x: dx * 0.28, y: dy * 0.4, duration: 0.4, ease: 'power3.out' });
+			});
+			el.addEventListener('pointerleave', () => gsap.to(el, { x: 0, y: 0, duration: 0.9, ease: 'elastic.out(1, 0.4)' }));
+		});
+	}
+</script>

@@ -1,0 +1,451 @@
+---
+import Logo from './Logo.astro';
+
+const voci = [
+	{ href: '#protocolli', n: '01', t: 'Protocolli' },
+	{ href: '#metodo', n: '02', t: 'Metodo' },
+	{ href: '#assessment', n: '03', t: 'Bio-Assessment' },
+	{ href: '#scanner', n: '04', t: 'Scanner' },
+	{ href: '#suite', n: '05', t: 'Suite' },
+];
+---
+
+<!-- Gradienti del marchio, usati da tutte le copie del simbolo -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+	<defs>
+		<linearGradient id="ae-smeraldo" x1="0%" y1="0%" x2="100%" y2="100%">
+			<stop offset="0%" stop-color="#86d6c3"></stop>
+			<stop offset="100%" stop-color="#2e6f9a"></stop>
+		</linearGradient>
+		<linearGradient id="ae-oro" x1="0%" y1="0%" x2="100%" y2="100%">
+			<stop offset="0%" stop-color="#e9c75a"></stop>
+			<stop offset="100%" stop-color="#aa820a"></stop>
+		</linearGradient>
+	</defs>
+</svg>
+
+<header class="nav" data-nav>
+	<div class="nav__in">
+		<a class="nav__marchio" href="#inizio" aria-label="Aeterna, torna all'inizio" data-cursore="TOP">
+			<Logo />
+		</a>
+		<nav class="nav__voci" aria-label="Sezioni">
+			{voci.map((v) => <a href={v.href} data-voce={v.href.slice(1)}><span>{v.n}</span>{v.t}</a>)}
+		</nav>
+		<a class="btn nav__cta" href="#suite" data-magnetico data-cursore="PRENOTA">Prenota una suite</a>
+		<button class="nav__btn" type="button" aria-expanded="false" aria-controls="menu-scan" data-menu-btn>
+			<span class="sr-only">Apri il menù</span>
+			<span class="nav__linee" aria-hidden="true"><i></i><i></i></span>
+		</button>
+	</div>
+	<div class="nav__progresso" aria-hidden="true"><i data-progresso></i></div>
+</header>
+
+<div class="menu" id="menu-scan" data-menu role="dialog" aria-modal="true" aria-label="Menù" hidden>
+	<div class="menu__laser" aria-hidden="true"></div>
+	<div class="menu__corpo">
+		<p class="menu__tag" aria-hidden="true">// SCANSIONE · INDICE</p>
+		<nav aria-label="Sezioni">
+			<ol class="menu__lista">
+				{
+					voci.map((v) => (
+						<li>
+							<a href={v.href} data-menu-link>
+								<span class="menu__n">{v.n}</span>
+								<span class="menu__t">{v.t}</span>
+							</a>
+						</li>
+					))
+				}
+			</ol>
+		</nav>
+		<a class="btn menu__cta" href="#suite" data-menu-link>Prenota una suite</a>
+		<p class="menu__nota">Clinica di fantasia · concept dimostrativo di Loop Studio</p>
+	</div>
+</div>
+
+<style>
+	.nav {
+		position: fixed;
+		top: var(--fascia-top, 34px);
+		left: 0;
+		right: 0;
+		z-index: 200;
+		transition:
+			background-color 0.5s var(--ease),
+			backdrop-filter 0.5s var(--ease),
+			border-color 0.5s var(--ease),
+			transform 0.6s var(--ease);
+		border-bottom: 1px solid transparent;
+	}
+	.nav.is-vetro {
+		background: rgba(6, 11, 20, 0.66);
+		-webkit-backdrop-filter: blur(16px) saturate(140%);
+		backdrop-filter: blur(16px) saturate(140%);
+		border-bottom-color: var(--linea);
+	}
+	.nav.is-nascosta {
+		transform: translateY(-110%);
+	}
+	.nav__in {
+		max-width: calc(var(--max) + var(--gutter) * 2);
+		margin-inline: auto;
+		padding: 0 var(--gutter);
+		height: var(--nav-h);
+		display: flex;
+		align-items: center;
+		gap: 28px;
+		transition: height 0.5s var(--ease);
+	}
+	.nav.is-vetro .nav__in {
+		height: 62px;
+	}
+	.nav__marchio {
+		text-decoration: none;
+		margin-right: auto;
+		flex: none;
+	}
+	.nav__marchio :global(.logo) {
+		gap: 11px;
+	}
+	.nav__marchio :global(.logo__simbolo) {
+		height: 21px;
+	}
+	.nav__marchio :global(.logo__nome) {
+		font-size: 0.98rem;
+		letter-spacing: 0.3em;
+		margin-right: -0.3em;
+	}
+	.nav__voci {
+		display: flex;
+		gap: clamp(14px, 1.7vw, 26px);
+		white-space: nowrap;
+	}
+	.nav__voci a {
+		position: relative;
+		display: flex;
+		gap: 8px;
+		align-items: baseline;
+		padding: 8px 0;
+		font-family: var(--mono);
+		font-weight: 600;
+		font-size: 0.7rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		text-decoration: none;
+		color: rgba(226, 236, 233, 0.86);
+		transition: color 0.3s var(--ease);
+	}
+	.nav__voci a span {
+		color: var(--smeraldo-chiaro);
+		font-weight: 700;
+	}
+	.nav__voci a::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 2px;
+		height: 1px;
+		background: var(--smeraldo-chiaro);
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 0.5s var(--ease);
+	}
+	.nav__voci a:hover,
+	.nav__voci a.is-attiva {
+		color: var(--bianco);
+	}
+	.nav__voci a:hover::after,
+	.nav__voci a.is-attiva::after {
+		transform: scaleX(1);
+	}
+	.nav__cta {
+		--pad: 11px 18px;
+		font-size: 0.68rem;
+		flex: none;
+	}
+	.nav__btn {
+		display: none;
+		width: 46px;
+		height: 46px;
+		background: transparent;
+		border: 1px solid var(--linea);
+		border-radius: 2px;
+		align-items: center;
+		justify-content: center;
+		position: relative;
+		z-index: 2;
+	}
+	.nav__linee {
+		position: relative;
+		width: 20px;
+		height: 10px;
+	}
+	.nav__linee i {
+		position: absolute;
+		left: 0;
+		right: 0;
+		height: 1.5px;
+		background: var(--bianco);
+		transition:
+			transform 0.5s var(--ease),
+			top 0.5s var(--ease);
+	}
+	.nav__linee i:first-child {
+		top: 0;
+	}
+	.nav__linee i:last-child {
+		top: 8px;
+	}
+	.nav__btn[aria-expanded='true'] .nav__linee i:first-child {
+		top: 4px;
+		transform: rotate(45deg);
+	}
+	.nav__btn[aria-expanded='true'] .nav__linee i:last-child {
+		top: 4px;
+		transform: rotate(-45deg);
+	}
+	.nav__progresso {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: -1px;
+		height: 2px;
+	}
+	.nav__progresso i {
+		display: block;
+		height: 100%;
+		background: linear-gradient(90deg, var(--smeraldo), var(--oro));
+		transform: scaleX(0);
+		transform-origin: left;
+	}
+
+	/* ---------- Menù mobile: una scansione laser che rivela l'indice ---------- */
+	.menu {
+		position: fixed;
+		inset: 0;
+		z-index: 190;
+		background: rgba(6, 11, 20, 0.97);
+		-webkit-backdrop-filter: blur(18px);
+		backdrop-filter: blur(18px);
+		clip-path: inset(0 0 100% 0);
+		visibility: hidden;
+		overflow-y: auto;
+	}
+	.menu[hidden] {
+		display: block;
+	}
+	.menu.is-aperto {
+		visibility: visible;
+	}
+	.menu__laser {
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: 0;
+		height: 2px;
+		background: linear-gradient(90deg, transparent, var(--smeraldo-chiaro) 20%, #fff 50%, var(--smeraldo-chiaro) 80%, transparent);
+		box-shadow:
+			0 0 24px 4px rgba(134, 214, 195, 0.7),
+			0 0 80px 14px rgba(78, 159, 142, 0.35);
+		opacity: 0;
+		pointer-events: none;
+	}
+	.menu__corpo {
+		min-height: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 28px;
+		padding: calc(var(--nav-h) + var(--fascia) + 12px) var(--gutter) 40px;
+	}
+	.menu__tag {
+		font-family: var(--mono);
+		font-size: 0.72rem;
+		letter-spacing: 0.2em;
+		color: var(--smeraldo-chiaro);
+	}
+	.menu__lista {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	.menu__lista li {
+		border-top: 1px solid var(--linea);
+	}
+	.menu__lista li:last-child {
+		border-bottom: 1px solid var(--linea);
+	}
+	.menu__lista a {
+		display: flex;
+		align-items: baseline;
+		gap: 18px;
+		padding: 16px 0;
+		text-decoration: none;
+	}
+	.menu__n {
+		font-family: var(--mono);
+		font-size: 0.78rem;
+		color: var(--oro);
+	}
+	.menu__t {
+		font-weight: 200;
+		font-size: clamp(1.97rem, 9.28vw, 3.02rem);
+		letter-spacing: 0;
+	}
+	.menu__cta {
+		align-self: flex-start;
+	}
+	.menu__nota {
+		font-family: var(--mono);
+		font-size: 0.7rem;
+		letter-spacing: 0.08em;
+		color: var(--nebbia);
+	}
+
+	@media (max-width: 1290px) {
+		.nav__voci a span {
+			display: none;
+		}
+	}
+	@media (max-width: 1140px) {
+		.nav__voci,
+		.nav__cta {
+			display: none;
+		}
+		.nav__btn {
+			display: inline-flex;
+		}
+		.nav__in {
+			gap: 12px;
+		}
+	}
+	@media (min-width: 1141px) {
+		.menu {
+			display: none !important;
+		}
+	}
+</style>
+
+<script>
+	import { gsap, ScrollTrigger, ridotto, blocca, vai } from './motore';
+
+	const nav = document.querySelector<HTMLElement>('[data-nav]')!;
+	const bar = document.querySelector<HTMLElement>('[data-progresso]')!;
+	const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]')!;
+	const menu = document.querySelector<HTMLElement>('[data-menu]')!;
+	const laser = menu.querySelector<HTMLElement>('.menu__laser')!;
+	const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-voce]'));
+
+	let menuAperto = false;
+
+	// Vetro dopo l'hero; si nasconde scendendo e riappare risalendo; barra di avanzamento
+	let ultimo = scrollY;
+	ScrollTrigger.create({
+		start: 0,
+		end: 'max',
+		onUpdate: (st) => {
+			const y = scrollY;
+			nav.classList.toggle('is-vetro', y > 40);
+			const giu = y > ultimo;
+			if (!menuAperto) nav.classList.toggle('is-nascosta', giu && y > 700 && Math.abs(y - ultimo) > 4);
+			if (!giu && Math.abs(y - ultimo) > 4) nav.classList.remove('is-nascosta');
+			ultimo = y;
+			bar.style.transform = `scaleX(${st.progress})`;
+		},
+	});
+
+	// Sezione attiva
+	for (const a of links) {
+		const el = document.getElementById(a.dataset.voce!);
+		if (!el) continue;
+		ScrollTrigger.create({
+			trigger: el,
+			start: 'top 55%',
+			end: 'bottom 55%',
+			refreshPriority: -1,
+			onToggle: (st) => a.classList.toggle('is-attiva', st.isActive),
+		});
+	}
+
+	// Menù a scansione
+	function apri(si: boolean) {
+		menuAperto = si;
+		btn.setAttribute('aria-expanded', String(si));
+		btn.querySelector('.sr-only')!.textContent = si ? 'Chiudi il menù' : 'Apri il menù';
+		blocca(si);
+		document.documentElement.style.overflow = si ? 'hidden' : '';
+		if (si) {
+			menu.hidden = false;
+			menu.classList.add('is-aperto');
+			nav.classList.remove('is-nascosta');
+			if (ridotto) {
+				gsap.set(menu, { clipPath: 'inset(0 0 0% 0)' });
+			} else {
+				const h = innerHeight;
+				gsap.killTweensOf([menu, laser]);
+				gsap.set(laser, { y: 0, opacity: 1 });
+				gsap.to(laser, { y: h, duration: 0.9, ease: 'power2.inOut' });
+				gsap.fromTo(menu, { clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0 0 0% 0)', duration: 0.9, ease: 'power2.inOut' });
+				gsap.to(laser, { opacity: 0, duration: 0.25, delay: 0.85 });
+				gsap.from('.menu__lista li, .menu__cta, .menu__tag, .menu__nota', { y: 24, opacity: 0, duration: 0.7, stagger: 0.06, delay: 0.35, ease: 'expo.out' });
+			}
+			menu.querySelector<HTMLElement>('[data-menu-link]')?.focus({ preventScroll: true });
+		} else {
+			const fine = () => {
+				menu.classList.remove('is-aperto');
+				menu.hidden = true;
+			};
+			if (ridotto) {
+				gsap.set(menu, { clipPath: 'inset(0 0 100% 0)' });
+				fine();
+			} else {
+				gsap.killTweensOf([menu, laser]);
+				gsap.set(laser, { y: innerHeight, opacity: 1 });
+				gsap.to(laser, { y: 0, duration: 0.6, ease: 'power2.inOut' });
+				gsap.to(menu, { clipPath: 'inset(0 0 100% 0)', duration: 0.6, ease: 'power2.inOut', onComplete: fine });
+				gsap.to(laser, { opacity: 0, duration: 0.2, delay: 0.5 });
+			}
+			btn.focus({ preventScroll: true });
+		}
+	}
+	btn.addEventListener('click', () => apri(!menuAperto));
+	addEventListener('keydown', (e) => {
+		if (e.key === 'Escape' && menuAperto) apri(false);
+		// il focus resta dentro il menù (è modale)
+		if (e.key === 'Tab' && menuAperto) {
+			const f = [btn, ...Array.from(menu.querySelectorAll<HTMLElement>('a[href]'))];
+			const i = f.indexOf(document.activeElement as HTMLElement);
+			if (e.shiftKey && (i <= 0)) {
+				e.preventDefault();
+				f[f.length - 1].focus();
+			} else if (!e.shiftKey && i === f.length - 1) {
+				e.preventDefault();
+				f[0].focus();
+			}
+		}
+	});
+	addEventListener('resize', () => {
+		if (menuAperto && innerWidth > 1140) apri(false);
+	});
+
+	// Ancore interne: scorrimento governato dal motore (con inerzia su desktop, nativo su touch)
+	document.addEventListener('click', (e) => {
+		const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
+		if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey) return;
+		const id = a.getAttribute('href')!.slice(1);
+		const el = id ? document.getElementById(id) : document.documentElement;
+		if (!el) return;
+		e.preventDefault();
+		const dentroMenu = menuAperto && a.closest('[data-menu]');
+		if (dentroMenu) apri(false);
+		const vaiA = () => {
+			if (!id || id === 'inizio') vai(0);
+			else vai(el, { offset: id === 'protocolli' ? 0 : -(nav.offsetHeight - 10) });
+			if (id) history.replaceState(null, '', `#${id}`);
+		};
+		if (dentroMenu) setTimeout(vaiA, ridotto ? 0 : 120);
+		else requestAnimationFrame(vaiA);
+	});
+</script>

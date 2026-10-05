@@ -1,0 +1,653 @@
+---
+// Ingresso: preloader (disegno del marchio, una volta per sessione) e hero con l'elica di DNA in WebGL.
+// Il poster SVG dell'elica è già nel markup: è ciò che si vede finché il canvas non è pronto, senza WebGL,
+// con movimento ridotto e prima che Three.js sia scaricato.
+import Logo from './Logo.astro';
+
+// poster: i due filamenti e i pioli, calcolati qui con la stessa matematica dello shader
+const PASSI = 90;
+const f1: string[] = [];
+const f2: string[] = [];
+const pioli: { x1: number; y1: number; x2: number; y2: number; o: number }[] = [];
+const nodi: { x: number; y: number; r: number; oro: boolean }[] = [];
+for (let i = 0; i <= PASSI; i++) {
+	const t = i / PASSI;
+	const y = 30 + t * 840;
+	const a = t * Math.PI * 2 * 3.4;
+	const x1 = 300 + Math.sin(a) * 125;
+	const x2 = 300 - Math.sin(a) * 125;
+	f1.push(`${i ? 'L' : 'M'}${x1.toFixed(1)} ${y.toFixed(1)}`);
+	f2.push(`${i ? 'L' : 'M'}${x2.toFixed(1)} ${y.toFixed(1)}`);
+	if (i % 3 === 1) pioli.push({ x1, y1: y, x2, y2: y, o: 0.12 + 0.3 * Math.abs(Math.cos(a)) });
+	if (i % 6 === 2) nodi.push({ x: x1, y, r: 4.5, oro: i % 12 === 2 });
+}
+---
+
+<div class="intro" data-intro aria-hidden="true">
+	<div class="intro__tendina intro__tendina--su"></div>
+	<div class="intro__tendina intro__tendina--giu"></div>
+	<div class="intro__centro">
+		<Logo class="intro__logo" />
+		<p class="intro__stato"><span data-intro-stato>Inizializzo la sequenza</span> <b data-intro-n>000</b>%</p>
+	</div>
+</div>
+
+<section class="hero" id="inizio" aria-labelledby="hero-titolo" data-hero>
+	<div class="hero__sfondo" aria-hidden="true">
+		<svg class="hero__poster" viewBox="0 0 600 900" preserveAspectRatio="xMidYMid slice" focusable="false" data-poster>
+			<g class="hero__elica">
+				{pioli.map((p) => <line x1={p.x1} y1={p.y1} x2={p.x2} y2={p.y2} stroke="#4e9f8e" stroke-opacity={p.o} stroke-width="1" />)}
+				<path d={f1.join('')} fill="none" stroke="url(#ae-smeraldo)" stroke-width="2.5" stroke-linecap="round"></path>
+				<path d={f2.join('')} fill="none" stroke="#86d6c3" stroke-opacity="0.5" stroke-width="1.6" stroke-linecap="round"></path>
+				{nodi.map((n) => <circle cx={n.x} cy={n.y} r={n.r} fill={n.oro ? '#d4af37' : '#86d6c3'} fill-opacity={n.oro ? 0.95 : 0.55}></circle>)}
+			</g>
+		</svg>
+		<canvas class="hero__canvas" data-canvas></canvas>
+		<div class="hero__velo"></div>
+		<div class="hero__grana"></div>
+	</div>
+
+	<div class="hero__telaio" aria-hidden="true">
+		<span class="hero__angolo hero__angolo--a"></span>
+		<span class="hero__angolo hero__angolo--b"></span>
+		<span class="hero__angolo hero__angolo--c"></span>
+		<span class="hero__angolo hero__angolo--d"></span>
+	</div>
+
+	<div class="hero__in" data-hero-testo>
+		<p class="etichetta hero__etichetta" data-h="1">Biohacking &amp; Longevity Clinic <span class="hero__esempio">/ clinica di fantasia</span></p>
+		<h1 class="hero__titolo" id="hero-titolo" data-hero-titolo>
+			La longevità <em>si misura.</em> E si progetta.
+		</h1>
+		<p class="lead hero__lead" data-h="2">
+			Dati biometrici, protocolli su misura e una suite privata per ogni percorso. Un metodo che tratta il tempo come una variabile da
+			leggere, non come un destino.
+		</p>
+		<div class="hero__cta" data-h="3">
+			<a class="btn" href="#assessment" data-magnetico data-cursore="INIZIA">Fai il Bio-Assessment <span aria-hidden="true">→</span></a>
+			<a class="btn btn--vuoto" href="#suite" data-magnetico data-cursore="PRENOTA">Prenota una suite</a>
+		</div>
+	</div>
+
+	<aside class="hud vetro hero__hud" aria-label="Telemetria di esempio" data-h="4" data-hud>
+		<p class="hud__tag"><i aria-hidden="true"></i> Profilo di esempio · in diretta simulata</p>
+		<dl class="hud__righe">
+			<div>
+				<dt>HRV</dt>
+				<dd><b data-hud-v="hrv">68</b> <small>ms</small></dd>
+			</div>
+			<div>
+				<dt>Temp. cutanea</dt>
+				<dd><b data-hud-v="temp">33,4</b> <small>°C</small></dd>
+			</div>
+			<div>
+				<dt>SpO₂</dt>
+				<dd><b data-hud-v="spo2">98</b> <small>%</small></dd>
+			</div>
+		</dl>
+		<svg class="hud__onda" viewBox="0 0 160 28" aria-hidden="true" focusable="false"><polyline points="" data-hud-onda fill="none" stroke="#86d6c3" stroke-width="1.4" stroke-linejoin="round"></polyline></svg>
+	</aside>
+
+	<a class="hero__scorri" href="#metriche" aria-label="Scorri alla sezione successiva" data-h="5">
+		<span>Scorri</span><i aria-hidden="true"></i>
+	</a>
+</section>
+
+<style>
+	/* ---------- Preloader ---------- */
+	.intro {
+		display: none;
+	}
+	:global(.js:not(.senza-intro):not(.ridotto)) .intro {
+		position: fixed;
+		inset: 0;
+		z-index: 400;
+		display: grid;
+		place-items: center;
+	}
+	.intro__tendina {
+		position: absolute;
+		left: 0;
+		right: 0;
+		height: 50.5%;
+		background: var(--abisso);
+	}
+	.intro__tendina--su {
+		top: 0;
+	}
+	.intro__tendina--giu {
+		bottom: 0;
+	}
+	.intro__centro {
+		position: relative;
+		display: grid;
+		justify-items: center;
+		gap: 26px;
+	}
+	.intro__centro :global(.logo) {
+		flex-direction: column;
+		gap: 26px;
+	}
+	.intro__centro :global(.logo__simbolo) {
+		height: 64px;
+	}
+	.intro__centro :global(.logo__nome) {
+		font-size: clamp(1.5rem, 5vw, 2.1rem);
+	}
+	.intro__stato {
+		font-family: var(--mono);
+		font-size: 0.7rem;
+		letter-spacing: 0.22em;
+		text-transform: uppercase;
+		color: var(--nebbia);
+	}
+	.intro__stato b {
+		font-weight: 400;
+		color: var(--smeraldo-chiaro);
+		display: inline-block;
+		min-width: 3ch;
+		text-align: right;
+	}
+
+	/* ---------- Hero ---------- */
+	.hero {
+		position: relative;
+		min-height: max(100svh, 720px);
+		display: grid;
+		align-content: center;
+		padding: calc(var(--nav-h) + var(--fascia) + 40px) var(--gutter) 120px;
+		overflow: clip;
+		isolation: isolate;
+		background: radial-gradient(120% 90% at 78% 40%, #12284a 0%, var(--navy) 42%, var(--abisso) 78%);
+	}
+	.hero__sfondo {
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+	}
+	.hero__poster {
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: min(760px, 62%);
+		height: 100%;
+		opacity: 0.85;
+		transition: opacity 1.6s var(--ease);
+	}
+	.hero__elica {
+		transform-origin: 50% 50%;
+		animation: ae-deriva 14s ease-in-out infinite alternate;
+	}
+	@keyframes ae-deriva {
+		to {
+			transform: translateY(-14px) rotate(1.5deg);
+		}
+	}
+	.hero__canvas {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+		transition: opacity 2s var(--ease);
+	}
+	.hero.is-webgl .hero__canvas {
+		opacity: 1;
+	}
+	.hero.is-webgl .hero__poster {
+		opacity: 0;
+	}
+	.hero__velo {
+		position: absolute;
+		inset: 0;
+		background:
+			linear-gradient(90deg, rgba(6, 11, 20, 0.92) 0%, rgba(6, 11, 20, 0.55) 38%, transparent 62%),
+			linear-gradient(0deg, var(--abisso) 0%, transparent 22%);
+		pointer-events: none;
+	}
+	.hero__grana {
+		position: absolute;
+		inset: -50%;
+		opacity: 0.07;
+		background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+		animation: ae-grana 1.2s steps(6) infinite;
+		pointer-events: none;
+	}
+	@keyframes ae-grana {
+		0% {
+			transform: translate(0, 0);
+		}
+		20% {
+			transform: translate(-3%, 2%);
+		}
+		40% {
+			transform: translate(2%, -3%);
+		}
+		60% {
+			transform: translate(-2%, -1%);
+		}
+		80% {
+			transform: translate(3%, 3%);
+		}
+		100% {
+			transform: translate(0, 0);
+		}
+	}
+	.hero__telaio {
+		position: absolute;
+		inset: calc(var(--nav-h) + var(--fascia) + 14px) clamp(14px, 2.4vw, 36px) 30px;
+		pointer-events: none;
+		z-index: 1;
+	}
+	.hero__angolo {
+		position: absolute;
+		width: 22px;
+		height: 22px;
+		border: 1px solid rgba(134, 214, 195, 0.5);
+	}
+	.hero__angolo--a {
+		top: 0;
+		left: 0;
+		border-right: 0;
+		border-bottom: 0;
+	}
+	.hero__angolo--b {
+		top: 0;
+		right: 0;
+		border-left: 0;
+		border-bottom: 0;
+	}
+	.hero__angolo--c {
+		bottom: 0;
+		left: 0;
+		border-right: 0;
+		border-top: 0;
+	}
+	.hero__angolo--d {
+		bottom: 0;
+		right: 0;
+		border-left: 0;
+		border-top: 0;
+	}
+	.hero__in {
+		position: relative;
+		z-index: 2;
+		max-width: var(--max);
+		width: 100%;
+		margin-inline: auto;
+		display: grid;
+		gap: 30px;
+		justify-items: start;
+	}
+	.hero__etichetta {
+		flex-wrap: wrap;
+		row-gap: 4px;
+	}
+	.hero__esempio {
+		color: var(--nebbia);
+	}
+	.hero__titolo {
+		font-family: var(--display);
+		font-weight: 400;
+		font-size: clamp(3rem, 8.4vw, 7.8rem);
+		line-height: 0.95;
+		letter-spacing: 0;
+		max-width: 11.5em;
+		text-wrap: balance;
+	}
+	.hero__titolo :global(em) {
+		font-style: italic;
+		font-weight: 400;
+	}
+	.hero__titolo :global(em),
+	.hero__titolo :global(em .maschera > span) {
+		background: linear-gradient(100deg, var(--smeraldo-chiaro), #6fb0e0 60%, var(--oro));
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+	}
+	.hero__lead {
+		max-width: 46ch;
+	}
+	.hero__cta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 14px;
+		margin-top: 8px;
+	}
+	:global(.js:not(.ridotto)) .hero__titolo {
+		opacity: 0;
+	}
+	:global(.js:not(.ridotto)) .hero__titolo.is-pronto {
+		opacity: 1;
+	}
+	:global(.js:not(.ridotto)) [data-h] {
+		opacity: 0;
+	}
+
+	.hero__hud {
+		position: absolute;
+		right: max(var(--gutter), 16px);
+		bottom: 64px;
+		z-index: 2;
+		width: 236px;
+		padding: 16px 18px 12px;
+	}
+	.hud__tag {
+		display: flex;
+		align-items: center;
+		gap: 9px;
+		font-family: var(--mono);
+		font-size: 0.6rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--nebbia);
+		margin-bottom: 12px;
+	}
+	.hud__tag i {
+		width: 7px;
+		height: 7px;
+		border-radius: 50%;
+		background: var(--smeraldo-chiaro);
+		box-shadow: 0 0 10px var(--smeraldo-chiaro);
+		animation: ae-batti 1.6s ease-in-out infinite;
+	}
+	@keyframes ae-batti {
+		50% {
+			opacity: 0.25;
+		}
+	}
+	.hud__righe {
+		display: grid;
+		gap: 7px;
+	}
+	.hud__righe > div {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		font-family: var(--tec);
+	}
+	.hud__righe dt {
+		font-size: 0.66rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--nebbia);
+	}
+	.hud__righe dd {
+		margin: 0;
+		font-size: 0.9rem;
+	}
+	.hud__righe b {
+		font-weight: 400;
+		color: var(--bianco);
+	}
+	.hud__righe small {
+		font-size: 0.66rem;
+		color: var(--nebbia);
+	}
+	.hud__onda {
+		margin-top: 10px;
+		width: 100%;
+		height: 28px;
+	}
+	.hero__scorri {
+		position: absolute;
+		left: var(--gutter);
+		bottom: 28px;
+		z-index: 2;
+		display: inline-flex;
+		align-items: center;
+		gap: 14px;
+		font-family: var(--mono);
+		font-size: 0.68rem;
+		letter-spacing: 0.24em;
+		text-transform: uppercase;
+		text-decoration: none;
+		color: var(--nebbia);
+	}
+	.hero__scorri i {
+		position: relative;
+		width: 54px;
+		height: 1px;
+		background: var(--linea);
+		overflow: hidden;
+	}
+	.hero__scorri i::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		width: 40%;
+		background: var(--smeraldo-chiaro);
+		animation: ae-corri 2.2s var(--ease) infinite;
+	}
+	@keyframes ae-corri {
+		from {
+			transform: translateX(-100%);
+		}
+		to {
+			transform: translateX(260%);
+		}
+	}
+
+	@media (max-width: 900px) {
+		.hero {
+			align-content: start;
+			padding-top: calc(var(--nav-h) + var(--fascia) + 56px);
+			padding-bottom: 210px;
+		}
+		.hero__poster {
+			width: 100%;
+			opacity: 0.4;
+		}
+		.hero__velo {
+			background:
+				linear-gradient(0deg, var(--abisso) 0%, rgba(6, 11, 20, 0.2) 40%, rgba(6, 11, 20, 0.55) 100%);
+		}
+		.hero__hud {
+			left: var(--gutter);
+			right: var(--gutter);
+			width: auto;
+			bottom: 66px;
+		}
+		.hud__righe {
+			grid-template-columns: repeat(3, 1fr);
+			gap: 10px;
+		}
+		.hud__righe > div {
+			flex-direction: column;
+			gap: 2px;
+		}
+		.hud__onda {
+			display: none;
+		}
+	}
+</style>
+
+<script>
+	import { gsap, ScrollTrigger, ridotto, mouseFine, titoliSplit, rivela, luceBordo, dividi } from './motore';
+
+	const hero = document.querySelector<HTMLElement>('[data-hero]')!;
+	const html = document.documentElement;
+	const titolo = hero.querySelector<HTMLElement>('[data-hero-titolo]')!;
+	const canvas = hero.querySelector<HTMLCanvasElement>('[data-canvas]')!;
+	const intro = document.querySelector<HTMLElement>('[data-intro]');
+
+	let pEntrata = 1;
+	let pScroll = 0;
+	let elica: { scroll(p: number): void; attiva(si: boolean): void } | null = null;
+	const aggiornaElica = () => elica?.scroll(Math.max(pEntrata, pScroll));
+
+	// ---------- Telemetria di esempio ----------
+	const hud = hero.querySelector<HTMLElement>('[data-hud]')!;
+	const valori = {
+		hrv: hud.querySelector<HTMLElement>('[data-hud-v="hrv"]')!,
+		temp: hud.querySelector<HTMLElement>('[data-hud-v="temp"]')!,
+		spo2: hud.querySelector<HTMLElement>('[data-hud-v="spo2"]')!,
+	};
+	const onda = hud.querySelector<SVGPolylineElement>('[data-hud-onda]')!;
+	const serie: number[] = Array.from({ length: 40 }, (_, i) => 14 + Math.sin(i / 3) * 4);
+	const disegnaOnda = () => {
+		onda.setAttribute('points', serie.map((v, i) => `${((i / (serie.length - 1)) * 160).toFixed(1)},${v.toFixed(1)}`).join(' '));
+	};
+	disegnaOnda();
+	if (!ridotto) {
+		let fase = 0;
+		setInterval(() => {
+			if (document.hidden) return;
+			fase += 1;
+			valori.hrv.textContent = String(66 + Math.round(Math.sin(fase / 2) * 3 + Math.random() * 2));
+			valori.temp.textContent = (33.2 + Math.random() * 0.5).toFixed(1).replace('.', ',');
+			valori.spo2.textContent = String(97 + Math.round(Math.random() * 2));
+			serie.shift();
+			serie.push(14 + Math.sin(fase / 2.2) * 6 + (Math.random() - 0.5) * 4);
+			disegnaOnda();
+		}, 1100);
+	}
+
+	// ---------- Entrata dell'hero ----------
+	function entrata() {
+		titolo.dataset.fatto = '1';
+		if (ridotto) {
+			pEntrata = 0;
+			return;
+		}
+		const parole = dividi(titolo);
+		gsap.set(parole, { yPercent: 118 });
+		titolo.classList.add('is-pronto');
+		const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
+		tl.to(parole, { yPercent: 0, duration: 1, stagger: 0.05 }, 0.05)
+			.fromTo(hero.querySelectorAll('[data-h]'), { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 1, stagger: 0.12 }, 0.35)
+			.fromTo(canvas, { opacity: 0 }, { opacity: 1, duration: 2.2, ease: 'power2.out', clearProps: 'opacity' }, 0.2);
+		// l'elica si avvolge: parte sciolta e si arrotola
+		const stato = { p: 0.95 };
+		pEntrata = stato.p;
+		gsap.to(stato, {
+			p: 0,
+			duration: 3.2,
+			ease: 'expo.out',
+			delay: 0.2,
+			onUpdate: () => {
+				pEntrata = stato.p;
+				aggiornaElica();
+			},
+		});
+	}
+
+	// ---------- Preloader ----------
+	function chiudiIntro(): Promise<void> {
+		return new Promise((ok) => {
+			if (!intro || getComputedStyle(intro).display === 'none') {
+				ok();
+				return;
+			}
+			const lettere = intro.querySelectorAll<SVGPathElement>('.logo__anello, .logo__filo');
+			const logoNome = intro.querySelector<HTMLElement>('.logo__nome')!;
+			const n = intro.querySelector<HTMLElement>('[data-intro-n]')!;
+			const stato = intro.querySelector<HTMLElement>('[data-intro-stato]')!;
+			lettere.forEach((p) => {
+				const l = p.getTotalLength();
+				p.style.strokeDasharray = p === lettere[0] ? `${l}` : '3 3';
+				if (p === lettere[0]) p.style.strokeDashoffset = `${l}`;
+				else p.style.opacity = '0';
+			});
+			gsap.set(intro.querySelectorAll('circle'), { scale: 0, transformOrigin: '50% 50%', transformBox: 'fill-box' });
+			gsap.set(logoNome, { opacity: 0, letterSpacing: '0.9em' });
+			const conta = { v: 0 };
+			const tl = gsap.timeline({
+				onComplete: () => {
+					intro.remove();
+					try {
+						sessionStorage.setItem('aeterna-intro', '1');
+					} catch {}
+					ok();
+				},
+			});
+			tl.to(lettere[0], { strokeDashoffset: 0, duration: 0.7, ease: 'power2.inOut' }, 0)
+				.to(lettere[1], { opacity: 1, duration: 0.4 }, 0.5)
+				.to(intro.querySelectorAll('circle'), { scale: 1, duration: 0.4, stagger: 0.08, ease: 'back.out(3)' }, 0.5)
+				.to(logoNome, { opacity: 1, letterSpacing: '0.34em', duration: 0.8, ease: 'expo.out' }, 0.3)
+				.to(
+					conta,
+					{
+						v: 100,
+						duration: 0.85,
+						ease: 'power1.inOut',
+						onUpdate: () => {
+							n.textContent = String(Math.round(conta.v)).padStart(3, '0');
+							if (conta.v > 66) stato.textContent = 'Allineo i filamenti';
+							if (conta.v > 96) stato.textContent = 'Sequenza completa';
+						},
+					},
+					0,
+				)
+				.to(intro.querySelector('.intro__centro'), { opacity: 0, y: -12, duration: 0.3, ease: 'power2.in' }, 0.95)
+				.to(intro.querySelector('.intro__tendina--su'), { yPercent: -101, duration: 0.8, ease: 'expo.inOut' }, 1.05)
+				.to(intro.querySelector('.intro__tendina--giu'), { yPercent: 101, duration: 0.8, ease: 'expo.inOut' }, 1.05)
+				.add(() => ok(), 1.2);
+		});
+	}
+
+	// ---------- WebGL: Three.js caricato a parte, dopo il primo paint ----------
+	function caricaElica() {
+		const debole = !mouseFine || innerWidth < 760 || (navigator.hardwareConcurrency || 8) <= 4;
+		import('./elica')
+			.then(({ avvia }) => {
+				const e = avvia(canvas, {
+					leggero: debole,
+					ridotto,
+					suPerso: () => hero.classList.remove('is-webgl'),
+				});
+				if (!e) return;
+				elica = e;
+				hero.classList.add('is-webgl');
+				aggiornaElica();
+				new IntersectionObserver((v) => e.attiva(v[0].isIntersecting), { threshold: 0 }).observe(hero);
+			})
+			.catch(() => {});
+	}
+
+	// ---------- Scorrimento: l'elica si scioglie, il testo sale e svanisce ----------
+	ScrollTrigger.create({
+		trigger: hero,
+		start: 'top top',
+		end: 'bottom top',
+		scrub: true,
+		onUpdate: (st) => {
+			pScroll = st.progress;
+			aggiornaElica();
+		},
+	});
+	if (!ridotto) {
+		gsap.to('[data-hero-testo]', {
+			yPercent: -14,
+			opacity: 0.1,
+			ease: 'none',
+			scrollTrigger: { trigger: hero, start: 'top top', end: '80% top', scrub: true },
+		});
+	}
+
+	// ---------- Avvio ----------
+	(async () => {
+		const veloce = html.classList.contains('senza-intro') || ridotto;
+		if (!veloce) await chiudiIntro();
+		entrata();
+		// Three.js dopo il primo paint
+		const parti = () => caricaElica();
+		if (!mouseFine || innerWidth < 760) {
+			// su telefono Three.js (oltre 500 KB) si scarica solo alla prima interazione: il poster SVG basta all'inizio
+			let fatto = false;
+			const una = () => {
+				if (fatto) return;
+				fatto = true;
+				['pointerdown', 'touchstart', 'scroll', 'keydown'].forEach((e) => removeEventListener(e, una));
+				parti();
+			};
+			['pointerdown', 'touchstart', 'scroll', 'keydown'].forEach((e) => addEventListener(e, una, { passive: true, once: false }));
+		} else if ('requestIdleCallback' in window) (window as any).requestIdleCallback(parti, { timeout: 1200 });
+		else setTimeout(parti, 300);
+		titoliSplit();
+		rivela();
+		luceBordo();
+		ScrollTrigger.refresh();
+	})();
+</script>
