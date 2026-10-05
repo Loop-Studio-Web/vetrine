@@ -617,6 +617,155 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 			align-items: start;
 		}
 	}
+	/* ——— Scena di strada (prova): facciate, tetti, lampioni, marciapiede e carreggiata ———
+	   Tema scuro = notte (lampioni accesi), tema chiaro = giorno (lampioni spenti). Solo CSS. */
+	.street {
+		--wall: #131315;
+		--wall-edge: #2a2a2e;
+		--roof: #232328;
+		--walk: #222226;
+		--kerb: #3a3a40;
+		--road: #0b0b0c;
+		--lane: #5a5a60;
+		--pole: #3a3a40;
+		--lamp: #ffd9a0;
+		--lamp-glow: rgba(255, 200, 120, 0.55);
+		--ground: 40px;
+	}
+	:global(:root[data-theme='light']) .street {
+		--wall: #ece9e4;
+		--wall-edge: #cfcbc4;
+		--roof: #cfcac1;
+		--walk: #dedbd5;
+		--kerb: #b9b5ad;
+		--road: #c4c1ba;
+		--lane: #f5f3ef;
+		--pole: #8d8a84;
+		--lamp: #f4efe4;
+		--lamp-glow: transparent;
+	}
+	.street__group {
+		position: relative;
+		padding-bottom: var(--ground);
+	}
+	/* Marciapiede + cordolo + carreggiata con la linea tratteggiata */
+	.street__group::after {
+		content: '';
+		position: absolute;
+		inset: auto calc(var(--gutter) * -1) 0;
+		height: var(--ground);
+		background:
+			repeating-linear-gradient(90deg, var(--lane) 0 26px, transparent 26px 56px) 0 calc(100% - 7px) / 100% 3px no-repeat,
+			linear-gradient(to bottom, var(--kerb) 0 3px, var(--walk) 3px 14px, var(--kerb) 14px 17px, var(--road) 17px);
+		-webkit-mask: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+		mask: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+		pointer-events: none;
+	}
+	.street__row {
+		position: relative;
+		z-index: 1;
+		padding-bottom: 0;
+	}
+	.shop {
+		position: relative;
+	}
+	.shop__link {
+		background: var(--wall);
+		border: 1px solid var(--wall-edge);
+		border-top: 0;
+		padding: 0 8px 14px;
+		margin-top: 0;
+	}
+	.shop__awning {
+		margin-inline: -8px;
+	}
+	.shop__window {
+		margin-inline: 0;
+	}
+	/* Tetto: un profilo diverso per ogni negozio (frontone, parapetto a gradini, camino, arco) */
+	.shop__link::before {
+		content: '';
+		display: block;
+		height: 34px;
+		margin: 0 -9px;
+		background: var(--roof);
+		border: 1px solid var(--wall-edge);
+		border-bottom: 0;
+		clip-path: polygon(0 100%, 0 0, 100% 0, 100% 100%);
+	}
+	.shop:nth-child(4n + 1) .shop__link::before {
+		clip-path: polygon(0 100%, 50% 0, 100% 100%);
+		border: 0;
+	}
+	.shop:nth-child(4n + 2) .shop__link::before {
+		clip-path: polygon(0 100%, 0 40%, 22% 40%, 22% 0, 78% 0, 78% 40%, 100% 40%, 100% 100%);
+		border: 0;
+	}
+	.shop:nth-child(4n + 3) .shop__link::before {
+		clip-path: polygon(0 100%, 0 30%, 68% 30%, 68% 0, 82% 0, 82% 30%, 100% 30%, 100% 100%);
+		border: 0;
+	}
+	.shop:nth-child(4n) .shop__link::before {
+		border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+		clip-path: none;
+		border: 0;
+	}
+	/* Il nome sta sulla targa: una fascia sotto la vetrina, sopra il gradino */
+	.shop__name {
+		margin-top: 12px;
+	}
+	.shop__link:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 3px;
+	}
+	/* Lampione nello spazio tra due negozi */
+	.shop:not(:last-child)::before,
+	.shop:not(:last-child)::after {
+		content: '';
+		position: absolute;
+		pointer-events: none;
+	}
+	.shop:not(:last-child)::after {
+		right: -9.5px;
+		bottom: 0;
+		width: 3px;
+		height: 52%;
+		background: var(--pole);
+		z-index: 2;
+	}
+	.shop:not(:last-child)::before {
+		right: -16px;
+		bottom: calc(52% - 2px);
+		width: 17px;
+		height: 9px;
+		border-radius: 7px 7px 2px 2px;
+		background: var(--lamp);
+		box-shadow: 0 0 22px 8px var(--lamp-glow), 0 22px 40px 6px color-mix(in srgb, var(--lamp-glow) 40%, transparent);
+		z-index: 2;
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.street.is-visible .shop:not(:last-child)::before {
+			animation: lamp-on 1.2s ease-out both;
+			animation-delay: calc(var(--i, 0) * 0.15s);
+		}
+	}
+	@keyframes lamp-on {
+		0%, 30% { opacity: 0; }
+		38% { opacity: 0.9; }
+		44% { opacity: 0.3; }
+		60%, 100% { opacity: 1; }
+	}
+	.street__group--soon .shop__link::before {
+		background: #1b1b1d;
+	}
+	:global(:root[data-theme='light']) .street__group--soon .shop__link::before {
+		background: var(--roof);
+	}
+	@media (min-width: 700px) {
+		.street__group::after {
+			inset-inline: 0;
+		}
+	}
 	@media (hover: none) {		/* Sul touch non c'è hover: le vetrine aperte restano accese */
 		.shop--live .shop__img {
 			filter: none;
