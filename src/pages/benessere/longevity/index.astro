@@ -52,11 +52,8 @@ const pageUrl = new URL(`${base}/benessere/longevity/`, Astro.site).href;
 				var h = document.documentElement;
 				h.classList.add('js');
 				if (matchMedia('(prefers-reduced-motion: reduce)').matches) h.classList.add('ridotto');
-				try {
-					if (sessionStorage.getItem('aeterna-intro')) h.classList.add('senza-intro');
-				} catch (e) {}
-				// l'intro nasconde la pagina: si apre sempre dall'alto
-				if (!h.classList.contains('senza-intro') && !h.classList.contains('ridotto') && 'scrollRestoration' in history) history.scrollRestoration = 'manual';
+				// il preloader (sempre, a ogni caricamento) nasconde la pagina: si apre dall'alto; fa anche da copertura mentre l'elica si prepara
+				if (!h.classList.contains('ridotto') && 'scrollRestoration' in history) history.scrollRestoration = 'manual';
 			})();
 		</script>
 	</head>

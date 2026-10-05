@@ -1,5 +1,5 @@
 ---
-// Ingresso: preloader (disegno del marchio, una volta per sessione) e hero con l'elica di DNA in WebGL.
+// Ingresso: preloader (disegno del marchio, a ogni caricamento) e hero con l'elica di DNA in WebGL.
 // Il poster SVG dell'elica è già nel markup: è ciò che si vede finché il canvas non è pronto, senza WebGL,
 // con movimento ridotto e prima che Three.js sia scaricato.
 import Logo from './Logo.astro';
@@ -517,7 +517,8 @@ for (let i = 0; i <= PASSI; i++) {
 		const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
 		tl.to(parole, { yPercent: 0, duration: 1, stagger: 0.05 }, 0.05)
 			.fromTo(hero.querySelectorAll('[data-h]'), { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 1, stagger: 0.12 }, 0.35)
-			.fromTo(canvas, { opacity: 0 }, { opacity: 1, duration: 2.2, ease: 'power2.out', clearProps: 'opacity' }, 0.2);
+			.add(() => {}, 0);
+		// il canvas appare da solo con il fade CSS quando l'elica è pronta (classe is-webgl)
 		// l'elica si avvolge: parte sciolta e si arrotola
 		const stato = { p: 0.95 };
 		pEntrata = stato.p;
@@ -556,9 +557,6 @@ for (let i = 0; i <= PASSI; i++) {
 			const tl = gsap.timeline({
 				onComplete: () => {
 					intro.remove();
-					try {
-						sessionStorage.setItem('aeterna-intro', '1');
-					} catch {}
 					ok();
 				},
 			});
@@ -588,9 +586,9 @@ for (let i = 0; i <= PASSI; i++) {
 	}
 
 	// ---------- WebGL: Three.js caricato a parte, dopo il primo paint ----------
-	function caricaElica() {
+	function caricaElica(): Promise<void> {
 		const debole = !mouseFine || innerWidth < 760 || (navigator.hardwareConcurrency || 8) <= 4;
-		import('./elica')
+		return import('./elica')
 			.then(({ avvia }) => {
 				const e = avvia(canvas, {
 					leggero: debole,
@@ -599,9 +597,12 @@ for (let i = 0; i <= PASSI; i++) {
 				});
 				if (!e) return;
 				elica = e;
-				hero.classList.add('is-webgl');
 				aggiornaElica();
 				new IntersectionObserver((v) => e.attiva(v[0].isIntersecting), { threshold: 0 }).observe(hero);
+				return e.pronta.then(() => {
+					hero.classList.add('is-webgl');
+					aggiornaElica();
+				});
 			})
 			.catch(() => {});
 	}
@@ -629,11 +630,14 @@ for (let i = 0; i <= PASSI; i++) {
 	// ---------- Avvio ----------
 	(async () => {
 		const veloce = html.classList.contains('senza-intro') || ridotto;
+		const telefono = !mouseFine || innerWidth < 760;
+		// desktop: Three.js si scarica subito e gli shader si compilano in modo asincrono (compileAsync): né il
+		// preloader né il titolo aspettano l'elica, che compare con un fade appena è pronta
+		if (!telefono) caricaElica();
 		if (!veloce) await chiudiIntro();
 		entrata();
-		// Three.js dopo il primo paint
 		const parti = () => caricaElica();
-		if (!mouseFine || innerWidth < 760) {
+		if (telefono) {
 			// su telefono Three.js (oltre 500 KB) si scarica solo alla prima interazione: il poster SVG basta all'inizio
 			let fatto = false;
 			const una = () => {
@@ -643,8 +647,7 @@ for (let i = 0; i <= PASSI; i++) {
 				parti();
 			};
 			['pointerdown', 'touchstart', 'scroll', 'keydown'].forEach((e) => addEventListener(e, una, { passive: true, once: false }));
-		} else if ('requestIdleCallback' in window) (window as any).requestIdleCallback(parti, { timeout: 1200 });
-		else setTimeout(parti, 300);
+		}
 		titoliSplit();
 		rivela();
 		luceBordo();

@@ -131,7 +131,7 @@ const etichette = assi.map((a, i) => ({ ...a, pos: punto(i, RAGGIO + 26), asse: 
 			</div>
 
 			<figure class="ass__radar vetro" data-rivela>
-				<svg viewBox="0 0 300 300" role="img" aria-label="Radar del profilo" data-radar-svg>
+				<svg viewBox="-48 0 396 305" role="img" aria-label="Radar del profilo" data-radar-svg>
 					<g fill="none" stroke="rgba(142,158,160,0.25)" stroke-width="1">
 						{[0.25, 0.5, 0.75, 1].map((f) => <polygon points={anello(f)}></polygon>)}
 						{etichette.map((e) => <line x1={CX} y1={CY} x2={e.asse[0]} y2={e.asse[1]}></line>)}
@@ -177,7 +177,7 @@ const etichette = assi.map((a, i) => ({ ...a, pos: punto(i, RAGGIO + 26), asse: 
 		display: grid;
 		grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
 		gap: 18px;
-		align-items: start;
+		align-items: stretch;
 	}
 	.ass__form {
 		padding: clamp(24px, 3.4vw, 44px);
@@ -552,13 +552,13 @@ const etichette = assi.map((a, i) => ({ ...a, pos: punto(i, RAGGIO + 26), asse: 
 	.ass__radar {
 		margin: 0;
 		padding: clamp(18px, 3vw, 32px);
-		position: sticky;
-		top: calc(var(--nav-h) + 20px);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
 	}
 	.ass__radar svg {
 		width: 100%;
 		height: auto;
-		overflow: visible;
 	}
 	.radar__area {
 		fill: rgba(78, 159, 142, 0.22);

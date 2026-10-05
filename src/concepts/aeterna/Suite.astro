@@ -331,7 +331,12 @@ import { euro } from './formato';
 	}
 
 	/* giorni e fasce */
+	/* un fieldset ha min-width: min-content: senza questo la fila dei giorni allarga la pagina sui telefoni stretti */
+	.blocco {
+		min-width: 0;
+	}
 	.giorni {
+		min-width: 0;
 		display: flex;
 		gap: 8px;
 		overflow-x: auto;
@@ -807,20 +812,20 @@ import { euro } from './formato';
 
 	@media (max-width: 1000px) {
 		.suite__corpo {
-			grid-template-columns: 1fr;
+			grid-template-columns: minmax(0, 1fr);
 		}
 		.riepilogo {
 			position: relative;
 			top: 0;
 		}
 		.campi {
-			grid-template-columns: 1fr;
+			grid-template-columns: minmax(0, 1fr);
 		}
 	}
 	@media (max-width: 640px) {
 		.griglia--2,
 		.griglia--3 {
-			grid-template-columns: 1fr;
+			grid-template-columns: minmax(0, 1fr);
 		}
 		.slots {
 			grid-template-columns: repeat(3, minmax(0, 1fr));

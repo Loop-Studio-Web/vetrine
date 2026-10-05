@@ -21,6 +21,8 @@ export interface Elica {
 	/** sospende o riprende il rendering (hero fuori vista, scheda nascosta) */
 	attiva(si: boolean): void;
 	distruggi(): void;
+	/** shader compilati senza bloccare il thread principale: solo da qui in poi conviene mostrare il canvas */
+	pronta: Promise<void>;
 }
 
 interface Opzioni {
@@ -317,10 +319,20 @@ export function avvia(canvas: HTMLCanvasElement, opz: Opzioni): Elica | null {
 	canvas.addEventListener('webglcontextlost', perso);
 
 	misura();
-	if (opz.ridotto) disegna();
-	else requestAnimationFrame(ciclo);
+	// compileAsync (KHR_parallel_shader_compile) evita che la compilazione blocchi il thread e faccia scattare le animazioni dell'hero
+	const pronta = (renderer.compileAsync ? renderer.compileAsync(scene, camera) : Promise.resolve())
+		.catch(() => {})
+		.then(() => {
+			if (!vivo) return;
+			if (opz.ridotto) disegna();
+			else {
+				t0 = performance.now();
+				requestAnimationFrame(ciclo);
+			}
+		});
 
 	return {
+		pronta,
 		scroll(p) {
 			progresso = Math.min(1, Math.max(0, p));
 			if (opz.ridotto) disegna();

@@ -5,14 +5,14 @@
   <img src="docs/img/loop-logo-on-light.svg" alt="Loop Studio" height="64">
 </picture>
 
-<img src="docs/img/header.svg" alt="A street of shop fronts: Trattoria, Ossidiana, Luppolo & Watt, Bottega Tre Rasoi and Atelier Lumen are lit and open, two more windows are dark and coming soon." width="100%">
+<img src="docs/img/header.svg" alt="A street of shop fronts: Trattoria, Ossidiana, Luppolo & Watt, Bottega Tre Rasoi, Atelier Lumen and Aeterna are lit and open, two more windows are dark and coming soon." width="100%">
 
 **Full-page homepage concepts for local businesses.<br>Each one designed as if it were the only one on the street.**
 
 [![Live](https://img.shields.io/badge/demo-live-fe3b30?style=flat-square&labelColor=0b0b0c)](https://vetrine.theloopstudio.org/)
 [![Deploy](https://github.com/Loop-Studio-Web/vetrine/actions/workflows/deploy.yml/badge.svg)](https://github.com/Loop-Studio-Web/vetrine/actions/workflows/deploy.yml)
 [![Astro](https://img.shields.io/badge/Astro-7-fe3b30?style=flat-square&logo=astro&logoColor=white&labelColor=0b0b0c)](https://astro.build)
-[![Lighthouse](https://img.shields.io/badge/Lighthouse-88%E2%80%93100-fe3b30?style=flat-square&logo=lighthouse&logoColor=white&labelColor=0b0b0c)](#the-checklist-every-window-passes)
+[![Lighthouse](https://img.shields.io/badge/Lighthouse-90%E2%80%93100-fe3b30?style=flat-square&logo=lighthouse&logoColor=white&labelColor=0b0b0c)](#the-checklist-every-window-passes)
 [![Accessibility](https://img.shields.io/badge/axe--core-0%20violations-fe3b30?style=flat-square&labelColor=0b0b0c)](#the-checklist-every-window-passes)
 
 [**Walk the street →**](https://vetrine.theloopstudio.org/)
@@ -142,7 +142,7 @@
 | **Type** | Instrument Serif for titles, Montserrat for text and labels, JetBrains Mono for technical data, Cinzel for the wordmark only |
 | **Palette** | <img src="docs/img/palette-aeterna.svg" alt="Abyss, navy, emerald, light emerald, gold and ice" height="22"> |
 | **Signature moves** | A **WebGL DNA helix** (Three.js, custom GLSL: chromatic dispersion on every point, depth of field, repulsion from the pointer, inertia) that unwinds as you scroll, with an SVG poster for slow phones and no-WebGL. A pinned section whose protocols **scroll sideways** while you scroll down, each with a technical drawing and a **magnifying lens** that follows the mouse. A **four-step bio-assessment** whose radar chart redraws live on every answer and ends in a report that pre-fills the booking. A **before/after cellular scanner** drawn in canvas, with a draggable blade of light and live readouts. A **suite booking** with real-time price and a side drawer. Magnetic buttons, a contextual cursor ring, glass cards lit by the pointer, a laser-scan mobile menu. Smooth scrolling on desktop only, never on touch |
-| **Lighthouse** | 88 performance on mobile, 96 on desktop, 100 on accessibility and best practices. Three.js loads after the first paint on desktop and only after the first touch on phones |
+| **Lighthouse** | 90 performance on mobile, 96 on desktop, 100 on accessibility and best practices. A short preloader runs on every load and covers the helix being prepared: Three.js downloads at once and the shaders compile asynchronously (`compileAsync`), so the title animation never competes with them. On phones Three.js loads only after the first touch |
 
 [**Open Aeterna →**](https://vetrine.theloopstudio.org/benessere/longevity/)
 

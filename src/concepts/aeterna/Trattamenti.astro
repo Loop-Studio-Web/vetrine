@@ -22,6 +22,7 @@ const macchine = protocolli.filter((p) => p.macchina);
 				<p class="prot__scorri" data-rivela>
 					<span class="solo-pin">Continua a scorrere verso il basso: i protocolli si sfogliano di lato.</span>
 					<span class="solo-nativo">Fai scorrere di lato per sfogliare i protocolli.</span>
+					<span class="prot__freccia" aria-hidden="true"><i></i></span>
 				</p>
 				<a class="prot__salta-i" href="#metodo">Non ti interessa? Salta al metodo <span aria-hidden="true">↓</span></a>
 			</div>
@@ -73,7 +74,7 @@ const macchine = protocolli.filter((p) => p.macchina);
 				{
 					macchine.map((p, i) => (
 						<li>
-							<button type="button" data-vai={i} aria-label={`Vai al protocollo ${p.nome}`}>
+							<button type="button" data-vai={i} aria-label={`${String(i + 1).padStart(2, "0")} ${p.nome}, vai al protocollo`}>
 								{String(i + 1).padStart(2, '0')} <span>{p.nome}</span>
 							</button>
 						</li>
@@ -535,6 +536,57 @@ const macchine = protocolli.filter((p) => p.macchina);
 		}
 		.prot.is-pin .macchina {
 			max-width: min(520px, calc(100svh - 250px));
+		}
+	}
+	/* nativo (telefono): una schermata per volta, niente "spiraglio" della successiva; la freccia invita a scorrere */
+	.prot:not(.is-pin) .prot__pista {
+		padding: 0 0 24px;
+	}
+	.prot:not(.is-pin) .prot__intro,
+	.prot:not(.is-pin) .pannello,
+	.prot:not(.is-pin) .prot__chiusa {
+		width: 100%;
+		scroll-margin-left: 0;
+		padding-inline: var(--gutter);
+	}
+	.prot:not(.is-pin) .prot__intro,
+	.prot:not(.is-pin) .prot__chiusa {
+		align-self: flex-start;
+	}
+	.prot:not(.is-pin) .pannello,
+	.prot:not(.is-pin) .prot__chiusa {
+		border-left: 0;
+	}
+	.prot__freccia {
+		display: block;
+		margin-top: 14px;
+		padding-left: 16px;
+	}
+	.prot__freccia i {
+		display: block;
+		width: 64px;
+		height: 1px;
+		background: linear-gradient(90deg, transparent, var(--smeraldo-chiaro));
+		position: relative;
+		animation: ae-guida 1.6s var(--ease) infinite;
+	}
+	.prot__freccia i::after {
+		content: '';
+		position: absolute;
+		right: 0;
+		top: -4px;
+		width: 8px;
+		height: 8px;
+		border-top: 1px solid var(--smeraldo-chiaro);
+		border-right: 1px solid var(--smeraldo-chiaro);
+		transform: rotate(45deg);
+	}
+	.prot.is-pin .prot__freccia {
+		display: none;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.prot__freccia i {
+			animation: none;
 		}
 	}
 	@media (max-width: 900px) {

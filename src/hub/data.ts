@@ -362,7 +362,7 @@ export const concepts: Concept[] = [
 		caratteri: 'Instrument Serif, Montserrat, JetBrains Mono e Cinzel',
 		palette: ['#060b14', '#0c1626', '#4e9f8e', '#86d6c3', '#d4af37', '#e2ece9'],
 		metriche: [
-			{ label: 'Performance', valore: '88' },
+			{ label: 'Performance', valore: '90' },
 			{ label: 'Accessibilità', valore: '100' },
 			{ label: 'Buone pratiche', valore: '100' },
 		],
