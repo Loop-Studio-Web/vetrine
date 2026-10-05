@@ -45,6 +45,53 @@ function awning([a, b]: [string, string] | string[]) {
 	return `<svg viewBox="0 0 100 29" preserveAspectRatio="none" aria-hidden="true" focusable="false">${s}</svg>`;
 }
 const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
+
+// Scena di sfondo della via: due strati di edifici (SVG generati con un seme, quindi sempre uguali) e un cielo.
+// Le finestre spente sono un pattern; poche finestre accese, visibili solo di notte (tema scuro).
+function rng(seed: number) {
+	let s = seed;
+	return () => (s = (s * 1664525 + 1013904223) % 4294967296) / 4294967296;
+}
+function skyline(seed: number, id: string, o: { h: number; min: number; max: number; wMin: number; wMax: number; lit: number; details: boolean }) {
+	const r = rng(seed);
+	const W = 1600;
+	let x = -10;
+	let body = '';
+	let lit = '';
+	while (x < W) {
+		const w = Math.round(o.wMin + r() * (o.wMax - o.wMin));
+		const h = Math.round(o.min + r() * (o.max - o.min));
+		const y = o.h - h;
+		body += `<rect x="${x}" y="${y}" width="${w}" height="${h + 2}"/>`;
+		if (o.details) {
+			const k = r();
+			if (k < 0.2) body += `<rect x="${x + w / 2 - 1}" y="${y - 22}" width="2" height="22"/>`; // antenna
+			else if (k < 0.36) body += `<polygon points="${x},${y} ${x + w / 2},${y - 14} ${x + w},${y}"/>`; // tetto a falde
+			else if (k < 0.5) body += `<rect x="${x + 8}" y="${y - 9}" width="9" height="9"/><rect x="${x + w - 20}" y="${y - 5}" width="12" height="5"/>`; // camino e lucernario
+			else if (k < 0.58) body += `<rect x="${x + w / 2 - 9}" y="${y - 16}" width="18" height="12"/><polygon points="${x + w / 2 - 11},${y - 16} ${x + w / 2},${y - 24} ${x + w / 2 + 11},${y - 16}"/><rect x="${x + w / 2 - 8}" y="${y - 4}" width="2" height="4"/><rect x="${x + w / 2 + 6}" y="${y - 4}" width="2" height="4"/>`; // serbatoio
+		}
+		if (o.details && r() < o.lit) {
+			const n = 1 + Math.floor(r() * 4);
+			for (let i = 0; i < n; i++) lit += `<rect x="${x + 5 + Math.floor(r() * ((w - 14) / 12)) * 12}" y="${y + 8 + Math.floor(r() * (h / 16 - 1)) * 16}" width="5" height="7"/>`;
+		}
+		x += w + Math.round(r() * 5);
+	}
+	const win = o.details
+		? `<pattern id="${id}" width="12" height="16" patternUnits="userSpaceOnUse"><rect x="5" y="8" width="5" height="7"/></pattern>`
+		: '';
+	return `<svg viewBox="0 0 ${W} ${o.h}" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false"><defs>${win}</defs><g class="sk-b">${body}</g>${o.details ? `<g class="sk-w" fill="url(#${id})">${body.replace(/<polygon[^>]*>/g, '').replace(/<rect x="[^"]*" y="[^"]*" width="(?:[0-9]|1[0-9]|2)"[^>]*>/g, '')}</g><g class="sk-l">${lit}</g>` : ''}</svg>`;
+}
+const stelle = (() => {
+	const r = rng(7);
+	let s = '';
+	for (let i = 0; i < 26; i++) s += `<circle cx="${Math.round(r() * 1000)}" cy="${Math.round(r() * 70)}" r="${(0.7 + r() * 1.1).toFixed(1)}" class="${i % 6 === 0 ? 'tw' : ''}" style="animation-delay:${(r() * 6).toFixed(1)}s"/>`;
+	return `<svg viewBox="0 0 1000 100" preserveAspectRatio="xMidYMin slice" aria-hidden="true" focusable="false">${s}</svg>`;
+})();
+const sceneParts = (i: number) => ({
+	far: skyline(31 + i * 17, `wf${i}`, { h: 120, min: 36, max: 92, wMin: 38, wMax: 90, lit: 0, details: false }),
+	near: skyline(5 + i * 29, `wn${i}`, { h: 170, min: 44, max: 96, wMin: 54, wMax: 120, lit: 0.55, details: true }),
+});
+const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) => sceneParts(i));
 ---
 
 <section class="hero" aria-labelledby="hero-title">
@@ -96,12 +143,24 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 				</span>
 			</div>
 			{
-				gruppi.map((g) => (
+				gruppi.map((g, gi) => (
 					<div class="street__group">
 						<p class="street__tag" id={`via-${g.slug}`}>
 							<a href={`#${g.slug}`}>{g.nome}</a>
 							<span class="street__n">{g.live.length} {g.live.length === 1 ? 'vetrina aperta' : 'vetrine aperte'}</span>
 						</p>
+						<div class="block">
+						<div class="scene" aria-hidden="true">
+							<div class="sc sc--sky"></div>
+							<div class="sc sc--stars" set:html={stelle}></div>
+							<div class="sc sc--moon"></div>
+							<div class="sc sc--sun"></div>
+							<div class="sc sc--cloud sc--c1"></div>
+							<div class="sc sc--cloud sc--c2"></div>
+							<div class="sc sc--far" set:html={scenes[gi].far}></div>
+							<div class="sc sc--near" set:html={scenes[gi].near}></div>
+							<div class="sc sc--fill"></div>
+						</div>
 						<ul class="street__row" role="list" aria-labelledby={`via-${g.slug}`}>
 							{g.live.map((c) => (
 								<li class="shop shop--live" style={`--glow:${c.glow}`}>
@@ -137,16 +196,29 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 								</li>
 							))}
 						</ul>
+						</div>
 					</div>
 				))
 			}
 			{
-				perStato.map((g) => (
+				perStato.map((g, gi) => (
 					<div class="street__group street__group--soon">
 						<p class="street__tag" id={`via-${g.stato}`}>
 							<span>{g.titolo}</span>
 							<span class="street__n">{g.conto(g.lista.length)}</span>
 						</p>
+						<div class="block">
+						<div class="scene" aria-hidden="true">
+							<div class="sc sc--sky"></div>
+							<div class="sc sc--stars" set:html={stelle}></div>
+							<div class="sc sc--moon"></div>
+							<div class="sc sc--sun"></div>
+							<div class="sc sc--cloud sc--c1"></div>
+							<div class="sc sc--cloud sc--c2"></div>
+							<div class="sc sc--far" set:html={scenes[gruppi.length + gi].far}></div>
+							<div class="sc sc--near" set:html={scenes[gruppi.length + gi].near}></div>
+							<div class="sc sc--fill"></div>
+						</div>
 						<ul class="street__row" role="list" aria-labelledby={`via-${g.stato}`}>
 							{g.lista.map((p) => (
 								<li class="shop shop--soon">
@@ -161,6 +233,7 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 								</li>
 							))}
 						</ul>
+						</div>
 					</div>
 				))
 			}
@@ -555,8 +628,9 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 
 	@media (min-width: 700px) {
 		.street__row {
-			display: grid;
-			grid-template-columns: repeat(4, minmax(0, 1fr));
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
 			gap: 22px 16px;
 			margin-inline: 0;
 			padding: 0;
@@ -564,11 +638,12 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 			scroll-snap-type: none;
 		}
 		.street__row > .shop {
+			flex: 0 0 calc((100% - 48px) / 4);
 			max-width: none;
 		}
 		/* Le categorie ancora vuote sono segnaposto: schede piccole, sei per riga */
-		.street__group--soon .street__row {
-			grid-template-columns: repeat(6, minmax(0, 1fr));
+		.street__group--soon .street__row > .shop {
+			flex-basis: calc((100% - 80px) / 6);
 		}
 		.street__group--soon .shop__name {
 			font-size: 0.92rem;
@@ -644,22 +719,188 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 		--lamp: #f4efe4;
 		--lamp-glow: transparent;
 	}
-	.street__group {
+	/* Il blocco è largo quanto lo schermo: dentro ci sono la scena (cielo, edifici) e la riga di negozi */
+	.block {
 		position: relative;
-		padding-bottom: var(--ground);
+		margin-inline: calc(50% - 50vw);
+		padding: 120px calc(50vw - 50%) var(--ground);
 	}
 	/* Marciapiede + cordolo + carreggiata con la linea tratteggiata */
-	.street__group::after {
+	.block::after {
 		content: '';
 		position: absolute;
-		inset: auto calc(var(--gutter) * -1) 0;
+		inset: auto 0 0;
 		height: var(--ground);
 		background:
 			repeating-linear-gradient(90deg, var(--lane) 0 26px, transparent 26px 56px) 0 calc(100% - 7px) / 100% 3px no-repeat,
 			linear-gradient(to bottom, var(--kerb) 0 3px, var(--walk) 3px 14px, var(--kerb) 14px 17px, var(--road) 17px);
-		-webkit-mask: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-		mask: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
 		pointer-events: none;
+		z-index: 3;
+	}
+	/* ——— Scena: strati dietro i negozi ——— */
+	.scene {
+		position: absolute;
+		inset: 0 0 var(--ground);
+		overflow: hidden;
+		pointer-events: none;
+		--sky-top: transparent;
+		--sky-mid: #1b0a0a;
+		--sky-hz: #4a1512;
+		--sk-far: #2b1213;
+		--sk-near: #0c0c0e;
+		--win: #ffd9a0;
+		--win-off: rgba(255, 255, 255, 0.07);
+		--star: #fff;
+	}
+	:global(:root[data-theme='light']) .scene {
+		--sky-mid: #fde9e4;
+		--sky-hz: #ffd2c6;
+		--sk-far: #ecc9c0;
+		--sk-near: #cfc9c0;
+		--win: rgba(120, 150, 180, 0.35);
+		--win-off: rgba(255, 255, 255, 0.5);
+	}
+	.sc {
+		position: absolute;
+		left: 0;
+		right: 0;
+		will-change: transform;
+	}
+	.sc :global(svg) {
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+	.sc--sky {
+		inset: 0;
+		background: linear-gradient(to bottom, var(--sky-top) 0, var(--sky-mid) 55%, var(--sky-hz) 100%);
+	}
+	.sc--stars {
+		top: 0;
+		height: 100px;
+		fill: var(--star);
+		opacity: 0.8;
+		transform: translate3d(0, calc(var(--p, 0) * -0.05px), 0);
+	}
+	.sc--stars :global(.tw) {
+		animation: twinkle 5s ease-in-out infinite;
+	}
+	.sc--moon,
+	.sc--sun {
+		left: auto;
+		right: 12%;
+		top: 18px;
+		width: 28px;
+		height: 28px;
+		border-radius: 50%;
+		transform: translate3d(0, calc(var(--p, 0) * -0.14px), 0);
+	}
+	.sc--moon {
+		box-shadow: inset -9px -3px 0 0 #f3ead6, 0 0 22px 2px rgba(243, 234, 214, 0.22);
+	}
+	.sc--sun {
+		display: none;
+		width: 38px;
+		height: 38px;
+		top: 14px;
+		background: radial-gradient(circle at 50% 50%, #fff6dc 0 40%, #ffd28a 70%);
+		box-shadow: 0 0 46px 14px rgba(255, 196, 120, 0.55);
+	}
+	:global(:root[data-theme='light']) .sc--moon,
+	:global(:root[data-theme='light']) .sc--stars {
+		display: none;
+	}
+	:global(:root[data-theme='light']) .sc--sun {
+		display: block;
+	}
+	.sc--cloud {
+		display: none;
+		left: 0;
+		right: auto;
+		width: 130px;
+		height: 24px;
+		border-radius: 999px;
+		background: rgba(255, 255, 255, 0.9);
+		box-shadow: 34px -10px 0 -2px rgba(255, 255, 255, 0.9), 70px 2px 0 -4px rgba(255, 255, 255, 0.9);
+		animation: drift 120s linear infinite alternate;
+	}
+	.sc--c1 {
+		top: 34px;
+	}
+	.sc--c2 {
+		top: 66px;
+		width: 90px;
+		height: 18px;
+		animation-duration: 160s;
+		animation-delay: -60s;
+		opacity: 0.8;
+	}
+	:global(:root[data-theme='light']) .sc--cloud {
+		display: block;
+	}
+	.sc--far {
+		top: 30px;
+		height: 120px;
+		fill: var(--sk-far);
+		transform: translate3d(0, calc(var(--p, 0) * -0.04px), 0);
+	}
+	.sc--near {
+		top: 0;
+		height: 170px;
+		fill: var(--sk-near);
+		transform: translate3d(0, calc(var(--p, 0) * -0.09px), 0);
+	}
+	.sc--fill {
+		top: 169px;
+		bottom: 0;
+		background: var(--sk-near);
+	}
+	/* Le pareti ai lati dei negozi hanno le loro finestre: una griglia spenta e, di notte, qualcuna accesa */
+	.sc--fill::before,
+	.sc--fill::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+	}
+	.sc--fill::before {
+		background: var(--win-off);
+		-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='40'%3E%3Crect x='10' y='12' width='9' height='15' fill='%23000'/%3E%3C/svg%3E") 0 0 / 30px 40px;
+		mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='40'%3E%3Crect x='10' y='12' width='9' height='15' fill='%23000'/%3E%3C/svg%3E") 0 0 / 30px 40px;
+	}
+	.sc--fill::after {
+		background: var(--win);
+		opacity: 0.75;
+		-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='200'%3E%3Cg fill='%23000'%3E%3Crect x='40' y='12' width='9' height='15'/%3E%3Crect x='130' y='52' width='9' height='15'/%3E%3Crect x='70' y='92' width='9' height='15'/%3E%3Crect x='190' y='132' width='9' height='15'/%3E%3Crect x='10' y='172' width='9' height='15'/%3E%3Crect x='160' y='12' width='9' height='15'/%3E%3Crect x='100' y='132' width='9' height='15'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 240px 200px;
+		mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='200'%3E%3Cg fill='%23000'%3E%3Crect x='40' y='12' width='9' height='15'/%3E%3Crect x='130' y='52' width='9' height='15'/%3E%3Crect x='70' y='92' width='9' height='15'/%3E%3Crect x='190' y='132' width='9' height='15'/%3E%3Crect x='10' y='172' width='9' height='15'/%3E%3Crect x='160' y='12' width='9' height='15'/%3E%3Crect x='100' y='132' width='9' height='15'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 240px 200px;
+	}
+	:global(:root[data-theme='light']) .sc--fill::after {
+		display: none;
+	}
+	.sc :global(.sk-w) {
+		fill: var(--win-off);
+	}
+	.sc :global(.sk-l) {
+		fill: var(--win);
+	}
+	:global(:root[data-theme='light']) .sc :global(.sk-l) {
+		display: none;
+	}
+	@keyframes twinkle {
+		0%, 100% { opacity: 1; }
+		50% { opacity: 0.25; }
+	}
+	@keyframes drift {
+		from { transform: translateX(-10vw); }
+		to { transform: translateX(95vw); }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.sc--cloud,
+		.sc--stars :global(.tw) {
+			animation: none;
+		}
+		.sc--cloud {
+			transform: translateX(20vw);
+		}
 	}
 	.street__row {
 		position: relative;
@@ -761,11 +1002,6 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 	:global(:root[data-theme='light']) .street__group--soon .shop__link::before {
 		background: var(--roof);
 	}
-	@media (min-width: 700px) {
-		.street__group::after {
-			inset-inline: 0;
-		}
-	}
 	@media (hover: none) {		/* Sul touch non c'è hover: le vetrine aperte restano accese */
 		.shop--live .shop__img {
 			filter: none;
@@ -794,4 +1030,22 @@ const soonAwning = awning(['#2b2b2e', '#1b1b1d']);
 		});
 	focusable();
 	addEventListener('resize', focusable);
+
+	// Parallasse della scena: ogni blocco riceve --p, la distanza (in px) del suo centro dal centro dello schermo
+	const scenes = [...document.querySelectorAll<HTMLElement>('.block')];
+	if (scenes.length && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		let raf = 0;
+		const update = () => {
+			raf = 0;
+			const mid = innerHeight / 2;
+			for (const el of scenes) {
+				const r = el.getBoundingClientRect();
+				if (r.bottom < -100 || r.top > innerHeight + 100) continue;
+				el.style.setProperty('--p', String(Math.round(r.top + r.height / 2 - mid)));
+			}
+		};
+		addEventListener('scroll', () => (raf ||= requestAnimationFrame(update)), { passive: true });
+		addEventListener('resize', update);
+		update();
+	}
 </script>
