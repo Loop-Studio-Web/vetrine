@@ -1,0 +1,97 @@
+---
+const domande = [
+	{ q: 'Quanto ci mettete?', a: 'Dipende dal guasto. Batterie, display di molti smartphone, pulizie e connettori spesso in giornata, a volte mentre aspetti. Per le altre riparazioni ti diamo un tempo dopo la diagnosi: di solito 24–48 ore, fino a qualche giorno se dobbiamo ordinare un pezzo.' },
+	{ q: 'Fate diagnosi? Quanto costa?', a: 'Sì, la facciamo sempre. Se poi ripari da noi, la diagnosi è inclusa. Se decidi di non procedere, ti diciamo prima se c’è un piccolo costo per il tempo impiegato: non lo scopri alla cassa.' },
+	{ q: 'Recuperate i dati?', a: 'Sì, da PC, smartphone, dischi e schede di memoria. Prima valutiamo il supporto e ti diciamo con onestà quante possibilità ci sono, poi decidi se procedere. Più si interviene in fretta, meglio è: non continuare a riaccendere il dispositivo.' },
+	{ q: 'Avete garanzia sulla riparazione?', a: 'Sì, sul pezzo sostituito e sul lavoro. Se dopo la riparazione il problema si ripresenta, torni e lo sistemiamo. La garanzia non copre i danni nuovi (cadute, liquidi) successivi al ritiro.' },
+	{ q: 'Devo prenotare?', a: 'No: passa quando vuoi negli orari di apertura. Se preferisci, compila la richiesta qui sotto o scrivici: ci prepariamo prima e risparmi tempo al banco.' },
+];
+---
+
+<section class="domande" id="domande" aria-labelledby="domande-titolo">
+	<div class="wrap domande__in">
+		<div>
+			<p class="campo"><b>N° 06</b> Domande frequenti</p>
+			<h2 id="domande-titolo" class="h2">Quello che ci chiedono più spesso.</h2>
+			<p class="lead">Se non trovi la tua, scrivici: rispondiamo volentieri.</p>
+		</div>
+		<div class="domande__lista">
+			{
+				domande.map((d) => (
+					<details>
+						<summary>{d.q}</summary>
+						<p>{d.a}</p>
+					</details>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<style>
+	.domande {
+		padding: clamp(64px, 9vw, 120px) 0;
+	}
+	.domande__in {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+		gap: clamp(28px, 5vw, 72px);
+		align-items: start;
+	}
+	.domande__lista {
+		display: grid;
+		gap: 12px;
+	}
+	details {
+		background: var(--bianco);
+		border: 2px solid var(--riga);
+		border-radius: 12px;
+		transition: border-color 0.2s;
+	}
+	details[open] {
+		border-color: var(--notte);
+	}
+	summary {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
+		padding: 18px 22px;
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: 1.12rem;
+		cursor: pointer;
+		list-style: none;
+	}
+	summary::-webkit-details-marker {
+		display: none;
+	}
+	summary::after {
+		content: '+';
+		flex: none;
+		display: grid;
+		place-items: center;
+		width: 30px;
+		height: 30px;
+		border-radius: 50%;
+		background: var(--notte);
+		color: var(--bianco);
+		font-size: 1.3rem;
+		line-height: 1;
+		transition: transform 0.25s, background-color 0.2s;
+	}
+	details[open] summary::after {
+		transform: rotate(135deg);
+		background: var(--elettrico-testo);
+	}
+	details p {
+		padding: 0 22px 20px;
+		color: var(--grigio-testo);
+		max-width: 62ch;
+	}
+	@media (max-width: 860px) {
+		.domande__in {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+</style>

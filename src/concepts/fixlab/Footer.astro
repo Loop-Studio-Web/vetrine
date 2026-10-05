@@ -1,0 +1,100 @@
+---
+import simbolo from '../../assets/fixlab/brand/simbolo-chiaro.svg';
+import logo from '../../assets/hub/loop-logo-on-dark.svg';
+---
+
+<footer class="piede">
+	<div class="piede__in">
+		<p class="piede__nome">
+			<img src={simbolo.src} alt="" width="44" height="44" />
+			<span><b>FIX</b>LAB</span>
+		</p>
+		<nav class="piede__nav" aria-label="Piè di pagina">
+			<a href="#diagnosi">Trova il servizio</a>
+			<a href="#listino">Prezzi</a>
+			<a href="#richiesta">Contatti</a>
+			<a href="tel:+390200000000">02 0000 0000</a>
+		</nav>
+		<p class="piede__copy">
+			&copy; 2026 FIXLAB. Laboratorio di fantasia: concept dimostrativo. L’attività, i prezzi, le recensioni, gli orari e l’indirizzo non
+			esistono. Privacy e cookie: in una vetrina vera troveresti qui le pagine dedicate.
+		</p>
+		<a class="piede__credito" href="https://theloopstudio.org/" target="_blank" rel="noopener">
+			<span>Sito ideato da</span>
+			<img src={logo.src} width="84" height="44" alt="Loop Studio" />
+			<span class="sr-only">(si apre in una nuova scheda)</span>
+		</a>
+	</div>
+</footer>
+
+<style>
+	.piede {
+		background: var(--notte);
+		color: #dbe4ea;
+		padding: 44px var(--gutter) 90px;
+		border-top: 4px solid var(--elettrico);
+	}
+	.piede__in {
+		max-width: var(--max);
+		margin-inline: auto;
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		align-items: center;
+		gap: 18px 36px;
+	}
+	.piede__nome {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		font-family: var(--titoli);
+		font-weight: 800;
+		font-size: 1.7rem;
+		letter-spacing: 0.02em;
+		color: var(--elettrico-chiaro);
+		line-height: 1;
+	}
+	.piede__nome b {
+		color: var(--bianco);
+	}
+	.piede__nav {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px 24px;
+		font-weight: 600;
+	}
+	.piede__nav a {
+		text-decoration: none;
+		border-bottom: 1px solid transparent;
+	}
+	.piede__nav a:hover {
+		border-bottom-color: var(--elettrico-chiaro);
+	}
+	.piede__copy {
+		grid-column: 1 / 3;
+		font-size: 0.86rem;
+		color: #aebbc5;
+		max-width: 62em;
+	}
+	.piede__credito {
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		text-decoration: none;
+		font-size: 0.85rem;
+	}
+	.piede__credito img {
+		height: 40px;
+		width: auto;
+	}
+	.piede__credito:hover {
+		opacity: 0.75;
+	}
+	@media (max-width: 860px) {
+		.piede__in {
+			grid-template-columns: 1fr;
+		}
+		.piede__copy {
+			grid-column: auto;
+		}
+	}
+</style>

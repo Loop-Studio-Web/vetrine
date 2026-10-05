@@ -1,0 +1,343 @@
+---
+import { dispositivi, prezzo } from './riparazioni';
+
+const sm = dispositivi[0].problemi;
+const da = (id: string) => prezzo(sm.find((p) => p.id === id)!.da);
+// I pezzi dello smartphone in vista esplosa: ognuno rimanda a un servizio del listino
+const pezzi = [
+	{ p: 'schermo', prob: 'vetro', nome: 'Vetro e display', da: da('vetro'), n: '01' },
+	{ p: 'scheda', prob: 'ricarica', nome: 'Scheda e connettore', da: da('ricarica'), n: '02' },
+	{ p: 'batteria', prob: 'batteria', nome: 'Batteria', da: da('batteria'), n: '03' },
+	{ p: 'scocca', prob: 'fotocamera', nome: 'Fotocamera e scocca', da: da('fotocamera'), n: '04' },
+];
+---
+
+<section class="ingresso" id="top" aria-labelledby="ingresso-titolo">
+	<div class="ingresso__in">
+		<div class="ingresso__testo">
+			<p class="campo"><b>N° 0417</b> Riparazioni · smartphone, PC, tablet, console</p>
+			<h1 id="ingresso-titolo">
+				Ripariamo la tua tecnologia. <span class="ingresso__ev">Senza complicazioni.</span>
+			</h1>
+			<p class="ingresso__lead">
+				Smartphone, PC, notebook, tablet e console: diagnosi chiara, assistenza competente e soluzioni pensate per far tornare in
+				funzione quello che usi ogni giorno.
+			</p>
+			<div class="ingresso__cta">
+				<a class="btn" href="#richiesta">Richiedi assistenza</a>
+				<a class="btn btn--chiaro" href="#listino">Scopri i servizi</a>
+			</div>
+			<ul class="ingresso__fiducia" role="list">
+				<li>
+					<svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><circle cx="10" cy="10" r="10" fill="#48b883"></circle><path d="M5.5 10.5l3 3 6-7" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+					Prima la diagnosi, poi il preventivo
+				</li>
+				<li>
+					<svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><circle cx="10" cy="10" r="10" fill="#48b883"></circle><path d="M5.5 10.5l3 3 6-7" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+					Garanzia sulla riparazione
+				</li>
+				<li>
+					<svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><circle cx="10" cy="10" r="10" fill="#48b883"></circle><path d="M5.5 10.5l3 3 6-7" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+					Molte riparazioni mentre aspetti
+				</li>
+			</ul>
+		</div>
+
+		<div class="banco" data-banco>
+			<p class="banco__titolo"><span>Banco 1</span><span>Smartphone aperto</span></p>
+			<div class="banco__scena" aria-hidden="true">
+				<div class="pila">
+					<div class="ombra"></div>
+					<div class="strato" data-p="scocca" style="--k:0">
+						<svg viewBox="0 0 150 300"
+							><rect x="1" y="1" width="148" height="298" rx="26" fill="#cdd6dd" stroke="#8d9ba6" stroke-width="2"></rect><rect x="12" y="12" width="46" height="46" rx="12" fill="#b6c2cb" stroke="#8d9ba6" stroke-width="2"></rect><circle cx="26" cy="26" r="8" fill="#17232d"></circle><circle cx="44" cy="44" r="8" fill="#17232d"></circle><circle cx="44" cy="22" r="3.5" fill="#f6e7a8"></circle><path d="M30 280h90" stroke="#8d9ba6" stroke-width="3" stroke-linecap="round"></path></svg
+						>
+					</div>
+					<div class="strato" data-p="viti" style="--k:0.55">
+						<svg viewBox="0 0 150 300"
+							><g fill="#3a4b57" stroke="#17232d" stroke-width="1.5"><circle cx="18" cy="82" r="5"></circle><circle cx="132" cy="82" r="5"></circle><circle cx="18" cy="262" r="5"></circle><circle cx="132" cy="262" r="5"></circle></g><g stroke="#cfd8df" stroke-width="1.5" stroke-linecap="round"><path d="M15 82h6M132 79v6M15 262h6M129 262h6"></path></g></svg
+						>
+					</div>
+					<div class="strato" data-p="batteria" style="--k:1.5">
+						<svg viewBox="0 0 150 300"
+							><rect x="20" y="92" width="110" height="150" rx="10" fill="#eef2f5" stroke="#8d9ba6" stroke-width="2"></rect><rect x="20" y="92" width="110" height="26" rx="10" fill="#48b883"></rect><rect x="34" y="136" width="82" height="7" rx="3.5" fill="#cdd6dd"></rect><rect x="34" y="154" width="60" height="7" rx="3.5" fill="#cdd6dd"></rect><rect x="34" y="210" width="40" height="14" rx="3" fill="#2878ff"></rect></svg
+						>
+					</div>
+					<div class="strato" data-p="scheda" style="--k:2.5">
+						<svg viewBox="0 0 150 300"
+							><path d="M14 14h122a8 8 0 0 1 8 8v52H32v176h34v34H34a20 20 0 0 1-20-20z" fill="#1f4553" stroke="#0f2530" stroke-width="2"></path><g fill="#2f6074" stroke="#0f2530"><rect x="24" y="24" width="30" height="30" rx="3"></rect><rect x="64" y="24" width="22" height="22" rx="3"></rect><rect x="96" y="30" width="34" height="14" rx="3"></rect></g><path d="M54 40h10M86 36h10M40 54v30M24 84h8M32 120v110" fill="none" stroke="#2878ff" stroke-width="2.5" stroke-linecap="square"></path><circle cx="100" cy="60" r="4" fill="#48b883"></circle><rect x="44" y="266" width="22" height="10" rx="2" fill="#c8a24b"></rect></svg
+						>
+					</div>
+					<div class="strato" data-p="schermo" style="--k:3.5">
+						<svg viewBox="0 0 150 300"
+							><rect x="1" y="1" width="148" height="298" rx="26" fill="#0e1720" stroke="#2a3b49" stroke-width="2"></rect><rect x="14" y="28" width="122" height="244" rx="14" fill="url(#fxd)"></rect><circle cx="75" cy="16" r="4" fill="#223340"></circle><rect x="40" y="74" width="70" height="18" rx="5" fill="#cfe0ff" opacity=".85"></rect><rect x="30" y="112" width="90" height="38" rx="9" fill="#ffffff" opacity=".14"></rect><rect x="30" y="160" width="90" height="38" rx="9" fill="#ffffff" opacity=".14"></rect><defs><linearGradient id="fxd" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2878ff"></stop><stop offset="1" stop-color="#17232d"></stop></linearGradient></defs></svg
+						>
+					</div>
+					<div class="strato" data-p="schermo" style="--k:4.5">
+						<svg viewBox="0 0 150 300"
+							><rect x="1" y="1" width="148" height="298" rx="26" fill="#ffffff" fill-opacity=".16" stroke="#7fb0ff" stroke-width="2"></rect><path d="M122 4l-16 52 22 22-30 54 18 26-22 40" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linejoin="round"></path><path d="M106 56l-34 10M128 78l-24 20M98 132l-30 16" fill="none" stroke="#ffffff" stroke-width="1.4"></path><path d="M10 40L90 4M10 110L140 20" stroke="#fff" stroke-opacity=".35" stroke-width="3"></path></svg
+						>
+					</div>
+				</div>
+			</div>
+			<ul class="banco__legenda" role="list" aria-label="I pezzi dello smartphone e quanto costa ripararli">
+				{
+					pezzi.map((x) => (
+						<li>
+							<button type="button" data-pezzo={x.prob} data-p={x.p}>
+								<span class="banco__n" aria-hidden="true">{x.n}</span>
+								<span class="banco__nome">{x.nome}</span>
+								<span class="banco__da">da {x.da}</span>
+							</button>
+						</li>
+					))
+				}
+			</ul>
+			<p class="banco__nota">Tocca un pezzo: ti diciamo cosa serve e quanto costa. Prezzi indicativi, confermati dopo la diagnosi.</p>
+		</div>
+	</div>
+</section>
+
+<style>
+	@property --gap {
+		syntax: '<length>';
+		inherits: true;
+		initial-value: 40px;
+	}
+	.ingresso {
+		position: relative;
+		padding: calc(var(--fascia-h) + var(--nav-h) + clamp(28px, 5vw, 64px)) var(--gutter) clamp(56px, 8vw, 100px);
+		background:
+			radial-gradient(circle at 1px 1px, #cfd7de 1px, transparent 1.5px) 0 0 / 24px 24px,
+			var(--ghiaccio);
+		overflow: clip;
+	}
+	.ingresso__in {
+		max-width: var(--max);
+		margin-inline: auto;
+		display: grid;
+		grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+		gap: clamp(28px, 5vw, 72px);
+		align-items: center;
+	}
+	h1 {
+		font-size: clamp(2.4rem, 5.2vw, 4.2rem);
+	}
+	.ingresso__ev {
+		color: var(--elettrico-testo);
+		background: linear-gradient(transparent 82%, rgba(40, 120, 255, 0.22) 82%);
+	}
+	.ingresso__lead {
+		margin-top: 22px;
+		font-size: 1.15rem;
+		color: var(--grigio-testo);
+		max-width: 52ch;
+	}
+	.ingresso__cta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 14px;
+		margin-top: 30px;
+	}
+	.ingresso__fiducia {
+		margin-top: 30px;
+		display: grid;
+		gap: 10px;
+		font-weight: 600;
+		font-size: 0.98rem;
+	}
+	.ingresso__fiducia li {
+		display: flex;
+		align-items: center;
+		gap: 11px;
+	}
+	.ingresso__fiducia svg {
+		flex: none;
+	}
+
+	/* Il banco: lo smartphone aperto, pezzo per pezzo */
+	.banco {
+		background: var(--bianco);
+		border: 2px solid var(--notte);
+		border-radius: 16px;
+		box-shadow: 8px 8px 0 var(--notte);
+		padding: 0 0 18px;
+		overflow: hidden;
+	}
+	.banco__titolo {
+		display: flex;
+		justify-content: space-between;
+		padding: 11px 18px;
+		background: var(--notte);
+		color: #cbd6df;
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: 0.78rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+	}
+	.banco__scena {
+		perspective: 1000px;
+		height: clamp(340px, 38vw, 470px);
+		display: grid;
+		place-items: center;
+		background: radial-gradient(circle at 50% 55%, #eef3f8, transparent 70%);
+	}
+	.pila {
+		position: relative;
+		width: 150px;
+		height: 300px;
+		transform-style: preserve-3d;
+		transform: rotateX(56deg) rotateZ(-32deg) translateZ(0);
+		--gap: 46px;
+		margin-top: 70px;
+		animation: apri 1.4s cubic-bezier(0.2, 0.7, 0.2, 1) both, fluttua 7s ease-in-out 1.4s infinite;
+		transition: --gap 0.5s;
+	}
+	.banco:hover .pila {
+		--gap: 62px;
+	}
+	.strato {
+		position: absolute;
+		inset: 0;
+		transform: translateZ(calc(var(--k) * var(--gap)));
+		transition: filter 0.25s;
+	}
+	.strato svg {
+		width: 100%;
+		height: 100%;
+		overflow: visible;
+	}
+	.ombra {
+		position: absolute;
+		inset: 8% -18% -12% -18%;
+		background: radial-gradient(ellipse, rgba(23, 35, 45, 0.28), transparent 65%);
+		transform: translateZ(-30px);
+		filter: blur(6px);
+	}
+	/* il pezzo scelto nella legenda si accende */
+	.banco:has([data-pezzo][data-p='schermo']:is(:hover, :focus-visible)) .strato[data-p='schermo'],
+	.banco:has([data-pezzo][data-p='scheda']:is(:hover, :focus-visible)) .strato[data-p='scheda'],
+	.banco:has([data-pezzo][data-p='batteria']:is(:hover, :focus-visible)) .strato[data-p='batteria'],
+	.banco:has([data-pezzo][data-p='scocca']:is(:hover, :focus-visible)) .strato[data-p='scocca'] {
+		filter: drop-shadow(0 0 10px rgba(40, 120, 255, 0.95)) saturate(1.4);
+	}
+	@keyframes apri {
+		from {
+			--gap: 2px;
+		}
+	}
+	@keyframes fluttua {
+		0%,
+		100% {
+			transform: rotateX(56deg) rotateZ(-32deg) translateZ(0);
+		}
+		50% {
+			transform: rotateX(52deg) rotateZ(-28deg) translateZ(12px);
+		}
+	}
+	.banco__legenda {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 8px;
+		padding: 4px 18px 0;
+	}
+	.banco__legenda button {
+		width: 100%;
+		display: grid;
+		grid-template-columns: auto 1fr;
+		grid-template-areas: 'n nome' 'n da';
+		column-gap: 10px;
+		align-items: center;
+		text-align: left;
+		padding: 10px 12px;
+		background: var(--ghiaccio);
+		border: 1.5px solid var(--riga);
+		border-radius: 10px;
+		cursor: pointer;
+		transition: border-color 0.15s, background-color 0.15s, transform 0.15s;
+	}
+	.banco__legenda button:hover {
+		border-color: var(--elettrico);
+		background: #eaf1ff;
+		transform: translateY(-2px);
+	}
+	.banco__n {
+		grid-area: n;
+		font-family: var(--titoli);
+		font-weight: 800;
+		font-size: 0.8rem;
+		color: var(--bianco);
+		background: var(--notte);
+		border-radius: 6px;
+		padding: 5px 7px 4px;
+	}
+	.banco__nome {
+		grid-area: nome;
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: 0.95rem;
+		line-height: 1.15;
+	}
+	.banco__da {
+		grid-area: da;
+		font-weight: 700;
+		font-size: 0.88rem;
+		color: var(--elettrico-testo);
+	}
+	.banco__nota {
+		padding: 12px 18px 0;
+		font-size: 0.86rem;
+		color: var(--grigio-testo);
+	}
+
+	@media (max-width: 900px) {
+		.ingresso__in {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.banco__scena {
+			height: 320px;
+		}
+	}
+	@media (max-width: 480px) {
+		.banco {
+			box-shadow: 5px 5px 0 var(--notte);
+		}
+		.banco__scena {
+			height: 290px;
+		}
+		.pila {
+			width: 108px;
+			height: 216px;
+			--gap: 34px;
+		}
+		.banco:hover .pila {
+			--gap: 40px;
+		}
+		.banco__legenda {
+			padding-inline: 12px;
+		}
+		.banco__legenda button {
+			padding: 9px 9px;
+			column-gap: 8px;
+		}
+		.banco__nome {
+			font-size: 0.86rem;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.pila {
+			animation: none;
+		}
+	}
+</style>
+
+<script>
+	// Un pezzo del banco precompila "Trova il servizio" e ci porta lì
+	document.querySelectorAll<HTMLButtonElement>('[data-pezzo]').forEach((b) =>
+		b.addEventListener('click', () => {
+			dispatchEvent(new CustomEvent('fixlab:scegli', { detail: { d: 'smartphone', p: b.dataset.pezzo } }));
+			document.getElementById('diagnosi')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+		}),
+	);
+</script>

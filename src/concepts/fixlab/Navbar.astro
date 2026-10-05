@@ -1,0 +1,383 @@
+---
+import simbolo from '../../assets/fixlab/brand/simbolo.svg';
+
+const voci = [
+	{ href: '#diagnosi', t: 'Trova il servizio' },
+	{ href: '#listino', t: 'Prezzi' },
+	{ href: '#percorso', t: 'Come lavoriamo' },
+	{ href: '#richiesta', t: 'Contatti' },
+];
+---
+
+<header class="nav" data-nav>
+	<div class="nav__in">
+		<a class="nav__logo" href="#top" aria-label="FIXLAB, torna all'inizio">
+			<img src={simbolo.src} alt="" width="40" height="40" />
+			<span class="nav__marchio"><b>FIX</b>LAB</span>
+		</a>
+		<nav class="nav__links" aria-label="Sezioni della pagina">
+			{voci.map((v) => <a href={v.href}>{v.t}</a>)}
+		</nav>
+		<div class="nav__az">
+			<a class="nav__tel" href="tel:+390200000000">
+				<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+					><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"></path></svg
+				>
+				<span>02 0000 0000</span>
+			</a>
+			<a class="btn nav__cta" href="#richiesta">Richiedi assistenza</a>
+			<button class="nav__burger" type="button" aria-expanded="false" aria-controls="cover" data-burger>
+				<span class="nav__burger-t">Menu</span>
+				<span class="nav__burger-i" aria-hidden="true"><i></i><i></i></span>
+			</button>
+		</div>
+	</div>
+
+</header>
+
+<!-- Menù mobile (fuori dall'header: il backdrop-filter della barra ne farebbe il blocco contenitore del pannello fisso): il pannello posteriore del telefono, avvitato con quattro viti che si svitano all'apertura -->
+<div class="cover" id="cover" data-cover role="dialog" aria-modal="true" aria-label="Menù" hidden>
+		<span class="vite vite--a" aria-hidden="true"></span>
+		<span class="vite vite--b" aria-hidden="true"></span>
+		<span class="vite vite--c" aria-hidden="true"></span>
+		<span class="vite vite--d" aria-hidden="true"></span>
+		<nav class="cover__nav" aria-label="Sezioni della pagina">
+			{
+				voci.map((v, i) => (
+					<a href={v.href} style={`--i:${i}`}>
+						<span class="cover__n" aria-hidden="true">0{i + 1}</span>
+						{v.t}
+					</a>
+				))
+			}
+		</nav>
+		<div class="cover__az">
+			<a class="btn" href="#richiesta">Richiedi assistenza</a>
+			<a class="btn btn--chiaro cover__call" href="tel:+390200000000">Chiamaci · 02 0000 0000</a>
+		</div>
+</div>
+
+<style>
+	.nav {
+		position: fixed;
+		top: var(--fascia, 0px);
+		left: 0;
+		right: 0;
+		z-index: 140;
+		height: var(--nav-h);
+		background: rgba(245, 247, 249, 0.94);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		border-bottom: 1px solid var(--riga);
+	}
+	.nav__in {
+		height: 100%;
+		max-width: var(--max);
+		margin-inline: auto;
+		padding-inline: var(--gutter);
+		display: flex;
+		align-items: center;
+		gap: 28px;
+	}
+	.nav__logo {
+		display: inline-flex;
+		align-items: center;
+		gap: 11px;
+		text-decoration: none;
+		flex: none;
+	}
+	.nav__logo img {
+		width: 40px;
+		height: 40px;
+	}
+	.nav__marchio {
+		font-family: var(--titoli);
+		font-weight: 800;
+		font-size: 1.55rem;
+		letter-spacing: 0.02em;
+		color: var(--elettrico-testo);
+		line-height: 1;
+	}
+	.nav__marchio b {
+		font-weight: 800;
+		color: var(--notte);
+	}
+	.nav__links {
+		display: flex;
+		gap: 26px;
+		margin-left: auto;
+	}
+	.nav__links a {
+		position: relative;
+		font-weight: 600;
+		font-size: 0.95rem;
+		text-decoration: none;
+		padding: 6px 0;
+	}
+	.nav__links a::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: 2px;
+		background: var(--elettrico);
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 0.2s;
+	}
+	.nav__links a:hover::after {
+		transform: scaleX(1);
+	}
+	.nav__az {
+		display: flex;
+		align-items: center;
+		gap: 18px;
+		flex: none;
+	}
+	.nav__tel {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		font-weight: 700;
+		font-size: 0.95rem;
+		text-decoration: none;
+		color: var(--notte);
+	}
+	.nav__tel:hover {
+		color: var(--elettrico-testo);
+	}
+	.nav__cta {
+		min-height: 44px;
+		padding: 0 20px;
+		font-size: 0.95rem;
+		box-shadow: 0 3px 0 #123f93;
+	}
+	.nav__burger {
+		display: none;
+		align-items: center;
+		gap: 10px;
+		min-height: 44px;
+		padding: 0 14px;
+		background: var(--notte);
+		color: var(--bianco);
+		border: 0;
+		border-radius: 8px;
+		font-family: var(--titoli);
+		font-weight: 700;
+		cursor: pointer;
+	}
+	.nav__burger-i {
+		position: relative;
+		width: 20px;
+		height: 12px;
+	}
+	.nav__burger-i i {
+		position: absolute;
+		left: 0;
+		right: 0;
+		height: 2px;
+		background: currentColor;
+		border-radius: 2px;
+		transition: transform 0.25s, top 0.25s;
+	}
+	.nav__burger-i i:first-child {
+		top: 1px;
+	}
+	.nav__burger-i i:last-child {
+		top: 9px;
+	}
+	.nav__burger[aria-expanded='true'] .nav__burger-i i:first-child {
+		top: 5px;
+		transform: rotate(45deg);
+	}
+	.nav__burger[aria-expanded='true'] .nav__burger-i i:last-child {
+		top: 5px;
+		transform: rotate(-45deg);
+	}
+
+	/* Pannello posteriore */
+	.cover {
+		position: fixed;
+		inset: 0;
+		z-index: 135;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 28px;
+		padding: calc(var(--fascia-h) + var(--nav-h) + 24px) var(--gutter) 40px;
+		background:
+			radial-gradient(circle at 78% 12%, rgba(40, 120, 255, 0.28), transparent 46%),
+			linear-gradient(160deg, var(--notte-2), var(--notte));
+		color: var(--bianco);
+		clip-path: inset(0 0 100% 0);
+		visibility: hidden;
+		transition: clip-path 0.55s cubic-bezier(0.7, 0, 0.2, 1), visibility 0s 0.55s;
+	}
+	.cover[hidden] {
+		display: flex;
+	}
+	.cover.is-open {
+		clip-path: inset(0 0 0 0);
+		visibility: visible;
+		transition: clip-path 0.55s cubic-bezier(0.7, 0, 0.2, 1);
+	}
+	.vite {
+		position: absolute;
+		width: 22px;
+		height: 22px;
+		border-radius: 50%;
+		background: radial-gradient(circle at 35% 30%, #4b6070, #1b2933);
+		border: 1px solid #5c7283;
+		transform: rotate(-540deg);
+		transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+	}
+	.vite::before,
+	.vite::after {
+		content: '';
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: 12px;
+		height: 2px;
+		background: #0d151b;
+		border-radius: 1px;
+		transform: translate(-50%, -50%);
+	}
+	.vite::after {
+		transform: translate(-50%, -50%) rotate(90deg);
+	}
+	.cover.is-open .vite {
+		transform: rotate(0);
+	}
+	.vite--a {
+		top: calc(var(--fascia-h) + var(--nav-h) + 12px);
+		left: 16px;
+	}
+	.vite--b {
+		top: calc(var(--fascia-h) + var(--nav-h) + 12px);
+		right: 16px;
+	}
+	.vite--c {
+		bottom: 16px;
+		left: 16px;
+	}
+	.vite--d {
+		bottom: 16px;
+		right: 16px;
+	}
+	.cover__nav {
+		display: grid;
+	}
+	.cover__nav a {
+		display: flex;
+		align-items: baseline;
+		gap: 16px;
+		padding: 14px 0;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+		font-family: var(--titoli);
+		font-weight: 800;
+		font-size: clamp(1.7rem, 8vw, 2.4rem);
+		text-decoration: none;
+		letter-spacing: -0.01em;
+		opacity: 0;
+		transform: translateY(14px);
+		transition: opacity 0.4s, transform 0.4s;
+	}
+	.cover.is-open .cover__nav a {
+		opacity: 1;
+		transform: none;
+		transition-delay: calc(0.25s + var(--i) * 0.06s);
+	}
+	.cover__n {
+		font-size: 0.85rem;
+		font-weight: 700;
+		color: var(--elettrico-chiaro);
+		letter-spacing: 0.1em;
+	}
+	.cover__az {
+		display: grid;
+		gap: 12px;
+	}
+	.cover .btn--chiaro {
+		color: var(--bianco);
+		border-color: var(--bianco);
+		box-shadow: none;
+	}
+	.cover .btn--chiaro:hover {
+		background: var(--bianco);
+		color: var(--notte);
+	}
+	.nav__burger {
+		position: relative;
+		z-index: 170;
+	}
+	body.menu-aperto .nav__burger {
+		background: var(--elettrico-testo);
+	}
+
+	@media (max-width: 1020px) {
+		.nav__links,
+		.nav__tel,
+		.nav__cta {
+			display: none;
+		}
+		.nav__az {
+			margin-left: auto;
+		}
+		.nav__burger {
+			display: inline-flex;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.cover,
+		.cover.is-open {
+			transition: none;
+		}
+		.vite {
+			transform: none;
+		}
+	}
+</style>
+
+<script>
+	const burger = document.querySelector<HTMLButtonElement>('[data-burger]');
+	const cover = document.querySelector<HTMLElement>('[data-cover]');
+	if (burger && cover) {
+		const chiudi = (rendiFocus = true) => {
+			cover.classList.remove('is-open');
+			burger.setAttribute('aria-expanded', 'false');
+			document.body.classList.remove('menu-aperto');
+			if (rendiFocus) burger.focus();
+		};
+		const apri = () => {
+			cover.hidden = false;
+			cover.getBoundingClientRect(); // forza il riflusso: la transizione parte
+			cover.classList.add('is-open');
+			burger.setAttribute('aria-expanded', 'true');
+			document.body.classList.add('menu-aperto');
+			cover.querySelector<HTMLElement>('a')?.focus({ preventScroll: true });
+		};
+		burger.addEventListener('click', () => (cover.classList.contains('is-open') ? chiudi() : apri()));
+		cover.addEventListener('click', (e) => {
+			if ((e.target as HTMLElement).closest('a')) chiudi(false);
+		});
+		addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && cover.classList.contains('is-open')) chiudi();
+			// il fuoco resta dentro il pannello (compreso il pulsante che lo chiude)
+			if (e.key === 'Tab' && cover.classList.contains('is-open')) {
+				const el = [burger, ...cover.querySelectorAll<HTMLElement>('a')];
+				const i = el.indexOf(document.activeElement as HTMLElement);
+				if (e.shiftKey && i <= 0) {
+					e.preventDefault();
+					el[el.length - 1].focus();
+				} else if (!e.shiftKey && i === el.length - 1) {
+					e.preventDefault();
+					el[0].focus();
+				}
+			}
+		});
+		// tornando a schermo largo il pannello si chiude da solo
+		matchMedia('(min-width: 1021px)').addEventListener('change', (m) => m.matches && chiudi(false));
+	}
+</script>

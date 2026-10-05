@@ -5,7 +5,7 @@
   <img src="docs/img/loop-logo-on-light.svg" alt="Loop Studio" height="64">
 </picture>
 
-<img src="docs/img/header.svg" alt="A street of shop fronts: Trattoria, Ossidiana, Luppolo & Watt, Bottega Tre Rasoi, Atelier Lumen and Aeterna are lit and open, two more windows are dark and coming soon." width="100%">
+<img src="docs/img/header.svg" alt="A street of shop fronts: Trattoria, Ossidiana, Luppolo & Watt, Bottega Tre Rasoi, Atelier Lumen, Aeterna and FIXLAB are lit and open, one more window is dark and coming soon." width="100%">
 
 **Full-page homepage concepts for local businesses.<br>Each one designed as if it were the only one on the street.**
 
@@ -30,7 +30,7 @@
 > [!NOTE]
 > The pages are in Italian, because that is the audience they are built for. All businesses, people, addresses and reviews are fictional and declared as such.
 
-**A street, not a grid.** Each row sits in a full-width scene drawn in CSS and generated SVG (no image files): sky, two layers of skyline with lit windows, lamp posts, pavement and road, with a light parallax on scroll (off with reduced motion). The dark theme is night, the light theme is day, and every category has its own hour: restaurants at dusk, wellness at dawn, studios in clear daylight, and the "in progress" rows under grey skies with a crane.
+**A street, not a grid.** Each row sits in a full-width scene drawn in CSS and generated SVG (no image files): sky, two layers of skyline with lit windows, lamp posts, pavement and road, with a light parallax on scroll (off with reduced motion). The dark theme is night, the light theme is day, and every category has its own hour: restaurants at dusk, wellness at dawn, tech in the dead of night (windows lit like screens), studios in clear daylight, and the "in progress" rows under grey skies with a crane.
 
 **How the entrance is organised.** The street is grouped by category: one labelled row of windows per category (a horizontal scroller on phones, with a neon arrow hinting that it moves), and categories still without a concept collect in a final "coming soon" row. Below it, the full list can be filtered by category (the filter lives in the URL hash, so it can be shared) and every concept has an indexable detail page at `/<category>/<archetype>/info/` that explains the idea, who it is for and what is inside. The concepts themselves stay `noindex`. Links from the hub to a concept open in a new tab, so the street stays open while visitors explore.
 
@@ -150,10 +150,30 @@
 
 <br>
 
+### 07 · FIXLAB
+
+<a href="https://vetrine.theloopstudio.org/tech/riparazioni/"><img src="docs/img/card-fixlab.jpg" alt="FIXLAB on desktop and mobile: a large title on an ice-white background, a smartphone taken apart in 3D with a price on every part, and the phone menu as a screwed-on back panel." width="100%"></a>
+
+*Technology breaks. We put it back to work. The page is a repair job card.*
+
+| | |
+|---|---|
+| **Archetype** | The neighbourhood repair lab (phones, PCs, tablets, consoles): the **low-key** tier of the Tech window. Plain, quick, built to turn a visit into a request |
+| **Mood** | An honest workshop with a well-made website: ice white, midnight blue, and an electric blue used as an accent, never as the main colour. Light theme only |
+| **Type** | Outfit for titles, Instrument Sans for text (no futuristic or gaming faces) |
+| **Palette** | <img src="docs/img/palette-fixlab.svg" alt="Ice, white, midnight, electric blue, technical grey and confirmation green" height="22"> |
+| **Signature moves** | The whole page reads as a **repair job card**: numbered fields, a tag with a tear-off stub, a receipt. An **exploded smartphone in pure CSS 3D** where every part is a service with its "from" price and a tap pre-fills the finder. **Find the service in two taps** (device, then problem) builds the job card with price, time and steps from one data file that also feeds the price list and the request form. A **repair tracker** that fills a five-step bar from a demo code. A request form with real error messages and a receipt, an illustrated map and an "open now" badge computed from the visitor's clock. On phones a fixed call / request bar and a menu that is the **back panel of a phone, with four screws that turn out** as it opens. No photos at all: everything is SVG and CSS |
+| **Lighthouse** | 100 performance, accessibility and best practices on mobile and desktop. The two fonts are preloaded, which removed a layout shift on the hero |
+
+[**Open FIXLAB →**](https://vetrine.theloopstudio.org/tech/riparazioni/)
+
+<br>
+
 ### Next on the street
 
 | Category | Archetype | Status |
 |---|---|---|
+| Tech | Computer & gaming (medium), technology studio (high) | Planned |
 | Legal & professional | to be decided | Planned |
 | Local shop / e-commerce | to be decided | Planned |
 
@@ -177,6 +197,7 @@ flowchart TB
     infra --> B["<b>Bottega Tre Rasoi</b><br/>own markup · CSS · JS · fonts"]
     infra --> L["<b>Atelier Lumen</b><br/>own markup · CSS · JS · fonts"]
     infra --> A["<b>Aeterna</b><br/>own markup · CSS · JS · fonts"]
+    infra --> F["<b>FIXLAB</b><br/>own markup · CSS · JS · fonts"]
     infra --> N["<b>next concept…</b>"]
     T -.-|nothing shared| O
     O -.-|nothing shared| B
@@ -191,15 +212,15 @@ A piece of code is reused between two concepts only when it is the *exact same t
 
 Before a concept goes on the street, it has to clear the same gate:
 
-| Gate | What it means | Trattoria | Ossidiana | Luppolo & Watt | Tre Rasoi | Lumen | Aeterna |
-|---|---|:-:|:-:|:-:|:-:|:-:|:-:|
-| **Builds** | `astro build` is clean | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Accessible** | `axe-core`: zero violations | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Menu on phones** | A real menu with its own open/close effect, keyboard and Escape friendly (a curtain for Ossidiana, an unrolling card for the Trattoria, a pour of beer for Luppolo & Watt, a hot towel for Tre Rasoi, curtains for Lumen, a laser scan for Aeterna) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Gate | What it means | Trattoria | Ossidiana | Luppolo & Watt | Tre Rasoi | Lumen | Aeterna | FIXLAB |
+|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| **Builds** | `astro build` is clean | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Accessible** | `axe-core`: zero violations | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Menu on phones** | A real menu with its own open/close effect, keyboard and Escape friendly (a curtain for Ossidiana, an unrolling card for the Trattoria, a pour of beer for Luppolo & Watt, a hot towel for Tre Rasoi, curtains for Lumen, a laser scan for Aeterna, a screwed-on back panel for FIXLAB) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ```text
  LIGHTHOUSE · mobile            Trattoria                Ossidiana
@@ -224,10 +245,12 @@ src/
 │  │  ├─ trattoria/index.astro         page shell only
 │  │  ├─ grande-ristorante/index.astro
 │  │  └─ ristopub/index.astro
-│  └─ benessere/
-│     ├─ barbiere/index.astro
-│     ├─ estetica/index.astro
-│     └─ longevity/index.astro
+│  ├─ benessere/
+│  │  ├─ barbiere/index.astro
+│  │  ├─ estetica/index.astro
+│  │  └─ longevity/index.astro
+│  └─ tech/
+│     └─ riparazioni/index.astro
 ├─ hub/                                data, styles and sections of the hub page
 ├─ concepts/
 │  ├─ trattoria/                       one component per section + base.css
@@ -235,7 +258,8 @@ src/
 │  ├─ ristopub/                        and again
 │  ├─ barbiere/                        and again
 │  ├─ lumen/                           and again
-│  └─ aeterna/                         and again, with WebGL
+│  ├─ aeterna/                         and again, with WebGL
+│  └─ fixlab/                          and again, with no photos at all
 └─ assets/<concept>/ and hub/          local images only, no hotlinking
 public/images/<concept>/               fixed URLs: og:image, favicon
 docs/img/                              the pictures you are looking at

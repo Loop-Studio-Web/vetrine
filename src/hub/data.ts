@@ -12,6 +12,8 @@ import cardLumen from '../assets/hub/card-lumen.jpg';
 import shotLumen from '../assets/hub/shot-lumen.jpg';
 import cardAeterna from '../assets/hub/card-aeterna.jpg';
 import shotAeterna from '../assets/hub/shot-aeterna.jpg';
+import cardFixlab from '../assets/hub/card-fixlab.jpg';
+import shotFixlab from '../assets/hub/shot-fixlab.jpg';
 
 export const SITE = 'https://theloopstudio.org/';
 export const CONTACT = 'https://theloopstudio.org/contatti';
@@ -23,6 +25,7 @@ export const macros = [
 	{ slug: 'ristorazione', nome: 'Ristorazione' },
 	{ slug: 'studi', nome: 'Studi e servizi' },
 	{ slug: 'benessere', nome: 'Benessere' },
+	{ slug: 'tech', nome: 'Tech' },
 	{ slug: 'commercio', nome: 'Commercio' },
 ] as const;
 export type MacroSlug = (typeof macros)[number]['slug'];
@@ -154,7 +157,7 @@ export const concepts: Concept[] = [
 		caratteri: 'Bodoni Moda, Jost e un corsivo a penna',
 		palette: ['#0b0b0c', '#151517', '#efe9dd', '#7a1426', '#d2566b'],
 		metriche: [
-			{ label: 'Performance', valore: '97' },
+			{ label: 'Performance', valore: '100' },
 			{ label: 'Accessibilità', valore: '100' },
 			{ label: 'Buone pratiche', valore: '100' },
 		],
@@ -367,11 +370,65 @@ export const concepts: Concept[] = [
 			{ label: 'Buone pratiche', valore: '100' },
 		],
 	},
+	{
+		slug: 'fixlab',
+		macro: 'tech',
+		nome: 'FIXLAB',
+		categoria: 'Tech',
+		archetipo: 'Il laboratorio di riparazioni, livello Low key',
+		claim: 'La tecnologia si rompe, noi la rimettiamo in funzione. Una scheda di lavoro in due tocchi, prezzi indicativi e un banco con lo smartphone aperto.',
+		path: '/tech/riparazioni/',
+		infoPath: '/tech/riparazioni/info/',
+		titoloSeo: 'Sito web per riparazione smartphone e PC: homepage concept con scheda di lavoro e prezzi',
+		descrizioneSeo:
+			'Come potrebbe essere la homepage di un laboratorio di riparazione di smartphone, PC, tablet e console: smartphone in vista esplosa, scheda di lavoro con prezzo indicativo, stato della riparazione e richiesta di assistenza. Concept dimostrativo di Loop Studio.',
+		intro: [
+			'Chi porta un dispositivo rotto ha fretta e un po’ d’ansia: vuole sapere cosa non va, quanto costa e quando torna a usarlo. Questa homepage risponde a queste tre domande prima ancora di entrare in negozio. Il sito è una scheda di lavoro: ogni sezione è un campo da compilare, dalla diagnosi alla richiesta di assistenza.',
+			'È il livello Low key della categoria Tech e una vetrina dimostrativa: il laboratorio, i prezzi, le recensioni, gli orari e l’indirizzo sono di fantasia. Serve a mostrare che un negozio di quartiere può avere un sito chiaro, rapido e senza effetti inutili, pensato per far arrivare alla richiesta.',
+		],
+		perChi:
+			'Laboratori di riparazione di smartphone e PC, negozi di assistenza informatica, centri di recupero dati e piccoli negozi tech di quartiere. Adatta a chi vuole ridurre le telefonate ripetitive, far capire i prezzi “da” e ricevere richieste già ordinate.',
+		sezioni: [
+			{
+				t: 'Uno smartphone aperto, pezzo per pezzo',
+				d: 'In apertura un telefono in vista esplosa, costruito in CSS 3D: ogni pezzo è un servizio con il suo prezzo e, toccandolo, la scheda si compila da sola.',
+			},
+			{
+				t: 'Trova il servizio in due tocchi',
+				d: 'Dispositivo e problema, poi compare la scheda di lavoro con prezzo indicativo, tempi, passi e un talloncino numerato. Un tocco e la richiesta parte già precompilata.',
+			},
+			{
+				t: 'Prezzi “da” e segui la riparazione',
+				d: 'Un listino per dispositivo con tempi chiari, e un tracker dove si inserisce il codice della scheda e si vede a che punto è il lavoro, dalla diagnosi al ritiro.',
+			},
+			{
+				t: 'Richiesta di assistenza e dove siamo',
+				d: 'Un modulo corto con messaggi d’errore chiari e una ricevuta finale, una mappa illustrata e gli orari con l’indicazione “aperto ora”. Su telefono restano sempre a portata di pollice la chiamata e la richiesta.',
+			},
+		],
+		awning: ['#1d5fd9', '#f5f7f9'],
+		glow: 'rgba(40, 120, 255, 0.55)',
+		card: cardFixlab,
+		shot: shotFixlab,
+		shotAlt: '',
+		crop: '60% 40%',
+		cardAlt: 'FIXLAB su desktop e su telefono: titolo grande su fondo ghiaccio, uno smartphone in vista esplosa con i prezzi dei pezzi, il menù mobile come pannello posteriore avvitato.',
+		mood: 'Il laboratorio di quartiere: ghiaccio, blu notte e un blu elettrico usato come accento, con una scheda di lavoro al posto del solito carosello.',
+		caratteri: 'Outfit e Instrument Sans',
+		palette: ['#f5f7f9', '#ffffff', '#17232d', '#2878ff', '#89949e', '#48b883'],
+		metriche: [
+			{ label: 'Performance', valore: '100' },
+			{ label: 'Accessibilità', valore: '100' },
+			{ label: 'Buone pratiche', valore: '100' },
+		],
+	},
 ];
 
 // stato: 'presto' = quasi pronta, 'cantiere' = ancora in costruzione (nessuna data promessa)
 export type StatoProssima = 'presto' | 'cantiere';
 export const prossime: { nome: string; categoria: string; macro: MacroSlug; stato: StatoProssima }[] = [
+	{ nome: 'Computer e gaming', categoria: 'Tech', macro: 'tech', stato: 'presto' },
+	{ nome: 'Studio tecnologico', categoria: 'Tech', macro: 'tech', stato: 'cantiere' },
 	{ nome: 'Legale e professionale', categoria: 'Studi e servizi', macro: 'studi', stato: 'cantiere' },
 	{ nome: 'Negozio locale', categoria: 'Commercio', macro: 'commercio', stato: 'cantiere' },
 ];

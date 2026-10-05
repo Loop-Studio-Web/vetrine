@@ -1,0 +1,238 @@
+---
+import { dispositivi, accessori, prezzo } from './riparazioni';
+
+const schede = [...dispositivi.map((d) => ({ id: d.id, nome: d.nome })), { id: 'accessori', nome: 'Accessori' }];
+---
+
+<section class="listino" id="listino" aria-labelledby="listino-titolo">
+	<div class="wrap">
+		<div class="listino__testa">
+			<div>
+				<p class="campo"><b>N° 03</b> Prezzi indicativi</p>
+				<h2 id="listino-titolo" class="h2">Quanto costa? Un’idea chiara, prima di entrare.</h2>
+			</div>
+			<p class="listino__avviso">
+				Prezzi “da”, di esempio. Il preventivo definitivo arriva dopo la diagnosi, e non si ripara nulla senza il tuo sì.
+			</p>
+		</div>
+
+		<div class="listino__tab" role="group" aria-label="Tipo di dispositivo">
+			{
+				schede.map((s, i) => (
+					<button type="button" data-tab={s.id} aria-pressed={i === 0 ? 'true' : 'false'}>
+						{s.nome}
+					</button>
+				))
+			}
+		</div>
+
+		{
+			dispositivi.map((d, i) => (
+				<ul class="righe" role="list" data-pannello={d.id} hidden={i !== 0} aria-label={`Prezzi ${d.nome}`}>
+					{d.problemi.map((p) => (
+						<li class="riga">
+							<div class="riga__nome">
+								<p class="riga__t">{p.nome}</p>
+								<p class="riga__tempo">{p.tempo}</p>
+							</div>
+							<p class="riga__prezzo">
+								<span>da</span> {prezzo(p.da)}
+							</p>
+							<button type="button" class="riga__az" data-richiedi={`${d.id}|${p.id}`}>
+								Richiedi<span class="sr-only"> assistenza per: {p.nome}</span> <span aria-hidden="true">→</span>
+							</button>
+						</li>
+					))}
+				</ul>
+			))
+		}
+		<ul class="righe" role="list" data-pannello="accessori" hidden aria-label="Prezzi accessori">
+			{
+				accessori.map((a) => (
+					<li class="riga riga--acc">
+						<div class="riga__nome">
+							<p class="riga__t">{a.nome}</p>
+						</div>
+						<p class="riga__prezzo">
+							<span>da</span> {prezzo(a.da)}
+						</p>
+					</li>
+				))
+			}
+		</ul>
+		<p class="listino__nota" data-nota-acc hidden>In negozio trovi cover, vetri, cavi, alimentatori, mouse e tastiere: niente catalogo infinito, solo quello che serve davvero.</p>
+	</div>
+</section>
+
+<style>
+	.listino {
+		padding: clamp(64px, 9vw, 120px) 0;
+	}
+	.listino__testa {
+		display: grid;
+		grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+		gap: 24px 48px;
+		align-items: end;
+	}
+	.listino__avviso {
+		font-size: 0.97rem;
+		color: var(--grigio-testo);
+		border-left: 4px solid var(--verde);
+		padding-left: 16px;
+	}
+	.listino__tab {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+		margin: 36px 0 22px;
+	}
+	.listino__tab button {
+		min-height: 46px;
+		padding: 0 22px;
+		border: 2px solid var(--notte);
+		border-radius: 8px;
+		background: transparent;
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: 1rem;
+		cursor: pointer;
+		transition: background-color 0.15s, color 0.15s;
+	}
+	.listino__tab button:hover {
+		background: #e3e9ee;
+	}
+	.listino__tab button[aria-pressed='true'] {
+		background: var(--notte);
+		color: var(--bianco);
+	}
+	.righe {
+		display: grid;
+		background: var(--bianco);
+		border: 2px solid var(--notte);
+		border-radius: 14px;
+		box-shadow: 8px 8px 0 var(--notte);
+		overflow: hidden;
+	}
+	.righe[hidden] {
+		display: none;
+	}
+	.riga {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto 140px;
+		gap: 12px 24px;
+		align-items: center;
+		padding: 18px 24px;
+		border-bottom: 1px solid var(--riga);
+		transition: background-color 0.15s;
+	}
+	.riga:last-child {
+		border-bottom: 0;
+	}
+	.riga:hover {
+		background: #f1f6ff;
+	}
+	.riga--acc {
+		grid-template-columns: minmax(0, 1fr) auto;
+	}
+	.riga__t {
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: 1.15rem;
+		line-height: 1.2;
+	}
+	.riga__tempo {
+		margin-top: 3px;
+		font-size: 0.88rem;
+		color: var(--grigio-testo);
+	}
+	.riga__tempo::before {
+		content: '';
+		display: inline-block;
+		width: 8px;
+		height: 8px;
+		margin-right: 7px;
+		border-radius: 50%;
+		background: var(--verde);
+	}
+	.riga__prezzo {
+		font-family: var(--titoli);
+		font-weight: 800;
+		font-size: 1.9rem;
+		line-height: 1;
+		letter-spacing: -0.02em;
+		white-space: nowrap;
+	}
+	.riga__prezzo span {
+		font-size: 0.85rem;
+		font-weight: 600;
+		color: var(--grigio-testo);
+		letter-spacing: 0;
+	}
+	.riga__az {
+		justify-self: end;
+		background: none;
+		border: 0;
+		padding: 8px 4px;
+		font-weight: 700;
+		color: var(--elettrico-testo);
+		cursor: pointer;
+		border-bottom: 2px solid transparent;
+	}
+	.riga__az:hover {
+		border-bottom-color: currentColor;
+	}
+	.listino__nota {
+		margin-top: 22px;
+		color: var(--grigio-testo);
+		max-width: 60ch;
+	}
+	.listino__nota[hidden] {
+		display: none;
+	}
+	@media (max-width: 820px) {
+		.listino__testa {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+	@media (max-width: 560px) {
+		.righe {
+			box-shadow: 5px 5px 0 var(--notte);
+		}
+		.riga {
+			grid-template-columns: minmax(0, 1fr) auto;
+			padding: 16px 16px;
+			gap: 6px 14px;
+		}
+		.riga__az {
+			grid-column: 1 / -1;
+			justify-self: start;
+			padding: 4px 0;
+		}
+		.riga__prezzo {
+			font-size: 1.6rem;
+		}
+	}
+</style>
+
+<script>
+	const sez = document.querySelector<HTMLElement>('#listino')!;
+	const tab = [...sez.querySelectorAll<HTMLButtonElement>('[data-tab]')];
+	const pannelli = [...sez.querySelectorAll<HTMLElement>('[data-pannello]')];
+	const nota = sez.querySelector<HTMLElement>('[data-nota-acc]')!;
+
+	tab.forEach((b) =>
+		b.addEventListener('click', () => {
+			tab.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+			pannelli.forEach((p) => (p.hidden = p.dataset.pannello !== b.dataset.tab));
+			nota.hidden = b.dataset.tab !== 'accessori';
+		}),
+	);
+
+	sez.querySelectorAll<HTMLButtonElement>('[data-richiedi]').forEach((b) =>
+		b.addEventListener('click', () => {
+			const [d, p] = b.dataset.richiedi!.split('|');
+			dispatchEvent(new CustomEvent('fixlab:richiesta', { detail: { d, p } }));
+			document.getElementById('richiesta')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+		}),
+	);
+</script>

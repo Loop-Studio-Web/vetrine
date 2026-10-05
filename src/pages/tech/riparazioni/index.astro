@@ -1,0 +1,100 @@
+---
+import '@fontsource-variable/outfit';
+import '@fontsource-variable/instrument-sans';
+import '../../../concepts/fixlab/base.css';
+import outfitUrl from '@fontsource-variable/outfit/files/outfit-latin-wght-normal.woff2?url';
+import istrUrl from '@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2?url';
+import Fascia from '../../../concepts/fixlab/Fascia.astro';
+import Navbar from '../../../concepts/fixlab/Navbar.astro';
+import Ingresso from '../../../concepts/fixlab/Ingresso.astro';
+import Diagnosi from '../../../concepts/fixlab/Diagnosi.astro';
+import Listino from '../../../concepts/fixlab/Listino.astro';
+import Percorso from '../../../concepts/fixlab/Percorso.astro';
+import Fiducia from '../../../concepts/fixlab/Fiducia.astro';
+import Domande from '../../../concepts/fixlab/Domande.astro';
+import Richiesta from '../../../concepts/fixlab/Richiesta.astro';
+import Barra from '../../../concepts/fixlab/Barra.astro';
+import Footer from '../../../concepts/fixlab/Footer.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const title = 'FIXLAB — Riparazione smartphone e PC';
+const description = 'Laboratorio di riparazione di fantasia: smartphone, PC, tablet e console, prezzi indicativi e richiesta di assistenza. Vetrina dimostrativa.';
+const ogImage = new URL(`${base}/images/fixlab/og.jpg`, Astro.site).href;
+const pageUrl = new URL(`${base}/tech/riparazioni/`, Astro.site).href;
+---
+
+<html lang="it">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href={`${base}/images/fixlab/favicon.svg`} />
+		<link rel="icon" type="image/png" href={`${base}/images/fixlab/favicon.png`} />
+		<link rel="apple-touch-icon" href={`${base}/images/fixlab/apple-touch-icon.png`} />
+		<link rel="preload" as="font" type="font/woff2" href={outfitUrl} crossorigin />
+		<link rel="preload" as="font" type="font/woff2" href={istrUrl} crossorigin />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<meta name="robots" content="noindex, nofollow" />
+		<meta name="theme-color" content="#17232d" />
+		<meta property="og:type" content="website" />
+		<meta property="og:locale" content="it_IT" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={pageUrl} />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<script is:inline>
+			document.documentElement.classList.add('js');
+		</script>
+	</head>
+	<body>
+		<a href="#main" class="skip-link">Vai al contenuto</a>
+		<Fascia />
+		<Navbar />
+		<main id="main">
+			<Ingresso />
+			<Diagnosi />
+			<Listino />
+			<Percorso />
+			<Fiducia />
+			<Domande />
+			<Richiesta />
+		</main>
+		<Footer />
+		<Barra />
+		<script>
+			// Le ancore interne scorrono via script e non con l'ancora nativa: su Safari/iPhone l'ancora con scorrimento
+			// morbido può partire dall'alto e atterrare storta quando la pagina cambia altezza mentre scorre.
+			document.addEventListener('click', (e) => {
+				const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
+				if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey) return;
+				const id = a.getAttribute('href')!.slice(1);
+				const el = id ? document.getElementById(id) : document.documentElement;
+				if (!el) return;
+				e.preventDefault();
+				const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+				requestAnimationFrame(() => el.scrollIntoView({ behavior: ridotto ? 'auto' : 'smooth', block: 'start' }));
+				if (id) history.replaceState(null, '', `#${id}`);
+			});
+		</script>
+		<script>
+			// Rivela gli elementi quando entrano in vista
+			const els = document.querySelectorAll('[data-reveal]');
+			const io = new IntersectionObserver(
+				(entries) => {
+					for (const e of entries) {
+						if (e.isIntersecting) {
+							e.target.classList.add('is-visible');
+							io.unobserve(e.target);
+						}
+					}
+				},
+				{ threshold: 0.12 },
+			);
+			els.forEach((el) => io.observe(el));
+		</script>
+	</body>
+</html>

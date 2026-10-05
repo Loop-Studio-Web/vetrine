@@ -1,0 +1,542 @@
+---
+import { dispositivi } from './riparazioni';
+
+const orari: { g: string; o: string }[] = [
+	{ g: 'Lunedì – Venerdì', o: '9:00 – 13:00 · 15:00 – 19:30' },
+	{ g: 'Sabato', o: '9:00 – 13:00' },
+	{ g: 'Domenica', o: 'Chiuso' },
+];
+---
+
+<section class="richiesta" id="richiesta" aria-labelledby="richiesta-titolo">
+	<div class="wrap">
+		<p class="campo"><b>N° 07</b> Richiedi assistenza</p>
+		<h2 id="richiesta-titolo" class="h2">Hai un dispositivo che non funziona?</h2>
+		<p class="lead">Raccontaci cosa è successo: ti ricontattiamo per confermare diagnosi e appuntamento. Oppure passa in negozio, senza prenotare.</p>
+
+		<div class="richiesta__griglia">
+			<div class="modulo">
+				<p class="modulo__testa"><span>Scheda di lavoro</span><span>Nuova richiesta</span></p>
+
+				<form class="modulo__form" data-form novalidate>
+					<div class="campo-f">
+						<label for="r-nome">Nome</label>
+						<input id="r-nome" name="nome" type="text" autocomplete="given-name" required aria-describedby="r-nome-e" />
+						<p class="err" id="r-nome-e" role="alert"></p>
+					</div>
+					<div class="campo-f">
+						<label for="r-tel">Telefono o WhatsApp</label>
+						<input id="r-tel" name="tel" type="tel" autocomplete="tel" inputmode="tel" required aria-describedby="r-tel-e" />
+						<p class="err" id="r-tel-e" role="alert"></p>
+					</div>
+					<div class="coppia">
+						<div class="campo-f">
+							<label for="r-disp">Dispositivo</label>
+							<select id="r-disp" name="dispositivo" required aria-describedby="r-disp-e">
+								<option value="">Scegli…</option>
+								{dispositivi.map((d) => <option value={d.id}>{d.nome}</option>)}
+							</select>
+							<p class="err" id="r-disp-e" role="alert"></p>
+						</div>
+						<div class="campo-f">
+							<label for="r-prob">Problema</label>
+							<select id="r-prob" name="problema" disabled>
+								<option value="">Prima il dispositivo</option>
+							</select>
+						</div>
+					</div>
+					<div class="campo-f">
+						<label for="r-desc">Raccontaci cosa è successo <span class="opz">(facoltativo)</span></label>
+						<textarea id="r-desc" name="descrizione" rows="3" placeholder="Es. è caduto ieri, il vetro è rotto ma il touch funziona"></textarea>
+					</div>
+					<div class="campo-f">
+						<label for="r-foto">Una foto del guasto <span class="opz">(facoltativo)</span></label>
+						<input id="r-foto" name="foto" type="file" accept="image/*" />
+					</div>
+					<fieldset class="campo-f pref">
+						<legend>Come preferisci essere ricontattato?</legend>
+						<label><input type="radio" name="pref" value="telefono" checked /> <span>Telefonata</span></label>
+						<label><input type="radio" name="pref" value="whatsapp" /> <span>WhatsApp</span></label>
+						<label><input type="radio" name="pref" value="sms" /> <span>Messaggio</span></label>
+					</fieldset>
+					<button class="btn modulo__invio" type="submit">Invia la richiesta</button>
+					<p class="modulo__demo">Vetrina dimostrativa: il modulo non invia nulla e non conserva i tuoi dati.</p>
+				</form>
+
+				<div class="ricevuta" data-ricevuta hidden tabindex="-1">
+					<p class="ricevuta__ok">
+						<svg viewBox="0 0 20 20" width="26" height="26" aria-hidden="true"><circle cx="10" cy="10" r="10" fill="#48b883"></circle><path d="M5.5 10.5l3 3 6-7" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+						Richiesta ricevuta
+					</p>
+					<h3>Scheda <span data-r="numero"></span> aperta.</h3>
+					<p>Ti ricontatteremo per confermare diagnosi e appuntamento.</p>
+					<dl class="ricevuta__dati">
+						<div><dt>Dispositivo</dt><dd data-r="dispositivo"></dd></div>
+						<div><dt>Problema</dt><dd data-r="problema"></dd></div>
+						<div><dt>Contatto</dt><dd data-r="contatto"></dd></div>
+					</dl>
+					<p class="ricevuta__demo">Questa è una demo: nessun dato è stato inviato. In una vetrina vera qui parte l’avviso al laboratorio.</p>
+					<button type="button" class="btn btn--chiaro" data-nuova>Nuova richiesta</button>
+				</div>
+			</div>
+
+			<aside class="dove" aria-label="Dove siamo e orari">
+				<div class="mappa" role="img" aria-label="Mappa illustrata del quartiere: FIXLAB è all’incrocio tra via dei Fabbri e via dell’Orologio">
+					<svg viewBox="0 0 480 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+						<rect width="480" height="300" fill="#e9eef2"></rect>
+						<g fill="#dde5ea"><rect x="12" y="14" width="120" height="82" rx="6"></rect><rect x="12" y="132" width="120" height="70" rx="6"></rect><rect x="12" y="232" width="120" height="58" rx="6"></rect><rect x="178" y="14" width="124" height="82" rx="6"></rect><rect x="178" y="232" width="124" height="58" rx="6"></rect><rect x="350" y="14" width="118" height="82" rx="6"></rect><rect x="350" y="232" width="118" height="58" rx="6"></rect></g>
+						<rect x="178" y="132" width="124" height="70" rx="6" fill="#cfe9dc"></rect>
+						<g fill="#b3d9c4"><circle cx="205" cy="158" r="10"></circle><circle cx="232" cy="176" r="12"></circle><circle cx="268" cy="156" r="9"></circle></g>
+						<rect x="350" y="132" width="118" height="70" rx="6" fill="#dde5ea"></rect>
+						<g stroke="#ffffff" stroke-width="22" fill="none"><path d="M0 114h480M0 217h480M155 0v300M326 0v300"></path></g>
+						<g stroke="#c4ced6" stroke-width="2" stroke-dasharray="9 8" fill="none"><path d="M0 114h480M0 217h480M155 0v300M326 0v300"></path></g>
+						<text x="12" y="119" font-family="Instrument Sans Variable, sans-serif" font-size="11" font-weight="700" fill="#566470">VIA DEI FABBRI</text>
+						<text x="160" y="268" font-family="Instrument Sans Variable, sans-serif" font-size="11" font-weight="700" fill="#566470" transform="rotate(-90 160 268)">VIA DELL’OROLOGIO</text>
+						<g transform="translate(155 114)">
+							<circle r="30" fill="#2878ff" opacity=".18"></circle>
+							<path d="M0 -4C-18 -4 -18 -34 0 -34s18 30 0 30z" fill="#17232d" transform="translate(0 -4) scale(1.15) translate(0 4)"></path>
+							<rect x="-9" y="-33" width="18" height="18" rx="3" fill="#f5f7f9"></rect>
+							<path d="M-4 -17v-12h9M-4 -23h6" stroke="#17232d" stroke-width="2.4" fill="none" stroke-linecap="square"></path>
+						</g>
+						<g transform="translate(180 146)"><rect width="70" height="22" rx="5" fill="#17232d"></rect><text x="35" y="15" text-anchor="middle" font-family="Outfit Variable, sans-serif" font-size="12" font-weight="800" fill="#fff">FIXLAB</text></g>
+					</svg>
+				</div>
+				<div class="dove__corpo">
+					<h3>Dove siamo</h3>
+					<p class="dove__ind">Via dei Fabbri 12, Borgo Nuovo<br /><span>Indirizzo di fantasia</span></p>
+					<div class="dove__aperto" data-aperto>
+						<span class="dove__punto" aria-hidden="true"></span>
+						<span data-aperto-t>Orari di apertura</span>
+					</div>
+					<dl class="orari">
+						{orari.map((o) => <div><dt>{o.g}</dt><dd>{o.o}</dd></div>)}
+					</dl>
+					<div class="dove__az">
+						<a class="btn" href="tel:+390200000000">Chiamaci · 02 0000 0000</a>
+						<a class="btn btn--chiaro" href="#richiesta" data-wa>Scrivici su WhatsApp</a>
+					</div>
+				</div>
+			</aside>
+		</div>
+	</div>
+</section>
+
+<style>
+	.richiesta {
+		padding: clamp(64px, 9vw, 120px) 0;
+		background: var(--bianco);
+		border-top: 1px solid var(--riga);
+	}
+	.richiesta__griglia {
+		display: grid;
+		grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+		gap: clamp(24px, 4vw, 56px);
+		margin-top: 40px;
+		align-items: start;
+	}
+	.modulo {
+		background: var(--ghiaccio);
+		border: 2px solid var(--notte);
+		border-radius: 16px;
+		box-shadow: 8px 8px 0 var(--notte);
+		overflow: hidden;
+	}
+	.modulo__testa {
+		display: flex;
+		justify-content: space-between;
+		padding: 11px 24px;
+		background: var(--notte);
+		color: #cbd6df;
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: 0.76rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+	}
+	.modulo__form,
+	.ricevuta {
+		display: grid;
+		gap: 18px;
+		padding: 24px;
+	}
+	.ricevuta[hidden],
+	.modulo__form[hidden] {
+		display: none;
+	}
+	.coppia {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 16px;
+	}
+	.campo-f {
+		display: grid;
+		gap: 6px;
+		min-width: 0;
+		border: 0;
+	}
+	.campo-f label,
+	.pref legend {
+		font-weight: 700;
+		font-size: 0.92rem;
+	}
+	.opz {
+		font-weight: 500;
+		color: var(--grigio-testo);
+	}
+	input[type='text'],
+	input[type='tel'],
+	select,
+	textarea,
+	input[type='file'] {
+		width: 100%;
+		min-height: 50px;
+		padding: 11px 14px;
+		background: var(--bianco);
+		border: 2px solid var(--riga);
+		border-radius: 8px;
+		transition: border-color 0.15s;
+	}
+	textarea {
+		resize: vertical;
+	}
+	input:hover,
+	select:hover,
+	textarea:hover {
+		border-color: var(--grigio);
+	}
+	input:focus-visible,
+	select:focus-visible,
+	textarea:focus-visible {
+		outline: 3px solid var(--elettrico);
+		outline-offset: 1px;
+		border-color: var(--elettrico-testo);
+	}
+	select:disabled {
+		background: #eceff2;
+		color: var(--grigio-testo);
+	}
+	[aria-invalid='true'] {
+		border-color: var(--errore);
+	}
+	.err {
+		min-height: 0;
+		font-size: 0.85rem;
+		font-weight: 600;
+		color: var(--errore);
+	}
+	.pref {
+		gap: 8px;
+	}
+	.pref {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px 22px;
+	}
+	.pref legend {
+		width: 100%;
+		margin-bottom: 4px;
+	}
+	.pref label {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		font-weight: 500;
+		cursor: pointer;
+	}
+	.pref input {
+		width: 20px;
+		height: 20px;
+		accent-color: var(--elettrico-testo);
+	}
+	.modulo__invio {
+		width: 100%;
+	}
+	.modulo__demo,
+	.ricevuta__demo {
+		font-size: 0.84rem;
+		color: var(--grigio-testo);
+	}
+
+	/* ricevuta */
+	.ricevuta {
+		animation: stampa 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+	}
+	@keyframes stampa {
+		from {
+			opacity: 0.2;
+			transform: translateY(10px) rotate(-0.8deg);
+		}
+	}
+	.ricevuta:focus {
+		outline: none;
+	}
+	.ricevuta__ok {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		font-weight: 700;
+		color: var(--verde-testo);
+	}
+	.ricevuta h3 {
+		font-size: 2rem;
+	}
+	.ricevuta__dati {
+		display: grid;
+		gap: 8px;
+		padding: 14px 0;
+		border-block: 2px dashed var(--grigio);
+	}
+	.ricevuta__dati div {
+		display: grid;
+		grid-template-columns: 110px 1fr;
+		gap: 10px;
+	}
+	.ricevuta__dati dt {
+		font-size: 0.74rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--grigio-testo);
+		padding-top: 3px;
+	}
+	.ricevuta__dati dd {
+		font-family: var(--titoli);
+		font-weight: 700;
+	}
+	.ricevuta .btn {
+		justify-self: start;
+	}
+
+	/* dove siamo */
+	.dove {
+		border: 2px solid var(--riga);
+		border-radius: 16px;
+		overflow: hidden;
+		background: var(--ghiaccio);
+	}
+	.mappa {
+		height: 240px;
+		border-bottom: 2px solid var(--riga);
+	}
+	.mappa svg {
+		width: 100%;
+		height: 100%;
+	}
+	.dove__corpo {
+		padding: 24px;
+	}
+	.dove__corpo h3 {
+		font-size: 1.5rem;
+	}
+	.dove__ind {
+		margin-top: 8px;
+		font-weight: 600;
+	}
+	.dove__ind span {
+		font-weight: 500;
+		font-size: 0.85rem;
+		color: var(--grigio-testo);
+	}
+	.dove__aperto {
+		display: inline-flex;
+		align-items: center;
+		gap: 9px;
+		margin-top: 14px;
+		padding: 7px 14px;
+		border-radius: 999px;
+		background: #e1f4ea;
+		color: var(--verde-testo);
+		font-weight: 700;
+		font-size: 0.9rem;
+	}
+	.dove__aperto[data-chiuso] {
+		background: #f1e6e4;
+		color: #8f2f24;
+	}
+	.dove__punto {
+		width: 9px;
+		height: 9px;
+		border-radius: 50%;
+		background: currentColor;
+	}
+	.orari {
+		margin-top: 16px;
+		display: grid;
+	}
+	.orari div {
+		display: flex;
+		justify-content: space-between;
+		gap: 12px;
+		padding: 9px 0;
+		border-bottom: 1px solid var(--riga);
+		font-size: 0.96rem;
+	}
+	.orari dt {
+		font-weight: 700;
+	}
+	.orari dd {
+		text-align: right;
+		color: var(--grigio-testo);
+	}
+	.dove__az {
+		display: grid;
+		gap: 10px;
+		margin-top: 20px;
+	}
+	@media (max-width: 960px) {
+		.richiesta__griglia {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+	@media (max-width: 520px) {
+		.modulo {
+			box-shadow: 5px 5px 0 var(--notte);
+		}
+		.modulo__form,
+		.ricevuta {
+			padding: 18px;
+		}
+		.coppia {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.ricevuta__dati div {
+			grid-template-columns: 1fr;
+			gap: 0;
+		}
+	}
+</style>
+
+<script>
+	import { dispositivi } from './riparazioni';
+
+	const sez = document.querySelector<HTMLElement>('#richiesta')!;
+	const form = sez.querySelector<HTMLFormElement>('[data-form]')!;
+	const ricevuta = sez.querySelector<HTMLElement>('[data-ricevuta]')!;
+	const selD = form.querySelector<HTMLSelectElement>('#r-disp')!;
+	const selP = form.querySelector<HTMLSelectElement>('#r-prob')!;
+	const r = (k: string) => ricevuta.querySelector<HTMLElement>(`[data-r="${k}"]`)!;
+
+	function riempiProblemi(d: string, scelto = '') {
+		const dev = dispositivi.find((x) => x.id === d);
+		selP.innerHTML = '';
+		if (!dev) {
+			selP.disabled = true;
+			selP.add(new Option('Prima il dispositivo', ''));
+			return;
+		}
+		selP.disabled = false;
+		selP.add(new Option('Non so / altro', ''));
+		for (const p of dev.problemi) selP.add(new Option(p.nome, p.id));
+		selP.value = scelto;
+	}
+	selD.addEventListener('change', () => riempiProblemi(selD.value));
+
+	// dal listino, dalla scheda o dal banco: dispositivo e problema già scelti
+	addEventListener('fixlab:richiesta', (e) => {
+		const { d, p } = (e as CustomEvent<{ d: string; p: string }>).detail;
+		if (!dispositivi.some((x) => x.id === d)) return;
+		selD.value = d;
+		riempiProblemi(d, p);
+		nuova();
+		form.querySelector<HTMLInputElement>('#r-nome')?.focus({ preventScroll: true });
+	});
+
+	const campi: { id: string; msg: string; ok: (v: string) => boolean }[] = [
+		{ id: 'r-nome', msg: 'Scrivi il tuo nome.', ok: (v) => v.trim().length > 1 },
+		{ id: 'r-tel', msg: 'Serve un numero a cui ricontattarti (almeno 8 cifre).', ok: (v) => v.replace(/\D/g, '').length >= 8 },
+		{ id: 'r-disp', msg: 'Scegli il dispositivo.', ok: (v) => !!v },
+	];
+	function valida() {
+		let primo: HTMLElement | null = null;
+		for (const c of campi) {
+			const el = form.querySelector<HTMLInputElement | HTMLSelectElement>(`#${c.id}`)!;
+			const err = form.querySelector<HTMLElement>(`#${c.id}-e`)!;
+			const ok = c.ok(el.value);
+			el.setAttribute('aria-invalid', String(!ok));
+			err.textContent = ok ? '' : c.msg;
+			if (!ok && !primo) primo = el;
+		}
+		primo?.focus();
+		return !primo;
+	}
+	form.addEventListener('input', (e) => {
+		const el = e.target as HTMLInputElement;
+		if (el.getAttribute('aria-invalid') === 'true') {
+			const c = campi.find((x) => x.id === el.id);
+			if (c?.ok(el.value)) {
+				el.setAttribute('aria-invalid', 'false');
+				form.querySelector<HTMLElement>(`#${el.id}-e`)!.textContent = '';
+			}
+		}
+	});
+
+	form.addEventListener('submit', (e) => {
+		e.preventDefault();
+		if (!valida()) return;
+		const d = dispositivi.find((x) => x.id === selD.value)!;
+		const p = d.problemi.find((x) => x.id === selP.value);
+		const pref = form.querySelector<HTMLInputElement>('input[name="pref"]:checked')!.value;
+		const prefNome = { telefono: 'telefonata', whatsapp: 'WhatsApp', sms: 'messaggio' }[pref];
+		let h = 11;
+		for (const c of selD.value + selP.value + form.querySelector<HTMLInputElement>('#r-tel')!.value) h = (h * 31 + c.charCodeAt(0)) % 9000;
+		r('numero').textContent = `FX-${String(1000 + h)}`;
+		r('dispositivo').textContent = d.nome;
+		r('problema').textContent = p ? p.nome : 'Da capire insieme';
+		r('contatto').textContent = `${form.querySelector<HTMLInputElement>('#r-nome')!.value.trim()}, per ${prefNome}`;
+		form.hidden = true;
+		ricevuta.hidden = false;
+		ricevuta.focus();
+	});
+
+	function nuova() {
+		form.hidden = false;
+		ricevuta.hidden = true;
+	}
+	sez.querySelector('[data-nuova]')!.addEventListener('click', () => {
+		form.reset();
+		riempiProblemi('');
+		nuova();
+		form.querySelector<HTMLInputElement>('#r-nome')?.focus();
+	});
+
+	// il link "WhatsApp" della demo non porta fuori: spiega e resta in pagina
+	sez.querySelector<HTMLAnchorElement>('[data-wa]')!.addEventListener('click', (e) => {
+		e.preventDefault();
+		form.querySelector<HTMLInputElement>('input[name="pref"][value="whatsapp"]')!.checked = true;
+		form.querySelector<HTMLInputElement>('#r-nome')?.focus();
+	});
+
+	// aperto adesso? (orari di fantasia, ora del visitatore)
+	const orari: Record<number, [number, number][]> = {
+		1: [[540, 780], [900, 1170]],
+		2: [[540, 780], [900, 1170]],
+		3: [[540, 780], [900, 1170]],
+		4: [[540, 780], [900, 1170]],
+		5: [[540, 780], [900, 1170]],
+		6: [[540, 780]],
+		0: [],
+	};
+	const hhmm = (m: number) => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')}`;
+	const ora = new Date();
+	const min = ora.getHours() * 60 + ora.getMinutes();
+	const oggi = orari[ora.getDay()];
+	const fascia = oggi.find(([a, b]) => min >= a && min < b);
+	const box = sez.querySelector<HTMLElement>('[data-aperto]')!;
+	const testo = sez.querySelector<HTMLElement>('[data-aperto-t]')!;
+	if (fascia) {
+		testo.textContent = `Aperto ora · chiude alle ${hhmm(fascia[1])}`;
+	} else {
+		box.setAttribute('data-chiuso', '');
+		const prossima = oggi.find(([a]) => a > min);
+		if (prossima) testo.textContent = `Chiuso ora · riapre alle ${hhmm(prossima[0])}`;
+		else {
+			for (let i = 1; i <= 7; i++) {
+				const g = orari[(ora.getDay() + i) % 7];
+				if (g.length) {
+					testo.textContent = `Chiuso ora · riapre ${i === 1 ? 'domani' : 'tra ' + i + ' giorni'} alle ${hhmm(g[0][0])}`;
+					break;
+				}
+			}
+		}
+	}
+</script>

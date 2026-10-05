@@ -1,0 +1,345 @@
+---
+import { stati, demo } from './riparazioni';
+
+const passi = [
+	{ t: 'Porti il dispositivo', d: 'In negozio, senza appuntamento. Ci racconti cosa è successo.' },
+	{ t: 'Facciamo la diagnosi', d: 'Controlliamo prima. Poi ti diciamo cosa conviene fare.' },
+	{ t: 'Ti diciamo cosa serve', d: 'Prezzo e tempi, per iscritto. Nessuna sorpresa: approvi tu.' },
+	{ t: 'Ripariamo', d: 'Ti avvisiamo quando è pronto, con la prova fatta davanti a te.' },
+];
+const codici = Object.keys(demo);
+---
+
+<section class="percorso" id="percorso" aria-labelledby="percorso-titolo">
+	<div class="wrap">
+		<p class="campo campo--chiaro"><b>N° 04</b> Come lavoriamo</p>
+		<h2 id="percorso-titolo" class="h2">Quattro passi, e sai sempre a che punto sei.</h2>
+
+		<ol class="passi">
+			{
+				passi.map((p, i) => (
+					<li data-reveal style={`--d:${i * 0.08}s`}>
+						<span class="passi__n" aria-hidden="true">{i + 1}</span>
+						<h3>{p.t}</h3>
+						<p>{p.d}</p>
+					</li>
+				))
+			}
+		</ol>
+
+		<div class="segui" data-segui>
+			<div class="segui__testa">
+				<h3>Segui la tua riparazione</h3>
+				<p>Ogni dispositivo ha una scheda con un codice. Inseriscilo e vedi a che punto siamo. Prova con uno di esempio:</p>
+				<div class="segui__demo">
+					{codici.map((c) => <button type="button" data-codice={c}>{c}</button>)}
+				</div>
+			</div>
+			<form class="segui__form" data-form novalidate>
+				<label for="codice">Codice della scheda</label>
+				<div class="segui__riga">
+					<input id="codice" name="codice" type="text" placeholder="FX-0417" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="segui-esito" />
+					<button class="btn" type="submit">Controlla</button>
+				</div>
+			</form>
+			<div class="segui__esito" id="segui-esito" aria-live="polite" data-esito>
+				<p class="segui__vuoto">Inserisci un codice per vedere lo stato.</p>
+			</div>
+			<ol class="stato" aria-label="Stato della riparazione" data-stato hidden>
+				{stati.map((s) => <li><span>{s}</span></li>)}
+			</ol>
+		</div>
+	</div>
+</section>
+
+<style>
+	.percorso {
+		padding: clamp(64px, 9vw, 120px) 0;
+		background: var(--notte);
+		color: var(--bianco);
+		background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.07) 1px, transparent 1.5px);
+		background-size: 24px 24px;
+	}
+	.percorso .h2 {
+		max-width: 20ch;
+	}
+	.passi {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 0;
+		margin-top: 44px;
+		position: relative;
+	}
+	.passi li {
+		position: relative;
+		padding: 0 22px 0 0;
+		transition-delay: var(--d);
+	}
+	/* il filo che collega i passi, come una pista del circuito */
+	.passi li::before {
+		content: '';
+		position: absolute;
+		top: 21px;
+		left: 48px;
+		right: 8px;
+		height: 3px;
+		background: repeating-linear-gradient(to right, var(--elettrico) 0 10px, transparent 10px 16px);
+	}
+	.passi li:last-child::before {
+		display: none;
+	}
+	.passi__n {
+		display: grid;
+		place-items: center;
+		width: 44px;
+		height: 44px;
+		border-radius: 50%;
+		background: var(--elettrico);
+		font-family: var(--titoli);
+		font-weight: 800;
+		font-size: 1.15rem;
+		margin-bottom: 18px;
+		position: relative;
+		z-index: 1;
+	}
+	.passi h3 {
+		font-size: 1.3rem;
+		margin-bottom: 8px;
+	}
+	.passi p {
+		color: #b8c4ce;
+		font-size: 0.98rem;
+	}
+
+	/* segui la riparazione */
+	.segui {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		gap: 22px 48px;
+		margin-top: clamp(48px, 7vw, 80px);
+		padding: clamp(22px, 3vw, 36px);
+		background: var(--notte-2);
+		border: 2px solid #3a4f60;
+		border-radius: 16px;
+	}
+	.segui__testa h3 {
+		font-size: 1.6rem;
+	}
+	.segui__testa p {
+		margin-top: 10px;
+		color: #b8c4ce;
+		font-size: 0.98rem;
+	}
+	.segui__demo {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		margin-top: 14px;
+	}
+	.segui__demo button {
+		min-height: 40px;
+		padding: 0 14px;
+		background: transparent;
+		border: 1.5px solid #5d7384;
+		border-radius: 6px;
+		color: var(--bianco);
+		font-family: var(--titoli);
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		cursor: pointer;
+		transition: border-color 0.15s, background-color 0.15s;
+	}
+	.segui__demo button:hover {
+		border-color: var(--elettrico-chiaro);
+		background: rgba(40, 120, 255, 0.18);
+	}
+	.segui__form label {
+		display: block;
+		margin-bottom: 8px;
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: #b8c4ce;
+	}
+	.segui__riga {
+		display: flex;
+		gap: 10px;
+	}
+	.segui__riga input {
+		flex: 1;
+		min-width: 0;
+		min-height: 52px;
+		padding: 0 16px;
+		background: var(--ghiaccio);
+		color: var(--notte);
+		border: 2px solid var(--ghiaccio);
+		border-radius: 8px;
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: 1.15rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	.segui__riga input::placeholder {
+		color: #7b8791;
+	}
+	.segui__riga input:focus-visible {
+		outline: 3px solid var(--elettrico-chiaro);
+		outline-offset: 2px;
+	}
+	.segui .btn {
+		box-shadow: 0 4px 0 #123f93;
+	}
+	.segui__esito {
+		grid-column: 1 / -1;
+		min-height: 1.6em;
+		font-size: 1.02rem;
+	}
+	.segui__vuoto {
+		color: #b8c4ce;
+	}
+	.segui__esito b {
+		font-family: var(--titoli);
+		font-weight: 800;
+	}
+	.segui__err {
+		color: #ffb3a8;
+	}
+	.stato {
+		grid-column: 1 / -1;
+		display: grid;
+		grid-template-columns: repeat(5, minmax(0, 1fr));
+		gap: 6px;
+	}
+	.stato[hidden] {
+		display: none;
+	}
+	.stato li {
+		padding-top: 10px;
+		border-top: 6px solid #3a4f60;
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: 0.9rem;
+		color: #8fa1af;
+		transition: border-color 0.5s, color 0.5s;
+		transition-delay: calc(var(--k) * 0.12s);
+	}
+	.stato li.is-fatto {
+		border-top-color: var(--verde);
+		color: var(--bianco);
+	}
+	.stato li.is-ora {
+		border-top-color: var(--elettrico-chiaro);
+		color: var(--bianco);
+	}
+	.stato li.is-ora span::after {
+		content: ' ●';
+		color: var(--elettrico-chiaro);
+		animation: lampo 1.4s ease-in-out infinite;
+	}
+	@keyframes lampo {
+		50% {
+			opacity: 0.2;
+		}
+	}
+	@media (max-width: 900px) {
+		.passi {
+			grid-template-columns: minmax(0, 1fr);
+			gap: 4px;
+		}
+		.passi li {
+			display: grid;
+			grid-template-columns: 44px 1fr;
+			column-gap: 18px;
+			padding: 0 0 26px;
+		}
+		.passi li::before {
+			top: 44px;
+			bottom: 4px;
+			left: 21px;
+			right: auto;
+			width: 3px;
+			height: auto;
+			background: repeating-linear-gradient(to bottom, var(--elettrico) 0 8px, transparent 8px 14px);
+		}
+		.passi__n {
+			grid-row: 1 / 3;
+			margin: 0;
+		}
+		.segui {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+	@media (max-width: 560px) {
+		.stato {
+			grid-template-columns: minmax(0, 1fr);
+			gap: 0;
+		}
+		.stato li {
+			border-top: 0;
+			border-left: 6px solid #3a4f60;
+			padding: 8px 0 8px 14px;
+		}
+		.stato li.is-fatto {
+			border-left-color: var(--verde);
+		}
+		.stato li.is-ora {
+			border-left-color: var(--elettrico-chiaro);
+		}
+		.segui__riga {
+			flex-direction: column;
+		}
+	}
+</style>
+
+<script>
+	import { demo } from './riparazioni';
+
+	const sez = document.querySelector<HTMLElement>('[data-segui]')!;
+	const input = sez.querySelector<HTMLInputElement>('input')!;
+	const esito = sez.querySelector<HTMLElement>('[data-esito]')!;
+	const stato = sez.querySelector<HTMLElement>('[data-stato]')!;
+	const voci = [...stato.querySelectorAll<HTMLElement>('li')];
+	voci.forEach((l, i) => l.style.setProperty('--k', String(i)));
+
+	function controlla() {
+		const codice = input.value.trim().toUpperCase();
+		const r = demo[codice];
+		esito.textContent = '';
+		if (!r) {
+			stato.hidden = true;
+			const p = document.createElement('p');
+			p.className = 'segui__err';
+			p.textContent = codice
+				? `Nessuna scheda con il codice ${codice}. Questa è una demo: prova uno dei tre codici di esempio.`
+				: 'Inserisci il codice che trovi sulla scheda.';
+			esito.append(p);
+			return;
+		}
+		const p = document.createElement('p');
+		const b = document.createElement('b');
+		b.textContent = `${codice} · ${r.dispositivo}. `;
+		p.append(b, r.nota);
+		esito.append(p);
+		stato.hidden = false;
+		// riparte da zero perché le barre si riempiano una dopo l'altra
+		voci.forEach((l) => l.classList.remove('is-fatto', 'is-ora'));
+		void stato.offsetWidth;
+		voci.forEach((l, i) => {
+			if (i < r.stato) l.classList.add('is-fatto');
+			else if (i === r.stato) l.classList.add('is-ora');
+		});
+	}
+
+	sez.querySelector('[data-form]')!.addEventListener('submit', (e) => {
+		e.preventDefault();
+		controlla();
+	});
+	sez.querySelectorAll<HTMLButtonElement>('[data-codice]').forEach((b) =>
+		b.addEventListener('click', () => {
+			input.value = b.dataset.codice!;
+			controlla();
+		}),
+	);
+</script>

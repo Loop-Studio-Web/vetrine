@@ -1,0 +1,71 @@
+---
+// Su telefono la richiesta e il telefono restano sempre a portata di pollice
+---
+
+<nav class="barra" data-barra aria-label="Azioni rapide">
+	<a class="barra__tel" href="tel:+390200000000" aria-label="Chiama FIXLAB">
+		<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+			><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"></path></svg
+		>
+	</a>
+	<a class="btn barra__cta" href="#richiesta">Richiedi assistenza</a>
+</nav>
+
+<style>
+	.barra {
+		display: none;
+	}
+	@media (max-width: 720px) {
+		.barra {
+			position: fixed;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			z-index: 130;
+			display: flex;
+			gap: 10px;
+			padding: 10px var(--gutter) calc(10px + env(safe-area-inset-bottom));
+			background: rgba(245, 247, 249, 0.96);
+			backdrop-filter: blur(10px);
+			-webkit-backdrop-filter: blur(10px);
+			border-top: 1px solid var(--riga);
+			transform: translateY(110%);
+			transition: transform 0.3s;
+		}
+		.barra.is-visibile {
+			transform: none;
+		}
+		.barra__tel {
+			display: grid;
+			place-items: center;
+			width: 52px;
+			flex: none;
+			border: 2px solid var(--notte);
+			border-radius: 8px;
+			box-shadow: 0 4px 0 var(--notte);
+		}
+		.barra__cta {
+			flex: 1;
+		}
+	}
+</style>
+
+<script>
+	const barra = document.querySelector<HTMLElement>('[data-barra]');
+	const ingresso = document.getElementById('top');
+	const richiesta = document.getElementById('richiesta');
+	if (barra && ingresso && richiesta) {
+		// compare quando il primo schermo è passato e sparisce davanti al modulo
+		let fuoriIngresso = false;
+		let sulModulo = false;
+		const aggiorna = () => barra.classList.toggle('is-visibile', fuoriIngresso && !sulModulo);
+		new IntersectionObserver(([e]) => {
+			fuoriIngresso = !e.isIntersecting;
+			aggiorna();
+		}).observe(ingresso.querySelector('.ingresso__cta') ?? ingresso);
+		new IntersectionObserver(([e]) => {
+			sulModulo = e.isIntersecting;
+			aggiorna();
+		}).observe(richiesta);
+	}
+</script>
