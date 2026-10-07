@@ -1,0 +1,155 @@
+---
+// Recensioni di esempio: la media è calcolata dai dati; una citazione grande a rotazione, scelta con i tasti numerati.
+import { recensioni } from './catalogo';
+
+const media = (recensioni.reduce((s, r) => s + r.voto, 0) / recensioni.length).toFixed(1);
+const stelle = (n: number) => '★'.repeat(n) + '☆'.repeat(5 - n);
+---
+
+<section class="rec sezione" id="reviews" aria-labelledby="rec-t">
+	<div class="wrap">
+		<header class="sezione__testa" data-reveal>
+			<p class="etichetta">Word at the counter</p>
+			<h2 id="rec-t">What people say after they leave.</h2>
+			<p>Sample reviews written for this demo: the names and the stories are invented.</p>
+		</header>
+
+		<div class="rec__corpo" data-rec>
+			<div class="rec__media" data-reveal>
+				<b>{media}</b>
+				<span class="rec__stelle" aria-hidden="true">{stelle(Math.round(Number(media)))}</span>
+				<span>average of {recensioni.length} sample reviews</span>
+			</div>
+
+			<div class="rec__scena" data-reveal>
+				{
+					recensioni.map((r, i) => (
+						<figure class="rec__citazione" data-i={i} hidden={i !== 0}>
+							<p class="rec__voto" role="img" aria-label={`${r.voto} out of 5 stars`}>{stelle(r.voto)}</p>
+							<blockquote>“{r.testo}”</blockquote>
+							<figcaption>
+								<b>{r.nome}</b> · {r.data}
+							</figcaption>
+						</figure>
+					))
+				}
+				<div class="rec__tasti" role="group" aria-label="Choose a review">
+					{recensioni.map((r, i) => <button class="tasto tasto--piccolo" type="button" aria-pressed={i === 0 ? 'true' : 'false'} data-vai={i} aria-label={`Review ${i + 1}, ${r.nome}`}>{i + 1}</button>)}
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.rec__corpo {
+		display: grid;
+		grid-template-columns: minmax(0, 240px) minmax(0, 1fr);
+		gap: clamp(24px, 5vw, 64px);
+		align-items: start;
+	}
+	.rec__media {
+		display: grid;
+		gap: 4px;
+		padding: 22px;
+		background: var(--grafite);
+		color: var(--avorio);
+		border-radius: 16px;
+		box-shadow: 0 var(--spessore) 0 #000;
+		font-size: 0.95rem;
+	}
+	.rec__media b {
+		font-family: var(--titoli);
+		font-size: 4.2rem;
+		line-height: 1;
+		color: var(--arancio);
+	}
+	.rec__stelle {
+		color: var(--acqua);
+		letter-spacing: 0.15em;
+		font-size: 1.2rem;
+	}
+	.rec__scena {
+		position: relative;
+		padding: clamp(22px, 4vw, 44px);
+		background: var(--avorio);
+		border: 2px solid var(--grafite);
+		border-radius: 18px;
+		box-shadow: 0 var(--spessore) 0 var(--grafite);
+		min-height: 280px;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		gap: 24px;
+	}
+	.rec__citazione {
+		display: grid;
+		gap: 14px;
+	}
+	.rec__citazione[hidden] {
+		display: none;
+	}
+	.rec__citazione:not([hidden]) {
+		animation: rec-entra 0.45s cubic-bezier(0.3, 1.3, 0.5, 1);
+	}
+	@keyframes rec-entra {
+		from {
+			opacity: 0;
+			transform: translateX(24px);
+		}
+	}
+	.rec__voto {
+		color: var(--arancio-testo);
+		letter-spacing: 0.15em;
+		font-size: 1.3rem;
+	}
+	.rec__citazione blockquote {
+		font-family: var(--titoli);
+		font-weight: 600;
+		font-size: clamp(1.3rem, 2.8vw, 2rem);
+		line-height: 1.25;
+		letter-spacing: -0.01em;
+		text-wrap: pretty;
+	}
+	.rec__citazione figcaption {
+		color: var(--grigio-testo);
+	}
+	.rec__tasti {
+		display: flex;
+		gap: 10px;
+	}
+	.rec__tasti .tasto {
+		min-width: 44px;
+		min-height: 44px;
+	}
+	@media (max-width: 760px) {
+		.rec__corpo {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+</style>
+
+<script>
+	const radice = document.querySelector<HTMLElement>('[data-rec]')!;
+	const citazioni = [...radice.querySelectorAll<HTMLElement>('.rec__citazione')];
+	const tasti = [...radice.querySelectorAll<HTMLButtonElement>('[data-vai]')];
+	let corrente = 0;
+	let fermo = false;
+	const vai = (n: number) => {
+		corrente = (n + citazioni.length) % citazioni.length;
+		citazioni.forEach((c, i) => (c.hidden = i !== corrente));
+		tasti.forEach((t, i) => t.setAttribute('aria-pressed', String(i === corrente)));
+	};
+	tasti.forEach((t, i) =>
+		t.addEventListener('click', () => {
+			fermo = true;
+			vai(i);
+		}),
+	);
+	// rotazione lenta, che si ferma al primo gesto o con reduced-motion
+	if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		setInterval(() => {
+			if (!fermo && !document.hidden) vai(corrente + 1);
+		}, 6500);
+	}
+</script>

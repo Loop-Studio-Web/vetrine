@@ -1,0 +1,515 @@
+---
+import simbolo from '../../assets/hotswap/brand/simbolo.svg';
+
+const voci = [
+	{ href: '#shop', t: 'Shop' },
+	{ href: '#builder', t: 'PC Builder' },
+	{ href: '#services', t: 'Services' },
+	{ href: '#deals', t: 'Deals' },
+	{ href: '#visit', t: 'Visit' },
+];
+---
+
+<header class="nav" data-nav>
+	<div class="nav__in">
+		<a class="nav__logo" href="#top">
+			<img src={simbolo.src} alt="" width="52" height="42" />
+			<span class="nav__marchio">HOT<span>SWAP</span></span>
+			<span class="sr-only">, back to top</span>
+		</a>
+		<nav class="nav__links" aria-label="Page sections">
+			{voci.map((v) => <a href={v.href} data-voce={v.href.slice(1)}>{v.t}</a>)}
+		</nav>
+		<div class="nav__az">
+			<button class="tasto tasto--piccolo nav__cart" type="button" data-cart-open>
+				<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+					><path d="M3 4h2l2.4 11h10.2l2-8H6.2"></path><circle cx="9.5" cy="19.5" r="1.4"></circle><circle cx="17" cy="19.5" r="1.4"></circle></svg
+				>
+				<span class="nav__cart-t">My list</span>
+				<span class="nav__count" data-cart-count>0</span>
+			</button>
+			<a class="tasto tasto--arancio tasto--piccolo nav__cta" href="#builder">Build your PC</a>
+			<button class="nav__burger tasto tasto--grafite tasto--piccolo" type="button" aria-expanded="false" aria-controls="caddy" data-burger>
+				<span class="nav__burger-t">Menu</span>
+				<span class="nav__burger-i" aria-hidden="true"><i></i><i></i></span>
+			</button>
+		</div>
+	</div>
+	<div class="nav__barra" aria-hidden="true"><i data-progress></i></div>
+</header>
+
+<!-- Menù mobile (fuori dall'header: il backdrop-filter della barra ne farebbe il blocco contenitore del pannello fisso):
+     un vassoio "hot swap" che si sfila dall'alto, con levetta di sgancio e LED che passa da rosso a verde quando è inserito -->
+<div class="caddy" id="caddy" data-caddy role="dialog" aria-modal="true" aria-label="Menu" hidden>
+	<div class="caddy__tray">
+		<div class="caddy__led" aria-hidden="true"><i></i><span>READY</span></div>
+		<nav class="caddy__nav" aria-label="Page sections">
+			{
+				voci.map((v, i) => (
+					<a href={v.href} style={`--i:${i}`}>
+						<kbd aria-hidden="true">{String(i + 1).padStart(2, '0')}</kbd>
+						<span>{v.t}</span>
+					</a>
+				))
+			}
+		</nav>
+		<div class="caddy__az">
+			<a class="tasto tasto--arancio" href="#builder">Build your PC</a>
+			<button class="tasto" type="button" data-cart-open>My list <b data-cart-count2>0</b></button>
+		</div>
+		<span class="caddy__leva" aria-hidden="true"></span>
+	</div>
+</div>
+
+<style>
+	.nav {
+		position: fixed;
+		top: var(--fascia, 0px);
+		left: 0;
+		right: 0;
+		z-index: 140;
+		height: var(--nav-h);
+		background: rgba(231, 224, 209, 0.92);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		border-bottom: 2px solid var(--grafite);
+	}
+	.nav__in {
+		height: 100%;
+		max-width: var(--max);
+		margin-inline: auto;
+		padding-inline: var(--gutter);
+		display: flex;
+		align-items: center;
+		gap: 28px;
+	}
+	.nav__logo {
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		text-decoration: none;
+		flex: none;
+	}
+	.nav__logo img {
+		width: 52px;
+		height: 42px;
+		transition: transform 0.35s cubic-bezier(0.3, 1.6, 0.5, 1);
+	}
+	.nav__logo:hover img {
+		transform: rotate(-6deg) translateY(-2px);
+	}
+	.nav__marchio {
+		font-family: var(--titoli);
+		font-weight: 800;
+		font-size: 1.45rem;
+		letter-spacing: -0.02em;
+		line-height: 1;
+		color: var(--grafite);
+	}
+	.nav__marchio span {
+		color: var(--arancio-testo);
+		margin-left: 0.14em;
+	}
+	.nav__links {
+		display: flex;
+		gap: 6px;
+		margin-left: auto;
+	}
+	/* le voci sono tasti: al passaggio si sollevano, quella della sezione in vista resta abbassata */
+	.nav__links a {
+		position: relative;
+		padding: 8px 14px;
+		border-radius: 8px;
+		border: 2px solid transparent;
+		font-family: var(--titoli);
+		font-weight: 600;
+		font-size: 0.95rem;
+		text-decoration: none;
+		transition:
+			background 0.15s,
+			border-color 0.15s,
+			transform 0.1s,
+			box-shadow 0.1s;
+	}
+	.nav__links a:hover {
+		background: var(--avorio);
+		border-color: var(--grafite);
+		box-shadow: 0 3px 0 var(--grafite);
+		transform: translateY(-1px);
+	}
+	.nav__links a.is-attiva {
+		background: var(--grafite);
+		color: var(--avorio);
+		border-color: var(--grafite);
+		transform: translateY(2px);
+	}
+	.nav__az {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		flex: none;
+	}
+	.nav__cart {
+		--t-bg: var(--avorio);
+	}
+	.nav__count {
+		display: inline-grid;
+		place-items: center;
+		min-width: 24px;
+		height: 24px;
+		padding: 0 6px;
+		border-radius: 12px;
+		background: var(--grafite);
+		color: var(--avorio);
+		font-size: 0.8rem;
+		font-weight: 700;
+	}
+	.nav__count.is-scatto {
+		animation: scatto 0.45s cubic-bezier(0.3, 1.8, 0.5, 1);
+	}
+	@keyframes scatto {
+		0% {
+			transform: scale(1);
+		}
+		40% {
+			transform: scale(1.5) translateY(-3px);
+			background: var(--arancio);
+			color: var(--grafite);
+		}
+		100% {
+			transform: scale(1);
+		}
+	}
+	.nav__burger {
+		display: none;
+		gap: 10px;
+		position: relative;
+		z-index: 170;
+	}
+	.nav__burger-i {
+		position: relative;
+		width: 20px;
+		height: 12px;
+	}
+	.nav__burger-i i {
+		position: absolute;
+		left: 0;
+		right: 0;
+		height: 2px;
+		background: currentColor;
+		border-radius: 2px;
+		transition:
+			transform 0.25s,
+			top 0.25s;
+	}
+	.nav__burger-i i:first-child {
+		top: 1px;
+	}
+	.nav__burger-i i:last-child {
+		top: 9px;
+	}
+	.nav__burger[aria-expanded='true'] .nav__burger-i i:first-child {
+		top: 5px;
+		transform: rotate(45deg);
+	}
+	.nav__burger[aria-expanded='true'] .nav__burger-i i:last-child {
+		top: 5px;
+		transform: rotate(-45deg);
+	}
+
+	/* barra di avanzamento: il filo di scorrimento della pagina, sul bordo inferiore */
+	.nav__barra {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: -5px;
+		height: 3px;
+		background: transparent;
+		pointer-events: none;
+	}
+	.nav__barra i {
+		display: block;
+		height: 100%;
+		width: 100%;
+		background: var(--arancio);
+		transform: scaleX(var(--avanza, 0));
+		transform-origin: left;
+	}
+
+	/* ----- vassoio mobile ----- */
+	.caddy {
+		position: fixed;
+		inset: 0;
+		z-index: 135;
+		background: rgba(42, 42, 45, 0);
+		visibility: hidden;
+		transition:
+			background 0.4s,
+			visibility 0s 0.6s;
+	}
+	.caddy[hidden] {
+		display: block;
+	}
+	.caddy.is-open {
+		background: rgba(42, 42, 45, 0.55);
+		visibility: visible;
+		transition: background 0.4s;
+	}
+	.caddy__tray {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		display: grid;
+		gap: 22px;
+		padding: calc(var(--fascia-h) + var(--nav-h) + 20px) var(--gutter) 46px;
+		background: var(--cassa);
+		border-bottom: 3px solid var(--grafite);
+		border-radius: 0 0 22px 22px;
+		box-shadow: 0 8px 0 var(--grafite);
+		transform: translateY(-104%);
+		transition: transform 0.55s cubic-bezier(0.2, 0.9, 0.25, 1.05);
+		max-height: 100dvh;
+		overflow-y: auto;
+	}
+	.caddy.is-open .caddy__tray {
+		transform: none;
+	}
+	.caddy__led {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		font-family: var(--titoli);
+		font-weight: 600;
+		font-size: 0.75rem;
+		letter-spacing: 0.14em;
+		color: var(--grigio-testo);
+	}
+	.caddy__led i {
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		background: var(--errore);
+		box-shadow: 0 0 0 2px var(--grafite);
+		transition:
+			background 0.2s 0.5s,
+			box-shadow 0.2s 0.5s;
+	}
+	.caddy.is-open .caddy__led i {
+		background: var(--acqua);
+		box-shadow:
+			0 0 0 2px var(--grafite),
+			0 0 10px var(--acqua);
+	}
+	.caddy__nav {
+		display: grid;
+		gap: 10px;
+	}
+	.caddy__nav a {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+		padding: 14px 18px;
+		background: var(--avorio);
+		border: 2px solid var(--grafite);
+		border-radius: 12px;
+		box-shadow: 0 5px 0 var(--grafite);
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: clamp(1.4rem, 6.5vw, 1.9rem);
+		text-decoration: none;
+		letter-spacing: -0.01em;
+		opacity: 0;
+		transform: translateY(-10px);
+		transition:
+			opacity 0.3s,
+			transform 0.12s,
+			box-shadow 0.12s;
+	}
+	.caddy.is-open .caddy__nav a {
+		opacity: 1;
+		transform: none;
+		transition:
+			opacity 0.35s calc(0.3s + var(--i) * 0.06s),
+			transform 0.35s calc(0.3s + var(--i) * 0.06s),
+			box-shadow 0.12s;
+	}
+	.caddy__nav a:active {
+		transform: translateY(5px);
+		box-shadow: 0 0 0 var(--grafite);
+		transition-delay: 0s;
+	}
+	.caddy__nav kbd {
+		font-family: var(--titoli);
+		font-size: 0.8rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		padding: 3px 8px;
+		border: 2px solid var(--grafite);
+		border-bottom-width: 4px;
+		border-radius: 6px;
+		background: var(--cassa-2);
+	}
+	.caddy__az {
+		display: grid;
+		gap: 12px;
+	}
+	.caddy__az b {
+		display: inline-grid;
+		place-items: center;
+		min-width: 24px;
+		height: 24px;
+		border-radius: 12px;
+		background: var(--grafite);
+		color: var(--avorio);
+		font-size: 0.8rem;
+	}
+	/* levetta di sgancio sul bordo del vassoio */
+	.caddy__leva {
+		position: absolute;
+		bottom: 14px;
+		left: 50%;
+		width: 64px;
+		height: 8px;
+		margin-left: -32px;
+		border-radius: 4px;
+		background: var(--grafite);
+		opacity: 0.8;
+	}
+
+	@media (max-width: 1020px) {
+		.nav__links,
+		.nav__cta {
+			display: none;
+		}
+		.nav__az {
+			margin-left: auto;
+		}
+		.nav__burger {
+			display: inline-flex;
+		}
+	}
+	@media (max-width: 520px) {
+		.nav__in {
+			gap: 10px;
+		}
+		.nav__logo {
+			gap: 8px;
+		}
+		.nav__logo img {
+			width: 42px;
+			height: 34px;
+		}
+		.nav__marchio {
+			font-size: 1.2rem;
+		}
+		.nav__cart-t {
+			display: none;
+		}
+		/* il "Menu" resta per i lettori di schermo, ma non occupa spazio */
+		.nav__burger-t {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			overflow: hidden;
+			clip-path: inset(50%);
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.caddy__tray {
+			transition: none;
+		}
+		.caddy__nav a,
+		.caddy.is-open .caddy__nav a {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	// ---- menù mobile ----
+	const burger = document.querySelector<HTMLButtonElement>('[data-burger]');
+	const caddy = document.querySelector<HTMLElement>('[data-caddy]');
+	if (burger && caddy) {
+		const chiudi = (rendiFocus = true) => {
+			caddy.classList.remove('is-open');
+			burger.setAttribute('aria-expanded', 'false');
+			document.body.classList.remove('menu-aperto');
+			if (rendiFocus) burger.focus();
+		};
+		const apri = () => {
+			caddy.hidden = false;
+			caddy.getBoundingClientRect(); // forza il riflusso: la transizione parte
+			caddy.classList.add('is-open');
+			burger.setAttribute('aria-expanded', 'true');
+			document.body.classList.add('menu-aperto');
+			caddy.querySelector<HTMLElement>('a')?.focus({ preventScroll: true });
+		};
+		burger.addEventListener('click', () => (caddy.classList.contains('is-open') ? chiudi() : apri()));
+		caddy.addEventListener('click', (e) => {
+			const t = e.target as HTMLElement;
+			if (t.closest('a') || t === caddy) chiudi(false);
+			else if (t.closest('[data-cart-open]')) chiudi(false);
+		});
+		addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && caddy.classList.contains('is-open')) chiudi();
+			// il fuoco resta dentro il vassoio (compreso il pulsante che lo chiude)
+			if (e.key === 'Tab' && caddy.classList.contains('is-open')) {
+				const el = [burger, ...caddy.querySelectorAll<HTMLElement>('a, button')];
+				const i = el.indexOf(document.activeElement as HTMLElement);
+				if (e.shiftKey && i <= 0) {
+					e.preventDefault();
+					el[el.length - 1].focus();
+				} else if (!e.shiftKey && i === el.length - 1) {
+					e.preventDefault();
+					el[0].focus();
+				}
+			}
+		});
+		// tornando a schermo largo il vassoio si chiude da solo
+		matchMedia('(min-width: 1021px)').addEventListener('change', (m) => m.matches && chiudi(false));
+	}
+
+	// ---- voce attiva e avanzamento ----
+	const link = [...document.querySelectorAll<HTMLAnchorElement>('.nav__links a')];
+	const sezioni = link.map((a) => document.getElementById(a.dataset.voce || '')).filter(Boolean) as HTMLElement[];
+	const io = new IntersectionObserver(
+		(voci) => {
+			for (const v of voci) {
+				if (!v.isIntersecting) continue;
+				for (const a of link) a.classList.toggle('is-attiva', a.dataset.voce === v.target.id);
+			}
+		},
+		{ rootMargin: '-45% 0px -50% 0px' },
+	);
+	sezioni.forEach((s) => io.observe(s));
+	let attesa = false;
+	const avanza = () => {
+		attesa = false;
+		const max = document.documentElement.scrollHeight - innerHeight;
+		document.documentElement.style.setProperty('--avanza', String(max > 0 ? Math.min(1, scrollY / max) : 0));
+		if (scrollY < 200) for (const a of link) a.classList.remove('is-attiva');
+	};
+	addEventListener(
+		'scroll',
+		() => {
+			if (!attesa) {
+				attesa = true;
+				requestAnimationFrame(avanza);
+			}
+		},
+		{ passive: true },
+	);
+	avanza();
+
+	// ---- contatore della lista: aggiornato dagli eventi della lista (hotswap:lista) ----
+	addEventListener('hotswap:lista', (e) => {
+		const n = (e as CustomEvent<{ totale: number }>).detail.totale;
+		for (const c of document.querySelectorAll<HTMLElement>('[data-cart-count], [data-cart-count2]')) {
+			c.textContent = String(n);
+			c.classList.remove('is-scatto');
+			c.getBoundingClientRect();
+			c.classList.add('is-scatto');
+		}
+	});
+</script>

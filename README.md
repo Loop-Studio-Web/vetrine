@@ -5,7 +5,7 @@
   <img src="docs/img/loop-logo-on-light.svg" alt="Loop Studio" height="64">
 </picture>
 
-<img src="docs/img/header.svg" alt="A street of shop fronts: Trattoria, Ossidiana, Luppolo & Watt, Bottega Tre Rasoi, Atelier Lumen, Aeterna and FIXLAB are lit and open, one more window is dark and coming soon." width="100%">
+<img src="docs/img/header.svg" alt="A street of shop fronts: Trattoria, Ossidiana, Luppolo & Watt, Bottega Tre Rasoi, Atelier Lumen, Aeterna, FIXLAB and Hot Swap are lit and open, one more window is dark and coming soon." width="100%">
 
 **Full-page homepage concepts for local businesses.<br>Each one designed as if it were the only one on the street.**
 
@@ -28,7 +28,7 @@
 *Vetrine* is Italian for **shop windows**. That is the whole idea: a shop window has one job, to make a stranger stop. So every concept here is a complete homepage with its own mood, structure, typography and motion, grouped by business category (Food & drink first), with several archetypes inside each category.
 
 > [!NOTE]
-> The pages are in Italian, because that is the audience they are built for. All businesses, people, addresses and reviews are fictional and declared as such.
+> The pages are in Italian, because that is the audience they are built for (Hot Swap is the one exception: a computer store written in English, as many such shops are). All businesses, people, addresses and reviews are fictional and declared as such.
 
 **A street, not a grid.** Each row sits in a full-width scene drawn in CSS and generated SVG (no image files): sky, two layers of skyline with lit windows, lamp posts, pavement and road, with a light parallax on scroll (off with reduced motion). The dark theme is night, the light theme is day, and every category has its own hour: restaurants at dusk, wellness at dawn, tech in the dead of night (windows lit like screens), studios in clear daylight, and the "in progress" rows under grey skies with a crane.
 
@@ -169,11 +169,30 @@
 
 <br>
 
+### 08 · Hot Swap
+
+<a href="https://vetrine.theloopstudio.org/tech/pc-gaming/"><img src="docs/img/card-hotswap.jpg" alt="Hot Swap on desktop and mobile: a large title on a beige background, a keyboard of category keys with an orange PC Builder key, and the phone menu as a tray with an LED." width="100%"></a>
+
+*Your rig, built your way. Every button is a key that goes down when you press it.*
+
+| | |
+|---|---|
+| **Archetype** | The computer and gaming store (PCs, laptops, components, peripherals): the **medium** tier of the Tech window. Written in English on purpose, the only concept that is |
+| **Mood** | A mechanical keyboard in a "colorway": beige case, graphite, orange and teal, with buttons that have real thickness and sink when pressed. Light theme only, no photos |
+| **Type** | Rubik for titles, Albert Sans for text |
+| **Palette** | <img src="docs/img/palette-hotswap.svg" alt="Beige, case beige, graphite, orange, teal and ivory" height="22"> |
+| **Signature moves** | A **PC builder with real rules**: drag parts into the bays of a case (mouse, pen, or a handle on touch), with socket, memory type, card length and power supply checked live, a budget, an FPS estimate for four made-up games and a receipt with a code. A **shop** whose filters animate with FLIP, with search, sort, quick look and a compare tray for up to three products. A **list that runs to the counter**: products, services, deals and the build land in one drawer, then a pickup day and hour are chosen from the shop's real opening hours (Rome time) and the ticket shows up in the Visit section too. Services that suggest themselves from what is in the list, **daily deals** that rotate and count down to midnight, an "open now" badge, an animated sketch map, and a phone menu that is a hot-swap tray with an LED that turns green |
+| **Lighthouse** | 99 performance on mobile, 100 on desktop, 100 on accessibility and best practices, zero layout shift |
+
+[**Open Hot Swap →**](https://vetrine.theloopstudio.org/tech/pc-gaming/)
+
+<br>
+
 ### Next on the street
 
 | Category | Archetype | Status |
 |---|---|---|
-| Tech | Computer & gaming (medium), technology studio (high) | Planned |
+| Tech | Technology studio (high) | Planned |
 | Legal & professional | to be decided | Planned |
 | Local shop / e-commerce | to be decided | Planned |
 
@@ -198,6 +217,7 @@ flowchart TB
     infra --> L["<b>Atelier Lumen</b><br/>own markup · CSS · JS · fonts"]
     infra --> A["<b>Aeterna</b><br/>own markup · CSS · JS · fonts"]
     infra --> F["<b>FIXLAB</b><br/>own markup · CSS · JS · fonts"]
+    infra --> H["<b>Hot Swap</b><br/>own markup · CSS · JS · fonts"]
     infra --> N["<b>next concept…</b>"]
     T -.-|nothing shared| O
     O -.-|nothing shared| B
@@ -212,15 +232,15 @@ A piece of code is reused between two concepts only when it is the *exact same t
 
 Before a concept goes on the street, it has to clear the same gate:
 
-| Gate | What it means | Trattoria | Ossidiana | Luppolo & Watt | Tre Rasoi | Lumen | Aeterna | FIXLAB |
-|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| **Builds** | `astro build` is clean | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Accessible** | `axe-core`: zero violations | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Menu on phones** | A real menu with its own open/close effect, keyboard and Escape friendly (a curtain for Ossidiana, an unrolling card for the Trattoria, a pour of beer for Luppolo & Watt, a hot towel for Tre Rasoi, curtains for Lumen, a laser scan for Aeterna, a screwed-on back panel for FIXLAB) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Gate | What it means | Trattoria | Ossidiana | Luppolo & Watt | Tre Rasoi | Lumen | Aeterna | FIXLAB | Hot Swap |
+|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| **Builds** | `astro build` is clean | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Accessible** | `axe-core`: zero violations | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Menu on phones** | A real menu with its own open/close effect, keyboard and Escape friendly (a curtain for Ossidiana, an unrolling card for the Trattoria, a pour of beer for Luppolo & Watt, a hot towel for Tre Rasoi, curtains for Lumen, a laser scan for Aeterna, a screwed-on back panel for FIXLAB, a tray with an LED for Hot Swap) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ```text
  LIGHTHOUSE · mobile            Trattoria                Ossidiana
@@ -250,7 +270,8 @@ src/
 │  │  ├─ estetica/index.astro
 │  │  └─ longevity/index.astro
 │  └─ tech/
-│     └─ riparazioni/index.astro
+│     ├─ riparazioni/index.astro
+│     └─ pc-gaming/index.astro
 ├─ hub/                                data, styles and sections of the hub page
 ├─ concepts/
 │  ├─ trattoria/                       one component per section + base.css
@@ -259,7 +280,8 @@ src/
 │  ├─ barbiere/                        and again
 │  ├─ lumen/                           and again
 │  ├─ aeterna/                         and again, with WebGL
-│  └─ fixlab/                          and again, with no photos at all
+│  ├─ fixlab/                          and again, with no photos at all
+│  └─ hotswap/                         and again, in English
 └─ assets/<concept>/ and hub/          local images only, no hotlinking
 public/images/<concept>/               fixed URLs: og:image, favicon
 docs/img/                              the pictures you are looking at

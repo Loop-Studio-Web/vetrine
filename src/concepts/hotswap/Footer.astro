@@ -1,0 +1,129 @@
+---
+import simbolo from '../../assets/hotswap/brand/simbolo.svg';
+import logo from '../../assets/hub/loop-logo-on-dark.svg';
+---
+
+<footer class="piede">
+	<div class="piede__in">
+		<p class="piede__nome">
+			<img src={simbolo.src} alt="" width="52" height="42" />
+			<span>HOT<span>SWAP</span></span>
+		</p>
+		<nav class="piede__nav" aria-label="Footer">
+			<a href="#shop">Shop</a>
+			<a href="#builder">Builder</a>
+			<a href="#services">Services</a>
+			<a href="#deals">Deals</a>
+			<a href="#reviews">Reviews</a>
+			<a href="#visit">Visit</a>
+		</nav>
+		<p class="piede__copy">
+			&copy; 2026 Hot Swap. Demonstration shop: the business, products, brands, prices, reviews, hours and address are invented. Privacy and cookie
+			pages would live here in a real site.
+		</p>
+		<a class="piede__credito" href="https://theloopstudio.org/" target="_blank" rel="noopener">
+			<span>Site designed by</span>
+			<img src={logo.src} width="84" height="44" alt="Loop Studio" />
+			<span class="sr-only">(opens in a new tab)</span>
+		</a>
+	</div>
+	<div class="piede__tasti" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+</footer>
+
+<style>
+	.piede {
+		background: var(--grafite);
+		color: var(--avorio);
+		padding: 48px var(--gutter) 0;
+		border-top: 4px solid var(--arancio);
+		overflow: hidden;
+	}
+	.piede__in {
+		max-width: var(--max);
+		margin-inline: auto;
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		align-items: center;
+		gap: 18px 36px;
+	}
+	.piede__nome {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		font-family: var(--titoli);
+		font-weight: 800;
+		font-size: 1.6rem;
+		letter-spacing: 0.02em;
+		line-height: 1;
+	}
+	.piede__nome span span {
+		color: var(--arancio);
+	}
+	.piede__nav {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px 22px;
+		font-weight: 600;
+	}
+	.piede__nav a {
+		text-decoration: none;
+		border-bottom: 2px solid transparent;
+	}
+	.piede__nav a:hover {
+		border-bottom-color: var(--acqua);
+	}
+	.piede__copy {
+		grid-column: 1 / 3;
+		font-size: 0.86rem;
+		color: #b3ad9d;
+		max-width: 62em;
+	}
+	.piede__credito {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		font-size: 0.8rem;
+		text-decoration: none;
+		color: #b3ad9d;
+	}
+	/* fila di tasti che si abbassano al passaggio del mouse */
+	.piede__tasti {
+		display: flex;
+		gap: 8px;
+		margin-top: 40px;
+		padding-top: 10px;
+	}
+	.piede__tasti i {
+		flex: 1;
+		height: 38px;
+		border-radius: 8px 8px 0 0;
+		background: var(--cassa);
+		border: 2px solid #000;
+		border-bottom: 0;
+		transition: transform 0.12s;
+	}
+	.piede__tasti i:nth-child(4n + 2) {
+		background: var(--avorio);
+	}
+	.piede__tasti i:nth-child(4n + 3) {
+		background: var(--arancio);
+	}
+	.piede__tasti i:nth-child(8n) {
+		background: var(--acqua);
+	}
+	.piede__tasti i:hover {
+		transform: translateY(10px);
+	}
+	@media (max-width: 760px) {
+		.piede__in {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.piede__copy {
+			grid-column: auto;
+		}
+		/* spazio sotto per l'eventuale barra fissa del telefono */
+		.piede {
+			padding-bottom: 0;
+		}
+	}
+</style>

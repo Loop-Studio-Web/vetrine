@@ -1,0 +1,230 @@
+---
+// Offerte del giorno: tre prodotti scontati scelti da oggi (ruotano ogni giorno), con conto alla rovescia fino a mezzanotte.
+import { prodotti, euro } from './catalogo';
+import { figura } from './figure';
+
+const scontati = prodotti.filter((p) => p.vecchio);
+const oggi = Math.floor(Date.now() / 86400000);
+const tre = [0, 1, 2].map((k) => scontati[(oggi + k * 2) % scontati.length]).filter((p, i, a) => a.indexOf(p) === i);
+---
+
+<section class="off sezione" id="deals" aria-labelledby="off-t">
+	<div class="wrap">
+		<header class="sezione__testa" data-reveal>
+			<p class="etichetta">Today only</p>
+			<h2 id="off-t">Three keys on special until midnight.</h2>
+			<p>The picks change every day. When the clock hits zero they go back to the shelf price.</p>
+		</header>
+
+		<div class="off__orologio" data-reveal role="timer" aria-label="Time left on today's deals">
+			<span class="off__k"><b data-h>00</b><i>hours</i></span>
+			<span class="off__k"><b data-m>00</b><i>min</i></span>
+			<span class="off__k"><b data-s>00</b><i>sec</i></span>
+		</div>
+
+		<ul class="off__lista">
+			{
+				tre.map((p, i) => (
+					<li class="off__card" style={`--i:${i}`} data-reveal>
+						<span class="off__sconto">−{Math.round((1 - p.prezzo / p.vecchio!) * 100)}%</span>
+						<div class="off__fig" set:html={figura(p.forma, p.colore)} />
+						<h3>{p.nome}</h3>
+						<p class="off__punti">{p.punti.join(' · ')}</p>
+						<p class="off__prezzo">
+							<b>{euro(p.prezzo)}</b>
+							<s>
+								<span class="sr-only">was </span>
+								{euro(p.vecchio!)}
+							</s>
+						</p>
+						<button class="tasto tasto--arancio" type="button" data-offerta={p.id} data-nome={p.nome} data-prezzo={p.prezzo} data-forma={p.forma} data-colore={p.colore} data-det={p.punti[0]}>
+							Grab it
+						</button>
+					</li>
+				))
+			}
+		</ul>
+		<p class="off__nota" data-reveal>Demo prices and stock: nothing is actually for sale.</p>
+	</div>
+</section>
+
+<style>
+	.off {
+		background: var(--grafite);
+		color: var(--avorio);
+		--ombra: #000;
+	}
+	.off .sezione__testa p:not(.etichetta) {
+		color: #c9c3b3;
+	}
+	.off .etichetta {
+		color: var(--arancio);
+	}
+	.off__orologio {
+		display: flex;
+		gap: 12px;
+		margin-bottom: 36px;
+	}
+	.off__k {
+		display: grid;
+		justify-items: center;
+		gap: 4px;
+		min-width: 86px;
+		padding: 12px 14px 10px;
+		background: var(--avorio);
+		color: var(--grafite);
+		border-radius: 10px;
+		border-bottom: 6px solid var(--cassa-3);
+		box-shadow: 0 5px 0 #000;
+	}
+	.off__k b {
+		font-family: var(--titoli);
+		font-size: 2.2rem;
+		font-weight: 700;
+		line-height: 1;
+		font-variant-numeric: tabular-nums;
+	}
+	.off__k i {
+		font-style: normal;
+		font-size: 0.7rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--grigio-testo);
+	}
+	.off__k b.tic {
+		animation: off-tic 0.25s ease-out;
+	}
+	@keyframes off-tic {
+		from {
+			transform: translateY(-6px);
+			opacity: 0.4;
+		}
+	}
+	.off__lista {
+		list-style: none;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+		gap: 24px;
+	}
+	.off__card {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		padding: 22px;
+		background: var(--cassa-2);
+		color: var(--grafite);
+		border-radius: 16px;
+		border: 2px solid #000;
+		box-shadow: 0 6px 0 var(--arancio);
+		transition:
+			transform 0.2s ease-out,
+			opacity 0.6s ease,
+			box-shadow 0.2s;
+		transition-delay: 0s, calc(var(--i) * 90ms), 0s;
+	}
+	.off__card:hover {
+		transform: translateY(-6px) rotate(0.6deg);
+		box-shadow: 0 12px 0 var(--arancio);
+		transition-delay: 0s;
+	}
+	.off__sconto {
+		position: absolute;
+		top: -14px;
+		right: 16px;
+		padding: 6px 12px;
+		background: var(--acqua);
+		border: 2px solid #000;
+		border-radius: 8px;
+		font-family: var(--titoli);
+		font-weight: 700;
+		transform: rotate(4deg);
+	}
+	.off__fig {
+		aspect-ratio: 4 / 3;
+		display: grid;
+		place-items: center;
+		background: var(--cassa);
+		border-radius: 10px;
+		padding: 14px;
+	}
+	.off__fig :global(svg) {
+		max-height: 100%;
+		transition: transform 0.4s cubic-bezier(0.3, 1.4, 0.5, 1);
+	}
+	.off__card:hover .off__fig :global(svg) {
+		transform: scale(1.08) rotate(-2deg);
+	}
+	.off__card h3 {
+		font-size: 1.35rem;
+	}
+	.off__punti {
+		font-size: 0.92rem;
+		color: var(--grigio-testo);
+		flex: 1;
+	}
+	.off__prezzo {
+		display: flex;
+		align-items: baseline;
+		gap: 12px;
+	}
+	.off__prezzo b {
+		font-family: var(--titoli);
+		font-size: 1.9rem;
+	}
+	.off__prezzo s {
+		color: var(--grigio-testo);
+	}
+	.off__card .tasto {
+		margin-top: 8px;
+	}
+	.off__nota {
+		margin-top: 28px;
+		font-size: 0.88rem;
+		color: #b3ad9d;
+	}
+	@media (max-width: 480px) {
+		.off__k {
+			min-width: 0;
+			flex: 1;
+		}
+	}
+</style>
+
+<script>
+	const h = document.querySelector<HTMLElement>('[data-h]')!;
+	const m = document.querySelector<HTMLElement>('[data-m]')!;
+	const s = document.querySelector<HTMLElement>('[data-s]')!;
+	const due = (n: number) => String(n).padStart(2, '0');
+	const metti = (el: HTMLElement, v: string) => {
+		if (el.textContent === v) return;
+		el.textContent = v;
+		el.classList.remove('tic');
+		void el.offsetWidth;
+		el.classList.add('tic');
+	};
+	function giro() {
+		const ora = new Date();
+		const fine = new Date(ora);
+		fine.setHours(24, 0, 0, 0);
+		const tot = Math.max(0, Math.floor((fine.getTime() - ora.getTime()) / 1000));
+		metti(h, due(Math.floor(tot / 3600)));
+		metti(m, due(Math.floor((tot % 3600) / 60)));
+		metti(s, due(tot % 60));
+	}
+	giro();
+	setInterval(giro, 1000);
+
+	document.querySelectorAll<HTMLButtonElement>('[data-offerta]').forEach((b) =>
+		b.addEventListener('click', () => {
+			dispatchEvent(
+				new CustomEvent('hotswap:aggiungi', {
+					detail: { id: b.dataset.offerta, nome: b.dataset.nome, prezzo: Number(b.dataset.prezzo), forma: b.dataset.forma, colore: b.dataset.colore, dettaglio: b.dataset.det },
+				}),
+			);
+			const t = b.textContent;
+			b.textContent = 'In your list ✓';
+			setTimeout(() => (b.textContent = t), 1400);
+		}),
+	);
+</script>

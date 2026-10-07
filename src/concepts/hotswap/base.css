@@ -1,0 +1,293 @@
+/* HOT SWAP — token, reset e "tasti". Tema unico: cassa beige, grafite, arancio e verde acqua.
+   Idea: il negozio come tastiera meccanica "colorway". Ogni bottone è un tasto: ha uno spessore (ombra piena) e si abbassa quando lo premi. */
+:root {
+	--cassa: #d8d0bf; /* beige della cassa */
+	--cassa-2: #e7e0d1; /* beige chiaro, sfondo pagina */
+	--cassa-3: #c4bba6; /* beige scuro, righe e ombre dei tasti */
+	--avorio: #f4f0e6;
+	--grafite: #2a2a2d;
+	--grafite-2: #3a3a3e;
+	--arancio: #ff6b2c; /* marchio: decorativo e testi grandi */
+	--arancio-testo: #b83d08; /* sul chiaro, per testi (contrasto > 4,5) */
+	--arancio-scuro: #d44e12; /* ombra del tasto arancio */
+	--acqua: #2fb5a8;
+	--acqua-testo: #12665d; /* sul chiaro */
+	--acqua-scuro: #1f8a80; /* ombra del tasto acqua */
+	--grigio-testo: #5b574d; /* testi secondari su beige */
+	--errore: #b3261e;
+
+	--titoli: 'Rubik Variable', system-ui, sans-serif;
+	--testo: 'Albert Sans Variable', system-ui, sans-serif;
+
+	--gutter: clamp(18px, 5vw, 56px);
+	--max: 1240px;
+	--nav-h: 72px;
+	--fascia-h: 34px;
+	--spessore: 5px; /* altezza dei tasti */
+	color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	scroll-behavior: smooth;
+	scroll-padding-top: calc(var(--nav-h) + 12px);
+	-webkit-text-size-adjust: 100%;
+	scrollbar-color: var(--arancio) var(--cassa-2);
+}
+
+body {
+	background: var(--cassa-2);
+	color: var(--grafite);
+	font-family: var(--testo);
+	font-size: 1.05rem;
+	line-height: 1.55;
+	overflow-x: clip;
+}
+body.menu-aperto {
+	overflow: hidden;
+}
+
+/* Scrollbar "a tasti": cursore arancio a tasto con tacche sul binario */
+@supports selector(::-webkit-scrollbar) {
+	html {
+		scrollbar-color: auto;
+	}
+	::-webkit-scrollbar {
+		width: 16px;
+		height: 16px;
+	}
+	::-webkit-scrollbar-track {
+		background: var(--cassa) repeating-linear-gradient(to bottom, var(--cassa-3) 0 2px, transparent 2px 12px);
+		border-left: 2px solid var(--cassa-3);
+	}
+	::-webkit-scrollbar-thumb {
+		background: var(--arancio);
+		border: 3px solid var(--cassa);
+		border-bottom-width: 6px;
+		border-radius: 8px;
+	}
+	::-webkit-scrollbar-thumb:hover {
+		background: var(--arancio-scuro);
+	}
+}
+
+::selection {
+	background: var(--grafite);
+	color: var(--avorio);
+}
+
+img,
+svg {
+	display: block;
+	max-width: 100%;
+}
+a {
+	color: inherit;
+}
+button,
+input,
+select,
+textarea {
+	font: inherit;
+	color: inherit;
+}
+button {
+	cursor: pointer;
+}
+
+h1,
+h2,
+h3,
+h4 {
+	font-family: var(--titoli);
+	line-height: 1.05;
+	letter-spacing: -0.02em;
+	text-wrap: balance;
+}
+
+:focus-visible {
+	outline: 3px solid var(--acqua-testo);
+	outline-offset: 3px;
+	border-radius: 4px;
+}
+
+.skip-link {
+	position: absolute;
+	left: 12px;
+	top: -60px;
+	z-index: 400;
+	background: var(--grafite);
+	color: var(--avorio);
+	padding: 10px 16px;
+	border-radius: 8px;
+	font-weight: 700;
+	text-decoration: none;
+}
+.skip-link:focus {
+	top: calc(var(--fascia, 0px) + 8px);
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+
+.wrap {
+	width: min(100% - var(--gutter) * 2, var(--max));
+	margin-inline: auto;
+}
+
+/* ---------- Il tasto ----------
+   Si usa su qualunque <a> o <button> con classe .tasto. Varianti: --arancio, --acqua, --grafite, --chiaro. */
+.tasto {
+	--t-bg: var(--avorio);
+	--t-ombra: var(--cassa-3);
+	--t-fg: var(--grafite);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.6em;
+	min-height: 48px;
+	padding: 0.6em 1.3em;
+	border: 2px solid var(--grafite);
+	border-radius: 10px;
+	background: var(--t-bg);
+	color: var(--t-fg);
+	font-family: var(--titoli);
+	font-weight: 600;
+	font-size: 1rem;
+	letter-spacing: -0.005em;
+	text-decoration: none;
+	line-height: 1.1;
+	box-shadow: 0 var(--spessore) 0 var(--grafite);
+	transform: translateY(0);
+	transition:
+		transform 0.09s ease-out,
+		box-shadow 0.09s ease-out,
+		background 0.15s;
+	-webkit-tap-highlight-color: transparent;
+	user-select: none;
+}
+.tasto:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 calc(var(--spessore) + 1px) 0 var(--grafite);
+}
+.tasto:active,
+.tasto[aria-pressed='true'],
+.tasto.is-premuto {
+	transform: translateY(var(--spessore));
+	box-shadow: 0 0 0 var(--grafite);
+}
+.tasto--arancio {
+	--t-bg: var(--arancio);
+	--t-fg: var(--grafite);
+}
+.tasto--acqua {
+	--t-bg: var(--acqua);
+	--t-fg: var(--grafite);
+}
+.tasto--grafite {
+	--t-bg: var(--grafite);
+	--t-fg: var(--avorio);
+	border-color: var(--grafite);
+	box-shadow: 0 var(--spessore) 0 #000;
+}
+.tasto--grafite:hover {
+	box-shadow: 0 calc(var(--spessore) + 1px) 0 #000;
+}
+.tasto--grafite:active {
+	box-shadow: 0 0 0 #000;
+}
+.tasto[disabled],
+.tasto[aria-disabled='true'] {
+	opacity: 0.45;
+	cursor: not-allowed;
+	transform: none;
+	box-shadow: 0 var(--spessore) 0 var(--grafite);
+}
+.tasto--piccolo {
+	min-height: 40px;
+	padding: 0.4em 0.9em;
+	font-size: 0.9rem;
+	--spessore: 4px;
+}
+
+/* ---------- Etichette ---------- */
+.etichetta {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.55em;
+	font-family: var(--titoli);
+	font-weight: 600;
+	font-size: 0.8rem;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--arancio-testo);
+}
+.etichetta::before {
+	content: '';
+	width: 22px;
+	height: 14px;
+	border: 2px solid currentColor;
+	border-bottom-width: 4px;
+	border-radius: 4px;
+}
+
+.sezione {
+	padding-block: clamp(64px, 9vw, 112px);
+}
+.sezione__testa {
+	display: grid;
+	gap: 14px;
+	max-width: 62ch;
+	margin-bottom: clamp(28px, 4vw, 48px);
+}
+.sezione__testa h2 {
+	font-size: clamp(2rem, 4.6vw, 3.4rem);
+	font-weight: 700;
+}
+.sezione__testa p {
+	color: var(--grigio-testo);
+	font-size: 1.1rem;
+}
+
+/* Rivelazione allo scroll (solo con JS) */
+.js [data-reveal] {
+	opacity: 0;
+	transform: translateY(18px);
+	transition:
+		opacity 0.6s ease,
+		transform 0.6s ease;
+}
+.js [data-reveal].is-visible {
+	opacity: 1;
+	transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+	}
+	.js [data-reveal] {
+		opacity: 1;
+		transform: none;
+	}
+}

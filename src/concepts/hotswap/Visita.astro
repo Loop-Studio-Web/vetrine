@@ -1,0 +1,279 @@
+---
+// Visita: orari, "aperto ora" calcolato sull'ora del negozio (Europa/Roma) e una piantina disegnata. Indirizzo di fantasia.
+import { orari as settimana, giorniBrevi } from './ritiro';
+
+// tabella da lunedì a domenica, dagli stessi orari che usa la prenotazione
+const orari = [1, 2, 3, 4, 5, 6, 0].map((d) => ({ g: giorniBrevi[d], a: settimana[d]?.[0] ?? '', c: settimana[d]?.[1] ?? '' }));
+---
+
+<section class="vis sezione" id="visit" aria-labelledby="vis-t">
+	<div class="wrap vis__griglia">
+		<div>
+			<header class="sezione__testa" data-reveal>
+				<p class="etichetta">Visit the shop</p>
+				<h2 id="vis-t">Come and press the keys.</h2>
+				<p>Every machine on the shelf is switched on and playable. Click & collect orders are ready in two hours.</p>
+			</header>
+
+			<p class="vis__stato" data-aperto-ora role="status" data-reveal><i aria-hidden="true"></i><span>Checking the lights…</span></p>
+
+			<div class="vis__ritiro" data-ritiro hidden aria-live="polite">
+				<p class="vis__ritiro-t">Your pickup</p>
+				<p class="vis__ritiro-q" data-ritiro-quando></p>
+				<p class="vis__ritiro-d" data-ritiro-dettaglio></p>
+				<b class="vis__ritiro-c" data-ritiro-codice></b>
+				<p class="vis__ritiro-n">Demo only: nothing is really reserved.</p>
+			</div>
+
+			<table class="vis__orari" data-reveal>
+				<caption class="sr-only">Opening hours</caption>
+				<tbody>
+					{
+						orari.map((o, i) => (
+							<tr data-g={i}>
+								<th scope="row">{o.g}</th>
+								<td>{o.a ? `${o.a} – ${o.c}` : 'Closed'}</td>
+							</tr>
+						))
+					}
+				</tbody>
+			</table>
+
+			<address class="vis__ind" data-reveal>
+				<b>Hot Swap</b><br />
+				Via dei Tasti 12, 00000 Esempio<br />
+				<a href="tel:+390000000000">+39 000 000 0000</a> · <a href="mailto:hello@example.com">hello@example.com</a>
+				<small>Invented address and numbers, for illustration only.</small>
+			</address>
+		</div>
+
+		<figure class="vis__mappa" data-reveal>
+			<svg viewBox="0 0 400 360" role="img" aria-label="Sketch map: the shop on Via dei Tasti, one block from the tram stop">
+				<rect width="400" height="360" fill="#e7e0d1"></rect>
+				<g fill="#d8d0bf" stroke="#2a2a2d" stroke-width="2">
+					<rect x="20" y="20" width="150" height="110" rx="8"></rect>
+					<rect x="230" y="20" width="150" height="110" rx="8"></rect>
+					<rect x="20" y="210" width="150" height="130" rx="8"></rect>
+					<rect x="230" y="210" width="150" height="130" rx="8"></rect>
+				</g>
+				<path d="M0 170h400" stroke="#2a2a2d" stroke-width="2" stroke-dasharray="10 8" opacity=".4"></path>
+				<path d="M200 0v360" stroke="#2a2a2d" stroke-width="2" stroke-dasharray="10 8" opacity=".4"></path>
+				<path class="vis__tram" d="M40 190H200V300" fill="none" stroke="#2fb5a8" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 12"></path>
+				<g transform="translate(40 190)"><circle r="11" fill="#2fb5a8" stroke="#2a2a2d" stroke-width="2"></circle><text y="4" text-anchor="middle" font-size="11" font-weight="700" fill="#2a2a2d">T</text></g>
+				<g class="vis__pin" transform="translate(200 300)">
+					<path d="M0 0c-18-22-26-32-26-46a26 26 0 0 1 52 0c0 14-8 24-26 46z" fill="#ff6b2c" stroke="#2a2a2d" stroke-width="3"></path>
+					<rect x="-11" y="-58" width="22" height="22" rx="5" fill="#f4f0e6" stroke="#2a2a2d" stroke-width="2"></rect>
+					<path d="M-5 -50l10 6M5 -50l-10 6" stroke="#2a2a2d" stroke-width="2" stroke-linecap="round"></path>
+				</g>
+				<text x="200" y="353" text-anchor="middle" font-size="13" font-weight="700" fill="#2a2a2d">Via dei Tasti 12</text>
+			</svg>
+			<figcaption>Tram stop 150 m away · free bike racks outside</figcaption>
+		</figure>
+	</div>
+</section>
+
+<style>
+	.vis {
+		background: var(--cassa);
+		border-top: 3px solid var(--grafite);
+	}
+	.vis__griglia {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		gap: clamp(28px, 5vw, 72px);
+		align-items: start;
+	}
+	.vis__stato {
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		padding: 10px 18px;
+		margin-bottom: 20px;
+		background: var(--avorio);
+		border: 2px solid var(--grafite);
+		border-radius: 999px;
+		font-family: var(--titoli);
+		font-weight: 600;
+	}
+	.vis__stato i {
+		width: 14px;
+		height: 14px;
+		border-radius: 50%;
+		background: var(--grigio-testo);
+		border: 2px solid var(--grafite);
+	}
+	.vis__stato[data-aperto='si'] i {
+		background: var(--acqua);
+		box-shadow: 0 0 0 0 rgba(47, 181, 168, 0.7);
+		animation: vis-led 1.8s ease-out infinite;
+	}
+	.vis__stato[data-aperto='no'] i {
+		background: var(--arancio);
+	}
+	@keyframes vis-led {
+		to {
+			box-shadow: 0 0 0 10px rgba(47, 181, 168, 0);
+		}
+	}
+	.vis__orari {
+		width: 100%;
+		max-width: 420px;
+		border-collapse: separate;
+		border-spacing: 0;
+		margin-bottom: 24px;
+	}
+	.vis__orari th,
+	.vis__orari td {
+		padding: 9px 0;
+		text-align: left;
+		border-bottom: 2px solid var(--cassa-3);
+		font-variant-numeric: tabular-nums;
+	}
+	.vis__orari th {
+		font-family: var(--titoli);
+		width: 4.5em;
+	}
+	/* il giorno di oggi: tutta la riga è un tasto avorio contornato di arancio */
+	.vis__orari tr.oggi th,
+	.vis__orari tr.oggi td {
+		font-weight: 700;
+		background: var(--avorio);
+		border: 2px solid var(--arancio);
+	}
+	.vis__orari tr.oggi th {
+		border-right: 0;
+		padding-left: 12px;
+		border-radius: 10px 0 0 10px;
+	}
+	.vis__orari tr.oggi td {
+		border-left: 0;
+		border-radius: 0 10px 10px 0;
+	}
+	.vis__ritiro {
+		display: grid;
+		gap: 4px;
+		max-width: 420px;
+		margin-bottom: 22px;
+		padding: 16px 20px;
+		background: var(--avorio);
+		border: 2px dashed var(--grafite);
+		border-radius: 14px;
+	}
+	.vis__ritiro:not([hidden]) {
+		animation: vis-biglietto 0.5s cubic-bezier(0.3, 1.4, 0.5, 1);
+	}
+	@keyframes vis-biglietto {
+		from {
+			opacity: 0;
+			transform: translateY(-10px) rotate(-1.5deg);
+		}
+	}
+	.vis__ritiro-t {
+		font-family: var(--titoli);
+		font-weight: 600;
+		font-size: 0.78rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--acqua-testo);
+	}
+	.vis__ritiro-q {
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: 1.35rem;
+		line-height: 1.15;
+	}
+	.vis__ritiro-c {
+		font-family: var(--titoli);
+		font-size: 1.6rem;
+		letter-spacing: 0.06em;
+		color: var(--arancio-testo);
+	}
+	.vis__ritiro-d,
+	.vis__ritiro-n {
+		font-size: 0.88rem;
+		color: var(--grigio-testo);
+	}
+	.vis__ind {
+		font-style: normal;
+	}
+	.vis__ind small {
+		display: block;
+		margin-top: 8px;
+		color: var(--grigio-testo);
+	}
+	.vis__ind a {
+		text-underline-offset: 3px;
+	}
+	.vis__mappa {
+		border: 2px solid var(--grafite);
+		border-radius: 18px;
+		overflow: hidden;
+		background: var(--avorio);
+		box-shadow: 0 var(--spessore) 0 var(--grafite);
+	}
+	.vis__mappa figcaption {
+		padding: 12px 16px;
+		font-size: 0.92rem;
+		border-top: 2px solid var(--grafite);
+	}
+	.vis__tram {
+		animation: vis-corsa 1.2s linear infinite;
+	}
+	@keyframes vis-corsa {
+		to {
+			stroke-dashoffset: -28;
+		}
+	}
+	.vis__pin {
+		animation: vis-salta 1.6s ease-in-out infinite;
+	}
+	@keyframes vis-salta {
+		50% {
+			transform: translate(200px, 294px);
+		}
+	}
+	@media (max-width: 800px) {
+		.vis__griglia {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+</style>
+
+<script>
+	import { orari, giorniBrevi, minuti, adessoRoma, leggiRitiro, type Ritiro } from './ritiro';
+
+	// "Aperto ora" sull'ora del negozio, non su quella di chi guarda
+	const stato = document.querySelector<HTMLElement>('[data-aperto-ora]')!;
+	const testo = stato.querySelector('span')!;
+	const a = adessoRoma();
+	// righe della tabella: ordine Lun..Dom → indice (giorno + 6) % 7
+	document.querySelector(`tr[data-g="${(a.giorno + 6) % 7}"]`)?.classList.add('oggi');
+
+	const oggi = orari[a.giorno];
+	const proxima = () => {
+		for (let k = 1; k <= 7; k++) {
+			const o = orari[(a.giorno + k) % 7];
+			if (o) return `${k === 1 ? 'tomorrow' : giorniBrevi[(a.giorno + k) % 7]} at ${o[0]}`;
+		}
+		return '';
+	};
+	if (oggi && a.min >= minuti(oggi[0]) && a.min < minuti(oggi[1])) {
+		stato.dataset.aperto = 'si';
+		testo.textContent = `Open now · until ${oggi[1]}`;
+	} else {
+		stato.dataset.aperto = 'no';
+		testo.textContent = oggi && a.min < minuti(oggi[0]) ? `Closed · opens today at ${oggi[0]}` : `Closed · opens ${proxima()}`;
+	}
+
+	// il biglietto del ritiro scelto nella lista (evento hotswap:ritiro, o dalla sessione)
+	const box = document.querySelector<HTMLElement>('[data-ritiro]')!;
+	const mostra = (r: Ritiro | null) => {
+		box.hidden = !r;
+		if (!r) return;
+		box.querySelector('[data-ritiro-quando]')!.textContent = `Collect ${r.quando}`;
+		box.querySelector('[data-ritiro-dettaglio]')!.textContent = `${r.pezzi} ${r.pezzi === 1 ? 'item' : 'items'}${r.build ? ' incl. your custom build' : ''} · €${r.totale.toLocaleString('en-IE')}`;
+		box.querySelector('[data-ritiro-codice]')!.textContent = r.codice;
+	};
+	mostra(leggiRitiro());
+	addEventListener('hotswap:ritiro', (e) => mostra((e as CustomEvent<Ritiro | null>).detail));
+</script>

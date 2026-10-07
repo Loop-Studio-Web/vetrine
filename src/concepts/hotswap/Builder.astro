@@ -1,0 +1,1264 @@
+---
+import { presets, slot, assemblaggio, euro } from './catalogo';
+---
+
+<section class="bld" id="builder" aria-labelledby="bld-t">
+	<div class="wrap">
+		<header class="bld__testa" data-reveal>
+			<p class="etichetta">The PC builder</p>
+			<h2 id="bld-t">Drag the parts in. Watch the price move.</h2>
+			<p>Start from a preset or an empty case. The rules are real: sockets, memory type, board size, card length and power draw. Parts that do not fit what you have already installed are greyed out, with the reason.</p>
+		</header>
+
+		<div class="bld__prep" role="group" aria-label="Start from a preset">
+			<span class="bld__prep-l">Start from</span>
+			{presets.map((p) => <button class="tasto tasto--piccolo" type="button" data-preset={p.id}><b>{p.nome}</b><span>{p.per}</span></button>)}
+			<button class="tasto tasto--piccolo bld__svuota" type="button" data-svuota>Empty the case</button>
+		</div>
+
+		<div class="bld__area">
+			<div class="bld__torre" data-torre aria-label="Your case"></div>
+
+			<div class="bld__vassoio">
+				<div class="bld__tab" role="group" aria-label="Choose a part type" data-tab></div>
+				<p class="bld__nota" data-tab-nota></p>
+				<ul class="bld__pezzi" data-pezzi></ul>
+			</div>
+		</div>
+
+		<div class="bld__schede">
+			<section class="sch" aria-labelledby="sch-b">
+				<h3 id="sch-b">Budget</h3>
+				<label class="sch__rg"><span class="sch__v" data-b-val>€2,000</span><input type="range" min="500" max="4000" step="50" value="2000" data-budget aria-label="Your budget in euros" /></label>
+				<div class="sch__barra" aria-hidden="true"><i data-b-barra></i></div>
+				<p class="sch__riga"><span data-b-spesi>€0 spent</span><b data-b-resto>€2,000 left</b></p>
+				<p class="sch__idea" data-idea hidden></p>
+			</section>
+
+			<section class="sch" aria-labelledby="sch-c">
+				<h3 id="sch-c">Compatibility</h3>
+				<ul class="sch__ctr" data-controlli></ul>
+			</section>
+
+			<section class="sch" aria-labelledby="sch-p">
+				<h3 id="sch-p">Frame rate <span class="sch__nota">(estimate)</span></h3>
+				<div class="seg" role="group" aria-label="Resolution">
+					<button type="button" class="seg__b" data-res="1080p" aria-pressed="false">1080p</button>
+					<button type="button" class="seg__b" data-res="1440p" aria-pressed="true">1440p</button>
+					<button type="button" class="seg__b" data-res="4K" aria-pressed="false">4K</button>
+				</div>
+				<ul class="fps" data-fps></ul>
+				<p class="sch__nota">Demo figures for made-up games. Add a CPU and a graphics card to see them.</p>
+			</section>
+
+			<section class="sch sch--tot" aria-labelledby="sch-t">
+				<h3 id="sch-t">Your build</h3>
+				<dl class="tot">
+					<div><dt>Parts</dt><dd data-t-pezzi>€0</dd></div>
+					<div><dt>Assembly &amp; 24 h test</dt><dd data-t-mont>€0</dd></div>
+				</dl>
+				<label class="sch__chk"><input type="checkbox" checked data-mont /> Assemble and test it for me (+{euro(assemblaggio)})</label>
+				<p class="tot__t"><span>Total</span><b data-t-tot aria-live="polite">€0</b></p>
+				<p class="sch__nota" data-pronto>Pick all seven parts to finish your build.</p>
+				<div class="sch__az">
+					<button class="tasto tasto--arancio" type="button" data-scheda disabled>Build sheet</button>
+					<button class="tasto" type="button" data-aggiungi disabled>Add to my list</button>
+				</div>
+			</section>
+		</div>
+		<p class="sr-only" role="status" aria-live="polite" data-bld-msg></p>
+	</div>
+</section>
+
+<dialog class="bsd" data-bsd aria-labelledby="bsd-t">
+	<div class="bsd__in" data-bsd-in></div>
+</dialog>
+
+<style is:global>
+	.bld {
+		padding-block: clamp(64px, 9vw, 112px);
+		background:
+			radial-gradient(circle at 12% 0%, rgba(47, 181, 168, 0.16), transparent 40%),
+			radial-gradient(circle at 92% 100%, rgba(255, 107, 44, 0.16), transparent 42%),
+			var(--grafite);
+		color: var(--avorio);
+		border-block: 3px solid var(--grafite);
+	}
+	.bld__testa {
+		display: grid;
+		gap: 14px;
+		max-width: 66ch;
+		margin-bottom: 30px;
+	}
+	.bld__testa h2 {
+		font-size: clamp(2rem, 4.6vw, 3.4rem);
+		font-weight: 700;
+	}
+	.bld__testa p:not(.etichetta) {
+		color: #cfc8b8;
+		font-size: 1.08rem;
+	}
+	.bld .etichetta {
+		color: var(--arancio);
+	}
+
+	.bld__prep {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 12px;
+		margin-bottom: 26px;
+	}
+	.bld__prep-l {
+		font-family: var(--titoli);
+		font-weight: 600;
+		font-size: 0.8rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: #cfc8b8;
+	}
+	.bld__prep .tasto {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0;
+		padding: 0.5em 1em;
+		text-align: left;
+	}
+	.bld__prep .tasto span {
+		font-family: var(--testo);
+		font-weight: 500;
+		font-size: 0.78rem;
+		color: var(--grigio-testo);
+	}
+	.bld__prep .bld__svuota {
+		flex-direction: row;
+		align-self: stretch;
+		align-items: center;
+		--t-bg: transparent;
+		--t-fg: var(--avorio);
+		border-color: var(--avorio);
+		box-shadow: 0 4px 0 #000;
+	}
+
+	.bld__area {
+		display: grid;
+		grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+		gap: clamp(18px, 3vw, 36px);
+		align-items: start;
+	}
+
+	/* ----- il case ----- */
+	.bld__torre {
+		position: relative;
+		display: grid;
+		gap: 14px;
+		padding: 18px;
+		background: var(--cassa);
+		color: var(--grafite);
+		border: 3px solid var(--grafite);
+		border-radius: 24px;
+		box-shadow:
+			0 10px 0 #000,
+			inset 0 0 0 6px var(--cassa-2);
+	}
+	.bld__torre-testa {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: 0.78rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+	.bld__torre-testa em {
+		font-style: normal;
+		color: var(--grigio-testo);
+		letter-spacing: 0.06em;
+	}
+	.bld-pcb {
+		display: grid;
+		gap: 12px;
+		padding: 14px;
+		background: #1f8a80;
+		background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1.2px, transparent 1.5px);
+		background-size: 14px 14px;
+		border: 3px solid var(--grafite);
+		border-radius: 14px;
+	}
+	.bld-pcb__riga {
+		display: grid;
+		grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+		gap: 12px;
+	}
+	.bld-fondo {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		gap: 12px;
+	}
+
+	.bay {
+		position: relative;
+	}
+	.bay__b {
+		position: relative;
+		display: grid;
+		align-content: center;
+		gap: 2px;
+		width: 100%;
+		min-height: 104px;
+		padding: 12px 14px 12px 14px;
+		text-align: left;
+		background: rgba(244, 240, 230, 0.22);
+		border: 2px dashed var(--avorio);
+		border-radius: 12px;
+		color: var(--avorio);
+		transition:
+			background 0.15s,
+			transform 0.12s,
+			border-color 0.15s;
+	}
+	.bay--cassa .bay__b,
+	.bay--fondo .bay__b {
+		background: rgba(42, 42, 45, 0.05);
+		border-color: var(--grafite);
+		color: var(--grafite);
+	}
+	.bay--cassa .bay__b {
+		min-height: 74px;
+	}
+	.bay__etichetta {
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: 0.72rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+	.bay__vuoto {
+		font-size: 0.9rem;
+		font-weight: 600;
+		opacity: 0.9;
+	}
+	.bay__b:hover {
+		background: rgba(244, 240, 230, 0.34);
+	}
+	.bay--cassa .bay__b:hover,
+	.bay--fondo .bay__b:hover {
+		background: rgba(42, 42, 45, 0.1);
+	}
+	.bay.is-attivo .bay__b {
+		outline: 3px solid var(--arancio);
+		outline-offset: 3px;
+	}
+	.bay.is-bersaglio .bay__b {
+		border-style: solid;
+		background: rgba(255, 107, 44, 0.45);
+		transform: scale(1.03);
+	}
+	.bay.is-spento {
+		opacity: 0.4;
+	}
+	.bay.is-no .bay__b {
+		animation: bld-scuoti 0.4s;
+	}
+	@keyframes bld-scuoti {
+		20%,
+		60% {
+			transform: translateX(-7px);
+		}
+		40%,
+		80% {
+			transform: translateX(7px);
+		}
+	}
+	/* pezzo montato */
+	.bay.has-pezzo .bay__b {
+		grid-template-columns: 74px minmax(0, 1fr);
+		align-items: center;
+		column-gap: 12px;
+		background: var(--avorio);
+		border: 2px solid var(--grafite);
+		border-style: solid;
+		color: var(--grafite);
+		box-shadow: 0 5px 0 var(--grafite);
+		padding-right: 40px;
+	}
+	.bay.has-pezzo .bay__etichetta {
+		grid-column: 1 / -1;
+		color: var(--grigio-testo);
+	}
+	.bay__fig {
+		grid-row: span 2;
+	}
+	.bld-pcb__riga .bay.has-pezzo .bay__b {
+		grid-template-columns: 54px minmax(0, 1fr);
+		column-gap: 8px;
+	}
+	.bay__nome {
+		font-family: var(--titoli);
+		font-weight: 700;
+		line-height: 1.1;
+	}
+	.bay__det {
+		font-size: 0.8rem;
+		color: var(--grigio-testo);
+	}
+	.bay.is-nuovo .bay__b {
+		animation: bld-cade 0.6s cubic-bezier(0.3, 1.5, 0.5, 1);
+	}
+	@keyframes bld-cade {
+		0% {
+			transform: translateY(-46px) scale(1.06);
+			opacity: 0;
+		}
+		55% {
+			transform: translateY(5px) scale(0.98);
+			opacity: 1;
+		}
+		100% {
+			transform: none;
+		}
+	}
+	.bay.is-scambio .bay__b {
+		animation: bld-scambio 0.7s ease-out;
+	}
+	@keyframes bld-scambio {
+		0% {
+			background: var(--acqua);
+			transform: scale(1.04);
+		}
+	}
+	.bay__led {
+		position: absolute;
+		top: 12px;
+		right: 12px;
+		width: 11px;
+		height: 11px;
+		border-radius: 50%;
+		background: #8a8574;
+		border: 2px solid var(--grafite);
+	}
+	.bay.has-pezzo .bay__led {
+		background: var(--acqua);
+		box-shadow: 0 0 8px var(--acqua);
+	}
+	.bay.is-errore .bay__led {
+		background: #e0392b;
+		box-shadow: 0 0 8px #e0392b;
+		animation: bld-lampeggia 1s steps(2) infinite;
+	}
+	.bay.is-errore.has-pezzo .bay__b {
+		border-color: #e0392b;
+		box-shadow: 0 5px 0 #e0392b;
+	}
+	@keyframes bld-lampeggia {
+		50% {
+			opacity: 0.25;
+		}
+	}
+	.bay__x {
+		position: absolute;
+		bottom: 10px;
+		right: 8px;
+		width: 28px;
+		height: 28px;
+		border: 2px solid var(--grafite);
+		border-radius: 8px;
+		background: var(--cassa-2);
+		color: var(--grafite);
+		font-weight: 700;
+		line-height: 1;
+		padding: 0;
+	}
+	.bay__x:hover {
+		background: var(--arancio);
+	}
+
+	/* ----- il vassoio dei pezzi ----- */
+	.bld__vassoio {
+		display: grid;
+		gap: 12px;
+		padding: 16px;
+		background: var(--cassa-2);
+		color: var(--grafite);
+		border: 3px solid var(--grafite);
+		border-radius: 20px;
+		box-shadow: 0 8px 0 #000;
+	}
+	.bld__tab {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+	.bld__tab .tasto {
+		--spessore: 4px;
+		min-height: 38px;
+		padding: 0.3em 0.8em;
+		font-size: 0.85rem;
+	}
+	.bld__tab .tasto[aria-pressed='true'] {
+		--t-bg: var(--grafite);
+		--t-fg: var(--avorio);
+	}
+	.bld__tab .tasto.fatto::after {
+		content: '✓';
+		font-weight: 800;
+		color: var(--acqua-testo);
+	}
+	.bld__tab .tasto[aria-pressed='true'].fatto::after {
+		color: var(--acqua);
+	}
+	.bld__nota {
+		font-size: 0.9rem;
+		color: var(--grigio-testo);
+	}
+	.bld__pezzi {
+		list-style: none;
+		display: grid;
+		gap: 10px;
+		max-height: 560px;
+		overflow-y: auto;
+		padding: 6px 8px 8px 2px;
+		margin-right: -6px;
+	}
+	.pz {
+		display: grid;
+		grid-template-columns: 20px 62px minmax(0, 1fr) auto;
+		gap: 10px;
+		align-items: center;
+		padding: 8px 10px 8px 4px;
+		background: var(--avorio);
+		border: 2px solid var(--grafite);
+		border-radius: 12px;
+		box-shadow: 0 4px 0 var(--grafite);
+		transition:
+			transform 0.12s,
+			box-shadow 0.12s,
+			opacity 0.2s;
+	}
+	.pz:hover {
+		transform: translateY(-1px);
+		box-shadow: 0 5px 0 var(--grafite);
+	}
+	.pz.is-montato {
+		background: #cfeee9;
+	}
+	.pz.is-conflitto {
+		opacity: 0.55;
+		background: var(--cassa);
+		box-shadow: 0 2px 0 var(--grafite);
+	}
+	.pz.is-conflitto:hover {
+		transform: none;
+		box-shadow: 0 2px 0 var(--grafite);
+	}
+	.pz__grip {
+		display: grid;
+		place-items: center;
+		align-self: stretch;
+		color: var(--grigio-testo);
+		cursor: grab;
+		touch-action: none;
+		font-size: 1rem;
+		letter-spacing: -2px;
+		user-select: none;
+	}
+	.pz.is-conflitto .pz__grip {
+		cursor: not-allowed;
+	}
+	.pz__fig {
+		background: var(--cassa);
+		border-radius: 8px;
+		padding: 2px;
+	}
+	.pz__nome {
+		font-family: var(--titoli);
+		font-weight: 600;
+		line-height: 1.15;
+	}
+	.pz__det {
+		font-size: 0.8rem;
+		color: var(--grigio-testo);
+	}
+	.pz__perche {
+		display: block;
+		font-size: 0.78rem;
+		font-weight: 700;
+		color: var(--errore);
+		margin-top: 2px;
+	}
+	.pz__az {
+		display: grid;
+		justify-items: end;
+		gap: 6px;
+	}
+	.pz__prezzo {
+		font-family: var(--titoli);
+		font-weight: 700;
+	}
+	.pz .tasto {
+		--spessore: 3px;
+		min-height: 34px;
+		padding: 0.2em 0.8em;
+		font-size: 0.82rem;
+	}
+	.ghost {
+		position: fixed;
+		z-index: 500;
+		left: 0;
+		top: 0;
+		width: 150px;
+		padding: 8px;
+		background: var(--avorio);
+		color: var(--grafite);
+		border: 2px solid var(--grafite);
+		border-radius: 12px;
+		box-shadow: 0 8px 0 rgba(0, 0, 0, 0.4);
+		pointer-events: none;
+		font-family: var(--titoli);
+		font-weight: 600;
+		font-size: 0.8rem;
+		text-align: center;
+		transform: translate(-50%, -60%) rotate(-4deg);
+		transition: opacity 0.2s;
+	}
+	.ghost.torna {
+		opacity: 0;
+	}
+	body.sta-trascinando {
+		cursor: grabbing;
+		user-select: none;
+	}
+
+	/* ----- le schede sotto ----- */
+	.bld__schede {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		gap: 20px;
+		margin-top: clamp(24px, 4vw, 40px);
+	}
+	.sch {
+		display: grid;
+		align-content: start;
+		gap: 12px;
+		padding: 18px;
+		background: var(--cassa-2);
+		color: var(--grafite);
+		border: 3px solid var(--grafite);
+		border-radius: 18px;
+		box-shadow: 0 6px 0 #000;
+	}
+	.sch h3 {
+		font-size: 1.15rem;
+	}
+	.sch__nota {
+		font-size: 0.82rem;
+		font-weight: 500;
+		color: var(--grigio-testo);
+	}
+	.sch__rg {
+		display: grid;
+		gap: 6px;
+	}
+	.sch__v {
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: 1.8rem;
+	}
+	.sch input[type='range'] {
+		width: 100%;
+		accent-color: var(--arancio-testo);
+		height: 28px;
+	}
+	.sch__barra {
+		height: 14px;
+		border: 2px solid var(--grafite);
+		border-radius: 8px;
+		background: var(--avorio);
+		overflow: hidden;
+	}
+	.sch__barra i {
+		display: block;
+		height: 100%;
+		width: 100%;
+		background: var(--acqua);
+		transform: scaleX(var(--w, 0));
+		transform-origin: left;
+		transition:
+			transform 0.45s cubic-bezier(0.25, 1.15, 0.4, 1),
+			background 0.2s;
+	}
+	.sch__barra.is-sopra i {
+		background: #e0392b;
+	}
+	.sch__riga {
+		display: flex;
+		justify-content: space-between;
+		gap: 10px;
+		font-size: 0.92rem;
+	}
+	.sch__riga b {
+		font-family: var(--titoli);
+	}
+	.sch__riga b.is-sopra {
+		color: var(--errore);
+	}
+	.sch__idea {
+		padding: 10px 12px;
+		background: var(--avorio);
+		border: 2px dashed var(--grafite);
+		border-radius: 10px;
+		font-size: 0.88rem;
+	}
+	.sch__idea button {
+		margin-top: 8px;
+	}
+	.sch__ctr {
+		list-style: none;
+		display: grid;
+		gap: 10px;
+	}
+	.ctr {
+		display: grid;
+		grid-template-columns: 26px minmax(0, 1fr);
+		gap: 10px;
+		align-items: start;
+		font-size: 0.9rem;
+	}
+	.ctr__i {
+		display: grid;
+		place-items: center;
+		width: 26px;
+		height: 26px;
+		border: 2px solid var(--grafite);
+		border-radius: 8px;
+		font-weight: 800;
+		font-size: 0.85rem;
+		background: var(--cassa);
+	}
+	.ctr--ok .ctr__i {
+		background: var(--acqua);
+		animation: bld-spunta 0.4s cubic-bezier(0.3, 1.8, 0.5, 1);
+	}
+	.ctr--no .ctr__i {
+		background: #ef6a5e;
+	}
+	.ctr--avviso .ctr__i {
+		background: var(--arancio);
+	}
+	@keyframes bld-spunta {
+		from {
+			transform: scale(0.4);
+		}
+	}
+	.ctr b {
+		display: block;
+		font-family: var(--titoli);
+		font-size: 0.92rem;
+	}
+	.ctr span {
+		color: var(--grigio-testo);
+	}
+	.seg {
+		display: inline-flex;
+		border: 2px solid var(--grafite);
+		border-radius: 10px;
+		overflow: hidden;
+		width: fit-content;
+	}
+	.seg__b {
+		padding: 6px 14px;
+		border: 0;
+		background: var(--avorio);
+		font-family: var(--titoli);
+		font-weight: 600;
+		font-size: 0.85rem;
+	}
+	.seg__b + .seg__b {
+		border-left: 2px solid var(--grafite);
+	}
+	.seg__b[aria-pressed='true'] {
+		background: var(--grafite);
+		color: var(--avorio);
+	}
+	.fps {
+		list-style: none;
+		display: grid;
+		gap: 12px;
+	}
+	.fps li {
+		display: grid;
+		gap: 4px;
+	}
+	.fps__t {
+		display: flex;
+		justify-content: space-between;
+		gap: 10px;
+		font-size: 0.88rem;
+	}
+	.fps__t b {
+		font-family: var(--titoli);
+	}
+	.fps__b {
+		position: relative;
+		height: 14px;
+		border: 2px solid var(--grafite);
+		border-radius: 8px;
+		background: var(--avorio);
+		overflow: hidden;
+	}
+	.fps__b i {
+		display: block;
+		height: 100%;
+		width: 100%;
+		background: var(--arancio);
+		transform: scaleX(var(--w, 0));
+		transform-origin: left;
+		transition: transform 0.5s cubic-bezier(0.25, 1.15, 0.4, 1);
+	}
+	.fps__b::after {
+		/* il segno dei 60 fps */
+		content: '';
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: calc(60 / 240 * 100%);
+		width: 2px;
+		background: var(--grafite);
+	}
+	.tot {
+		display: grid;
+		gap: 6px;
+	}
+	.tot div {
+		display: flex;
+		justify-content: space-between;
+		font-size: 0.95rem;
+	}
+	.tot dd {
+		font-weight: 700;
+	}
+	.sch__chk {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		font-size: 0.9rem;
+		font-weight: 600;
+		cursor: pointer;
+	}
+	.sch__chk input {
+		width: 20px;
+		height: 20px;
+		accent-color: var(--acqua-testo);
+	}
+	.tot__t {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		padding-top: 10px;
+		border-top: 2px solid var(--grafite);
+	}
+	.tot__t span {
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+	.tot__t b {
+		font-family: var(--titoli);
+		font-size: 2rem;
+		letter-spacing: -0.02em;
+	}
+	.sch__az {
+		display: grid;
+		gap: 10px;
+	}
+
+	/* ----- la scheda da portare in negozio ----- */
+	.bsd {
+		width: min(94vw, 520px);
+		max-height: 94dvh;
+		margin: auto;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		color: var(--grafite);
+		overflow: visible;
+	}
+	.bsd::backdrop {
+		background: rgba(42, 42, 45, 0.7);
+		backdrop-filter: blur(2px);
+	}
+	.bsd[open] {
+		animation: bld-stampa 0.6s cubic-bezier(0.25, 1, 0.4, 1);
+	}
+	@keyframes bld-stampa {
+		from {
+			transform: translateY(-60px);
+			clip-path: inset(0 0 100% 0);
+		}
+	}
+	.bsd__in {
+		position: relative;
+		max-height: 94dvh;
+		overflow: auto;
+		padding: 26px 24px 28px;
+		background: var(--avorio);
+		border: 3px solid var(--grafite);
+		border-radius: 6px;
+		box-shadow: 0 10px 0 #000;
+	}
+	.bsd__in h3 {
+		font-size: 1.7rem;
+	}
+	.bsd__cod {
+		font-family: var(--titoli);
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		color: var(--arancio-testo);
+	}
+	.bsd table {
+		width: 100%;
+		border-collapse: collapse;
+		margin: 14px 0;
+		font-size: 0.92rem;
+	}
+	.bsd th,
+	.bsd td {
+		padding: 7px 0;
+		border-bottom: 1px dashed var(--cassa-3);
+		text-align: left;
+		vertical-align: top;
+	}
+	.bsd td:last-child {
+		text-align: right;
+		font-weight: 700;
+		white-space: nowrap;
+	}
+	.bsd th {
+		font-weight: 500;
+	}
+	.bsd th small {
+		display: block;
+		font-size: 0.76rem;
+		color: var(--grigio-testo);
+	}
+	.bsd tfoot td,
+	.bsd tfoot th {
+		font-family: var(--titoli);
+		font-weight: 800;
+		font-size: 1.2rem;
+		border-bottom: 0;
+		border-top: 2px solid var(--grafite);
+	}
+	.bsd__fps {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px 14px;
+		font-size: 0.85rem;
+		color: var(--grigio-testo);
+	}
+	.bsd__az {
+		display: grid;
+		gap: 10px;
+		margin-top: 18px;
+	}
+	.bsd__x {
+		position: absolute;
+		top: 12px;
+		right: 12px;
+		width: 42px;
+		height: 42px;
+		padding: 0;
+	}
+
+	@media (max-width: 960px) {
+		.bld__area {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.bld__pezzi {
+			max-height: none;
+		}
+	}
+	@media (max-width: 520px) {
+		.bld__torre {
+			padding: 12px;
+		}
+		.bld-pcb {
+			padding: 10px;
+		}
+		.bld-pcb__riga,
+		.bld-fondo {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.pz {
+			grid-template-columns: 18px 52px minmax(0, 1fr);
+		}
+		.pz__az {
+			grid-column: 2 / -1;
+			grid-auto-flow: column;
+			justify-content: space-between;
+			justify-items: stretch;
+			align-items: center;
+		}
+		.bay.has-pezzo .bay__b {
+			grid-template-columns: 58px minmax(0, 1fr);
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.bay.is-nuovo .bay__b,
+		.bay.is-scambio .bay__b,
+		.bay.is-no .bay__b,
+		.bay.is-errore .bay__led,
+		.bsd[open],
+		.ctr--ok .ctr__i {
+			animation: none;
+		}
+	}
+</style>
+
+<script>
+	import { slot, pezzi, presets, euro, assemblaggio, type Slot } from './catalogo';
+	import { figura } from './figure';
+	import { conflitto, controlli, consumo, fps, totale, sommaPezzi, completo, senzaErrori, montati, pezzoDi, codice, ideaGpu, type Montaggio, type Risoluzione } from './regole';
+
+	const q = <T extends Element>(s: string) => document.querySelector<T>(s)!;
+	const torre = q<HTMLElement>('[data-torre]');
+	const tabEl = q<HTMLElement>('[data-tab]');
+	const tabNota = q<HTMLElement>('[data-tab-nota]');
+	const lista = q<HTMLElement>('[data-pezzi]');
+	const msg = q<HTMLElement>('[data-bld-msg]');
+	const movimento = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	let m: Montaggio = {};
+	let attivo: Slot = 'case';
+	let budget = 2000;
+	let res: Risoluzione = '1440p';
+	let conMont = true;
+	let nuovo: { s: Slot; scambio: boolean } | null = null;
+
+	const forma = (s: Slot) => ({ case: 'tower', board: 'board', cpu: 'cpu', ram: 'ram', gpu: 'gpu', storage: 'ssd', psu: 'psu' }) as const;
+	const nomeSlot = (s: Slot) => slot.find((x) => x.id === s)!.nome;
+	const annuncia = (t: string) => (msg.textContent = t);
+
+	// ---------- montaggio ----------
+	function installa(id: string, daTrascinamento = false) {
+		const p = pezzoDi(id);
+		const perche = conflitto(p, m);
+		if (perche) {
+			annuncia(`${p.nome} does not fit: ${perche}`);
+			lampeggia(p.slot);
+			return false;
+		}
+		nuovo = { s: p.slot, scambio: !!m[p.slot] };
+		m = { ...m, [p.slot]: id };
+		attivo = p.slot;
+		annuncia(`${p.nome} installed in the ${nomeSlot(p.slot)} bay.`);
+		disegna();
+		return true;
+	}
+	function togli(s: Slot) {
+		const p = m[s] && pezzoDi(m[s]!);
+		const { [s]: _, ...resto } = m;
+		m = resto;
+		nuovo = null;
+		if (p) annuncia(`${p.nome} removed.`);
+		disegna();
+	}
+	function lampeggia(s: Slot) {
+		const el = torre.querySelector<HTMLElement>(`.bay[data-slot="${s}"]`);
+		if (!el) return;
+		el.classList.remove('is-no');
+		el.getBoundingClientRect();
+		el.classList.add('is-no');
+	}
+
+	// ---------- disegno ----------
+	const errori = () => {
+		const c = controlli(m);
+		const set = new Set<Slot>();
+		const lega: Record<string, Slot[]> = { socket: ['cpu', 'board'], ram: ['ram', 'board'], forma: ['board', 'case'], gpu: ['gpu', 'case'], psu: ['psu'] };
+		for (const x of c) if (x.stato === 'no') for (const s of lega[x.id]) set.add(s);
+		return set;
+	};
+
+	function bay(s: Slot, classe = '') {
+		const id = m[s];
+		const p = id ? pezzoDi(id) : null;
+		const info = slot.find((x) => x.id === s)!;
+		const err = errori().has(s);
+		const cls = ['bay', classe, p ? 'has-pezzo' : '', s === attivo ? 'is-attivo' : '', err ? 'is-errore' : '', nuovo?.s === s ? (nuovo.scambio ? 'is-scambio' : 'is-nuovo') : ''].filter(Boolean).join(' ');
+		return `<div class="${cls}" data-slot="${s}">
+			<button class="bay__b" type="button" data-bay="${s}">
+				<span class="bay__etichetta">${info.nome}</span>
+				${p ? `<span class="bay__fig">${figura(forma(s)[s], p.colore)}</span><span><span class="bay__nome">${p.nome}</span><br /><span class="bay__det">${p.dettaglio}</span></span>` : `<span class="bay__vuoto">Drop a ${info.nome.toLowerCase()} here</span>`}
+				<span class="bay__led" aria-hidden="true"></span>
+				<span class="sr-only">. ${p ? 'Installed' : 'Empty'}: show ${info.nome.toLowerCase()} options</span>
+			</button>
+			${p ? `<button class="bay__x" type="button" data-togli="${s}" aria-label="Remove ${p.nome}">✕</button>` : ''}
+		</div>`;
+	}
+
+	function disegnaTorre() {
+		const cassa = m.case ? pezzoDi(m.case) : null;
+		torre.innerHTML = `<div class="bld__torre-testa"><span>Your build</span><em>${cassa ? `${cassa.forma} case · cards up to ${cassa.maxGpu} mm` : 'Start with a case'}</em></div>
+			${bay('case', 'bay--cassa')}
+			<div class="bld-pcb">${bay('board')}<div class="bld-pcb__riga">${bay('cpu')}${bay('ram')}</div>${bay('gpu')}</div>
+			<div class="bld-fondo">${bay('storage', 'bay--fondo')}${bay('psu', 'bay--fondo')}</div>`;
+		nuovo = null;
+	}
+
+	function disegnaTab() {
+		tabEl.innerHTML = slot.map((s) => `<button class="tasto tasto--piccolo ${m[s.id] ? 'fatto' : ''}" type="button" data-tab="${s.id}" aria-pressed="${s.id === attivo}">${s.nome}</button>`).join('');
+		tabNota.textContent = slot.find((s) => s.id === attivo)!.nota + '.';
+	}
+
+	function disegnaPezzi() {
+		const elenco = pezzi.filter((p) => p.slot === attivo).sort((a, b) => a.prezzo - b.prezzo);
+		lista.innerHTML = elenco
+			.map((p) => {
+				const montato = m[attivo] === p.id;
+				const perche = montato ? null : conflitto(p, m);
+				const cls = ['pz', montato ? 'is-montato' : '', perche ? 'is-conflitto' : ''].filter(Boolean).join(' ');
+				return `<li class="${cls}" data-pezzo="${p.id}">
+					<span class="pz__grip" aria-hidden="true" data-grip>⋮⋮</span>
+					<span class="pz__fig">${figura(forma(p.slot)[p.slot], p.colore)}</span>
+					<span><span class="pz__nome">${p.nome}</span><br /><span class="pz__det">${p.dettaglio}</span>${perche ? `<span class="pz__perche" id="pz-${p.id}">${perche}</span>` : ''}</span>
+					<span class="pz__az"><span class="pz__prezzo">${euro(p.prezzo)}</span>
+					${montato ? `<button class="tasto" type="button" data-rimuovi="${p.slot}">Remove</button>` : `<button class="tasto ${perche ? '' : 'tasto--arancio'}" type="button" data-installa="${p.id}" ${perche ? `disabled aria-describedby="pz-${p.id}"` : ''}>${m[attivo] ? 'Swap in' : 'Install'}<span class="sr-only"> ${p.nome}</span></button>`}
+					</span></li>`;
+			})
+			.join('');
+	}
+
+	function disegnaSchede() {
+		const spesa = totale(m, conMont);
+		const resto = budget - spesa;
+		q('[data-b-val]').textContent = euro(budget);
+		q('[data-b-spesi]').textContent = `${euro(spesa)} spent`;
+		const r = q<HTMLElement>('[data-b-resto]');
+		r.textContent = resto >= 0 ? `${euro(resto)} left` : `${euro(-resto)} over budget`;
+		r.classList.toggle('is-sopra', resto < 0);
+		const barra = q<HTMLElement>('[data-b-barra]');
+		barra.style.setProperty('--w', String(Math.min(1, spesa / budget)));
+		barra.parentElement!.classList.toggle('is-sopra', resto < 0);
+		const idea = ideaGpu(m, resto);
+		const ideaEl = q<HTMLElement>('[data-idea]');
+		ideaEl.hidden = !idea;
+		if (idea) ideaEl.innerHTML = `Room for more: swap the ${idea.da.nome} for the ${idea.a.nome} for +${euro(idea.extra)}. <button class="tasto tasto--piccolo tasto--acqua" type="button" data-idea-vai="${idea.a.id}">Swap it in</button>`;
+
+		const ctr = controlli(m);
+		q('[data-controlli]').innerHTML = ctr.map((c) => `<li class="ctr ctr--${c.stato}"><span class="ctr__i" aria-hidden="true">${{ ok: '✓', no: '✕', att: '·', avviso: '!' }[c.stato]}</span><span><b>${c.titolo}<span class="sr-only"> — ${{ ok: 'ok', no: 'problem', att: 'waiting', avviso: 'warning' }[c.stato]}</span></b><span>${c.testo}</span></span></li>`).join('');
+
+		const f = fps(m, res);
+		q('[data-fps]').innerHTML = (f ?? [{ nome: 'Cobalt Drift', genere: 'Racing', fps: 0 }, { nome: 'Hollow Sunrise', genere: 'Open-world RPG', fps: 0 }, { nome: 'Pixel Arena', genere: 'Competitive shooter', fps: 0 }, { nome: 'Tidal Kingdoms', genere: 'Strategy', fps: 0 }])
+			.map((g) => `<li><div class="fps__t"><span>${g.nome} <small>· ${g.genere}</small></span><b>${f ? g.fps + ' fps' : '— fps'}</b></div><div class="fps__b" aria-hidden="true"><i style="--w:${Math.min(1, g.fps / 240)}"></i></div></li>`)
+			.join('');
+
+		q('[data-t-pezzi]').textContent = euro(sommaPezzi(m));
+		q('[data-t-mont]').textContent = conMont && montati(m).length ? euro(assemblaggio) : '€0';
+		q('[data-t-tot]').textContent = euro(spesa);
+		const ok = completo(m) && senzaErrori(m);
+		q<HTMLButtonElement>('[data-scheda]').disabled = !ok;
+		q<HTMLButtonElement>('[data-aggiungi]').disabled = !ok;
+		const mancano = 7 - montati(m).length;
+		q('[data-pronto]').textContent = ok ? 'Looks good. Print the sheet and bring it to the counter, or add it to your list.' : !completo(m) ? `${mancano} ${mancano === 1 ? 'part' : 'parts'} to go before your build is complete.` : 'Fix the red items in Compatibility first.';
+	}
+
+	function disegna() {
+		disegnaTorre();
+		disegnaTab();
+		disegnaPezzi();
+		disegnaSchede();
+	}
+
+	// ---------- eventi ----------
+	torre.addEventListener('click', (e) => {
+		const t = e.target as HTMLElement;
+		const x = t.closest<HTMLElement>('[data-togli]');
+		const b = t.closest<HTMLElement>('[data-bay]');
+		if (x) return togli(x.dataset.togli as Slot);
+		if (b) {
+			attivo = b.dataset.bay as Slot;
+			disegnaTorre();
+			disegnaTab();
+			disegnaPezzi();
+		}
+	});
+	tabEl.addEventListener('click', (e) => {
+		const b = (e.target as HTMLElement).closest<HTMLElement>('[data-tab]');
+		if (!b) return;
+		attivo = b.dataset.tab as Slot;
+		disegnaTorre();
+		disegnaTab();
+		disegnaPezzi();
+	});
+	lista.addEventListener('click', (e) => {
+		const t = e.target as HTMLElement;
+		const i = t.closest<HTMLElement>('[data-installa]');
+		const r = t.closest<HTMLElement>('[data-rimuovi]');
+		if (i) installa(i.dataset.installa!);
+		if (r) togli(r.dataset.rimuovi as Slot);
+	});
+	document.addEventListener('click', (e) => {
+		const t = e.target as HTMLElement;
+		const v = t.closest<HTMLElement>('[data-idea-vai]');
+		if (v) installa(v.dataset.ideaVai!);
+		const p = t.closest<HTMLElement>('[data-preset]');
+		if (p) caricaPreset(p.dataset.preset!);
+		if (t.closest('[data-svuota]')) {
+			m = {};
+			attivo = 'case';
+			nuovo = null;
+			annuncia('The case is empty.');
+			disegna();
+		}
+		const res2 = t.closest<HTMLElement>('[data-res]');
+		if (res2) {
+			res = res2.dataset.res as Risoluzione;
+			document.querySelectorAll<HTMLElement>('[data-res]').forEach((b) => b.setAttribute('aria-pressed', String(b === res2)));
+			disegnaSchede();
+		}
+	});
+	q<HTMLInputElement>('[data-budget]').addEventListener('input', (e) => {
+		budget = Number((e.target as HTMLInputElement).value);
+		disegnaSchede();
+	});
+	q<HTMLInputElement>('[data-mont]').addEventListener('change', (e) => {
+		conMont = (e.target as HTMLInputElement).checked;
+		disegnaSchede();
+	});
+
+	// i pezzi di un preset cadono nel case uno dopo l'altro
+	let cascata = 0;
+	function caricaPreset(id: string) {
+		const pr = presets.find((x) => x.id === id)!;
+		clearTimeout(cascata);
+		m = {};
+		attivo = 'case';
+		disegna();
+		annuncia(`Loading the ${pr.nome} preset.`);
+		let i = 0;
+		const passo = () => {
+			if (i >= pr.pezzi.length) return;
+			const p = pezzoDi(pr.pezzi[i++]);
+			nuovo = { s: p.slot, scambio: false };
+			m = { ...m, [p.slot]: p.id };
+			attivo = p.slot;
+			disegna();
+			cascata = window.setTimeout(passo, movimento ? 170 : 0);
+		};
+		passo();
+	}
+
+	// ---------- trascinamento (mouse, penna e dito sulla maniglia ⋮⋮) ----------
+	let drag: { id: string; ghost: HTMLElement; sopra: HTMLElement | null; x0: number; y0: number; attivo: boolean; pid: number; da: HTMLElement } | null = null;
+	lista.addEventListener('pointerdown', (e) => {
+		const el = (e.target as HTMLElement).closest<HTMLElement>('.pz');
+		if (!el || el.classList.contains('is-conflitto') || (e.target as HTMLElement).closest('button')) return;
+		const daManiglia = !!(e.target as HTMLElement).closest('[data-grip]');
+		if (e.pointerType === 'touch' && !daManiglia) return; // col dito il resto della scheda scorre la pagina
+		drag = { id: el.dataset.pezzo!, ghost: null as unknown as HTMLElement, sopra: null, x0: e.clientX, y0: e.clientY, attivo: false, pid: e.pointerId, da: el };
+		el.setPointerCapture(e.pointerId);
+	});
+	function bersaglio(x: number, y: number) {
+		return document.elementsFromPoint(x, y).find((n) => (n as HTMLElement).classList?.contains('bay')) as HTMLElement | undefined;
+	}
+	lista.addEventListener('pointermove', (e) => {
+		if (!drag || e.pointerId !== drag.pid) return;
+		if (!drag.attivo) {
+			if (Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) < 6) return;
+			drag.attivo = true;
+			const p = pezzoDi(drag.id);
+			const g = document.createElement('div');
+			g.className = 'ghost';
+			g.innerHTML = `${figura(forma(p.slot)[p.slot], p.colore)}${p.nome}`;
+			document.body.append(g);
+			drag.ghost = g;
+			document.body.classList.add('sta-trascinando');
+			torre.querySelectorAll('.bay').forEach((b) => b.classList.toggle('is-spento', (b as HTMLElement).dataset.slot !== p.slot));
+			if (attivo !== p.slot) {
+				attivo = p.slot;
+				disegnaTorre();
+				torre.querySelectorAll('.bay').forEach((b) => b.classList.toggle('is-spento', (b as HTMLElement).dataset.slot !== p.slot));
+			}
+		}
+		drag.ghost.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -60%) rotate(-4deg)`;
+		const b = bersaglio(e.clientX, e.clientY) ?? null;
+		const giusto = b && b.dataset.slot === pezzoDi(drag.id).slot ? b : null;
+		if (drag.sopra !== giusto) {
+			drag.sopra?.classList.remove('is-bersaglio');
+			giusto?.classList.add('is-bersaglio');
+			drag.sopra = giusto;
+		}
+	});
+	function finisci(e: PointerEvent, annulla: boolean) {
+		if (!drag || e.pointerId !== drag.pid) return;
+		const d = drag;
+		drag = null;
+		if (!d.attivo) return;
+		document.body.classList.remove('sta-trascinando');
+		const b = annulla ? undefined : bersaglio(e.clientX, e.clientY);
+		d.ghost.remove();
+		const p = pezzoDi(d.id);
+		if (b && b.dataset.slot === p.slot) installa(d.id, true);
+		else {
+			if (b) {
+				annuncia(`A ${p.nome} goes in the ${nomeSlot(p.slot)} bay, not the ${nomeSlot(b.dataset.slot as Slot)} bay.`);
+				lampeggia(b.dataset.slot as Slot);
+			}
+			disegnaTorre();
+		}
+	}
+	lista.addEventListener('pointerup', (e) => finisci(e, false));
+	lista.addEventListener('pointercancel', (e) => finisci(e, true));
+
+	// ---------- scheda da portare in negozio ----------
+	const bsd = q<HTMLDialogElement>('[data-bsd]');
+	const bsdIn = q<HTMLElement>('[data-bsd-in]');
+	const testoScheda = () => {
+		const f = fps(m, res) ?? [];
+		return `Hot Swap — build sheet ${codice(m)} (demo)\n${slot.map((s) => `${s.nome}: ${m[s.id] ? pezzoDi(m[s.id]!).nome : '—'}`).join('\n')}\nEstimated draw ${consumo(m)} W\n${f.map((g) => `${g.nome} ${g.fps} fps (${res})`).join(', ')}\nTotal ${euro(totale(m, conMont))}${conMont ? ' (assembly and 24 h test included)' : ''}`;
+	};
+	let fuocoScheda: HTMLElement | null = null;
+	q('[data-scheda]').addEventListener('click', (e) => {
+		fuocoScheda = e.currentTarget as HTMLElement;
+		const f = fps(m, res) ?? [];
+		bsdIn.innerHTML = `<button class="tasto bsd__x" type="button" data-chiudi aria-label="Close">✕</button>
+			<p class="bsd__cod">${codice(m)}</p><h3 id="bsd-t">Build sheet</h3>
+			<p class="sch__nota">Bring this to the counter. Demo only: prices and parts are made up.</p>
+			<table><tbody>${slot.map((s) => `<tr><th scope="row">${s.nome}<small>${pezzoDi(m[s.id]!).nome}</small></th><td>${euro(pezzoDi(m[s.id]!).prezzo)}</td></tr>`).join('')}</tbody>
+			<tfoot>${conMont ? `<tr><th scope="row" style="font-size:.95rem;font-weight:500">Assembly &amp; 24 h test</th><td style="font-size:.95rem">${euro(assemblaggio)}</td></tr>` : ''}<tr><th scope="row">Total</th><td>${euro(totale(m, conMont))}</td></tr></tfoot></table>
+			<p class="sch__nota">Estimated draw ${consumo(m)} W.</p>
+			<div class="bsd__fps">${f.map((g) => `<span>${g.nome}: <b>${g.fps} fps</b></span>`).join('')}<span>(${res})</span></div>
+			<div class="bsd__az"><button class="tasto tasto--arancio" type="button" data-bsd-add>Add to my list</button><button class="tasto" type="button" data-bsd-copia>Copy the sheet</button><p class="sch__nota" data-bsd-esito aria-live="polite"></p></div>`;
+		bsd.showModal();
+	});
+	bsd.addEventListener('click', (e) => {
+		const t = e.target as HTMLElement;
+		if (t === bsd || t.closest('[data-chiudi]')) return bsd.close();
+		if (t.closest('[data-bsd-add]')) aggiungiLista();
+		if (t.closest('[data-bsd-copia]')) {
+			const es = bsdIn.querySelector<HTMLElement>('[data-bsd-esito]')!;
+			navigator.clipboard?.writeText(testoScheda()).then(
+				() => (es.textContent = 'Copied to the clipboard.'),
+				() => (es.textContent = 'Could not copy: select the text by hand.'),
+			);
+		}
+	});
+	bsd.addEventListener('close', () => fuocoScheda?.focus());
+	function aggiungiLista() {
+		const nomi = slot.map((s) => pezzoDi(m[s.id]!).nome).join(' · ');
+		dispatchEvent(new CustomEvent('hotswap:aggiungi', { detail: { id: 'build', nome: `Custom build ${codice(m)}`, prezzo: totale(m, conMont), forma: 'tower', colore: 'arancio', dettaglio: nomi } }));
+		const b = bsdIn.querySelector<HTMLElement>('[data-bsd-add]');
+		if (b) b.textContent = 'Added ✓';
+	}
+	q('[data-aggiungi]').addEventListener('click', (e) => {
+		aggiungiLista();
+		(e.currentTarget as HTMLElement).textContent = 'Added ✓';
+		setTimeout(() => ((e.currentTarget as HTMLElement).textContent = 'Add to my list'), 1500);
+	});
+
+	disegna();
+</script>

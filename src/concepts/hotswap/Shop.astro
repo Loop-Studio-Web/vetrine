@@ -1,0 +1,771 @@
+---
+import { categorie, prodotti, euro } from './catalogo';
+import { figura } from './figure';
+
+const giorno = new Date().getDate();
+// pezzi a magazzino "vivi": cambiano un poco da un giorno all'altro (di fantasia, calcolati da oggi)
+const rimasti = (id: string, base: number) => Math.max(1, base - ((giorno + id.length) % 3));
+---
+
+<section class="shop sezione" id="shop" aria-labelledby="shop-t">
+	<div class="wrap">
+		<header class="sezione__testa" data-reveal>
+			<p class="etichetta">The shop</p>
+			<h2 id="shop-t">Everything on the shelf, sorted your way.</h2>
+			<p>Filter by what you need, sort by price or power, line up to three products side by side. Stock changes by the day.</p>
+		</header>
+
+		<div class="barra" role="group" aria-label="Filter and sort the shop">
+			<div class="barra__cat">
+				<button class="tasto tasto--piccolo" type="button" data-f="all" aria-pressed="true">All <span class="barra__n">{prodotti.length}</span></button>
+				{categorie.map((c) => <button class="tasto tasto--piccolo" type="button" data-f={c.id} aria-pressed="false">{c.nome} <span class="barra__n">{prodotti.filter((p) => p.cat === c.id).length}</span></button>)}
+			</div>
+			<div class="barra__az">
+				<label class="campo">
+					<span class="sr-only">Search the shop</span>
+					<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="M20 20l-4.2-4.2"></path></svg>
+					<input type="search" placeholder="Search…" data-q autocomplete="off" />
+				</label>
+				<label class="campo campo--sel">
+					<span class="campo__l">Sort</span>
+					<select data-sort>
+						<option value="pop">Featured</option>
+						<option value="basso">Price: low to high</option>
+						<option value="alto">Price: high to low</option>
+						<option value="forza">Most powerful</option>
+					</select>
+				</label>
+			</div>
+		</div>
+		<p class="stato" role="status" aria-live="polite" data-stato></p>
+
+		<ul class="griglia" data-griglia>
+			{
+				prodotti.map((p, i) => {
+					const r = rimasti(p.id, p.pezzi);
+					const sconto = p.vecchio ? Math.round((1 - p.prezzo / p.vecchio) * 100) : 0;
+					return (
+						<li class="card" data-id={p.id} data-cat={p.cat} data-prezzo={p.prezzo} data-potenza={p.potenza} data-ordine={i} data-nome={`${p.nome} ${p.punti.join(' ')}`.toLowerCase()}>
+							<div class="card__top">
+								<div class="card__fig" set:html={figura(p.forma, p.colore)} />
+								<div class="card__chips">
+									{p.nuovo && <span class="chip chip--nuovo">New</span>}
+									{sconto > 0 && <span class="chip chip--sconto">−{sconto}%</span>}
+									{r <= 4 && <span class="chip chip--ultimi">Last {r}</span>}
+								</div>
+							</div>
+							<div class="card__corpo">
+								<p class="card__cat">{categorie.find((c) => c.id === p.cat)!.nome}</p>
+								<h3>{p.nome}</h3>
+								<ul class="card__punti">{p.punti.map((x) => <li>{x}</li>)}</ul>
+								<p class="card__prezzo">
+									<b>{euro(p.prezzo)}</b>
+									{p.vecchio && <s><span class="sr-only">was </span>{euro(p.vecchio)}</s>}
+								</p>
+								<div class="card__az">
+									<button class="tasto tasto--piccolo tasto--arancio" type="button" data-add={p.id}>Add to list</button>
+									<button class="tasto tasto--piccolo" type="button" data-look={p.id} aria-label={`Quick look at ${p.nome}`}>Quick look</button>
+								</div>
+								<label class="conf"><input type="checkbox" data-cmp={p.id} /> <span>Compare</span></label>
+							</div>
+						</li>
+					);
+				})
+			}
+		</ul>
+		<p class="vuoto" data-vuoto hidden>Nothing matches that. Try another word or clear the filters.</p>
+	</div>
+</section>
+
+<!-- vassoio di confronto: compare quando c'è almeno un prodotto scelto -->
+<div class="vassoio" data-vassoio hidden>
+	<div class="vassoio__in">
+		<p class="vassoio__t"><b data-vn>0</b> to compare <span data-vnota>(up to 3, same category)</span></p>
+		<ul class="vassoio__chips" data-vchips></ul>
+		<button class="tasto tasto--piccolo tasto--acqua" type="button" data-vapri disabled>Compare</button>
+		<button class="tasto tasto--piccolo" type="button" data-vsvuota>Clear</button>
+	</div>
+</div>
+
+<dialog class="dlg" data-look-dlg aria-labelledby="look-t">
+	<div class="dlg__in" data-look-in></div>
+</dialog>
+<dialog class="dlg dlg--largo" data-cmp-dlg aria-labelledby="cmp-t">
+	<div class="dlg__in" data-cmp-in></div>
+</dialog>
+
+<style>
+	.shop {
+		background: var(--cassa-2);
+	}
+	.barra {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 14px 24px;
+		align-items: center;
+		justify-content: space-between;
+		padding: 14px;
+		background: var(--cassa);
+		border: 2px solid var(--grafite);
+		border-radius: 16px;
+		box-shadow: 0 5px 0 var(--grafite);
+	}
+	.barra__cat {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+	.barra__n {
+		display: inline-grid;
+		place-items: center;
+		min-width: 22px;
+		height: 22px;
+		padding: 0 5px;
+		border-radius: 11px;
+		background: var(--grafite);
+		color: var(--avorio);
+		font-size: 0.72rem;
+	}
+	.barra__cat .tasto[aria-pressed='true'] {
+		--t-bg: var(--grafite);
+		--t-fg: var(--avorio);
+	}
+	.barra__cat .tasto[aria-pressed='true'] .barra__n {
+		background: var(--arancio);
+		color: var(--grafite);
+	}
+	.barra__az {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+	.campo {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 0 12px;
+		min-height: 44px;
+		background: var(--avorio);
+		border: 2px solid var(--grafite);
+		border-radius: 10px;
+	}
+	.campo input,
+	.campo select {
+		border: 0;
+		background: transparent;
+		outline: 0;
+		min-width: 0;
+		width: 150px;
+		font-weight: 600;
+	}
+	.campo select {
+		width: auto;
+		cursor: pointer;
+	}
+	.campo:focus-within {
+		outline: 3px solid var(--acqua-testo);
+		outline-offset: 2px;
+	}
+	.campo__l {
+		font-size: 0.78rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: var(--grigio-testo);
+	}
+	.stato {
+		margin: 14px 0 6px;
+		font-size: 0.9rem;
+		color: var(--grigio-testo);
+		min-height: 1.4em;
+	}
+
+	.griglia {
+		list-style: none;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(100%, 270px), 1fr));
+		gap: 22px;
+		margin-top: 8px;
+		padding-bottom: 8px;
+	}
+	.card {
+		display: flex;
+		flex-direction: column;
+		background: var(--avorio);
+		border: 2px solid var(--grafite);
+		border-radius: 18px;
+		box-shadow: 0 6px 0 var(--grafite);
+		overflow: hidden;
+		transition:
+			box-shadow 0.15s,
+			translate 0.15s;
+	}
+	.card[hidden] {
+		display: none;
+	}
+	.card:hover {
+		translate: 0 -3px;
+		box-shadow: 0 9px 0 var(--grafite);
+	}
+	.card__top {
+		position: relative;
+		padding: 18px 18px 8px;
+		background: var(--cassa);
+		border-bottom: 2px solid var(--grafite);
+	}
+	.card__fig {
+		width: min(100%, 190px);
+		margin: 0 auto;
+	}
+	.card__fig :global(svg) {
+		width: 100%;
+		height: auto;
+		transition: transform 0.4s cubic-bezier(0.3, 1.6, 0.5, 1);
+	}
+	.card:hover .card__fig :global(svg) {
+		transform: translateY(-5px) rotate(-3deg) scale(1.04);
+	}
+	.card__chips {
+		position: absolute;
+		top: 12px;
+		left: 12px;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 6px;
+	}
+	.chip {
+		padding: 3px 9px;
+		border: 2px solid var(--grafite);
+		border-radius: 8px;
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: 0.72rem;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		background: var(--avorio);
+	}
+	.chip--nuovo {
+		background: var(--acqua);
+	}
+	.chip--sconto {
+		background: var(--arancio);
+	}
+	.chip--ultimi {
+		background: var(--grafite);
+		color: var(--avorio);
+		animation: respiro 2.4s ease-in-out infinite;
+	}
+	@keyframes respiro {
+		50% {
+			transform: scale(1.07);
+		}
+	}
+	.card__corpo {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		padding: 16px 18px 18px;
+		flex: 1;
+	}
+	.card__cat {
+		font-size: 0.74rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--grigio-testo);
+	}
+	.card h3 {
+		font-size: 1.3rem;
+	}
+	.card__punti {
+		list-style: none;
+		display: grid;
+		gap: 3px;
+		font-size: 0.93rem;
+		color: var(--grigio-testo);
+	}
+	.card__punti li::before {
+		content: '▸ ';
+		color: var(--arancio-testo);
+	}
+	.card__prezzo {
+		margin-top: auto;
+		padding-top: 8px;
+		display: flex;
+		align-items: baseline;
+		gap: 10px;
+	}
+	.card__prezzo b {
+		font-family: var(--titoli);
+		font-size: 1.6rem;
+		letter-spacing: -0.02em;
+	}
+	.card__prezzo s {
+		color: var(--grigio-testo);
+		font-size: 0.95rem;
+	}
+	.card__az {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+		margin-top: 4px;
+	}
+	.conf {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		margin-top: 6px;
+		font-size: 0.88rem;
+		font-weight: 600;
+		cursor: pointer;
+		width: fit-content;
+	}
+	.conf input {
+		width: 20px;
+		height: 20px;
+		accent-color: var(--acqua-testo);
+		cursor: pointer;
+	}
+	.conf input:disabled {
+		cursor: not-allowed;
+	}
+	.conf:has(input:disabled) {
+		opacity: 0.45;
+	}
+	.vuoto {
+		margin-top: 28px;
+		padding: 32px;
+		text-align: center;
+		border: 2px dashed var(--grafite);
+		border-radius: 16px;
+		font-weight: 600;
+	}
+
+	/* vassoio di confronto */
+	.vassoio {
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 130;
+		padding: 0 var(--gutter) 14px;
+		pointer-events: none;
+	}
+	.vassoio[hidden] {
+		display: none;
+	}
+	.vassoio__in {
+		pointer-events: auto;
+		max-width: 920px;
+		margin-inline: auto;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 10px 16px;
+		padding: 12px 16px;
+		background: var(--grafite);
+		color: var(--avorio);
+		border: 2px solid var(--grafite);
+		border-radius: 16px;
+		box-shadow: 0 6px 0 rgba(0, 0, 0, 0.35);
+		animation: sale 0.35s cubic-bezier(0.3, 1.4, 0.5, 1);
+	}
+	@keyframes sale {
+		from {
+			transform: translateY(120%);
+		}
+	}
+	.vassoio__t {
+		font-size: 0.92rem;
+	}
+	.vassoio__t b {
+		font-family: var(--titoli);
+		font-size: 1.1rem;
+		color: var(--arancio);
+	}
+	.vassoio__t span {
+		opacity: 0.7;
+		font-size: 0.82rem;
+	}
+	.vassoio__chips {
+		flex: 1;
+		min-width: 120px;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		list-style: none;
+	}
+	.vassoio__chips li {
+		padding: 4px 10px;
+		border-radius: 8px;
+		background: var(--grafite-2);
+		border: 1px solid #555;
+		font-size: 0.85rem;
+		font-weight: 600;
+	}
+	.vassoio .tasto--piccolo:not(.tasto--acqua) {
+		--t-bg: var(--avorio);
+		border-color: var(--avorio);
+		box-shadow: 0 4px 0 #000;
+	}
+	.vassoio .tasto--acqua {
+		border-color: var(--avorio);
+		box-shadow: 0 4px 0 #000;
+	}
+	.vassoio .tasto:active {
+		box-shadow: 0 0 0 #000;
+	}
+
+</style>
+
+<!-- le finestre si riempiono via JavaScript: i loro stili devono essere globali -->
+<style is:global>
+	/* dialoghi: anteprima rapida e confronto */
+	.look .card__cat {
+		font-size: 0.74rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--grigio-testo);
+	}
+	.dlg {
+		width: min(94vw, 760px);
+		max-height: 92dvh;
+		margin: auto;
+		padding: 0;
+		border: 3px solid var(--grafite);
+		border-radius: 22px;
+		background: var(--cassa-2);
+		color: var(--grafite);
+		box-shadow: 0 10px 0 var(--grafite);
+		overflow: auto;
+	}
+	.dlg--largo {
+		width: min(96vw, 980px);
+	}
+	.dlg::backdrop {
+		background: rgba(42, 42, 45, 0.6);
+		backdrop-filter: blur(2px);
+	}
+	.dlg[open] {
+		animation: apre 0.35s cubic-bezier(0.3, 1.4, 0.5, 1);
+	}
+	@keyframes apre {
+		from {
+			opacity: 0;
+			transform: translateY(24px) scale(0.97);
+		}
+	}
+	.dlg__in {
+		position: relative;
+		padding: clamp(18px, 4vw, 32px);
+	}
+	.dlg__x {
+		position: absolute;
+		top: 14px;
+		right: 14px;
+		width: 44px;
+		height: 44px;
+		padding: 0;
+		z-index: 2;
+	}
+	.look {
+		display: grid;
+		grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+		gap: 24px;
+		align-items: center;
+	}
+	.look__fig {
+		padding: 22px;
+		background: var(--cassa);
+		border: 2px solid var(--grafite);
+		border-radius: 16px;
+	}
+	.look h3 {
+		font-size: clamp(1.6rem, 4vw, 2.2rem);
+		margin: 4px 0 12px;
+		padding-right: 48px;
+	}
+	.look dl,
+	.cmp dl {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		gap: 0 18px;
+		margin-bottom: 18px;
+	}
+	.look dt {
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--grigio-testo);
+		padding: 8px 0;
+		border-bottom: 1px solid var(--cassa-3);
+	}
+	.look dd {
+		padding: 8px 0;
+		font-weight: 600;
+		border-bottom: 1px solid var(--cassa-3);
+	}
+	.look__prezzo {
+		font-family: var(--titoli);
+		font-size: 2rem;
+		font-weight: 700;
+		margin-bottom: 14px;
+	}
+	.look__prezzo s {
+		font-size: 1rem;
+		font-weight: 500;
+		color: var(--grigio-testo);
+		margin-left: 10px;
+	}
+	.cmp h3 {
+		font-size: clamp(1.5rem, 4vw, 2rem);
+		margin-bottom: 18px;
+		padding-right: 48px;
+	}
+	.cmp__scroll {
+		overflow-x: auto;
+		border: 2px solid var(--grafite);
+		border-radius: 14px;
+		background: var(--avorio);
+	}
+	.cmp table {
+		width: 100%;
+		border-collapse: collapse;
+		min-width: 520px;
+	}
+	.cmp th,
+	.cmp td {
+		padding: 11px 14px;
+		text-align: left;
+		border-bottom: 1px solid var(--cassa-3);
+		vertical-align: top;
+	}
+	.cmp tbody tr:last-child th,
+	.cmp tbody tr:last-child td {
+		border-bottom: 0;
+	}
+	.cmp thead th {
+		background: var(--cassa);
+		border-bottom: 2px solid var(--grafite);
+		font-family: var(--titoli);
+	}
+	.cmp tbody th {
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--grigio-testo);
+		white-space: nowrap;
+	}
+	.cmp .mig {
+		background: rgba(47, 181, 168, 0.22);
+		font-weight: 700;
+	}
+	.cmp__fig {
+		width: 74px;
+		margin-bottom: 4px;
+	}
+
+	@media (max-width: 720px) {
+		.look {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.look__fig {
+			max-width: 260px;
+			margin-inline: auto;
+		}
+		.campo input {
+			width: 120px;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.chip--ultimi,
+		.vassoio__in,
+		.dlg[open] {
+			animation: none;
+		}
+	}
+</style>
+
+<script>
+	import { prodotti, categorie, ordina, euro } from './catalogo';
+	import { figura } from './figure';
+
+	const q = <T extends Element>(s: string, r: ParentNode = document) => r.querySelector<T>(s)!;
+	const griglia = q<HTMLElement>('[data-griglia]');
+	const cards = [...griglia.querySelectorAll<HTMLElement>('.card')];
+	const stato = q<HTMLElement>('[data-stato]');
+	const vuoto = q<HTMLElement>('[data-vuoto]');
+	const campoQ = q<HTMLInputElement>('[data-q]');
+	const selSort = q<HTMLSelectElement>('[data-sort]');
+	const bottoni = [...document.querySelectorAll<HTMLButtonElement>('[data-f]')];
+	const movimento = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+	const ESPO = 'cubic-bezier(0.25, 1.15, 0.4, 1)';
+
+	let filtro = 'all';
+	let testo = '';
+	let ordine: keyof typeof ordina = 'pop';
+
+	const prod = (id: string) => prodotti.find((p) => p.id === id)!;
+
+	// ---- FLIP: le carte che restano scivolano al nuovo posto, quelle nuove si accendono ----
+	function applica() {
+		const prima = new Map(cards.filter((c) => !c.hidden).map((c) => [c, c.getBoundingClientRect()]));
+		const f = ordina[ordine].f;
+		const ordinate = [...cards].sort((a, b) => f(prod(a.dataset.id!), prod(b.dataset.id!)));
+		for (const c of ordinate) griglia.append(c);
+		let visibili = 0;
+		for (const c of cards) {
+			const ok = (filtro === 'all' || c.dataset.cat === filtro) && (!testo || c.dataset.nome!.includes(testo));
+			c.hidden = !ok;
+			if (ok) visibili++;
+		}
+		if (movimento) {
+			let n = 0;
+			for (const c of cards) {
+				if (c.hidden) continue;
+				const p = prima.get(c);
+				if (p) {
+					const r = c.getBoundingClientRect();
+					const dx = p.left - r.left;
+					const dy = p.top - r.top;
+					if (dx || dy) c.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'none' }], { duration: 480, easing: ESPO });
+				} else {
+					c.animate([{ opacity: 0, transform: 'translateY(14px) scale(0.94)' }, { opacity: 1, transform: 'none' }], { duration: 380, delay: Math.min(n, 8) * 40, easing: ESPO, fill: 'backwards' });
+					n++;
+				}
+			}
+		}
+		vuoto.hidden = visibili > 0;
+		stato.textContent = `${visibili} ${visibili === 1 ? 'product' : 'products'}${filtro !== 'all' ? ' in ' + categorie.find((c) => c.id === filtro)!.nome : ''}${testo ? ` matching “${testo}”` : ''}, sorted by ${ordina[ordine].nome.toLowerCase()}.`;
+		for (const b of bottoni) b.setAttribute('aria-pressed', String(b.dataset.f === filtro));
+		aggiornaConfronto();
+	}
+
+	for (const b of bottoni)
+		b.addEventListener('click', () => {
+			filtro = b.dataset.f!;
+			applica();
+		});
+	selSort.addEventListener('change', () => {
+		ordine = selSort.value as keyof typeof ordina;
+		applica();
+	});
+	let t: number;
+	campoQ.addEventListener('input', () => {
+		clearTimeout(t);
+		t = window.setTimeout(() => {
+			testo = campoQ.value.trim().toLowerCase();
+			applica();
+		}, 160);
+	});
+	// dai tasti dell'hero
+	addEventListener('hotswap:filtro', (e) => {
+		const cat = (e as CustomEvent<{ cat: string }>).detail.cat;
+		filtro = cat;
+		testo = '';
+		campoQ.value = '';
+		applica();
+	});
+
+	// ---- lista (carrello): lo gestisce Lista.astro, qui si lancia solo l'evento ----
+	griglia.addEventListener('click', (e) => {
+		const t = e.target as HTMLElement;
+		const add = t.closest<HTMLElement>('[data-add]');
+		const look = t.closest<HTMLElement>('[data-look]');
+		if (add) {
+			const p = prod(add.dataset.add!);
+			dispatchEvent(new CustomEvent('hotswap:aggiungi', { detail: { id: p.id, nome: p.nome, prezzo: p.prezzo, forma: p.forma, colore: p.colore } }));
+			add.textContent = 'Added ✓';
+			setTimeout(() => (add.textContent = 'Add to list'), 1400);
+		}
+		if (look) apriAnteprima(look.dataset.look!, look);
+	});
+
+	// ---- finestre ----
+	const lookDlg = q<HTMLDialogElement>('[data-look-dlg]');
+	const lookIn = q<HTMLElement>('[data-look-in]');
+	const cmpDlg = q<HTMLDialogElement>('[data-cmp-dlg]');
+	const cmpIn = q<HTMLElement>('[data-cmp-in]');
+	for (const d of [lookDlg, cmpDlg]) d.addEventListener('click', (e) => e.target === d && d.close());
+	const x = `<button class="tasto dlg__x" type="button" data-chiudi aria-label="Close">✕</button>`;
+	for (const [d, i] of [[lookDlg, lookIn], [cmpDlg, cmpIn]] as const) i.addEventListener('click', (e) => (e.target as HTMLElement).closest('[data-chiudi]') && d.close());
+
+	let ultimoFuoco: HTMLElement | null = null;
+	function apriAnteprima(id: string, da: HTMLElement) {
+		const p = prod(id);
+		ultimoFuoco = da;
+		lookDlg.setAttribute('aria-labelledby', 'look-t');
+		lookIn.innerHTML = `${x}<div class="look"><div class="look__fig">${figura(p.forma, p.colore)}</div><div>
+			<p class="card__cat">${categorie.find((c) => c.id === p.cat)!.nome}</p><h3 id="look-t">${p.nome}</h3>
+			<dl>${p.specs.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>
+			<p class="look__prezzo">${euro(p.prezzo)}${p.vecchio ? `<s>${euro(p.vecchio)}</s>` : ''}</p>
+			<button class="tasto tasto--arancio" type="button" data-add2="${p.id}">Add to list</button></div></div>`;
+		lookDlg.showModal();
+		lookIn.querySelector<HTMLElement>('[data-add2]')!.addEventListener('click', (e) => {
+			dispatchEvent(new CustomEvent('hotswap:aggiungi', { detail: { id: p.id, nome: p.nome, prezzo: p.prezzo, forma: p.forma, colore: p.colore } }));
+			(e.currentTarget as HTMLElement).textContent = 'Added ✓';
+		});
+	}
+	lookDlg.addEventListener('close', () => ultimoFuoco?.focus());
+
+	// ---- confronto: fino a 3 prodotti, nella stessa categoria ----
+	const scelti = new Set<string>();
+	const vass = q<HTMLElement>('[data-vassoio]');
+	const vn = q<HTMLElement>('[data-vn]');
+	const vchips = q<HTMLElement>('[data-vchips]');
+	const vapri = q<HTMLButtonElement>('[data-vapri]');
+	const checks = [...griglia.querySelectorAll<HTMLInputElement>('[data-cmp]')];
+	function aggiornaConfronto() {
+		const cat = scelti.size ? prod([...scelti][0]).cat : null;
+		for (const c of checks) {
+			const p = prod(c.dataset.cmp!);
+			c.checked = scelti.has(p.id);
+			c.disabled = !c.checked && (scelti.size >= 3 || (cat !== null && p.cat !== cat));
+			c.title = c.disabled ? (scelti.size >= 3 ? 'You can compare up to 3 products' : 'Compare products from the same category') : '';
+		}
+		vass.hidden = scelti.size === 0;
+		vn.textContent = String(scelti.size);
+		vchips.innerHTML = [...scelti].map((id) => `<li>${prod(id).nome}</li>`).join('');
+		vapri.disabled = scelti.size < 2;
+	}
+	griglia.addEventListener('change', (e) => {
+		const c = (e.target as HTMLElement).closest<HTMLInputElement>('[data-cmp]');
+		if (!c) return;
+		c.checked ? scelti.add(c.dataset.cmp!) : scelti.delete(c.dataset.cmp!);
+		aggiornaConfronto();
+	});
+	document.querySelector('[data-vsvuota]')!.addEventListener('click', () => {
+		scelti.clear();
+		aggiornaConfronto();
+	});
+	vapri.addEventListener('click', () => {
+		const ps = [...scelti].map(prod);
+		const etichette = [...new Set(ps.flatMap((p) => p.specs.map(([k]) => k)))];
+		const val = (p: (typeof ps)[number], k: string) => p.specs.find(([a]) => a === k)?.[1] ?? '—';
+		const minPrezzo = Math.min(...ps.map((p) => p.prezzo));
+		const maxPot = Math.max(...ps.map((p) => p.potenza));
+		ultimoFuoco = vapri;
+		cmpIn.innerHTML = `${x}<div class="cmp"><h3 id="cmp-t">Side by side</h3><div class="cmp__scroll"><table>
+			<thead><tr><th scope="col"><span class="sr-only">Spec</span></th>${ps.map((p) => `<th scope="col"><div class="cmp__fig">${figura(p.forma, p.colore)}</div>${p.nome}</th>`).join('')}</tr></thead><tbody>
+			<tr><th scope="row">Price</th>${ps.map((p) => `<td class="${p.prezzo === minPrezzo ? 'mig' : ''}">${euro(p.prezzo)}${p.prezzo === minPrezzo ? ' · lowest' : ''}</td>`).join('')}</tr>
+			<tr><th scope="row">Power</th>${ps.map((p) => `<td class="${p.potenza === maxPot ? 'mig' : ''}">${p.potenza}/10${p.potenza === maxPot ? ' · strongest' : ''}</td>`).join('')}</tr>
+			${etichette.map((k) => `<tr><th scope="row">${k}</th>${ps.map((p) => `<td>${val(p, k)}</td>`).join('')}</tr>`).join('')}
+			<tr><th scope="row"></th>${ps.map((p) => `<td><button class="tasto tasto--piccolo tasto--arancio" type="button" data-add3="${p.id}">Add to list</button></td>`).join('')}</tr>
+		</tbody></table></div></div>`;
+		cmpIn.querySelectorAll<HTMLElement>('[data-add3]').forEach((b) =>
+			b.addEventListener('click', () => {
+				const p = prod(b.dataset.add3!);
+				dispatchEvent(new CustomEvent('hotswap:aggiungi', { detail: { id: p.id, nome: p.nome, prezzo: p.prezzo, forma: p.forma, colore: p.colore } }));
+				b.textContent = 'Added ✓';
+			}),
+		);
+		cmpDlg.showModal();
+	});
+	cmpDlg.addEventListener('close', () => ultimoFuoco?.focus());
+
+	applica();
+</script>

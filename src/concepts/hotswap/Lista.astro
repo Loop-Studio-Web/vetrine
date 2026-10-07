@@ -1,0 +1,356 @@
+---
+// La lista (carrello di fantasia): cassetto laterale. Riceve `hotswap:aggiungi` da Shop e Builder, avvisa la navbar con `hotswap:lista`.
+---
+
+<dialog class="lista" data-lista aria-labelledby="lista-t">
+	<div class="lista__in" data-lista-in></div>
+</dialog>
+
+<style is:global>
+	.lista {
+		position: fixed;
+		inset: 0 0 0 auto;
+		width: min(100vw, 440px);
+		height: 100dvh;
+		max-height: none;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		border-left: 3px solid var(--grafite);
+		background: var(--cassa-2);
+		color: var(--grafite);
+		box-shadow: -8px 0 0 var(--grafite);
+		overflow: auto;
+	}
+	.lista[open] {
+		animation: lista-entra 0.4s cubic-bezier(0.25, 1.1, 0.4, 1);
+	}
+	@keyframes lista-entra {
+		from {
+			transform: translateX(100%);
+		}
+	}
+	.lista::backdrop {
+		background: rgba(42, 42, 45, 0.55);
+	}
+	.lista__in {
+		display: flex;
+		flex-direction: column;
+		min-height: 100%;
+		padding: 22px 22px 26px;
+		gap: 16px;
+	}
+	.lista__testa {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+	}
+	.lista__testa h2 {
+		font-size: 1.7rem;
+	}
+	.lista__x {
+		width: 44px;
+		height: 44px;
+		padding: 0;
+	}
+	.lista ul {
+		list-style: none;
+		display: grid;
+		gap: 12px;
+	}
+	.lista li.riga {
+		display: grid;
+		grid-template-columns: 62px minmax(0, 1fr) auto;
+		gap: 12px;
+		align-items: center;
+		padding: 10px;
+		background: var(--avorio);
+		border: 2px solid var(--grafite);
+		border-radius: 14px;
+		box-shadow: 0 4px 0 var(--grafite);
+		animation: riga-entra 0.35s cubic-bezier(0.3, 1.4, 0.5, 1);
+	}
+	@keyframes riga-entra {
+		from {
+			opacity: 0;
+			transform: translateX(24px);
+		}
+	}
+	.riga__fig {
+		background: var(--cassa);
+		border-radius: 10px;
+		padding: 4px;
+	}
+	.riga__nome {
+		font-family: var(--titoli);
+		font-weight: 600;
+		line-height: 1.15;
+	}
+	.riga__det {
+		font-size: 0.8rem;
+		color: var(--grigio-testo);
+		margin-top: 2px;
+	}
+	.riga__prezzo {
+		font-family: var(--titoli);
+		font-weight: 700;
+		text-align: right;
+	}
+	.riga__q {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		margin-top: 6px;
+	}
+	.riga__q button {
+		width: 28px;
+		height: 28px;
+		border: 2px solid var(--grafite);
+		border-radius: 8px;
+		background: var(--cassa-2);
+		font-weight: 700;
+		line-height: 1;
+	}
+	.riga__q button:active {
+		transform: translateY(1px);
+	}
+	.riga__q span {
+		min-width: 1.4em;
+		text-align: center;
+		font-weight: 700;
+		font-size: 0.9rem;
+	}
+	.riga__via {
+		display: block;
+		margin-top: 6px;
+		margin-left: auto;
+		border: 0;
+		background: none;
+		font-size: 0.78rem;
+		font-weight: 700;
+		text-decoration: underline;
+		color: var(--grigio-testo);
+		padding: 2px 0;
+	}
+	.lista__vuota {
+		padding: 28px 18px;
+		text-align: center;
+		border: 2px dashed var(--grafite);
+		border-radius: 16px;
+		font-weight: 600;
+	}
+	.lista__fondo {
+		margin-top: auto;
+		display: grid;
+		gap: 12px;
+		padding-top: 14px;
+		border-top: 2px solid var(--grafite);
+	}
+	.lista__tot {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: 1.6rem;
+	}
+	.lista__tot span:first-child {
+		font-size: 0.85rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+	.lista__nota {
+		font-size: 0.82rem;
+		color: var(--grigio-testo);
+	}
+	.biglietto {
+		padding: 18px;
+		background: var(--avorio);
+		border: 2px dashed var(--grafite);
+		border-radius: 14px;
+		text-align: center;
+		animation: riga-entra 0.4s cubic-bezier(0.3, 1.4, 0.5, 1);
+	}
+	.biglietto b {
+		display: block;
+		font-family: var(--titoli);
+		font-size: 1.7rem;
+		letter-spacing: 0.06em;
+		color: var(--arancio-testo);
+	}
+	.ritiro h3 {
+		font-size: 1.25rem;
+	}
+	.ritiro__giorni,
+	.ritiro__ore {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+	.ritiro__giorni .tasto {
+		flex-direction: column;
+		gap: 0;
+		min-width: 74px;
+	}
+	.ritiro__giorni small {
+		font-weight: 500;
+		font-size: 0.72rem;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.lista[open],
+		.lista li.riga,
+		.biglietto {
+			animation: none;
+		}
+	}
+</style>
+
+<script>
+	import { euro } from './catalogo';
+	import { fasce, chiaveRitiro, leggiRitiro, type Ritiro } from './ritiro';
+	import { figura } from './figure';
+	import type { Forma } from './catalogo';
+
+	type Voce = { id: string; nome: string; prezzo: number; forma: Forma; colore: 'arancio' | 'acqua' | 'grafite' | 'avorio'; qty: number; dettaglio?: string };
+	const dlg = document.querySelector<HTMLDialogElement>('[data-lista]')!;
+	const dentro = document.querySelector<HTMLElement>('[data-lista-in]')!;
+	let voci: Voce[] = [];
+	let ritiro: Ritiro | null = leggiRitiro();
+	let passo: 'lista' | 'ritiro' = 'lista';
+	let scelta = { g: 0, o: '' };
+	try {
+		voci = JSON.parse(sessionStorage.getItem('hotswap-lista') || '[]');
+	} catch {
+		voci = [];
+	}
+	const totale = () => voci.reduce((s, v) => s + v.qty, 0);
+	const importo = () => voci.reduce((s, v) => s + v.qty * v.prezzo, 0);
+	const salva = () => {
+		try {
+			sessionStorage.setItem('hotswap-lista', JSON.stringify(voci));
+		} catch {
+			/* niente: la lista vive comunque in memoria */
+		}
+		dispatchEvent(new CustomEvent('hotswap:lista', { detail: { totale: totale(), ids: voci.map((v) => v.id) } }));
+	};
+	let ultimoFuoco: HTMLElement | null = null;
+	// se la lista cambia dopo la prenotazione, il biglietto non vale più
+	function cancellaRitiro() {
+		if (!ritiro) return;
+		ritiro = null;
+		try {
+			sessionStorage.removeItem(chiaveRitiro);
+		} catch {
+			/* niente */
+		}
+		dispatchEvent(new CustomEvent('hotswap:ritiro', { detail: null }));
+	}
+
+	function disegna() {
+		const righe = voci
+			.map(
+				(v, i) => `<li class="riga"><div class="riga__fig">${figura(v.forma, v.colore)}</div>
+				<div><div class="riga__nome">${v.nome}</div>${v.dettaglio ? `<div class="riga__det">${v.dettaglio}</div>` : ''}
+				<div class="riga__q"><button type="button" data-meno="${i}" aria-label="One less ${v.nome}">−</button><span aria-label="Quantity">${v.qty}</span><button type="button" data-piu="${i}" aria-label="One more ${v.nome}">+</button></div></div>
+				<div><div class="riga__prezzo">${euro(v.prezzo * v.qty)}</div><button class="riga__via" type="button" data-via="${i}">Remove</button></div></li>`,
+			)
+			.join('');
+		dentro.innerHTML = `<div class="lista__testa"><h2 id="lista-t">My list</h2><button class="tasto lista__x" type="button" data-chiudi aria-label="Close">✕</button></div>
+			${voci.length ? `<ul>${righe}</ul>` : '<p class="lista__vuota">Your list is empty.<br />Add a PC, a part or a whole build.</p>'}
+			${ritiro ? `<div class="biglietto" role="status"><span>Pickup ${ritiro.quando} · show this code at the counter</span><b>${ritiro.codice}</b><span class="lista__nota">Demo only: nothing is really reserved.</span></div>` : ''}
+			${passo === 'ritiro' ? ritiroHtml() : fondoHtml()}`;
+	}
+	const fondoHtml = () => `<div class="lista__fondo"><div class="lista__tot"><span>Total</span><span>${euro(importo())}</span></div>
+			<button class="tasto tasto--arancio" type="button" data-prenota ${voci.length ? '' : 'disabled'}>${ritiro ? 'Change pickup time' : 'Reserve in store'}</button>
+			<button class="tasto tasto--piccolo" type="button" data-copia ${voci.length ? '' : 'disabled'}>Copy the list</button>
+			<p class="lista__nota" data-esito aria-live="polite">Prices are for illustration. This is a demonstration shop.</p></div>`;
+	function ritiroHtml() {
+		const f = fasce();
+		const giorno = f[scelta.g] ?? f[0];
+		return `<div class="lista__fondo ritiro"><h3>When do you want to collect?</h3>
+			<p class="lista__nota">Ready two hours after you order, within opening hours.</p>
+			<div class="ritiro__giorni" role="group" aria-label="Pickup day">${f.map((x, i) => `<button class="tasto tasto--piccolo" type="button" data-giorno="${i}" aria-pressed="${i === scelta.g}">${x.etichetta}<small>${x.sub}</small></button>`).join('')}</div>
+			<div class="ritiro__ore" role="group" aria-label="Pickup time">${giorno.ore.map((o) => `<button class="tasto tasto--piccolo" type="button" data-ora="${o}" aria-pressed="${o === scelta.o}">${o}</button>`).join('')}</div>
+			<button class="tasto tasto--arancio" type="button" data-conferma ${scelta.o ? '' : 'disabled'}>Confirm pickup</button>
+			<button class="tasto tasto--piccolo" type="button" data-indietro>Back to the list</button></div>`;
+	}
+	function apri() {
+		ultimoFuoco = document.activeElement as HTMLElement | null;
+		passo = 'lista';
+		disegna();
+		if (!dlg.open) dlg.showModal();
+	}
+
+	addEventListener('hotswap:aggiungi', (e) => {
+		const d = (e as CustomEvent<Omit<Voce, 'qty'>>).detail;
+		const esiste = d.id !== 'build' && voci.find((v) => v.id === d.id);
+		if (esiste) esiste.qty++;
+		else voci.push({ ...d, qty: 1 });
+		cancellaRitiro();
+		salva();
+		if (dlg.open) disegna();
+	});
+	document.addEventListener('click', (e) => {
+		const t = e.target as HTMLElement;
+		if (t.closest('[data-cart-open]')) apri();
+	});
+	dlg.addEventListener('click', (e) => {
+		const t = e.target as HTMLElement;
+		if (t === dlg || t.closest('[data-chiudi]')) return dlg.close();
+		const i = (a: string) => Number(t.closest<HTMLElement>(`[data-${a}]`)?.dataset[a]);
+		if (t.closest('[data-piu]')) voci[i('piu')].qty++;
+		else if (t.closest('[data-meno]')) {
+			const k = i('meno');
+			if (--voci[k].qty <= 0) voci.splice(k, 1);
+		} else if (t.closest('[data-via]')) voci.splice(i('via'), 1);
+		else if (t.closest('[data-prenota]')) {
+			passo = 'ritiro';
+			scelta = { g: 0, o: '' };
+			disegna();
+			return;
+		} else if (t.closest('[data-giorno]')) {
+			scelta = { g: i('giorno'), o: '' };
+			disegna();
+			return;
+		} else if (t.closest('[data-ora]')) {
+			scelta.o = t.closest<HTMLElement>('[data-ora]')!.dataset.ora!;
+			disegna();
+			return;
+		} else if (t.closest('[data-indietro]')) {
+			passo = 'lista';
+			disegna();
+			return;
+		} else if (t.closest('[data-conferma]')) {
+			const g = fasce()[scelta.g];
+			ritiro = {
+				codice: `HS-${String(Math.floor(1000 + ((Date.now() / 1000) % 9000))).padStart(4, '0')}`,
+				quando: `${g.etichetta.toLowerCase()} ${g.sub} at ${scelta.o}`,
+				pezzi: totale(),
+				totale: importo(),
+				build: voci.some((v) => v.id === 'build'),
+			};
+			try {
+				sessionStorage.setItem(chiaveRitiro, JSON.stringify(ritiro));
+			} catch {
+				/* niente */
+			}
+			dispatchEvent(new CustomEvent('hotswap:ritiro', { detail: ritiro }));
+			passo = 'lista';
+			disegna();
+			return;
+		} else if (t.closest('[data-copia]')) {
+			const testo = `Hot Swap — my list (demo)\n${voci.map((v) => `${v.qty}× ${v.nome}${v.dettaglio ? ' (' + v.dettaglio + ')' : ''} — ${euro(v.prezzo * v.qty)}`).join('\n')}\nTotal ${euro(importo())}`;
+			navigator.clipboard?.writeText(testo).then(
+				() => ((dentro.querySelector('[data-esito]') as HTMLElement).textContent = 'Copied to the clipboard.'),
+				() => ((dentro.querySelector('[data-esito]') as HTMLElement).textContent = 'Could not copy: select the list and copy by hand.'),
+			);
+			return;
+		} else return;
+		cancellaRitiro();
+		salva();
+		disegna();
+	});
+	dlg.addEventListener('close', () => ultimoFuoco?.focus());
+	salva();
+</script>

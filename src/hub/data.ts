@@ -14,6 +14,8 @@ import cardAeterna from '../assets/hub/card-aeterna.jpg';
 import shotAeterna from '../assets/hub/shot-aeterna.jpg';
 import cardFixlab from '../assets/hub/card-fixlab.jpg';
 import shotFixlab from '../assets/hub/shot-fixlab.jpg';
+import cardHotswap from '../assets/hub/card-hotswap.jpg';
+import shotHotswap from '../assets/hub/shot-hotswap.jpg';
 
 export const SITE = 'https://theloopstudio.org/';
 export const CONTACT = 'https://theloopstudio.org/contatti';
@@ -422,12 +424,63 @@ export const concepts: Concept[] = [
 			{ label: 'Buone pratiche', valore: '100' },
 		],
 	},
+	{
+		slug: 'hotswap',
+		macro: 'tech',
+		nome: 'Hot Swap',
+		categoria: 'Tech',
+		archetipo: 'Il negozio di computer e gaming, livello Medium',
+		claim: 'Il tuo PC, a modo tuo. Un configuratore che si trascina pezzo per pezzo, con prezzo, consumi e fotogrammi al secondo in tempo reale.',
+		path: '/tech/pc-gaming/',
+		infoPath: '/tech/pc-gaming/info/',
+		titoloSeo: 'Sito web per negozio di computer e gaming: homepage concept con configuratore PC',
+		descrizioneSeo:
+			'Come potrebbe essere la homepage di un negozio di computer e gaming: catalogo con filtri e confronto, configuratore di PC con compatibilità reali, offerte del giorno, prenotazione del ritiro in negozio. Concept dimostrativo di Loop Studio.',
+		intro: [
+			'Chi compra un PC vuole capire cosa sta comprando: se i pezzi stanno insieme, quanto consumano, quanti fotogrammi faranno nei giochi. Questa homepage lascia che sia il cliente a scoprirlo, costruendo il suo computer trascinando i pezzi in uno chassis, con le regole di compatibilità vere e un conto che si aggiorna a ogni scelta.',
+			'È il livello Medium della categoria Tech e una vetrina dimostrativa, scritta in inglese come farebbe un negozio rivolto a un pubblico internazionale: il negozio, i marchi, i prezzi, le recensioni, gli orari e l’indirizzo sono di fantasia. Lo stile richiama una tastiera meccanica: ogni bottone è un tasto che si abbassa quando lo premi.',
+		],
+		perChi:
+			'Negozi di informatica e gaming, assemblatori di PC su misura, rivenditori di componenti e periferiche, store che offrono assistenza e montaggio. Adatta a chi vuole far giocare il cliente con il prodotto prima dell’acquisto e portarlo in negozio con una lista già pronta.',
+		sezioni: [
+			{
+				t: 'Un negozio con filtri che si muovono',
+				d: 'Le categorie sono tasti: il catalogo si riordina con animazioni fluide, si cerca, si ordina per prezzo o potenza, si guarda un’anteprima e si confrontano fino a tre prodotti della stessa categoria.',
+			},
+			{
+				t: 'Il configuratore con regole vere',
+				d: 'Si trascinano i pezzi negli alloggiamenti dello chassis (anche con il dito, tramite una maniglia). Socket, memoria, dimensione della scheda video e alimentatore vengono controllati, con budget, stima dei fotogrammi in quattro giochi e una scheda finale con codice.',
+			},
+			{
+				t: 'Una lista che arriva fino al banco',
+				d: 'Prodotti, servizi, offerte e il PC configurato finiscono in un’unica lista. Da lì si sceglie giorno e ora del ritiro, tra quelli in cui il negozio è davvero aperto, e il biglietto compare anche nella sezione della visita.',
+			},
+			{
+				t: 'Servizi, offerte del giorno e orari',
+				d: 'Cinque servizi al banco con suggerimenti dalla lista, tre offerte che cambiano ogni giorno con il conto alla rovescia fino a mezzanotte, recensioni a rotazione, orari con l’indicazione “aperto ora” e una piantina illustrata.',
+			},
+		],
+		awning: ['#ff6b2c', '#e7e0d1'],
+		glow: 'rgba(255, 107, 44, 0.55)',
+		card: cardHotswap,
+		shot: shotHotswap,
+		shotAlt: '',
+		crop: '60% 40%',
+		cardAlt: 'Hot Swap su desktop e su telefono: titolo grande su fondo beige, una tastiera di categorie con il tasto arancio del configuratore, il menù mobile come vassoio con LED.',
+		mood: 'Una tastiera meccanica colorway: beige, grafite, arancio e verde acqua, con bottoni che hanno spessore e si abbassano quando li premi. Nessuna foto: illustrazioni piatte.',
+		caratteri: 'Rubik e Albert Sans',
+		palette: ['#e7e0d1', '#d8d0bf', '#2a2a2d', '#ff6b2c', '#2fb5a8', '#f4f0e6'],
+		metriche: [
+			{ label: 'Performance', valore: '99' },
+			{ label: 'Accessibilità', valore: '100' },
+			{ label: 'Buone pratiche', valore: '100' },
+		],
+	},
 ];
 
 // stato: 'presto' = quasi pronta, 'cantiere' = ancora in costruzione (nessuna data promessa)
 export type StatoProssima = 'presto' | 'cantiere';
 export const prossime: { nome: string; categoria: string; macro: MacroSlug; stato: StatoProssima }[] = [
-	{ nome: 'Computer e gaming', categoria: 'Tech', macro: 'tech', stato: 'presto' },
 	{ nome: 'Studio tecnologico', categoria: 'Tech', macro: 'tech', stato: 'cantiere' },
 	{ nome: 'Legale e professionale', categoria: 'Studi e servizi', macro: 'studi', stato: 'cantiere' },
 	{ nome: 'Negozio locale', categoria: 'Commercio', macro: 'commercio', stato: 'cantiere' },

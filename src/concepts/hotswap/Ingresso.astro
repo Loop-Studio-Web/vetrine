@@ -1,0 +1,340 @@
+---
+import { categorie, prodotti } from './catalogo';
+import { figura } from './figure';
+
+// ogni categoria è un tasto: mostra l'oggetto più rappresentativo
+const tasti = categorie.map((c) => {
+	const p = prodotti.find((x) => x.cat === c.id)!;
+	return { ...c, svg: figura(p.forma, p.colore), n: prodotti.filter((x) => x.cat === c.id).length };
+});
+const spazio = figura('tower', 'arancio');
+---
+
+<section class="hero" id="top" aria-labelledby="hero-t">
+	<div class="wrap hero__in">
+		<div class="hero__txt">
+			<p class="etichetta">Computer &amp; gaming store · Milan</p>
+			<h1 id="hero-t">Your rig,<br />built <em>your way.</em></h1>
+			<p class="hero__sub">PCs, laptops and parts for people who like to know what is inside. Pick a ready build, or drag your own together and see the price, the power draw and the frame rate before you buy.</p>
+			<div class="hero__cta">
+				<a class="tasto tasto--arancio" href="#builder">Build your PC <span aria-hidden="true">→</span></a>
+				<a class="tasto" href="#shop">Browse the shop</a>
+			</div>
+			<ul class="hero__fatti" aria-label="Why us">
+				<li><b>3 years</b> in-store warranty</li>
+				<li><b>24 h</b> stress test on every build</li>
+				<li><b>Free</b> upgrade fitting</li>
+			</ul>
+		</div>
+
+		<div class="tastiera" aria-label="Shop by category">
+			<div class="tastiera__cassa">
+				{
+					tasti.map((t, i) => (
+						<a class={`k k--${i + 1}`} href="#shop" data-cat={t.id} style={`--i:${i}`}>
+							<span class="k__top">
+								<span class="k__fig" set:html={t.svg} />
+								<span class="k__nome">{t.nome}</span>
+								<span class="k__n">{t.n} items</span>
+							</span>
+						</a>
+					))
+				}
+				<a class="k k--spazio" href="#builder" style="--i:5">
+					<span class="k__top">
+						<span class="k__fig k__fig--s" set:html={spazio} />
+						<span class="k__spazio-t"><b>PC Builder</b><span>Drag the parts. Watch the price.</span></span>
+						<span class="k__enter" aria-hidden="true">↵</span>
+					</span>
+				</a>
+			</div>
+			<p class="tastiera__nota" aria-hidden="true">Press a key to jump in</p>
+		</div>
+	</div>
+</section>
+
+<style>
+	.hero {
+		padding-top: calc(var(--fascia-h) + var(--nav-h) + clamp(28px, 6vw, 72px));
+		padding-bottom: clamp(56px, 8vw, 104px);
+		background:
+			radial-gradient(circle at 85% 8%, rgba(255, 107, 44, 0.14), transparent 42%),
+			radial-gradient(circle at 5% 90%, rgba(47, 181, 168, 0.16), transparent 40%),
+			var(--cassa-2);
+		border-bottom: 3px solid var(--grafite);
+		overflow: clip;
+	}
+	.hero__in {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+		gap: clamp(32px, 5vw, 72px);
+		align-items: center;
+	}
+	.hero h1 {
+		margin-top: 18px;
+		font-size: clamp(2.5rem, 5.4vw, 4.3rem);
+		font-weight: 800;
+		letter-spacing: -0.035em;
+	}
+	.hero h1 em {
+		font-style: normal;
+		color: var(--arancio-testo);
+		box-shadow: inset 0 -0.14em 0 var(--acqua);
+	}
+	.hero__sub {
+		margin-top: 22px;
+		max-width: 46ch;
+		font-size: 1.15rem;
+		color: var(--grigio-testo);
+	}
+	.hero__cta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 16px;
+		margin-top: 30px;
+	}
+	.hero__fatti {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px 26px;
+		margin-top: 34px;
+		list-style: none;
+		font-size: 0.95rem;
+		color: var(--grigio-testo);
+	}
+	.hero__fatti b {
+		font-family: var(--titoli);
+		color: var(--grafite);
+	}
+
+	/* ----- la tastiera delle categorie ----- */
+	.tastiera__cassa {
+		display: grid;
+		grid-template-columns: repeat(6, minmax(0, 1fr));
+		gap: 12px;
+		padding: 16px;
+		background: var(--cassa);
+		border: 3px solid var(--grafite);
+		border-radius: 22px;
+		box-shadow:
+			0 10px 0 var(--grafite),
+			inset 0 0 0 5px var(--cassa-2);
+		transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+		transition: transform 0.25s ease-out;
+	}
+	.k {
+		display: block;
+		text-decoration: none;
+		color: var(--grafite);
+		border-radius: 14px;
+		background: var(--grafite);
+		padding: 0 0 var(--spessore);
+		-webkit-tap-highlight-color: transparent;
+	}
+	.k--1 {
+		grid-column: span 2;
+	}
+	.k--2 {
+		grid-column: span 2;
+	}
+	.k--3 {
+		grid-column: span 2;
+	}
+	.k--4 {
+		grid-column: span 3;
+	}
+	.k--5 {
+		grid-column: span 3;
+	}
+	.k--spazio {
+		grid-column: span 6;
+	}
+	.k__top {
+		position: relative;
+		display: grid;
+		justify-items: center;
+		gap: 2px;
+		padding: 14px 10px 12px;
+		border-radius: 12px;
+		background: var(--avorio);
+		border: 2px solid var(--grafite);
+		/* la concavità del tasto */
+		box-shadow:
+			inset 0 -6px 0 rgba(42, 42, 45, 0.07),
+			inset 0 3px 0 #fff;
+		transform: translateY(calc(var(--spessore) * -1));
+		transition:
+			transform 0.1s ease-out,
+			background 0.15s;
+		height: 100%;
+	}
+	.k:hover .k__top {
+		transform: translateY(calc(var(--spessore) * -1 - 2px));
+		background: #fff;
+	}
+	.k:active .k__top,
+	.k.is-premuto .k__top {
+		transform: translateY(0);
+	}
+	.k:focus-visible {
+		outline-offset: 5px;
+	}
+	.k__fig {
+		width: 100%;
+		max-width: 108px;
+	}
+	.k__fig--s {
+		max-width: 70px;
+	}
+	.k__fig :global(svg) {
+		width: 100%;
+		height: auto;
+		transition: transform 0.3s cubic-bezier(0.3, 1.6, 0.5, 1);
+	}
+	.k:hover .k__fig :global(svg) {
+		transform: translateY(-4px) rotate(-3deg);
+	}
+	.k__nome {
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: 0.98rem;
+		line-height: 1.1;
+		text-align: center;
+	}
+	.k__n {
+		font-size: 0.78rem;
+		color: var(--grigio-testo);
+	}
+	.k--spazio .k__top {
+		grid-auto-flow: column;
+		justify-content: start;
+		align-items: center;
+		gap: 18px;
+		padding: 12px 20px;
+		background: var(--arancio);
+	}
+	.k--spazio:hover .k__top {
+		background: #ff7d44;
+	}
+	.k__spazio-t {
+		display: grid;
+		text-align: left;
+	}
+	.k__spazio-t b {
+		font-family: var(--titoli);
+		font-size: 1.25rem;
+	}
+	.k__spazio-t span {
+		font-size: 0.9rem;
+	}
+	.k__enter {
+		margin-left: auto;
+		display: grid;
+		place-items: center;
+		width: 42px;
+		height: 42px;
+		border: 2px solid var(--grafite);
+		border-radius: 8px;
+		background: var(--avorio);
+		font-family: var(--titoli);
+		font-size: 1.3rem;
+	}
+	.tastiera__nota {
+		margin-top: 22px;
+		text-align: center;
+		font-size: 0.85rem;
+		color: var(--grigio-testo);
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+
+	/* ingresso: i tasti si "digitano" uno dopo l'altro (solo al primo caricamento, dopo il primo paint) */
+	.js .k {
+		animation: digita 0.5s cubic-bezier(0.3, 1.5, 0.5, 1) both;
+		animation-delay: calc(0.15s + var(--i) * 0.09s);
+	}
+	@keyframes digita {
+		from {
+			opacity: 0;
+			transform: translateY(-22px) scale(0.96);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	@media (max-width: 960px) {
+		.hero__in {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.tastiera {
+			max-width: 620px;
+			margin-inline: auto;
+			width: 100%;
+		}
+	}
+	@media (max-width: 520px) {
+		.tastiera__cassa {
+			gap: 8px;
+			padding: 10px;
+			border-radius: 16px;
+		}
+		.k--1,
+		.k--2,
+		.k--3,
+		.k--4,
+		.k--5 {
+			grid-column: span 3;
+		}
+		.k--5 {
+			grid-column: span 6;
+		}
+		.k__top {
+			padding: 10px 6px 10px;
+		}
+		.k__fig {
+			max-width: 78px;
+		}
+		.k__nome {
+			font-size: 0.88rem;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.js .k {
+			animation: none;
+		}
+		.tastiera__cassa {
+			transform: none !important;
+		}
+	}
+</style>
+
+<script>
+	// ogni tasto filtra il catalogo: l'evento lo raccoglie lo Shop
+	for (const k of document.querySelectorAll<HTMLAnchorElement>('.k[data-cat]')) {
+		k.addEventListener('click', () => dispatchEvent(new CustomEvent('hotswap:filtro', { detail: { cat: k.dataset.cat } })));
+	}
+	// la tastiera si inclina un poco verso il puntatore (solo mouse e senza reduced-motion)
+	const cassa = document.querySelector<HTMLElement>('.tastiera__cassa');
+	if (cassa && matchMedia('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)').matches) {
+		const zona = cassa.closest<HTMLElement>('.hero')!;
+		let attesa = false;
+		zona.addEventListener('pointermove', (e) => {
+			if (attesa) return;
+			attesa = true;
+			requestAnimationFrame(() => {
+				attesa = false;
+				const r = cassa.getBoundingClientRect();
+				const x = (e.clientX - (r.left + r.width / 2)) / innerWidth;
+				const y = (e.clientY - (r.top + r.height / 2)) / innerHeight;
+				cassa.style.setProperty('--ry', `${(x * 7).toFixed(2)}deg`);
+				cassa.style.setProperty('--rx', `${(-y * 6).toFixed(2)}deg`);
+			});
+		});
+		zona.addEventListener('pointerleave', () => {
+			cassa.style.setProperty('--ry', '0deg');
+			cassa.style.setProperty('--rx', '0deg');
+		});
+	}
+</script>

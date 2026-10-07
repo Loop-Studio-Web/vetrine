@@ -54,7 +54,7 @@ nella "via" in alto (a scorrimento orizzontale su telefono) e nella sezione dell
 macrocategoria (`macros` in `data.ts`). L'hub e le pagine `info` replicano gli stili del sito madre (`../Loop-Studio`): header (logo 52/42 px, righe rosse al passaggio, toggle tema con etichetta), footer a colonne con filo rosso animato e icone social, cursore "loop" (`src/hub/Cursore.astro`), scrollbar e selezione del testo, bottoni a 4 px. Sono COPIE, non componenti condivisi: se cambiano sul sito madre vanno riallineate a mano. Cursore e scrollbar del sito madre valgono SOLO per l'hub: i concept hanno i propri (il barbiere: forbici e scrollbar a righe). Ogni concept ha anche una pagina di dettaglio indicizzabile
 (`src/pages/<macro>/<variante>/info.astro`, 5 righe che usano `src/hub/Dettaglio.astro`; i testi sono in
 `data.ts`) da aggiungere anche in `public/sitemap.xml`. I concept restano `noindex`. I link dall'hub alle homepage dei concept si aprono in una nuova scheda (`target="_blank" rel="noopener"` + testo per lettori di schermo), così l'hub resta aperto; i link alle pagine `info` restano nella stessa scheda. La via è una scena (tutto in `Hero.astro`, CSS + SVG generati con un seme, nessuna immagine): ogni riga di categoria ha cielo, due strati di edifici, finestre, lampioni, marciapiede e strada, con parallasse allo scroll (`--p`, fermo con reduced-motion). Tema scuro = notte, chiaro = giorno. Ogni categoria ha la sua ora (`atmoDi()`, attributo `data-atmo`): Ristorazione = sera, Benessere = alba, Tech = notte fonda (cielo quasi nero, finestre azzurre come schermi; in tema chiaro cielo lilla), Studi e Commercio = giorno, righe "in cantiere" = grigio con la gru. Una riga "Stanno per aprire" prende l'ora della sua macro (non la gru). Per una nuova macro basta aggiungerla a `atmoDi` (o scegliere un'ora nuova in CSS). Sopra la via c'è il testo "Benvenuto in Loop Street" (numeri adattati a `concepts`); le categorie senza vetrine hanno `stato` in `prossime` (`'presto'` = "Stanno per aprire", `'cantiere'` = "In cantiere"; il testo parla di "stanno per aprire" solo se esiste almeno una `'presto'`). Il neon "Aperto" ha un difetto per lettera (max 3 lampi/s, fermo con reduced-motion). I titoli con `data-scramble` si decodificano all'ingresso in vista (script in `Layout.astro`, copia della logica del sito madre): mai sull'h1 (LCP mobile) e nascosti con `opacity`, non `visibility` (altrimenti saltano nell'albero di accessibilità). Ogni pagina ha anche
-il proprio menù su mobile (hub: pannello a cerchio; Trattoria: cartoncino che si srotola; Ossidiana: sipario; RistoPub: pannello che si riempie di birra; Tre Rasoi: asciugamano che si stende; Lumen: tenda che si apre sulla luce; Aeterna: scansione laser che rivela l'indice).
+il proprio menù su mobile (hub: pannello a cerchio; Trattoria: cartoncino che si srotola; Ossidiana: sipario; RistoPub: pannello che si riempie di birra; Tre Rasoi: asciugamano che si stende; Lumen: tenda che si apre sulla luce; Aeterna: scansione laser che rivela l'indice; Hot Swap: vassoio con LED).
 
 ## Convenzioni di un concept
 
@@ -145,10 +145,22 @@ il proprio menù su mobile (hub: pannello a cerchio; Trattoria: cartoncino che s
   (sezioni scure blu notte); scrollbar a righello. Eventi interni: `fixlab:scegli` e `fixlab:richiesta`. Il `.cover` del menù sta FUORI dall'header (il backdrop-filter
   della barra fa da blocco contenitore ai fixed). Dati, prezzi, recensioni, indirizzo e numero di telefono sono di fantasia. Nessuna foto: tutto SVG/CSS.
   Da fare: controllo marchi sul nome "FIXLAB" (e NEXUS/NÓVA, nomi proposti per Medium e High), Firefox/Safari reali, rilettura testi.
-- **Piano Tech:** Low = FIXLAB (riparazioni), Medium = NEXUS (computer store e gaming, configuratore PC custom), High = NÓVA (studio tecnologico: smart home, AI,
+- **Tech / Computer e gaming** (Hot Swap, `src/pages/tech/pc-gaming/`, concept `src/concepts/hotswap/`): livello **Medium** della macro Tech,
+  pubblicata il 2026-10-07. `build` ok, axe 0 violazioni (desktop, 390 px, cassetto lista con scelta del ritiro), Lighthouse 99 mobile / 100 desktop (CLS 0).
+  **Unico concept in INGLESE** (lang="en", prezzi in €); fascia di ritorno, hub e `info` restano italiani. Idea-guida: tastiera meccanica "colorway"
+  (beige, grafite, arancio #ff6b2c, acqua #2fb5a8; Rubik + Albert Sans; bottoni `.tasto` con spessore che si abbassa; scrollbar a tasto; nessuna foto,
+  illustrazioni SVG in `figure.ts`). Pezzi forti: `Builder.astro` + `regole.ts` (drag con mouse/penna/maniglia su touch, regole vere di socket/RAM/lunghezza
+  scheda/alimentatore, budget, FPS di giochi di fantasia, scontrino con codice), `Shop.astro` (FLIP, ricerca, ordinamento, anteprima, confronto fino a 3),
+  `Lista.astro` (cassetto + scelta di giorno/ora di ritiro dalle fasce reali, biglietto), `Visita.astro` (orari, "aperto ora" su ora di Roma, biglietto del
+  ritiro, piantina), `Servizi.astro` (badge dalla lista, icone animate all'hover o in vista su touch), `Offerte.astro` (3 sconti scelti dal giorno, conto alla
+  rovescia a mezzanotte), `Recensioni.astro`. Dati in `catalogo.ts`; orari e fasce in `ritiro.ts` (unica fonte per tabella e prenotazione, solo browser a runtime).
+  Eventi interni: `hotswap:aggiungi`, `hotswap:lista` (porta `ids`), `hotswap:ritiro`, `hotswap:filtro`. Nome "Hot Swap" = termine tecnico generico (marchio debole):
+  controllo marchi su TMview/UIBM ancora da fare davvero. Marchi, prodotti e giochi sono di fantasia. Il menù mobile ha l'icona sola sotto i 520 px. Da fare:
+  barra fissa mobile (non fatta), Firefox/Safari reali, rilettura testi. Non fatto: hero con mini-builder a preset (valutato, rimandato). Non ancora sul sito madre.
+- **Piano Tech:** Low = FIXLAB (riparazioni), Medium = Hot Swap (computer store e gaming, configuratore PC custom: FATTO, ex nome NEXUS), High = NÓVA (studio tecnologico: smart home, AI,
   automazione, sicurezza). Progressione dal PDF: Low informare, Medium esplorare, High interagire. Attenzione: NEXUS non deve cadere nell'estetica gaming
   nero/neon standard e NÓVA non deve somigliare ad Aeterna (blu abisso, dati, shader): serve una direzione davvero diversa.
-- **Prossime:** la macrocategoria Benessere è chiusa (barbiere, Lumen, Aeterna). Tech ha FIXLAB (Medium e High da fare). Restano Legale/professionale e Negozio locale (3 concept ciascuna).
+- **Prossime:** la macrocategoria Benessere è chiusa (barbiere, Lumen, Aeterna). Tech ha FIXLAB e Hot Swap (High da fare: NÓVA, studio tecnologico). Restano Legale/professionale e Negozio locale (3 concept ciascuna).
 
 ## Deploy
 

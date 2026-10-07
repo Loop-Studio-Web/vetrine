@@ -1,0 +1,252 @@
+---
+// Servizi del banco: cinque "tasti" con un'icona animata al passaggio. Il pulsante aggiunge il servizio alla lista (evento `hotswap:aggiungi`).
+import { servizi } from './catalogo';
+
+const icone: Record<string, string> = {
+	assembly: '<rect x="4" y="10" width="40" height="28" rx="4"/><circle cx="17" cy="24" r="9"/><g class="gira"><path d="M17 17v14M10 24h14M12 19l10 10M12 29l10-10"/></g><path class="lampeggia" d="M32 18h8M32 24h8M32 30h8"/>',
+	upgrade: '<rect x="6" y="28" width="36" height="8" rx="2"/><path d="M12 28V20M20 28V20M28 28V20M36 28V20"/><path d="M24 4v10M19 9l5-5 5 5" class="su"/>',
+	cleaning: '<circle cx="24" cy="24" r="6" class="gira"/><path d="M24 6v8M24 34v8M6 24h8M34 24h8M11 11l6 6M31 31l6 6M37 11l-6 6M17 31l-6 6" class="gira"/>',
+	migrate: '<rect x="3" y="14" width="16" height="20" rx="3"/><rect x="29" y="14" width="16" height="20" rx="3"/><path d="M21 24h6M24 20l4 4-4 4" class="vai"/>',
+	tradein: '<g class="scambia"><path d="M10 18h26l-5-6M38 30H12l5 6"/></g>',
+};
+const numero = (p: string) => Number(p.match(/\d+/)?.[0] ?? 0);
+---
+
+<section class="serv sezione" id="services" aria-labelledby="serv-t">
+	<div class="wrap">
+		<header class="sezione__testa" data-reveal>
+			<p class="etichetta">The service desk</p>
+			<h2 id="serv-t">We fit it, fix it and clean it, while you wait or while you sleep.</h2>
+			<p>Five jobs the bench does every week, with the time it takes written on the key.</p>
+		</header>
+
+		<ul class="serv__tasti">
+			{
+				servizi.map((s, i) => (
+					<li class="serv__tasto" style={`--i:${i}`} data-serv-card={s.id} data-reveal>
+						<p class="serv__per" data-per hidden></p>
+						<svg class="serv__ico" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icone[s.id]} />
+						<p class="serv__tempo"><span aria-hidden="true">⏱</span> {s.tempo}</p>
+						<h3>{s.nome}</h3>
+						<p class="serv__testo">{s.testo}</p>
+						<p class="serv__prezzo">{s.prezzo}</p>
+						{numero(s.prezzo) > 0 ? (
+							<button class="tasto tasto--piccolo tasto--arancio" type="button" data-serv={s.id} data-nome={s.nome} data-prezzo={numero(s.prezzo)} data-det={`${s.tempo} · price from`}>
+								Add to list
+							</button>
+						) : (
+							<a class="tasto tasto--piccolo" href="#visit">Bring it in</a>
+						)}
+					</li>
+				))
+			}
+		</ul>
+
+		<div class="serv__banco" data-reveal>
+			<p><b>Not sure what you need?</b> Walk in with the machine. The first look at the counter is always free.</p>
+			<a class="tasto tasto--grafite tasto--piccolo" href="#visit">See opening hours</a>
+		</div>
+	</div>
+</section>
+
+<style>
+	.serv {
+		background: var(--cassa);
+		border-block: 3px solid var(--grafite);
+	}
+	.serv__tasti {
+		list-style: none;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+		gap: 20px;
+	}
+	.serv__tasto {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		padding: 22px 20px 20px;
+		background: var(--avorio);
+		border: 2px solid var(--grafite);
+		border-radius: 14px;
+		box-shadow: 0 var(--spessore) 0 var(--grafite);
+		transition:
+			transform 0.15s ease-out,
+			box-shadow 0.15s ease-out,
+			opacity 0.6s ease;
+		transition-delay: 0s, 0s, calc(var(--i) * 70ms);
+	}
+	.serv__tasto:hover {
+		transform: translateY(-4px) rotate(-0.4deg);
+		box-shadow: 0 calc(var(--spessore) + 4px) 0 var(--grafite);
+		transition-delay: 0s;
+	}
+	.serv__per {
+		align-self: flex-start;
+		padding: 3px 10px;
+		background: var(--acqua);
+		border: 2px solid var(--grafite);
+		border-radius: 999px;
+		font-family: var(--titoli);
+		font-weight: 600;
+		font-size: 0.74rem;
+		letter-spacing: 0.04em;
+	}
+	.serv__per:not([hidden]) {
+		animation: serv-per 0.4s cubic-bezier(0.3, 1.5, 0.5, 1);
+	}
+	@keyframes serv-per {
+		from {
+			opacity: 0;
+			transform: scale(0.7);
+		}
+	}
+	.serv__ico {
+		width: 54px;
+		height: 54px;
+		padding: 8px;
+		border: 2px solid var(--grafite);
+		border-radius: 12px;
+		background: var(--acqua);
+		color: var(--grafite);
+		margin-bottom: 6px;
+	}
+	.serv__tasto:nth-child(even) .serv__ico {
+		background: var(--arancio);
+	}
+	.serv__tempo {
+		font-family: var(--titoli);
+		font-weight: 600;
+		font-size: 0.78rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--acqua-testo);
+	}
+	.serv__tasto h3 {
+		font-size: 1.3rem;
+		font-weight: 700;
+	}
+	.serv__testo {
+		color: var(--grigio-testo);
+		font-size: 0.97rem;
+		flex: 1;
+	}
+	.serv__prezzo {
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: 1.15rem;
+		margin-top: 6px;
+	}
+	.serv__tasto .tasto {
+		align-self: flex-start;
+		margin-top: 6px;
+	}
+	.serv__banco {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 14px 28px;
+		margin-top: 36px;
+		padding: 18px 22px;
+		border: 2px dashed var(--grafite);
+		border-radius: 14px;
+	}
+	/* icone animate al passaggio */
+	.serv__ico :global(.gira) {
+		transform-box: fill-box;
+		transform-origin: center;
+	}
+	.serv__tasto:hover .serv__ico :global(.gira),
+	.serv__tasto.in-vista .serv__ico :global(.gira),
+	.serv__tasto:focus-within .serv__ico :global(.gira) {
+		animation: serv-gira 1.4s linear infinite;
+	}
+	.serv__ico :global(.scambia) {
+		transform-box: fill-box;
+		transform-origin: center;
+		transition: transform 0.7s cubic-bezier(0.3, 1.4, 0.5, 1);
+	}
+	.serv__tasto:hover .serv__ico :global(.scambia),
+	.serv__tasto.in-vista .serv__ico :global(.scambia),
+	.serv__tasto:focus-within .serv__ico :global(.scambia) {
+		transform: rotate(180deg);
+	}
+	.serv__tasto:hover .serv__ico :global(.lampeggia),
+	.serv__tasto.in-vista .serv__ico :global(.lampeggia),
+	.serv__tasto:focus-within .serv__ico :global(.lampeggia) {
+		animation: serv-lampi 0.9s steps(2, jump-none) infinite;
+	}
+	@keyframes serv-lampi {
+		50% {
+			opacity: 0.2;
+		}
+	}
+	.serv__tasto:hover .serv__ico :global(.su),
+	.serv__tasto.in-vista .serv__ico :global(.su),
+	.serv__tasto:focus-within .serv__ico :global(.su) {
+		animation: serv-su 0.8s ease-in-out infinite alternate;
+	}
+	.serv__tasto:hover .serv__ico :global(.vai),
+	.serv__tasto.in-vista .serv__ico :global(.vai),
+	.serv__tasto:focus-within .serv__ico :global(.vai) {
+		animation: serv-vai 0.7s ease-in-out infinite alternate;
+	}
+	@keyframes serv-gira {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+	@keyframes serv-su {
+		to {
+			transform: translateY(-4px);
+		}
+	}
+	@keyframes serv-vai {
+		to {
+			transform: translateX(3px);
+		}
+	}
+</style>
+
+<script>
+	document.querySelectorAll<HTMLButtonElement>('[data-serv]').forEach((b) =>
+		b.addEventListener('click', () => {
+			dispatchEvent(
+				new CustomEvent('hotswap:aggiungi', {
+					detail: { id: `serv-${b.dataset.serv}`, nome: b.dataset.nome, prezzo: Number(b.dataset.prezzo), forma: 'tower', colore: 'acqua', dettaglio: b.dataset.det },
+				}),
+			);
+			const t = b.textContent;
+			b.textContent = 'Added ✓';
+			setTimeout(() => (b.textContent = t), 1400);
+		}),
+	);
+
+	// suggerimenti dalla lista: un build chiama il montaggio, un componente chiama l'upgrade al banco
+	const suggerisci = (ids: string[]) => {
+		const build = ids.includes('build');
+		const pezzi = ids.some((x) => x !== 'build' && !x.startsWith('serv-') && !x.startsWith('bld'));
+		const per: Record<string, string> = { assembly: build ? 'For your custom build' : '', upgrade: pezzi ? 'For the parts in your list' : '' };
+		document.querySelectorAll<HTMLElement>('[data-serv-card]').forEach((c) => {
+			const t = per[c.dataset.servCard!] ?? '';
+			const el = c.querySelector<HTMLElement>('[data-per]')!;
+			el.textContent = t;
+			el.hidden = !t;
+		});
+	};
+	try {
+		suggerisci((JSON.parse(sessionStorage.getItem('hotswap-lista') || '[]') as { id: string }[]).map((v) => v.id));
+	} catch {
+		/* niente */
+	}
+	addEventListener('hotswap:lista', (e) => suggerisci((e as CustomEvent<{ ids: string[] }>).detail.ids));
+
+	// su touch non c'è l'hover: l'icona si anima mentre la scheda è in vista
+	if (matchMedia('(hover: none)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		const io = new IntersectionObserver(
+			(voci) => voci.forEach((v) => v.target.classList.toggle('in-vista', v.isIntersecting)),
+			{ threshold: 0.6 },
+		);
+		document.querySelectorAll('[data-serv-card]').forEach((c) => io.observe(c));
+	}
+</script>
