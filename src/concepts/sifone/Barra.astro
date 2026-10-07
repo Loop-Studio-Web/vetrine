@@ -1,0 +1,80 @@
+---
+import { TEL } from './dati';
+---
+
+<nav class="barra" data-barra aria-label="Azioni rapide">
+	<a class="barra__tel" href={`tel:${TEL}`}>
+		<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+			><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"></path></svg
+		>
+		<span>Chiama ora</span>
+	</a>
+	<a class="barra__cta" href="#richiesta">Richiedi</a>
+</nav>
+
+<style>
+	.barra {
+		display: none;
+	}
+	@media (max-width: 720px) {
+		.barra {
+			position: fixed;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			z-index: 130;
+			display: flex;
+			gap: 0;
+			background: var(--notte);
+			border-top: 3px solid var(--rame);
+			padding-bottom: env(safe-area-inset-bottom);
+			transform: translateY(110%);
+			transition: transform 0.3s;
+		}
+		.barra.is-visibile {
+			transform: none;
+		}
+		.barra a {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 10px;
+			min-height: 56px;
+			text-decoration: none;
+			font-family: var(--testo);
+			font-weight: 700;
+			font-size: 0.98rem;
+			letter-spacing: 0.1em;
+			text-transform: uppercase;
+		}
+		.barra__tel {
+			flex: 1.4;
+			background: var(--rame);
+			color: var(--notte);
+		}
+		.barra__cta {
+			flex: 1;
+			color: var(--rame);
+		}
+	}
+</style>
+
+<script>
+	const barra = document.querySelector<HTMLElement>('[data-barra]');
+	const ingresso = document.getElementById('top');
+	const richiesta = document.getElementById('richiesta');
+	if (barra && ingresso && richiesta) {
+		// compare quando il primo schermo è passato e sparisce davanti al modulo
+		let fuoriIngresso = false;
+		let sulModulo = false;
+		const aggiorna = () => barra.classList.toggle('is-visibile', fuoriIngresso && !sulModulo);
+		new IntersectionObserver(([e]) => {
+			fuoriIngresso = !e.isIntersecting;
+			aggiorna();
+		}).observe(ingresso);
+		new IntersectionObserver(([e]) => {
+			sulModulo = e.isIntersecting;
+			aggiorna();
+		}, { threshold: 0.2 }).observe(richiesta);
+	}
+</script>

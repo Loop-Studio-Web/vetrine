@@ -82,7 +82,7 @@ function skyline(seed: number, id: string, o: { h: number; min: number; max: num
 	return `<svg viewBox="0 0 ${W} ${o.h}" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false"><defs>${win}</defs><g class="sk-b">${body}</g>${o.details ? `<g class="sk-w" fill="url(#${id})">${body.replace(/<polygon[^>]*>/g, '').replace(/<rect x="[^"]*" y="[^"]*" width="(?:[0-9]|1[0-9]|2)"[^>]*>/g, '')}</g><g class="sk-l">${lit}</g>` : ''}</svg>`;
 }
 // Ogni categoria ha la sua ora del giorno: la via cambia luce passando da una all'altra
-const atmoDi = (slug: string) => ({ ristorazione: 'sera', benessere: 'alba', tech: 'notte', studi: 'giorno', commercio: 'giorno' } as Record<string, string>)[slug] ?? 'giorno';
+const atmoDi = (slug: string) => ({ ristorazione: 'sera', benessere: 'alba', tech: 'notte', casa: 'tramonto', studi: 'giorno', commercio: 'giorno' } as Record<string, string>)[slug] ?? 'giorno';
 const gru = `<svg viewBox="0 0 120 160" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M52 160V28M64 160V28M52 140l12-14M52 118l12-14M52 96l12-14M52 74l12-14M52 52l12-14M64 140L52 126M64 118L52 104M64 96L52 82M64 74L52 60M64 52L52 38"/><path d="M6 28h108M6 28l52-22 52 22M58 6V28"/><path d="M22 28v14M96 28v36M96 64l-5 7h10z"/></g><rect x="10" y="38" width="22" height="10" fill="currentColor"/></svg>`;
 const stelle = (() => {
 	const r = rng(7);
@@ -693,7 +693,7 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 	@media (min-width: 1100px) {
 		.street__row {
 			gap: 22px 18px;
-			align-items: start;
+			align-items: stretch;
 		}
 	}
 	/* ——— Scena di strada (prova): facciate, tetti, lampioni, marciapiede e carreggiata ———
@@ -928,6 +928,27 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 		right: 22%;
 		top: 26px;
 	}
+	/* Tramonto (casa e artigiani): ora in cui si torna a casa, cielo ambra e finestre che si accendono */
+	[data-atmo='tramonto'] .scene {
+		--sky-mid: #2a1904;
+		--sky-hz: #a9660f;
+		--sk-far: #4a3010;
+		--sk-near: #0e0b07;
+	}
+	[data-atmo='tramonto'] .sc--stars {
+		opacity: 0.12;
+	}
+	[data-atmo='tramonto'] .sc--moon {
+		right: auto;
+		left: 62%;
+		top: 30px;
+		width: 24px;
+		height: 24px;
+	}
+	[data-atmo='tramonto'] .sc--fill::after,
+	[data-atmo='tramonto'] .sc :global(.sk-l) {
+		opacity: 0.6;
+	}
 	/* Alba: viola e rosa, ultime stelle, poche luci accese */
 	[data-atmo='alba'] .scene {
 		--sky-mid: #14122b;
@@ -991,6 +1012,20 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 		height: 54px;
 		background: radial-gradient(circle, #fff1cf 0 35%, #ffb36b 75%);
 		box-shadow: 0 0 80px 30px rgba(255, 140, 70, 0.55);
+	}
+	:global(:root[data-theme='light']) [data-atmo='tramonto'] .scene {
+		--sky-mid: #ffe8a8;
+		--sky-hz: #ffc063;
+		--sk-far: #e4bf86;
+		--sk-near: #c9b08a;
+	}
+	:global(:root[data-theme='light']) [data-atmo='tramonto'] .sc--sun {
+		top: 90px;
+		right: 18%;
+		width: 58px;
+		height: 58px;
+		background: radial-gradient(circle, #fff6d4 0 35%, #ffbd3a 75%);
+		box-shadow: 0 0 80px 30px rgba(255, 170, 40, 0.55);
 	}
 	:global(:root[data-theme='light']) [data-atmo='alba'] .scene {
 		--sky-mid: #f7dcf0;
@@ -1068,6 +1103,12 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 	}
 	.shop {
 		position: relative;
+		display: flex;
+		flex-direction: column;
+	}
+	/* le facciate di una riga arrivano tutte fino alla strada, anche se il testo ha meno righe */
+	.shop > .shop__link {
+		flex: 1;
 	}
 	.shop__link {
 		background: var(--wall);

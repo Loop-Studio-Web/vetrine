@@ -1,0 +1,340 @@
+---
+import { fasce, tariffe } from './dati';
+---
+
+<section class="tar sez sez--gialla" id="tariffe" data-sez>
+	<div class="sez__in">
+		<p class="stazione"><b>03</b> Tariffe</p>
+		<h2 class="sez__titolo">Quanto costa, in chiaro.</h2>
+		<p class="sez__sotto">Niente cifre nascoste. Scegli quando ti serve e quanto dura il lavoro: il contatore fa il conto.</p>
+
+		<div class="tar__banco" data-tariffe data-chiamata={tariffe.chiamata} data-ora={tariffe.ora}>
+			<div class="tar__comandi">
+				<fieldset class="tar__gruppo">
+					<legend>Quando</legend>
+					<div class="tar__scelte">
+						{
+							fasce.map((f, i) => (
+								<label class="tar__scelta">
+									<input type="radio" name="fascia" value={f.id} data-molt={f.molt} checked={i === 0} />
+									<span><b>{f.nome}</b><small>{f.dettaglio}</small></span>
+								</label>
+							))
+						}
+					</div>
+				</fieldset>
+				<div class="tar__gruppo">
+					<p class="tar__etichetta" id="ore-l">Durata del lavoro</p>
+					<div class="tar__ore" role="group" aria-labelledby="ore-l">
+						<button type="button" class="tar__pm" data-meno aria-label="Meno ore">−</button>
+						<output class="tar__ore-n" data-ore aria-live="polite">1 ora</output>
+						<button type="button" class="tar__pm" data-piu aria-label="Più ore">+</button>
+					</div>
+				</div>
+				<ul class="tar__voci" role="list">
+					<li><span>Uscita e diagnosi</span><b data-v-chiamata>€ 35</b></li>
+					<li><span>Manodopera</span><b data-v-mano>€ 45</b></li>
+					<li class="tar__molt"><span>Maggiorazione</span><b data-v-molt>nessuna</b></li>
+				</ul>
+			</div>
+
+			<div class="tar__contatore">
+				<p class="tar__sopra">Stima del conto</p>
+				<div class="tar__cifre" data-cifre aria-hidden="true"></div>
+				<p class="tar__totale-sr sr-only" data-totale-sr aria-live="polite"></p>
+				<p class="tar__nota">
+					L’uscita viene scalata se procedi con il lavoro. I materiali sono a parte e il prezzo finale è sempre detto prima di iniziare.
+				</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.tar {
+		overflow: hidden;
+	}
+	.tar::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: none;
+		pointer-events: none;
+	}
+	.tar .sez__in {
+		position: relative;
+	}
+	.tar .sez__sotto {
+		color: #2b2b2b;
+	}
+	.tar__banco {
+		margin-top: clamp(30px, 5vw, 56px);
+		display: grid;
+		grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+		gap: clamp(20px, 4vw, 48px);
+		align-items: stretch;
+	}
+	.tar__comandi {
+		border-radius: 4px 22px 4px 22px;
+		display: grid;
+		gap: 24px;
+		align-content: start;
+		padding: 24px;
+		background: var(--calce);
+		border: 1px solid rgba(8, 33, 42, 0.26);
+		box-shadow: 0 24px 38px -26px rgba(8, 33, 42, 0.6);
+	}
+	.tar__gruppo {
+		border: 0;
+		min-width: 0;
+	}
+	.tar__gruppo legend,
+	.tar__etichetta {
+		margin-bottom: 10px;
+		font-weight: 700;
+		font-size: 0.82rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+	}
+	.tar__scelte {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 8px;
+	}
+	.tar__scelta {
+		position: relative;
+		cursor: pointer;
+	}
+	.tar__scelta input {
+		position: absolute;
+		opacity: 0;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		cursor: pointer;
+	}
+	.tar__scelta span {
+		display: grid;
+		gap: 2px;
+		padding: 10px 12px;
+		height: 100%;
+		background: var(--bianco);
+		border: 2px solid rgba(8, 33, 42, 0.5);
+		transition: background 0.2s, color 0.2s;
+	}
+	.tar__scelta b {
+		font-family: var(--testo);
+		font-weight: 700;
+		font-size: 1.17rem;
+		line-height: 1;
+		text-transform: uppercase;
+	}
+	.tar__scelta small {
+		font-size: 0.8rem;
+		line-height: 1.25;
+		color: var(--testo-2);
+	}
+	.tar__scelta input:checked + span {
+		background: var(--notte);
+		color: var(--rame);
+	}
+	.tar__scelta input:checked + span small {
+		color: #e5e0cf;
+	}
+	.tar__scelta input:focus-visible + span {
+		outline: 3px solid var(--acqua-testo);
+		outline-offset: 3px;
+	}
+	.tar__ore {
+		display: flex;
+		align-items: center;
+		gap: 0;
+		width: fit-content;
+		border: 2px solid rgba(8, 33, 42, 0.5);
+	}
+	.tar__pm {
+		width: 56px;
+		height: 52px;
+		border: 0;
+		background: var(--rame);
+		font-family: var(--titoli);
+		font-weight: 400;
+		font-size: 2rem;
+		line-height: 1;
+	}
+	.tar__pm:hover {
+		background: var(--notte);
+		color: var(--rame);
+	}
+	.tar__pm:disabled {
+		opacity: 0.35;
+		cursor: not-allowed;
+	}
+	.tar__ore-n {
+		min-width: 150px;
+		padding: 0 14px;
+		text-align: center;
+		font-family: var(--testo);
+		font-weight: 700;
+		font-size: 1.25rem;
+		text-transform: uppercase;
+		background: var(--bianco);
+		line-height: 52px;
+	}
+	.tar__voci {
+		display: grid;
+		gap: 0;
+		border-top: 1px solid var(--riga);
+	}
+	.tar__voci li {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		padding: 10px 0;
+		border-bottom: 2px dashed var(--ferro);
+	}
+	.tar__voci b {
+		font-family: var(--titoli);
+		font-weight: 400;
+		font-size: 1.4rem;
+	}
+
+	.tar__contatore {
+		border-radius: 4px 22px 4px 22px;
+		display: grid;
+		align-content: center;
+		justify-items: start;
+		gap: 16px;
+		padding: clamp(20px, 3vw, 36px);
+		background: var(--notte);
+		color: #fff;
+		border: 1px solid rgba(8, 33, 42, 0.26);
+		box-shadow: 0 24px 38px -26px rgba(8, 33, 42, 0.6);
+	}
+	.tar__sopra {
+		font-weight: 700;
+		font-size: 0.82rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--rame);
+	}
+	.tar__cifre {
+		display: flex;
+		align-items: stretch;
+		gap: 6px;
+		font-family: var(--titoli);
+		font-weight: 400;
+		font-size: clamp(4rem, 11vw, 7rem);
+		line-height: 1;
+	}
+	.tar__nota {
+		max-width: 40ch;
+		font-size: 0.95rem;
+		color: #d4d0c3;
+	}
+	@media (max-width: 900px) {
+		.tar__banco {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+	@media (max-width: 480px) {
+		.tar__scelte {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.tar__ore-n {
+			min-width: 110px;
+		}
+	}
+</style>
+
+<style is:global>
+	/* le cifre del contatore sono create via JS */
+	.cifra[hidden] {
+		display: none;
+	}
+	.cifra {
+		position: relative;
+		width: 0.84em;
+		height: 1.1em;
+		overflow: hidden;
+		background: linear-gradient(#10444b, #061a20 50%, #10444b);
+		border: 2px solid #1d5a62;
+		color: var(--rame);
+		text-align: center;
+	}
+	.cifra__nastro {
+		display: block;
+		transition: transform 0.9s cubic-bezier(0.3, 1.2, 0.4, 1);
+		transform: translateY(calc(var(--d, 0) * -1.1em));
+	}
+	.cifra__nastro i {
+		display: block;
+		height: 1.1em;
+		line-height: 1.1em;
+		font-style: normal;
+	}
+	.cifre__euro {
+		align-self: center;
+		margin-right: 4px;
+		font-size: 0.5em;
+		color: var(--rame);
+	}
+</style>
+
+<script>
+	const radice = document.querySelector<HTMLElement>('[data-tariffe]');
+	if (radice) {
+		const chiamata = Number(radice.dataset.chiamata);
+		const ora = Number(radice.dataset.ora);
+		const cifre = radice.querySelector<HTMLElement>('[data-cifre]')!;
+		const oreOut = radice.querySelector<HTMLOutputElement>('[data-ore]')!;
+		const meno = radice.querySelector<HTMLButtonElement>('[data-meno]')!;
+		const piu = radice.querySelector<HTMLButtonElement>('[data-piu]')!;
+		const sr = radice.querySelector<HTMLElement>('[data-totale-sr]')!;
+		let ore = 1;
+
+		// tre colonne di cifre che scorrono, come un contatore meccanico
+		const euro = document.createElement('span');
+		euro.className = 'cifre__euro';
+		euro.textContent = '€';
+		cifre.appendChild(euro);
+		const colonne = Array.from({ length: 3 }, () => {
+			const c = document.createElement('span');
+			c.className = 'cifra';
+			const n = document.createElement('span');
+			n.className = 'cifra__nastro';
+			n.innerHTML = Array.from({ length: 10 }, (_, d) => `<i>${d}</i>`).join('');
+			c.appendChild(n);
+			cifre.appendChild(c);
+			return c;
+		});
+
+		const aggiorna = () => {
+			const molt = Number(radice.querySelector<HTMLInputElement>('input[name="fascia"]:checked')!.dataset.molt);
+			const mano = ora * ore;
+			const totale = Math.round((chiamata + mano) * molt);
+			const s = String(Math.min(999, totale)).padStart(3, '0');
+			colonne.forEach((c, i) => c.style.setProperty('--d', s[i]));
+			// niente zeri iniziali: € 80, non € 080
+			colonne[0].hidden = s[0] === '0';
+			colonne[1].hidden = s[0] === '0' && s[1] === '0';
+			sr.textContent = `Totale stimato: ${totale} euro`;
+			oreOut.textContent = ore === 1 ? '1 ora' : `${ore} ore`;
+			meno.disabled = ore <= 1;
+			piu.disabled = ore >= 4;
+			radice.querySelector('[data-v-mano]')!.textContent = `€ ${mano}`;
+			radice.querySelector('[data-v-molt]')!.textContent = molt === 1 ? 'nessuna' : `+${Math.round((molt - 1) * 100)}%`;
+		};
+		meno.addEventListener('click', () => {
+			ore = Math.max(1, ore - 1);
+			aggiorna();
+		});
+		piu.addEventListener('click', () => {
+			ore = Math.min(4, ore + 1);
+			aggiorna();
+		});
+		radice.querySelectorAll('input[name="fascia"]').forEach((i) => i.addEventListener('change', aggiorna));
+		aggiorna();
+	}
+</script>

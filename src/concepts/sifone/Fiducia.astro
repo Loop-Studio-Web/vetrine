@@ -1,0 +1,196 @@
+---
+import { garanzie, recensioni } from './dati';
+
+const media = (recensioni.reduce((a, r) => a + r.s, 0) / recensioni.length).toFixed(1).replace('.', ',');
+---
+
+<section class="fid sez" id="fiducia" data-sez>
+	<div class="sez__in">
+		<p class="stazione"><b>04</b> Perché fidarsi</p>
+		<h2 class="sez__titolo">Quattro cose scritte, non promesse a voce.</h2>
+
+		<ul class="fid__garanzie" role="list">
+			{
+				garanzie.map((g, i) => (
+					<li data-reveal style={`transition-delay:${i * 70}ms`}>
+						<span class="fid__n" aria-hidden="true">{i + 1}</span>
+						<h3>{g.t}</h3>
+						<p>{g.d}</p>
+					</li>
+				))
+			}
+		</ul>
+
+		<div class="fid__rec">
+			<div class="fid__voto" aria-label={`Valutazione media ${media} su 5`}>
+				<b>{media}</b>
+				<span>su 5</span>
+				<small>Recensioni di esempio</small>
+			</div>
+			<ul class="fid__lista" role="list">
+				{
+					recensioni.map((r) => (
+						<li>
+							<p class="fid__goccie" role="img" aria-label={`${r.s} su 5`}>
+								{Array.from({ length: 5 }, (_, k) => (
+									<svg viewBox="0 0 20 26" width="16" height="21" aria-hidden="true" class={k < r.s ? 'on' : ''}>
+										<path d="M10 2C6 9 2 13 2 17a8 8 0 0 0 16 0c0-4-4-8-8-15z" />
+									</svg>
+								))}
+							</p>
+							<blockquote>{r.t}</blockquote>
+							<p class="fid__chi">
+								<b>{r.n}</b> · {r.z}
+							</p>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</div>
+</section>
+
+<style>
+	.fid__garanzie {
+		margin-top: clamp(34px, 5vw, 64px);
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 0 clamp(20px, 3vw, 44px);
+	}
+	.fid__garanzie li {
+		position: relative;
+		padding: 18px 0 8px;
+		border-top: 2px solid var(--notte);
+	}
+	.fid__garanzie li:nth-child(even) {
+		margin-top: 28px;
+	}
+	.fid__n {
+		display: block;
+		font-family: var(--titoli);
+		font-size: 4.4rem;
+		line-height: 0.9;
+		color: var(--rame-testo);
+		margin-bottom: 10px;
+	}
+	.fid__garanzie h3 {
+		font-size: 1.65rem;
+		margin-bottom: 8px;
+	}
+	.fid__garanzie p {
+		color: var(--testo-2);
+		font-size: 1.02rem;
+	}
+
+	.fid__rec {
+		margin-top: clamp(56px, 8vw, 110px);
+		display: grid;
+		grid-template-columns: 220px minmax(0, 1fr);
+		gap: clamp(24px, 4vw, 60px);
+		align-items: start;
+	}
+	.fid__voto {
+		display: grid;
+		justify-items: start;
+		padding: 22px 22px 20px;
+		background: var(--petrolio);
+		color: #fff;
+		border-radius: 4px 26px 4px 26px;
+		transform: rotate(-1.4deg);
+		box-shadow: 0 24px 38px -26px rgba(8, 33, 42, 0.7);
+	}
+	.fid__voto b {
+		font-family: var(--titoli);
+		font-weight: 400;
+		font-size: 5.4rem;
+		line-height: 0.9;
+		color: var(--rame);
+	}
+	.fid__voto span {
+		font-family: var(--testo);
+		font-weight: 700;
+		font-size: 0.95rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+	}
+	.fid__voto small {
+		margin-top: 10px;
+		font-size: 0.85rem;
+		color: #c9d6d0;
+	}
+	.fid__lista {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0 clamp(28px, 5vw, 72px);
+	}
+	.fid__lista li {
+		position: relative;
+		padding: 40px 0 26px;
+		border-bottom: 1px solid var(--riga);
+	}
+	.fid__lista li::before {
+		content: '“';
+		position: absolute;
+		left: -4px;
+		top: -4px;
+		font-family: var(--titoli);
+		font-size: 5rem;
+		line-height: 1;
+		color: var(--rame);
+	}
+	.fid__lista li:nth-child(even) {
+		transform: translateY(34px);
+	}
+	.fid__goccie {
+		display: flex;
+		gap: 3px;
+		margin-bottom: 10px;
+	}
+	.fid__goccie svg {
+		fill: none;
+		stroke: var(--ferro);
+		stroke-width: 2;
+	}
+	.fid__goccie svg.on {
+		fill: var(--acqua);
+		stroke: var(--acqua-testo);
+	}
+	.fid__lista blockquote {
+		font-size: 1.12rem;
+	}
+	.fid__chi {
+		margin-top: 12px;
+		font-size: 0.92rem;
+		color: var(--testo-2);
+	}
+	.fid__chi b {
+		color: var(--notte);
+	}
+	@media (max-width: 1000px) {
+		.fid__garanzie {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+	@media (max-width: 760px) {
+		.fid__rec {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.fid__voto {
+			width: min(100%, 260px);
+		}
+		.fid__lista {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.fid__lista li:nth-child(even) {
+			transform: none;
+		}
+	}
+	@media (max-width: 520px) {
+		.fid__garanzie {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.fid__garanzie li:nth-child(even) {
+			margin-top: 0;
+		}
+	}
+</style>

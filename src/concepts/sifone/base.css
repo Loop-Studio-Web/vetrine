@@ -1,0 +1,355 @@
+/* SIFONE — token, reset e componenti minimi. Petrolio, rame e calce: i colori di una bottega che lavora con tubi veri.
+   Carta con grana, foto vere, insegna dipinta a mano (fuori registro, bordi un po' mangiati). */
+:root {
+	--petrolio: #0f3a3f; /* sezioni scure */
+	--petrolio-2: #17505a;
+	--notte: #08212a; /* testi e fondi più scuri */
+	--rame: #e58857; /* riempimenti e accenti sullo scuro */
+	--rame-scuro: #b95f33;
+	--rame-testo: #98411a; /* testi e link rame sul chiaro (contrasto 5,6) */
+	--calce: #efe9dc;
+	--calce-2: #e2d9c6;
+	--bianco: #fffdf8;
+	--ferro: #6f7b78; /* tubi, righe, decorazioni */
+	--testo-2: #46504f; /* testi secondari su calce (contrasto 7) */
+	--acqua: #34b3a8; /* acqua nei tubi e nelle gocce */
+	--acqua-testo: #0b6b66; /* testi e link sul chiaro */
+	--acqua-chiaro: #8fe0d6; /* sullo scuro */
+	--verde-testo: #1b6b3a;
+	--errore: #a8231b;
+	--riga: #cdbfa6;
+	--minio: #d8412a; /* l'unico rosso: emergenza */
+
+	--titoli: 'Gloock', 'Georgia', serif;
+	--testo: 'Karla', system-ui, sans-serif;
+
+	--gutter: clamp(20px, 5vw, 56px);
+	--max: 1180px;
+	--nav-h: 68px;
+	--fascia-h: 34px;
+	--tubo-x: clamp(6px, 1.6vw, 22px);
+	color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	scroll-behavior: smooth;
+	scroll-padding-top: calc(var(--nav-h) + 16px);
+	-webkit-text-size-adjust: 100%;
+	scrollbar-color: var(--rame) var(--petrolio);
+}
+
+body {
+	position: relative;
+	background: var(--calce);
+	color: var(--notte);
+	font-family: var(--testo);
+	font-size: 1.1rem;
+	line-height: 1.55;
+	overflow-x: clip;
+}
+body.menu-aperto {
+	overflow: hidden;
+}
+
+/* grana di carta stampata su tutta la pagina: rompe la pulizia del digitale */
+body::after {
+	content: '';
+	position: fixed;
+	inset: 0;
+	z-index: 400;
+	pointer-events: none;
+	opacity: 0.2;
+	mix-blend-mode: multiply;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .25 0 0 0 0 .2 0 0 0 0 .15 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Scrollbar a tubo di rame con il cursore a fascetta */
+@supports selector(::-webkit-scrollbar) {
+	html {
+		scrollbar-color: auto;
+	}
+	::-webkit-scrollbar {
+		width: 16px;
+		height: 16px;
+	}
+	::-webkit-scrollbar-track {
+		background: linear-gradient(90deg, #0b2e32, var(--petrolio) 50%, #0b2e32);
+	}
+	::-webkit-scrollbar-thumb {
+		background: linear-gradient(90deg, #a24f26, var(--rame) 45%, #f0a37a 55%, #b95f33);
+		border: 3px solid var(--petrolio);
+		border-radius: 8px;
+	}
+	::-webkit-scrollbar-thumb:hover {
+		background: linear-gradient(90deg, #b95f33, #f0a37a 50%, #b95f33);
+	}
+}
+
+::selection {
+	background: var(--rame);
+	color: var(--notte);
+}
+
+img,
+svg {
+	display: block;
+	max-width: 100%;
+}
+button,
+input,
+select,
+textarea {
+	font: inherit;
+	color: inherit;
+}
+button {
+	cursor: pointer;
+}
+a {
+	color: inherit;
+}
+ul,
+ol {
+	list-style: none;
+}
+
+h1,
+h2,
+h3 {
+	font-family: var(--titoli);
+	font-weight: 400;
+	line-height: 1;
+	letter-spacing: -0.012em;
+	text-wrap: balance;
+}
+
+:focus-visible {
+	outline: 3px solid var(--acqua-testo);
+	outline-offset: 3px;
+}
+.scuro :focus-visible,
+.scuro:focus-visible,
+.sez--scura :focus-visible {
+	outline-color: var(--rame);
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+.skip-link {
+	position: absolute;
+	left: 12px;
+	top: -60px;
+	z-index: 500;
+	padding: 10px 16px;
+	background: var(--rame);
+	color: var(--notte);
+	font-weight: 700;
+	text-decoration: none;
+	transition: top 0.2s;
+}
+.skip-link:focus {
+	top: 12px;
+}
+
+/* sezione: contenitore e testata con il numero d'intervento */
+.sez {
+	position: relative;
+	padding: clamp(72px, 10vw, 132px) var(--gutter);
+	padding-left: max(var(--gutter), calc(var(--tubo-x) + 44px));
+	scroll-margin-top: 0;
+}
+.sez__in {
+	max-width: var(--max);
+	margin-inline: auto;
+}
+.sez--scura {
+	background: var(--petrolio);
+	color: #e8e3d4;
+}
+.sez--gialla {
+	background: var(--rame);
+	color: var(--notte);
+}
+.stazione {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	margin-bottom: 22px;
+	font-family: var(--testo);
+	font-weight: 700;
+	font-size: 0.86rem;
+	letter-spacing: 0.22em;
+	text-transform: uppercase;
+	color: var(--rame-testo);
+}
+.sez--scura .stazione {
+	color: var(--rame);
+}
+.sez--gialla .stazione {
+	color: var(--notte);
+}
+.stazione b {
+	font-family: var(--titoli);
+	font-weight: 400;
+	font-size: 2.4rem;
+	letter-spacing: 0;
+	line-height: 0.8;
+	color: inherit;
+}
+.stazione::after {
+	content: '';
+	flex: 0 1 72px;
+	height: 1px;
+	background: currentColor;
+	opacity: 0.55;
+}
+.sez__titolo {
+	font-size: clamp(2.5rem, 6.4vw, 4.8rem);
+	max-width: 17ch;
+}
+.sez__sotto {
+	margin-top: 20px;
+	max-width: 58ch;
+	font-size: 1.18rem;
+	color: var(--testo-2);
+}
+.sez--scura .sez__sotto {
+	color: #c7d2cc;
+}
+
+/* bottoni: placche di rame con l'angolo tagliato, premuti si assestano */
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	min-height: 54px;
+	padding: 0 28px;
+	border: 0;
+	border-radius: 3px 14px 3px 14px;
+	background: var(--rame);
+	color: var(--notte);
+	font-family: var(--testo);
+	font-weight: 700;
+	font-size: 1.05rem;
+	letter-spacing: 0.04em;
+	text-decoration: none;
+	box-shadow:
+		inset 0 1px 0 rgba(255, 255, 255, 0.35),
+		inset 0 -3px 0 rgba(0, 0, 0, 0.18),
+		0 8px 18px -8px rgba(8, 33, 42, 0.55);
+	transition: transform 0.15s, box-shadow 0.15s, background 0.2s;
+}
+.btn:hover {
+	background: #e88a5a;
+}
+.btn:active {
+	transform: translateY(2px);
+	box-shadow:
+		inset 0 1px 0 rgba(255, 255, 255, 0.3),
+		inset 0 -1px 0 rgba(0, 0, 0, 0.18),
+		0 3px 8px -4px rgba(8, 33, 42, 0.55);
+}
+.btn--nero {
+	background: var(--notte);
+	color: var(--calce);
+}
+.btn--nero:hover {
+	background: #123740;
+}
+.sez--scura .btn--nero {
+	background: transparent;
+	color: var(--rame);
+	box-shadow: inset 0 0 0 2px var(--rame);
+}
+
+/* insegna dipinta: bordi mangiati, secondo colore fuori registro */
+.insegna {
+	position: relative;
+	isolation: isolate;
+	display: inline-block;
+	padding: 8px 18px 9px;
+	color: var(--notte);
+	font-family: var(--titoli);
+	font-size: clamp(1.05rem, 2.4vw, 1.35rem);
+	letter-spacing: 0.01em;
+	transform: rotate(-1.6deg);
+	text-shadow: 1.5px 1.5px 0 rgba(221, 122, 74, 0.85);
+}
+.insegna::before {
+	/* la placca è dipinta: bordo mangiato dal filtro, il testo resta nitido */
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background: var(--calce);
+	box-shadow: 0 0 0 1px rgba(8, 33, 42, 0.18);
+	filter: url(#sifone-ruvido);
+}
+
+/* foto con taglio proprio: nessun riquadro, caricate con un velo di rame */
+.foto {
+	position: relative;
+	overflow: hidden;
+	background: var(--petrolio);
+}
+.foto img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+/* rivela all'ingresso in vista (solo con JS) */
+.js [data-reveal] {
+	opacity: 0;
+	transform: translateY(24px);
+	transition: opacity 0.6s, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.js [data-reveal].is-visible {
+	opacity: 1;
+	transform: none;
+}
+
+@media (max-width: 720px) {
+	body {
+		font-size: 1.06rem;
+	}
+	.sez {
+		padding-left: max(var(--gutter), calc(var(--tubo-x) + 22px));
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+	}
+	.js [data-reveal] {
+		opacity: 1;
+		transform: none;
+	}
+}

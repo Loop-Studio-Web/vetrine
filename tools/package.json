@@ -1,0 +1,17 @@
+{
+  "name": "vetrine-tools",
+  "private": true,
+  "type": "module",
+  "description": "Strumenti di collaudo locali (Playwright, axe, Lighthouse, sharp). Non fanno parte del sito né del deploy: installare con `npm install` dentro tools/.",
+  "scripts": {
+    "shot": "node shot.mjs",
+    "axe": "node axe.mjs",
+    "lh": "node lh.mjs"
+  },
+  "dependencies": {
+    "axe-core": "^4.10.0",
+    "lighthouse": "^12.0.0",
+    "playwright-core": "^1.50.0",
+    "sharp": "^0.34.0"
+  }
+}

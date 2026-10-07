@@ -1,0 +1,255 @@
+---
+import { zone } from './dati';
+
+const centro = zone[0];
+---
+
+<section class="zon sez" id="zone" data-sez>
+	<div class="sez__in">
+		<p class="stazione"><b>02</b> Zone e tempi</p>
+		<h2 class="sez__titolo">In quanto arriviamo da te.</h2>
+		<p class="sez__sotto">Tocca la tua zona sullo schema dell’impianto: la lancetta del manometro indica i minuti, tecnici sempre in giro a quest’ora.</p>
+
+		<div class="zon__banco" data-zone>
+			<fieldset class="zon__schema">
+				<legend class="sr-only">La tua zona</legend>
+				<svg class="zon__tubi" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+					{
+						zone.slice(1).map((z) => (
+							<>
+								<path d={`M${centro.x} ${centro.y} L${z.x} ${centro.y} L${z.x} ${z.y}`} class="zon__tubo" data-tubo={z.id} vector-effect="non-scaling-stroke" />
+							</>
+						))
+					}
+				</svg>
+				{
+					zone.map((z, i) => (
+						<label class={`zon__nodo ${i === 0 ? 'zon__nodo--centro' : ''}`} style={`left:${z.x}%;top:${z.y}%`}>
+							<input type="radio" name="zona" value={z.id} data-min={z.minuti} data-uscita={z.uscita} data-nome={z.nome} checked={i === 0} />
+							<span class="zon__giunto" aria-hidden="true"></span>
+							<span class="zon__nome">{z.nome}</span>
+						</label>
+					))
+				}
+			</fieldset>
+
+			<div class="zon__lettura">
+				<div class="manometro">
+					<svg viewBox="0 0 240 150" role="img" aria-label="Manometro dei minuti di arrivo">
+						<path d="M20 130a100 100 0 0 1 200 0" fill="#fff" stroke="#081f22" stroke-width="8" />
+						<path d="M34 130a86 86 0 0 1 24-60" fill="none" stroke="var(--acqua)" stroke-width="12" />
+						<path d="M58 70a86 86 0 0 1 48-34" fill="none" stroke="#dd7a4a" stroke-width="12" />
+						<path d="M106 36a86 86 0 0 1 100 94" fill="none" stroke="#b95f33" stroke-width="12" opacity="0.55" />
+						<g stroke="#081f22" stroke-width="3" data-tacche></g>
+						<g class="manometro__ago" data-ago>
+							<path d="M120 130L120 44" stroke="#b3261e" stroke-width="5" stroke-linecap="round" />
+							<path d="M120 36l-6 14h12z" fill="#b3261e" />
+						</g>
+						<circle cx="120" cy="130" r="12" fill="#081f22" /><circle cx="120" cy="130" r="4" fill="#dd7a4a" />
+						<text x="28" y="148" font-family="Barlow Condensed" font-weight="800" font-size="16" fill="#081f22">0′</text>
+						<text x="196" y="148" font-family="Barlow Condensed" font-weight="800" font-size="16" fill="#081f22">60′</text>
+					</svg>
+				</div>
+				<div class="zon__dati" aria-live="polite">
+					<p class="zon__min"><span data-min>20</span><small>minuti</small></p>
+					<p class="zon__testo"><b data-nome>Centro</b>: tecnico in zona entro <span data-min>20</span> minuti, di giorno e di notte.</p>
+					<p class="zon__uscita" data-uscita>Uscita inclusa nel prezzo.</p>
+				</div>
+			</div>
+		</div>
+		<p class="zon__finto">Zone e tempi di fantasia, come tutto in questa vetrina.</p>
+	</div>
+</section>
+
+<style>
+	.zon__banco {
+		margin-top: clamp(30px, 5vw, 56px);
+		display: grid;
+		grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.9fr);
+		gap: clamp(20px, 4vw, 56px);
+		align-items: center;
+	}
+	.zon__schema {
+		border-radius: 4px 22px 4px 22px;
+		position: relative;
+		border: 0;
+		min-width: 0;
+		aspect-ratio: 1.15 / 1;
+		background:
+			repeating-linear-gradient(0deg, rgba(17, 17, 17, 0.07) 0 1px, transparent 1px 28px),
+			repeating-linear-gradient(90deg, rgba(17, 17, 17, 0.07) 0 1px, transparent 1px 28px), var(--bianco);
+		border: 1px solid rgba(8, 33, 42, 0.26);
+		box-shadow: 0 24px 38px -26px rgba(8, 33, 42, 0.6);
+	}
+	.zon__tubi {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+	}
+	.zon__tubo {
+		fill: none;
+		stroke: var(--ferro);
+		stroke-width: 10;
+		stroke-linejoin: round;
+		transition: stroke 0.3s;
+	}
+	.zon__tubo.is-on {
+		stroke: var(--acqua);
+	}
+	.zon__nodo {
+		position: absolute;
+		transform: translate(-50%, -50%);
+		display: grid;
+		justify-items: center;
+		gap: 4px;
+		cursor: pointer;
+	}
+	.zon__nodo input {
+		position: absolute;
+		opacity: 0;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		cursor: pointer;
+	}
+	.zon__giunto {
+		width: 34px;
+		height: 34px;
+		background: var(--bianco);
+		border: 1px solid rgba(8, 33, 42, 0.26);
+		border-radius: 50%;
+		transition: background 0.2s, transform 0.3s cubic-bezier(0.3, 1.6, 0.5, 1);
+	}
+	.zon__nodo--centro .zon__giunto {
+		width: 44px;
+		height: 44px;
+		border-radius: 8px;
+	}
+	.zon__nodo:hover .zon__giunto {
+		transform: scale(1.15);
+	}
+	.zon__nodo input:checked ~ .zon__giunto {
+		background: var(--rame);
+		transform: scale(1.2);
+	}
+	.zon__nodo input:focus-visible ~ .zon__giunto {
+		outline: 3px solid var(--acqua-testo);
+		outline-offset: 3px;
+	}
+	.zon__nome {
+		padding: 1px 8px;
+		background: var(--notte);
+		color: #fff;
+		font-family: var(--testo);
+		font-weight: 700;
+		font-size: 0.82rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		white-space: nowrap;
+	}
+	.zon__nodo input:checked ~ .zon__nome {
+		background: var(--rame);
+		color: var(--notte);
+		box-shadow: 0 0 0 2px var(--notte);
+	}
+
+	.zon__lettura {
+		display: grid;
+		gap: 18px;
+		justify-items: start;
+	}
+	.manometro {
+		width: min(100%, 360px);
+	}
+	.manometro svg {
+		width: 100%;
+		height: auto;
+	}
+	.manometro__ago {
+		transform-origin: 120px 130px;
+		transform: rotate(var(--ago, -60deg));
+		transition: transform 1.1s cubic-bezier(0.3, 1.5, 0.5, 1);
+	}
+	.zon__min {
+		display: flex;
+		align-items: baseline;
+		gap: 10px;
+		font-family: var(--titoli);
+		font-weight: 400;
+		font-size: clamp(4.6rem, 10vw, 7rem);
+		line-height: 0.85;
+	}
+	.zon__min small {
+		font-size: 1.6rem;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+	.zon__testo {
+		max-width: 38ch;
+		font-size: 1.1rem;
+	}
+	.zon__uscita {
+		padding: 4px 12px;
+		background: var(--notte);
+		color: var(--rame);
+		font-family: var(--testo);
+		font-weight: 700;
+		font-size: 0.90rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+	.zon__finto {
+		margin-top: 30px;
+		font-size: 0.88rem;
+		color: var(--testo-2);
+	}
+	@media (max-width: 900px) {
+		.zon__banco {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.zon__nome {
+			font-size: 0.9rem;
+			padding-inline: 5px;
+		}
+	}
+</style>
+
+<script>
+	const radice = document.querySelector<HTMLElement>('[data-zone]');
+	if (radice) {
+		// tacche del manometro, generate una volta
+		const tacche = radice.querySelector<SVGGElement>('[data-tacche]')!;
+		for (let m = 0; m <= 60; m += 5) {
+			const a = ((-90 + (m / 60) * 180) * Math.PI) / 180;
+			const lungo = m % 15 === 0;
+			const r1 = 100 - (lungo ? 22 : 14);
+			const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+			l.setAttribute('x1', String(120 + Math.sin(a) * r1));
+			l.setAttribute('y1', String(130 - Math.cos(a) * r1));
+			l.setAttribute('x2', String(120 + Math.sin(a) * 88));
+			l.setAttribute('y2', String(130 - Math.cos(a) * 88));
+			l.setAttribute('stroke-width', lungo ? '4' : '2');
+			tacche.appendChild(l);
+		}
+		const radio = [...radice.querySelectorAll<HTMLInputElement>('input[name="zona"]')];
+		const tubi = [...radice.querySelectorAll<SVGPathElement>('[data-tubo]')];
+		const num = (el: HTMLElement | null, v: string) => el && (el.textContent = v);
+		const aggiorna = () => {
+			const r = radio.find((x) => x.checked);
+			if (!r) return;
+			const min = Number(r.dataset.min);
+			const uscita = Number(r.dataset.uscita);
+			radice.style.setProperty('--ago', `${-90 + Math.min(60, min) * 3}deg`);
+			radice.querySelectorAll<HTMLElement>('.zon__dati [data-min]').forEach((e) => num(e, String(min)));
+			num(radice.querySelector('b[data-nome]'), r.dataset.nome || '');
+			num(radice.querySelector('.zon__dati [data-uscita]'), uscita ? `Uscita fuori zona: +€ ${uscita}.` : 'Uscita inclusa nel prezzo.');
+			// l'acqua arriva fino alla zona scelta
+			for (const t of tubi) t.classList.toggle('is-on', t.dataset.tubo === r.value);
+			dispatchEvent(new CustomEvent('sifone:zona', { detail: { id: r.value, nome: r.dataset.nome, min } }));
+		};
+		radio.forEach((r) => r.addEventListener('change', aggiorna));
+		aggiorna();
+	}
+</script>

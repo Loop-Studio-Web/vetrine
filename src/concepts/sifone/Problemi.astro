@@ -1,0 +1,315 @@
+---
+import { problemi, TEL, TEL_VISIBILE } from './dati';
+
+// Un'icona per raccordo, disegnata in SVG: stesso tratto spesso del resto della pagina
+const icone: Record<string, string> = {
+	perdita: '<path d="M8 8h16v14H8zM24 12h14v6H24z"/><path d="M16 22v6M16 34c-3 4-3 7 0 7s3-3 0-7z" />',
+	scarico: '<path d="M6 10h36v8H6zM12 18v8c0 6 6 6 12 6s12 0 12-6v-8"/><path d="M20 38l4 4 4-4" />',
+	caldaia: '<path d="M10 6h28v36H10z"/><circle cx="24" cy="20" r="7"/><path d="M24 15c-3 3-3 5 0 7 3-2 3-4 0-7zM18 34h12"/>',
+	sanitari: '<path d="M8 22h20a8 8 0 0 0 8-8V8M28 22v8M6 30h28v6H6z"/><path d="M36 8h-8"/>',
+};
+---
+
+<section class="prb sez sez--scura" id="problema" data-sez>
+	<div class="sez__in">
+		<p class="stazione"><b>01</b> Che problema hai</p>
+		<h2 class="sez__titolo">Dimmi cosa succede.</h2>
+		<p class="sez__sotto">Scegli il raccordo: ti diciamo cosa fare subito, in quanto arriviamo e da quanto parte il prezzo.</p>
+
+		<div class="prb__griglia" data-problemi>
+			<div class="prb__tabs" role="tablist" aria-label="Tipo di problema">
+				{
+					problemi.map((p, i) => (
+						<button
+							class="prb__tab"
+							role="tab"
+							type="button"
+							id={`tab-${p.id}`}
+							aria-selected={i === 0 ? 'true' : 'false'}
+							aria-controls={`pan-${p.id}`}
+							tabindex={i === 0 ? 0 : -1}
+							data-id={p.id}
+						>
+							<svg viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linejoin="round" aria-hidden="true" set:html={icone[p.id]} />
+							<span class="prb__tab-t">
+								<b>{p.nome}</b>
+								<small>{p.breve}</small>
+							</span>
+						</button>
+					))
+				}
+			</div>
+
+			<div class="prb__schede">
+				{
+					problemi.map((p, i) => (
+						<div class="scheda" role="tabpanel" id={`pan-${p.id}`} aria-labelledby={`tab-${p.id}`} hidden={i !== 0} data-id={p.id}>
+							<div class="scheda__cosa">
+								<h3>Cosa fare subito</h3>
+								<ol>
+									{p.subito.map((s, k) => (
+										<li>
+											<label>
+												<input type="checkbox" />
+												<span class="scheda__n" aria-hidden="true">{k + 1}</span>
+												<span class="scheda__t">{s}</span>
+											</label>
+										</li>
+									))}
+								</ol>
+							</div>
+							<div class="scheda__dati">
+								<dl>
+									<div>
+										<dt>Arriviamo in</dt>
+										<dd>{p.tempo}</dd>
+									</div>
+									<div>
+										<dt>Intervento da</dt>
+										<dd class="scheda__euro">€ {p.da}</dd>
+									</div>
+								</dl>
+								<p class="scheda__nota">{p.nota} Il prezzo definitivo te lo diciamo prima di iniziare.</p>
+								<a class="btn" href={`tel:${TEL}`}>Chiama {TEL_VISIBILE}</a>
+								<a class="btn btn--notte" href="#richiesta" data-richiedi={p.id}>Richiedi per questo problema</a>
+							</div>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.prb__griglia {
+		margin-top: clamp(30px, 5vw, 56px);
+		display: grid;
+		grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr);
+		gap: clamp(20px, 3vw, 40px);
+		align-items: start;
+	}
+	.prb__tabs {
+		display: grid;
+		gap: 10px;
+	}
+	.prb__tab {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+		width: 100%;
+		padding: 14px 18px;
+		text-align: left;
+		background: var(--petrolio-2);
+		border: 1px solid rgba(255, 255, 255, 0.2);
+		color: #e8e6df;
+		transition: background 0.2s, border-color 0.2s, transform 0.2s;
+	}
+	.prb__tab svg {
+		flex: none;
+		color: var(--rame);
+		transition: transform 0.4s cubic-bezier(0.3, 1.6, 0.5, 1);
+	}
+	.prb__tab:hover {
+		border-color: var(--rame);
+	}
+	.prb__tab:hover svg {
+		transform: rotate(-8deg) scale(1.1);
+	}
+	.prb__tab[aria-selected='true'] {
+		background: var(--rame);
+		border-color: var(--rame);
+		color: var(--notte);
+		transform: translateX(10px);
+	}
+	.prb__tab[aria-selected='true'] svg {
+		color: var(--notte);
+	}
+	.prb__tab-t {
+		display: grid;
+		gap: 2px;
+	}
+	.prb__tab-t b {
+		font-family: var(--testo);
+		font-weight: 700;
+		font-size: 1.25rem;
+		line-height: 1;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+	}
+	.prb__tab-t small {
+		font-size: 0.92rem;
+		line-height: 1.3;
+		opacity: 0.88;
+	}
+
+	.scheda {
+		border-radius: 4px 22px 4px 22px;
+		display: grid;
+		grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+		background: var(--calce);
+		color: var(--notte);
+		border: 1px solid rgba(8, 33, 42, 0.26);
+		box-shadow: 0 24px 38px -26px rgba(8, 33, 42, 0.6);
+		animation: scheda-entra 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+	}
+	@keyframes scheda-entra {
+		from {
+			opacity: 0;
+			transform: translateY(16px);
+		}
+	}
+	.scheda[hidden] {
+		display: none;
+	}
+	.scheda h3 {
+		font-size: 1.5rem;
+		margin-bottom: 14px;
+	}
+	.scheda__cosa {
+		padding: 24px 26px;
+	}
+	.scheda__cosa ol {
+		display: grid;
+		gap: 12px;
+	}
+	.scheda label {
+		display: grid;
+		grid-template-columns: 34px 1fr;
+		gap: 12px;
+		align-items: start;
+		cursor: pointer;
+	}
+	.scheda input {
+		position: absolute;
+		opacity: 0;
+		pointer-events: none;
+	}
+	.scheda__n {
+		display: grid;
+		place-items: center;
+		width: 34px;
+		height: 34px;
+		border: 2px solid rgba(8, 33, 42, 0.5);
+		background: var(--bianco);
+		font-family: var(--titoli);
+		font-weight: 400;
+		font-size: 1.2rem;
+		transition: background 0.2s, color 0.2s;
+	}
+	.scheda input:checked + .scheda__n {
+		background: var(--notte);
+		color: var(--rame);
+	}
+	.scheda input:checked ~ .scheda__t {
+		text-decoration: line-through;
+		text-decoration-thickness: 2px;
+		color: var(--testo-2);
+	}
+	.scheda input:focus-visible + .scheda__n {
+		outline: 3px solid var(--acqua-testo);
+		outline-offset: 3px;
+	}
+	.scheda__dati {
+		display: grid;
+		align-content: start;
+		gap: 14px;
+		padding: 24px 26px;
+		background: var(--rame);
+		border-left: 3px solid var(--rame);
+	}
+	.scheda dl {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 12px;
+	}
+	.scheda dt {
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+	.scheda dd {
+		font-family: var(--titoli);
+		font-weight: 400;
+		font-size: 2rem;
+		line-height: 1;
+	}
+	.scheda__nota {
+		font-size: 0.95rem;
+	}
+	.scheda__dati .btn {
+		min-height: 48px;
+		padding-inline: 14px;
+		font-size: 1.05rem;
+		text-align: center;
+	}
+	.scheda__dati .btn:first-of-type {
+		background: var(--notte);
+		color: var(--rame);
+		box-shadow: 0 24px 38px -26px rgba(8, 33, 42, 0.6);
+	}
+	.scheda__dati .btn--notte {
+		background: transparent;
+		color: var(--notte);
+		box-shadow: none;
+	}
+	@media (max-width: 960px) {
+		.prb__griglia {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.prb__tabs {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+		.prb__tab[aria-selected='true'] {
+			transform: none;
+		}
+	}
+	@media (max-width: 640px) {
+		.prb__tabs {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.prb__tab-t small {
+			display: none;
+		}
+		.scheda {
+			grid-template-columns: minmax(0, 1fr);
+			box-shadow: 0 24px 38px -26px rgba(8, 33, 42, 0.6);
+		}
+		.scheda__dati {
+			border-left: 0;
+			border-top: 1px solid var(--riga);
+		}
+	}
+</style>
+
+<script>
+	const radice = document.querySelector<HTMLElement>('[data-problemi]');
+	if (radice) {
+		const tabs = [...radice.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+		const pannelli = [...radice.querySelectorAll<HTMLElement>('[role="tabpanel"]')];
+		const scegli = (id: string, focus = false) => {
+			for (const t of tabs) {
+				const on = t.dataset.id === id;
+				t.setAttribute('aria-selected', String(on));
+				t.tabIndex = on ? 0 : -1;
+				if (on && focus) t.focus();
+			}
+			for (const p of pannelli) p.hidden = p.dataset.id !== id;
+		};
+		tabs.forEach((t, i) => {
+			t.addEventListener('click', () => scegli(t.dataset.id!));
+			t.addEventListener('keydown', (e) => {
+				const k = e.key;
+				const n = k === 'ArrowDown' || k === 'ArrowRight' ? i + 1 : k === 'ArrowUp' || k === 'ArrowLeft' ? i - 1 : k === 'Home' ? 0 : k === 'End' ? tabs.length - 1 : -1;
+				if (n < 0) return;
+				e.preventDefault();
+				scegli(tabs[(n + tabs.length) % tabs.length].dataset.id!, true);
+			});
+		});
+		// "Richiedi per questo problema" precompila il modulo
+		radice.querySelectorAll<HTMLAnchorElement>('[data-richiedi]').forEach((a) =>
+			a.addEventListener('click', () => dispatchEvent(new CustomEvent('sifone:problema', { detail: { id: a.dataset.richiedi } }))),
+		);
+	}
+</script>

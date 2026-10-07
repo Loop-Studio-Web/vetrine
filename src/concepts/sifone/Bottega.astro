@@ -1,0 +1,89 @@
+---
+import { Image, getImage } from 'astro:assets';
+import rubinetto from '../../assets/sifone/foto/rubinetto.jpg';
+import attrezzi from '../../assets/sifone/foto/attrezzi.jpg';
+
+const sfondo = await getImage({ src: attrezzi, width: 1600, format: 'webp' });
+---
+
+<section class="bot sez sez--scura" id="bottega" data-sez style={`--sfondo:url(${sfondo.src})`}>
+	<div class="sez__in bot__in">
+		<figure class="bot__foto" data-reveal>
+			<div class="bot__cornice foto">
+				<Image src={rubinetto} alt="Un vecchio rubinetto a muro, con la vernice scrostata e la maniglia scura, in luce di controluce." widths={[420, 640, 900]} sizes="(max-width: 900px) 80vw, 420px" loading="lazy" />
+			</div>
+			<p class="insegna bot__dal">Dal 1974, stesso indirizzo</p>
+		</figure>
+
+		<div class="bot__testo" data-reveal>
+			<p class="stazione"><b>★</b> La bottega</p>
+			<h2 class="sez__titolo">L’acqua non guarda l’orologio. Noi neanche.</h2>
+			<p class="bot__p">
+				Sifone è nato in una rimessa con un banco, una morsa e un furgone usato. Cinquant’anni dopo il banco è ancora lì: ci si ripara quello che non conviene buttare, ci si beve il caffè la domenica mattina quando suona il telefono.
+			</p>
+			<p class="bot__p">
+				Niente call center e niente subappalti: chi risponde alla chiamata è chi poi sale le scale. Se non siamo la persona giusta per il tuo guasto, te lo diciamo e ti indichiamo chi lo è.
+			</p>
+			<p class="bot__nota">Storia, nomi e indirizzo di fantasia: vetrina dimostrativa.</p>
+		</div>
+	</div>
+</section>
+
+<style>
+	.bot {
+		overflow: hidden;
+		background:
+			linear-gradient(100deg, rgba(15, 58, 63, 0.97) 0%, rgba(15, 58, 63, 0.9) 45%, rgba(15, 58, 63, 0.7) 100%),
+			var(--sfondo) center / cover;
+	}
+	.bot__in {
+		display: grid;
+		grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+		gap: clamp(28px, 6vw, 88px);
+		align-items: center;
+	}
+	.bot__foto {
+		position: relative;
+		justify-self: center;
+		width: min(100%, 420px);
+		margin: 0;
+	}
+	.bot__cornice {
+		aspect-ratio: 4 / 5;
+		border-radius: 999px 999px 8px 8px;
+		transform: rotate(-2.2deg);
+		box-shadow: 0 34px 50px -28px rgba(0, 0, 0, 0.8);
+	}
+	.bot__dal {
+		position: absolute;
+		right: -14px;
+		bottom: 28px;
+		font-size: 1.15rem;
+	}
+	.bot__testo .sez__titolo {
+		max-width: 15ch;
+	}
+	.bot__p {
+		margin-top: 22px;
+		max-width: 52ch;
+		font-size: 1.2rem;
+		color: #d6dfd9;
+	}
+	.bot__nota {
+		margin-top: 24px;
+		font-size: 0.9rem;
+		letter-spacing: 0.06em;
+		color: #9fb5ae;
+	}
+	@media (max-width: 900px) {
+		.bot__in {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.bot__foto {
+			width: min(86%, 360px);
+		}
+		.bot__dal {
+			right: -6px;
+		}
+	}
+</style>

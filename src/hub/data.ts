@@ -18,6 +18,8 @@ import cardHotswap from '../assets/hub/card-hotswap.jpg';
 import shotHotswap from '../assets/hub/shot-hotswap.jpg';
 import cardOrdito from '../assets/hub/card-ordito.jpg';
 import shotOrdito from '../assets/hub/shot-ordito.jpg';
+import cardSifone from '../assets/hub/card-sifone.jpg';
+import shotSifone from '../assets/hub/shot-sifone.jpg';
 
 export const SITE = 'https://theloopstudio.org/';
 export const CONTACT = 'https://theloopstudio.org/contatti';
@@ -30,6 +32,7 @@ export const macros = [
 	{ slug: 'studi', nome: 'Studi e servizi' },
 	{ slug: 'benessere', nome: 'Benessere' },
 	{ slug: 'tech', nome: 'Tech' },
+	{ slug: 'casa', nome: 'Casa e artigiani' },
 	{ slug: 'commercio', nome: 'Commercio' },
 ] as const;
 export type MacroSlug = (typeof macros)[number]['slug'];
@@ -526,6 +529,62 @@ export const concepts: Concept[] = [
 		palette: ['#0b0620', '#6a2cff', '#ff2e93', '#2be4ff', '#d6ff3d', '#ece8ff'],
 		metriche: [
 			{ label: 'Performance', valore: '99' },
+			{ label: 'Accessibilità', valore: '100' },
+			{ label: 'Buone pratiche', valore: '100' },
+		],
+	},
+	{
+		slug: 'sifone',
+		macro: 'casa',
+		nome: 'Sifone',
+		categoria: 'Casa e artigiani',
+		archetipo: 'L’idraulico di pronto intervento, livello Low key',
+		claim: 'Perde, scarica, si ferma: arriviamo noi. Una valvola da girare, cosa fare subito, tempi per zona e tariffe in chiaro.',
+		path: '/casa/idraulico/',
+		infoPath: '/casa/idraulico/info/',
+		titoloSeo: 'Sito web per idraulico: homepage concept con pronto intervento, tempi per zona e tariffe',
+		descrizioneSeo:
+			'Come potrebbe essere la homepage di un idraulico di pronto intervento: valvola interattiva, cosa fare subito per ogni problema, tempi di arrivo per zona, tariffe con contatore e richiesta di intervento. Concept dimostrativo di Loop Studio.',
+		intro: [
+			'Chi chiama un idraulico ha l’acqua sul pavimento, o il bagno che non scarica, e decide in pochi secondi, con il telefono in mano. Questa homepage parte da lì: prima ti dice cosa fare per limitare i danni, poi quanto ci mettiamo ad arrivare e quanto costa, poi lascia il numero ben in vista. Il sito è una bottega che lavora con tubi veri: fotografie di rame e ottone, un’insegna dipinta a mano e un tubo di rame che corre lungo la pagina e si riempie d’acqua mentre scorri.',
+			'È il livello Low key della categoria Casa e artigiani e una vetrina dimostrativa: l’impresa, le tariffe, le zone, le recensioni e il numero di telefono sono di fantasia. Serve a mostrare che un artigiano può avere un sito chiaro, immediato e fatto per far chiamare, con fotografie vere al posto delle solite icone e senza effetti inutili.',
+		],
+		perChi:
+			'Idraulici, elettricisti, fabbri, caldaisti e altri artigiani di pronto intervento. Adatta a chi lavora su chiamata, vuole ridurre le telefonate che non portano lavoro, far capire subito i prezzi e le zone servite e ricevere richieste già ordinate.',
+		sezioni: [
+			{
+				t: 'Una valvola da girare',
+				d: 'In apertura un volantino che si gira con il dito o con il mouse (o con un tocco): la valvola si apre, l’acqua scorre e compare il numero da chiamare con il tempo di arrivo.',
+			},
+			{
+				t: 'Cosa fare subito, problema per problema',
+				d: 'Quattro raccordi (perdita, scarico, caldaia, sanitari): per ciascuno i primi passi da spuntare, i tempi, il prezzo “da” e un pulsante che precompila la richiesta.',
+			},
+			{
+				t: 'Un manometro per i tempi',
+				d: 'Lo schema dell’impianto con le zone servite: si tocca la propria e la lancetta indica i minuti di arrivo, con l’eventuale costo di uscita fuori zona.',
+			},
+			{
+				t: 'Tariffe con il contatore',
+				d: 'Giorno, notte o festivo e quante ore di lavoro: un contatore a cifre che scorrono mostra la stima del conto, con le voci scritte una per una.',
+			},
+			{
+				t: 'Ordine di intervento e ricevuta',
+				d: 'Un modulo corto con messaggi d’errore chiari e una ricevuta con numero d’ordine. Su telefono restano sempre a portata di pollice la chiamata e la richiesta.',
+			},
+		],
+		awning: ['#e58857', '#0f3a3f'],
+		glow: 'rgba(229, 136, 87, 0.55)',
+		card: cardSifone,
+		shot: shotSifone,
+		shotAlt: '',
+		crop: '60% 40%',
+		cardAlt: 'Sifone su desktop e su telefono: titolo in serif su calce, i tubi di rame in una parete aperta ritagliati ad arco, un volantino rosso di una valvola da girare, il menù mobile come serranda a lamelle petrolio.',
+		mood: 'L’idraulico che arriva: blu petrolio, rame e calce, con fotografie vere (tubi di rame, un vecchio rubinetto, gli attrezzi in officina), grana di carta e un’insegna dipinta a mano con il secondo colore fuori registro.',
+		caratteri: 'Gloock e Karla',
+		palette: ['#efe9dc', '#e58857', '#08212a', '#0f3a3f', '#34b3a8', '#d8412a'],
+		metriche: [
+			{ label: 'Performance', valore: '98' },
 			{ label: 'Accessibilità', valore: '100' },
 			{ label: 'Buone pratiche', valore: '100' },
 		],

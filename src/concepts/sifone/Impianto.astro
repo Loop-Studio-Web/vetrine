@@ -1,0 +1,119 @@
+---
+// Il tubo che corre lungo il lato della pagina: si riempie d'acqua con lo scroll e ha un raccordo a ogni sezione.
+---
+
+<div class="tubo" data-tubo aria-hidden="true">
+	<div class="tubo__acqua" data-acqua></div>
+</div>
+
+<style is:global>
+	.tubo {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: var(--tubo-x);
+		width: clamp(10px, 1.8vw, 20px);
+		z-index: 20;
+		pointer-events: none;
+		background: linear-gradient(90deg, #8a3f1c 0%, #f0a37a 38%, #c8693a 62%, #7a3615 100%);
+		border-radius: 8px;
+	}
+	.tubo__acqua {
+		position: absolute;
+		inset: 0 0 auto 0;
+		height: var(--y, 0px);
+		background: linear-gradient(90deg, #1f8a82, var(--acqua) 45%, #17706a);
+		transition: height 0.15s linear;
+	}
+	.tubo__acqua::after {
+		/* bolle che salgono nel tubo pieno */
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.55) 0 2px, transparent 3px) 0 0 / 100% 90px;
+		animation: tubo-bolle 3.2s linear infinite;
+	}
+	@keyframes tubo-bolle {
+		to {
+			background-position: 0 -90px;
+		}
+	}
+	/* raccordo a flangia in corrispondenza di una sezione */
+	.tubo__raccordo {
+		position: absolute;
+		left: -9px;
+		right: -9px;
+		height: 22px;
+		background: linear-gradient(90deg, #9c7425, #e6bd62 40%, #7e5d1b);
+		border-radius: 4px;
+		box-shadow: 0 2px 4px rgba(8, 33, 42, 0.4);
+		transition: background 0.3s, box-shadow 0.3s;
+	}
+	.tubo__raccordo.is-on {
+		background: linear-gradient(90deg, #17706a, #8fe0d6 45%, #17706a);
+		box-shadow: 0 0 10px rgba(52, 179, 168, 0.7);
+	}
+	/* sul telefono il tubo è sottile e sta in un angolo */
+	@media (max-width: 720px) {
+		.tubo {
+			width: 10px;
+		}
+		.tubo__raccordo {
+			left: -6px;
+			right: -6px;
+			height: 16px;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.tubo__acqua::after {
+			animation: none;
+		}
+	}
+</style>
+
+<script>
+	const tubo = document.querySelector<HTMLElement>('[data-tubo]');
+	if (tubo) {
+		const sezioni = [...document.querySelectorAll<HTMLElement>('main > section[id], footer')];
+		const raccordi = sezioni.map((s) => {
+			const r = document.createElement('i');
+			r.className = 'tubo__raccordo';
+			tubo.appendChild(r);
+			return { s, r };
+		});
+		const misura = () => {
+			for (const { s, r } of raccordi) {
+				const top = s.getBoundingClientRect().top + scrollY;
+				r.style.top = `${Math.max(0, top + 30)}px`;
+			}
+		};
+		let attesa = false;
+		const aggiorna = () => {
+			attesa = false;
+			const y = scrollY + innerHeight * 0.62;
+			document.documentElement.style.setProperty('--y', `${Math.round(y)}px`);
+			for (const { s, r } of raccordi) r.classList.toggle('is-on', s.getBoundingClientRect().top + scrollY + 30 < y);
+		};
+		addEventListener(
+			'scroll',
+			() => {
+				if (!attesa) {
+					attesa = true;
+					requestAnimationFrame(aggiorna);
+				}
+			},
+			{ passive: true },
+		);
+		addEventListener('resize', () => {
+			misura();
+			aggiorna();
+		});
+		// l'altezza della pagina cambia (immagini, font, schede che si aprono): rimisura
+		new ResizeObserver(() => {
+			misura();
+			aggiorna();
+		}).observe(document.body);
+		misura();
+		aggiorna();
+	}
+</script>

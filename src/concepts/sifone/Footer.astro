@@ -1,0 +1,96 @@
+---
+import simbolo from '../../assets/sifone/brand/simbolo.svg';
+import marchio from '../../assets/sifone/brand/marchio-bianco.svg';
+import logo from '../../assets/hub/loop-logo-on-dark.svg';
+import { TEL, TEL_VISIBILE } from './dati';
+---
+
+<footer class="piede">
+	<div class="piede__in">
+		<p class="piede__nome">
+			<img src={simbolo.src} alt="" width="52" height="50" />
+			<img class="piede__marchio" src={marchio.src} alt="" width="120" height="39" />
+			<span class="sr-only">Sifone</span>
+		</p>
+		<nav class="piede__nav" aria-label="Piè di pagina">
+			<a href="#problema">Che problema hai</a>
+			<a href="#zone">Zone e tempi</a>
+			<a href="#tariffe">Tariffe</a>
+			<a href="#richiesta">Contatti</a>
+			<a href={`tel:${TEL}`}>{TEL_VISIBILE}</a>
+		</nav>
+		<p class="piede__copy">
+			&copy; 2026 Sifone. Impresa di fantasia: concept dimostrativo. L’attività, le tariffe, le recensioni, gli orari e il numero di telefono
+			non esistono. Privacy e cookie: in una vetrina vera troveresti qui le pagine dedicate.
+		</p>
+		<a class="piede__credito" href="https://theloopstudio.org/" target="_blank" rel="noopener">
+			<span>Sito ideato da</span>
+			<img src={logo.src} width="84" height="44" alt="Loop Studio" />
+			<span class="sr-only">(si apre in una nuova scheda)</span>
+		</a>
+	</div>
+</footer>
+
+<style>
+	.piede {
+		background: var(--notte);
+		color: #d8d5cb;
+		padding: 48px var(--gutter) 96px;
+		padding-left: max(var(--gutter), calc(var(--tubo-x) + 44px));
+		border-top: 8px solid var(--rame);
+	}
+	.piede__in {
+		max-width: var(--max);
+		margin-inline: auto;
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		align-items: center;
+		gap: 20px 40px;
+	}
+	.piede__nome {
+		display: flex;
+		align-items: center;
+		gap: 14px;
+	}
+	.piede__nome img:first-child {
+		width: 52px;
+		height: auto;
+	}
+	.piede__marchio {
+		height: 28px;
+		width: auto;
+	}
+	.piede__nav {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px 24px;
+		font-weight: 600;
+	}
+	.piede__nav a {
+		text-decoration: none;
+		border-bottom: 2px solid transparent;
+	}
+	.piede__nav a:hover {
+		border-bottom-color: var(--rame);
+		color: #fff;
+	}
+	.piede__copy {
+		grid-column: 1 / -1;
+		max-width: 80ch;
+		font-size: 0.88rem;
+		color: #b3afa3;
+	}
+	.piede__credito {
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		font-size: 0.82rem;
+		text-decoration: none;
+		color: #b3afa3;
+	}
+	@media (max-width: 760px) {
+		.piede__in {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

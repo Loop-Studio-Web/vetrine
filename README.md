@@ -5,7 +5,7 @@
   <img src="docs/img/loop-logo-on-light.svg" alt="Loop Studio" height="64">
 </picture>
 
-<img src="docs/img/header.svg" alt="A street of shop fronts: Trattoria, Ossidiana, Luppolo & Watt, Bottega Tre Rasoi, Atelier Lumen, Aeterna, FIXLAB, Hot Swap and Ordito are lit and open, one more window is dark and coming soon." width="100%">
+<img src="docs/img/header.svg" alt="A street of shop fronts: Trattoria, Ossidiana, Luppolo & Watt, Bottega Tre Rasoi, Atelier Lumen, Aeterna, FIXLAB, Hot Swap, Ordito and Sifone are lit and open, one more window is dark and coming soon." width="100%">
 
 **Full-page homepage concepts for local businesses.<br>Each one designed as if it were the only one on the street.**
 
@@ -207,6 +207,25 @@
 
 <br>
 
+### 10 · Sifone
+
+<a href="https://vetrine.theloopstudio.org/casa/idraulico/"><img src="docs/img/card-sifone.jpg" alt="Sifone on desktop and mobile: a serif headline on lime-wash paper, two copper pipes in an opened wall cropped as an arch, a red valve wheel, and the phone menu as a rolling shutter." width="100%"></a>
+
+*Leaks, drains, boilers: we are on our way. A valve you turn to open the emergency.*
+
+| | |
+|---|---|
+| **Archetype** | The emergency plumber (a trade on call): the **low-key** tier of the Home & trades window, where the goal is to get the phone to ring fast |
+| **Mood** | Petrol blue, copper and lime-wash white. Real photography (copper pipes, an old tap, workshop tools), paper grain, and a hand-painted sign whose second colour is off-register. Cut-corner copper plates instead of boxes: the page is a workshop that works with real pipes |
+| **Type** | Gloock for headlines, Karla for text |
+| **Palette** | <img src="docs/img/palette-sifone.svg" alt="Lime-wash, copper, night blue, petrol, water teal and minium red" height="22"> |
+| **Signature moves** | A **valve wheel** you drag or tap in the hero: the pipe fills with water and the number to call appears. A **pipe along the side of the page** that fills as you scroll, with a flange at every section. **What to do right now** for four problems (a checklist, time, a "from" price, a button that prefills the form), a **pressure gauge** for arrival times over a schematic of the served zones, a **rolling-digit meter** for the cost estimate (day, night or holiday, hours of work), a request form with clear errors and a **receipt**. The mobile menu is a **rolling shutter** that comes down, with a close button inside it. A fixed call/request bar on phones |
+| **Lighthouse** | 98 performance on mobile, 100 on desktop, 100 on accessibility and best practices, no layout shift. Three free Unsplash photographs (no faces, no brands), the rest is SVG and CSS |
+
+[**Open Sifone →**](https://vetrine.theloopstudio.org/casa/idraulico/)
+
+<br>
+
 ### Next on the street
 
 | Category | Archetype | Status |
@@ -237,6 +256,7 @@ flowchart TB
     infra --> F["<b>FIXLAB</b><br/>own markup · CSS · JS · fonts"]
     infra --> H["<b>Hot Swap</b><br/>own markup · CSS · JS · fonts"]
     infra --> D["<b>Ordito</b><br/>own markup · CSS · JS · fonts"]
+    infra --> S["<b>Sifone</b><br/>own markup · CSS · JS · fonts"]
     infra --> N["<b>next concept…</b>"]
     T -.-|nothing shared| O
     O -.-|nothing shared| B
@@ -253,13 +273,13 @@ Before a concept goes on the street, it has to clear the same gate:
 
 | Gate | What it means | Trattoria | Ossidiana | Luppolo & Watt | Tre Rasoi | Lumen | Aeterna | FIXLAB | Hot Swap | Ordito |
 |---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| **Builds** | `astro build` is clean | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Accessible** | `axe-core`: zero violations | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Menu on phones** | A real menu with its own open/close effect, keyboard and Escape friendly (a curtain for Ossidiana, an unrolling card for the Trattoria, a pour of beer for Luppolo & Watt, a hot towel for Tre Rasoi, curtains for Lumen, a laser scan for Aeterna, a screwed-on back panel for FIXLAB, a tray with an LED for Hot Swap, a dark room whose lights come on one by one for Ordito) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Builds** | `astro build` is clean | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Accessible** | `axe-core`: zero violations | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Menu on phones** | A real menu with its own open/close effect, keyboard and Escape friendly (a curtain for Ossidiana, an unrolling card for the Trattoria, a pour of beer for Luppolo & Watt, a hot towel for Tre Rasoi, curtains for Lumen, a laser scan for Aeterna, a screwed-on back panel for FIXLAB, a tray with an LED for Hot Swap, a dark room whose lights come on one by one for Ordito, a rolling shutter for Sifone) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ```text
  LIGHTHOUSE · mobile            Trattoria                Ossidiana
