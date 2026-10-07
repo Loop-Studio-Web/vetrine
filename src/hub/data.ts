@@ -118,58 +118,6 @@ export const concepts: Concept[] = [
 		],
 	},
 	{
-		slug: 'ossidiana',
-		macro: 'ristorazione',
-		nome: 'Ossidiana',
-		categoria: 'Ristorazione',
-		archetipo: 'Il ristorante da menù degustazione',
-		claim: 'Una cena in cinque atti, in una sala che resta al buio.',
-		path: '/ristorazione/grande-ristorante/',
-		infoPath: '/ristorazione/grande-ristorante/info/',
-		titoloSeo: 'Sito web per ristorante di classe: homepage concept con menù degustazione',
-		descrizioneSeo:
-			'Come potrebbe essere la homepage di un ristorante da menù degustazione: percorso in cinque portate, atlante dei produttori, prenotazione. Concept dimostrativo di Loop Studio.',
-		intro: [
-			'Un ristorante da menù degustazione vende un’esperienza prima ancora di un pasto. Il sito deve far arrivare il tono della sala: il buio, il ritmo lento, la cura del dettaglio. Ossidiana lo fa con una cena raccontata in cinque atti, da scorrere come si assaggia.',
-			'È una vetrina dimostrativa: il ristorante, lo chef, i produttori e gli indirizzi sono di fantasia. Il concept mostra come si può trattare un locale di fascia alta con un linguaggio visivo proprio, senza ricorrere a un modello generico.',
-		],
-		perChi:
-			'Ristoranti di alta cucina, locali con menù degustazione, sale che puntano sull’atmosfera e su una clientela che prenota in anticipo. Adatta a chi vuole un sito che somigli alla serata.',
-		sezioni: [
-			{
-				t: 'Una luce che segue il cursore',
-				d: 'Su desktop un fascio di luce segue il mouse, come un faretto su un piatto. Su touch, dove il cursore non esiste, la luce vaga da sola con calma, senza chiedere nulla a chi guarda.',
-			},
-			{
-				t: 'Il percorso in cinque portate',
-				d: 'Le portate si scorrono in orizzontale, una per schermata, con un lento zoom sulle foto. Il racconto della cena ha un inizio e una fine, e si capisce sempre a che punto si è.',
-			},
-			{
-				t: 'L’atlante dei produttori',
-				d: 'Una mappa con i produttori e le stagioni mostra da dove arriva ciò che c’è nel piatto: un modo concreto di far valere la materia prima.',
-			},
-			{
-				t: 'Prenotazione con controlli e riepilogo',
-				d: 'Per un locale con pochi coperti ogni prenotazione conta: il modulo verifica i dati e mostra il riepilogo prima dell’invio, per ridurre errori e disdette.',
-			},
-		],
-		awning: ['#7a1426', '#151517'],
-		glow: 'rgba(210, 86, 107, 0.5)',
-		card: cardOssidiana,
-		shot: shotOssidiana,
-		shotAlt: '',
-		crop: '80% 50%',
-		cardAlt: 'Ossidiana su desktop e su telefono: un piatto di anatra illuminato come su un palco, appunti dello chef scritti a penna.',
-		mood: 'Teatrale, silenzioso, preciso. Solo tema scuro, per scelta.',
-		caratteri: 'Bodoni Moda, Jost e un corsivo a penna',
-		palette: ['#0b0b0c', '#151517', '#efe9dd', '#7a1426', '#d2566b'],
-		metriche: [
-			{ label: 'Performance', valore: '100' },
-			{ label: 'Accessibilità', valore: '100' },
-			{ label: 'Buone pratiche', valore: '100' },
-		],
-	},
-	{
 		slug: 'ristopub',
 		macro: 'ristorazione',
 		nome: 'Luppolo & Watt',
@@ -217,6 +165,58 @@ export const concepts: Concept[] = [
 		palette: ['#f1e8d4', '#e6d9bb', '#1a1815', '#e8921a', '#a82915', '#3d6a2a'],
 		metriche: [
 			{ label: 'Performance', valore: '99' },
+			{ label: 'Accessibilità', valore: '100' },
+			{ label: 'Buone pratiche', valore: '100' },
+		],
+	},
+	{
+		slug: 'ossidiana',
+		macro: 'ristorazione',
+		nome: 'Ossidiana',
+		categoria: 'Ristorazione',
+		archetipo: 'Il ristorante da menù degustazione',
+		claim: 'Una cena in cinque atti, in una sala che resta al buio.',
+		path: '/ristorazione/grande-ristorante/',
+		infoPath: '/ristorazione/grande-ristorante/info/',
+		titoloSeo: 'Sito web per ristorante di classe: homepage concept con menù degustazione',
+		descrizioneSeo:
+			'Come potrebbe essere la homepage di un ristorante da menù degustazione: percorso in cinque portate, atlante dei produttori, prenotazione. Concept dimostrativo di Loop Studio.',
+		intro: [
+			'Un ristorante da menù degustazione vende un’esperienza prima ancora di un pasto. Il sito deve far arrivare il tono della sala: il buio, il ritmo lento, la cura del dettaglio. Ossidiana lo fa con una cena raccontata in cinque atti, da scorrere come si assaggia.',
+			'È una vetrina dimostrativa: il ristorante, lo chef, i produttori e gli indirizzi sono di fantasia. Il concept mostra come si può trattare un locale di fascia alta con un linguaggio visivo proprio, senza ricorrere a un modello generico.',
+		],
+		perChi:
+			'Ristoranti di alta cucina, locali con menù degustazione, sale che puntano sull’atmosfera e su una clientela che prenota in anticipo. Adatta a chi vuole un sito che somigli alla serata.',
+		sezioni: [
+			{
+				t: 'Una luce che segue il cursore',
+				d: 'Su desktop un fascio di luce segue il mouse, come un faretto su un piatto. Su touch, dove il cursore non esiste, la luce vaga da sola con calma, senza chiedere nulla a chi guarda.',
+			},
+			{
+				t: 'Il percorso in cinque portate',
+				d: 'Le portate si scorrono in orizzontale, una per schermata, con un lento zoom sulle foto. Il racconto della cena ha un inizio e una fine, e si capisce sempre a che punto si è.',
+			},
+			{
+				t: 'L’atlante dei produttori',
+				d: 'Una mappa con i produttori e le stagioni mostra da dove arriva ciò che c’è nel piatto: un modo concreto di far valere la materia prima.',
+			},
+			{
+				t: 'Prenotazione con controlli e riepilogo',
+				d: 'Per un locale con pochi coperti ogni prenotazione conta: il modulo verifica i dati e mostra il riepilogo prima dell’invio, per ridurre errori e disdette.',
+			},
+		],
+		awning: ['#7a1426', '#151517'],
+		glow: 'rgba(210, 86, 107, 0.5)',
+		card: cardOssidiana,
+		shot: shotOssidiana,
+		shotAlt: '',
+		crop: '80% 50%',
+		cardAlt: 'Ossidiana su desktop e su telefono: un piatto di anatra illuminato come su un palco, appunti dello chef scritti a penna.',
+		mood: 'Teatrale, silenzioso, preciso. Solo tema scuro, per scelta.',
+		caratteri: 'Bodoni Moda, Jost e un corsivo a penna',
+		palette: ['#0b0b0c', '#151517', '#efe9dd', '#7a1426', '#d2566b'],
+		metriche: [
+			{ label: 'Performance', valore: '100' },
 			{ label: 'Accessibilità', valore: '100' },
 			{ label: 'Buone pratiche', valore: '100' },
 		],
@@ -418,7 +418,7 @@ export const concepts: Concept[] = [
 		card: cardFixlab,
 		shot: shotFixlab,
 		shotAlt: '',
-		crop: '60% 40%',
+		crop: '89% 50%',
 		cardAlt: 'FIXLAB su desktop e su telefono: titolo grande su fondo ghiaccio, uno smartphone in vista esplosa con i prezzi dei pezzi, il menù mobile come pannello posteriore avvitato.',
 		mood: 'Il laboratorio di quartiere: ghiaccio, blu notte e un blu elettrico usato come accento, con una scheda di lavoro al posto del solito carosello.',
 		caratteri: 'Outfit e Instrument Sans',
