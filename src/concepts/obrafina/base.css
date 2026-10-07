@@ -1,0 +1,334 @@
+/* OBRA FINA — token, reset y piezas mínimas. Cal azulada (azulete), arcilla, sepia y un único azul de tiza (el cordel del albañil).
+   Textura de enlucido a la cal en toda la página, rótulos de obra en Anybody ensanchada, titulares en Young Serif. */
+/* la luz que cruza la cal: posición del bagliore, animada con el scroll */
+@property --luz-x {
+	syntax: '<percentage>';
+	inherits: true;
+	initial-value: 78%;
+}
+@property --luz-y {
+	syntax: '<percentage>';
+	inherits: true;
+	initial-value: 62%;
+}
+:root {
+	--cal: #d9e3f1; /* fondo base: cal con azulete, el azul de las casas encaladas */
+	--cal-claro: #ecf1f9;
+	--cal-2: #c4d3e8;
+	--raya: #a5b6d0;
+	--arcilla: #b9482a; /* relleno */
+	--arcilla-2: #9a3a1f; /* texto y enlaces sobre claro (contraste 5,6) */
+	--arcilla-claro: #e58a68; /* sobre oscuro */
+	--sepia: #241a14; /* texto */
+	--sepia-2: #3a2c23; /* secciones oscuras */
+	--sepia-3: #5b4b3f; /* texto secundario sobre cal (contraste 6,7) */
+	--tiza: #2b49c8; /* el azul del cordel */
+	--tiza-claro: #9fb0ff; /* sobre oscuro */
+	--oliva: #59582b;
+	--ocre: #d9a441;
+	--ocre-claro: #f0cf8a;
+	--papel: #fbf5ea;
+	--error: #a8231b;
+	--ok: #3d6b2e;
+
+	--titulos: 'Young Serif', 'Georgia', serif;
+	--texto: 'Onest Variable', system-ui, sans-serif;
+	--rotulo: 'Anybody Variable', 'Arial Narrow', sans-serif;
+	--mano: 'Covered By Your Grace', cursive;
+
+	--gutter: clamp(20px, 5vw, 64px);
+	--max: 1240px;
+	--nav-h: 72px;
+	--fascia-h: 34px;
+	--fascia: 34px;
+	color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	scroll-behavior: smooth;
+	scroll-padding-top: calc(var(--nav-h) + 12px);
+	-webkit-text-size-adjust: 100%;
+	scrollbar-color: var(--arcilla) var(--ocre-claro);
+}
+
+body {
+	position: relative;
+	background-color: var(--cal);
+	/* intonaco: nubes de cal muy suaves y grano fino, sin imágenes */
+	background-image:
+		url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='700'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006 .009' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .4 0 0 0 0 .5 0 0 0 0 .7 0 0 0 .4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)'/%3E%3C/svg%3E"),
+		url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .25 0 0 0 0 .4 0 0 0 .45 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23b)'/%3E%3C/svg%3E");
+	color: var(--sepia);
+	font-family: var(--texto);
+	font-size: 1.08rem;
+	line-height: 1.6;
+	overflow-x: clip;
+}
+body.menu-abierto {
+	overflow: hidden;
+}
+
+/* Barra de desplazamiento: un nivel de burbuja */
+@supports selector(::-webkit-scrollbar) {
+	html {
+		scrollbar-color: auto;
+	}
+	::-webkit-scrollbar {
+		width: 16px;
+		height: 16px;
+	}
+	::-webkit-scrollbar-track {
+		background: linear-gradient(90deg, #e2b862, var(--ocre-claro) 50%, #e2b862);
+		box-shadow: inset 0 0 0 1px rgba(36, 26, 20, 0.25);
+	}
+	::-webkit-scrollbar-thumb {
+		background: radial-gradient(ellipse at 50% 30%, #fffaf0, #efe0c6 70%);
+		border: 3px solid var(--ocre-claro);
+		border-radius: 10px;
+		box-shadow: inset 0 0 0 1px rgba(36, 26, 20, 0.35);
+	}
+}
+
+::selection {
+	background: var(--tiza);
+	color: #fff;
+}
+
+img,
+svg {
+	display: block;
+	max-width: 100%;
+}
+button,
+input,
+select,
+textarea {
+	font: inherit;
+	color: inherit;
+}
+button {
+	cursor: pointer;
+}
+a {
+	color: inherit;
+}
+ul,
+ol {
+	list-style: none;
+}
+
+h1,
+h2,
+h3 {
+	font-family: var(--titulos);
+	font-weight: 400;
+	line-height: 1.02;
+	letter-spacing: -0.012em;
+	text-wrap: balance;
+}
+p {
+	text-wrap: pretty;
+}
+
+:focus-visible {
+	outline: 3px solid var(--tiza);
+	outline-offset: 3px;
+	border-radius: 2px;
+}
+.oscuro :focus-visible,
+.oscuro:focus-visible {
+	outline-color: var(--tiza-claro);
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+
+.skip-link {
+	position: absolute;
+	left: 12px;
+	top: -60px;
+	z-index: 500;
+	background: var(--sepia);
+	color: var(--cal);
+	padding: 10px 16px;
+	text-decoration: none;
+	font-weight: 600;
+}
+.skip-link:focus {
+	top: 12px;
+}
+
+/* Rótulo de obra: etiqueta ancha en mayúsculas, como el cartel de una valla. Se estira al entrar en vista. */
+.rotulo {
+	font-family: var(--rotulo);
+	font-weight: 700;
+	font-stretch: 112%;
+	font-size: 0.8rem;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--arcilla-2);
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+}
+.rotulo::before {
+	content: '';
+	width: 30px;
+	height: 2px;
+	background: currentColor;
+	flex: none;
+}
+@supports (animation-timeline: view()) {
+	@media (prefers-reduced-motion: no-preference) {
+		.rotulo {
+			animation: ensancha linear both;
+			animation-timeline: view();
+			animation-range: entry 0% cover 35%;
+		}
+		@keyframes ensancha {
+			from {
+				font-stretch: 55%;
+				letter-spacing: 0.04em;
+				opacity: 0.4;
+			}
+			to {
+				font-stretch: 112%;
+				letter-spacing: 0.14em;
+				opacity: 1;
+			}
+		}
+	}
+}
+.oscuro .rotulo {
+	color: var(--ocre-claro);
+}
+
+/* Botón de llana: esquina cortada como la punta de una paleta */
+.btn {
+	--c: var(--arcilla);
+	--t: #fff;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	min-height: 52px;
+	padding: 0 26px;
+	background: linear-gradient(180deg, color-mix(in oklab, var(--c) 82%, white), var(--c) 55%, color-mix(in oklab, var(--c) 88%, black));
+	background-size: 100% 220%;
+	background-position: 0 100%;
+	color: var(--t);
+	font-family: var(--rotulo);
+	font-weight: 700;
+	font-stretch: 108%;
+	font-size: 0.92rem;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	text-decoration: none;
+	border: 0;
+	clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+	transition:
+		transform 0.18s,
+		background 0.18s;
+}
+.btn:hover {
+	background-position: 0 0;
+	filter: brightness(0.9) saturate(1.1);
+	transform: translateY(-2px);
+}
+.btn:active {
+	transform: translateY(1px);
+}
+.btn--claro {
+	--c: var(--cal-claro);
+	--t: var(--sepia);
+}
+
+.btn--sepia {
+	--c: var(--sepia);
+	--t: var(--cal);
+}
+
+.btn:focus-visible {
+	clip-path: none;
+	outline-offset: 4px;
+}
+
+.enlace {
+	color: var(--arcilla-2);
+	font-weight: 600;
+	text-decoration: underline;
+	text-decoration-thickness: 2px;
+	text-underline-offset: 5px;
+}
+.enlace:hover {
+	color: var(--sepia);
+}
+
+.sec {
+	position: relative;
+	padding: clamp(72px, 10vw, 140px) var(--gutter);
+}
+.sec__in {
+	max-width: var(--max);
+	margin-inline: auto;
+}
+.sec__cab {
+	max-width: 760px;
+	margin-bottom: clamp(32px, 5vw, 64px);
+}
+.sec__cab h2 {
+	font-size: clamp(2.2rem, 5.4vw, 4.2rem);
+	margin: 18px 0 18px;
+}
+.sec__cab p {
+	font-size: 1.14rem;
+	color: var(--sepia-3);
+	max-width: 58ch;
+}
+.oscuro {
+	background-color: var(--sepia-2);
+	color: var(--cal);
+}
+.oscuro .sec__cab p {
+	color: #d5c3b0;
+}
+
+/* Revelado al entrar en vista (con IntersectionObserver en la página) */
+.js [data-rev] {
+	opacity: 0;
+	transform: translateY(26px);
+	transition:
+		opacity 0.8s cubic-bezier(0.2, 0.7, 0.2, 1),
+		transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+	transition-delay: calc(var(--d, 0) * 90ms);
+}
+.js [data-rev].visto {
+	opacity: 1;
+	transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+	.js [data-rev] {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
+}

@@ -1,0 +1,357 @@
+---
+import { fases } from './datos';
+import { calcular, estadoInicial, ganttHtml, textoVivir } from './presupuesto';
+
+const r0 = calcular(estadoInicial());
+---
+
+<section class="cal oscuro sec" id="calendario">
+	<div class="sec__in">
+		<header class="sec__cab" data-rev>
+			<p class="rotulo">02 · Calendario</p>
+			<h2>Tu obra, semana a semana.</h2>
+			<p>
+				El calendario sale de lo que has elegido arriba: más estancias o más obra, más semanas. Es el mismo que firmamos antes de empezar, con la fecha de entrega y una
+				penalización si nos pasamos.
+			</p>
+		</header>
+
+		<div class="cal__ctl" data-rev>
+			<fieldset class="cal__cuando">
+				<legend>¿Cuándo empezarías?</legend>
+				<label><input type="radio" name="cuando" value="0" checked /><span>Lo antes posible</span></label>
+				<label><input type="radio" name="cuando" value="30" /><span>En un mes</span></label>
+				<label><input type="radio" name="cuando" value="90" /><span>En tres meses</span></label>
+			</fieldset>
+			<p class="cal__fechas" data-fechas aria-live="polite"></p>
+		</div>
+
+		<div class="g" data-gantt data-rev set:html={ganttHtml(r0)} />
+
+		<div class="cal__pie">
+			<div class="cal__vivir" data-rev>
+				<p class="rotulo">¿Se puede vivir en casa?</p>
+				<p data-vivir>{textoVivir[r0.vivir]}</p>
+			</div>
+			<ol class="cal__fases" data-rev>
+				{fases.map((f, i) => <li><span aria-hidden="true">{String(i + 1).padStart(2, '0')}</span><div><b>{f.nombre}</b><p>{f.d}</p></div></li>)}
+			</ol>
+		</div>
+	</div>
+</section>
+
+<style is:global>
+	.cal {
+		background-color: var(--sepia-2);
+		/* plano de obra: cuadrícula tenue */
+		background-image:
+			radial-gradient(50% 40% at 85% 0%, oklch(0.5 0.1 60 / 0.55), transparent 70%), radial-gradient(60% 50% at 0% 100%, oklch(0.3 0.06 40 / 0.9), transparent 70%),
+			linear-gradient(rgba(240, 207, 138, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(240, 207, 138, 0.06) 1px, transparent 1px);
+		background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+		border-top: 3px solid var(--sepia);
+	}
+	.cal__ctl {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px 32px;
+		margin-bottom: 28px;
+	}
+	.cal__cuando {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 8px;
+		border: 0;
+	}
+	.cal__cuando legend {
+		float: left;
+		margin-right: 14px;
+		padding: 0;
+		font-family: var(--rotulo);
+		font-weight: 700;
+		font-stretch: 108%;
+		font-size: 0.74rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--ocre-claro);
+		line-height: 44px;
+	}
+	.cal__cuando label {
+		position: relative;
+		cursor: pointer;
+	}
+	.cal__cuando input {
+		position: absolute;
+		inset: 0;
+		opacity: 0;
+		cursor: pointer;
+	}
+	.cal__cuando span {
+		display: block;
+		padding: 10px 18px;
+		border: 2px solid rgba(240, 207, 138, 0.5);
+		font-weight: 600;
+		font-size: 0.92rem;
+		transition: background 0.2s, color 0.2s;
+	}
+	.cal__cuando input:checked + span {
+		background: var(--ocre-claro);
+		color: var(--sepia);
+		border-color: var(--ocre-claro);
+	}
+	.cal__cuando input:focus-visible + span {
+		outline: 3px solid var(--tiza-claro);
+		outline-offset: 3px;
+	}
+	.cal__fechas {
+		font-size: 1rem;
+		color: #e6d6c3;
+	}
+	.cal__fechas b {
+		color: var(--ocre-claro);
+		font-family: var(--titulos);
+		font-weight: 400;
+		font-size: 1.3rem;
+	}
+
+	/* diagrama */
+	.g {
+		border: 2px solid rgba(240, 207, 138, 0.5);
+		padding: clamp(14px, 2.4vw, 28px);
+		background: rgba(36, 26, 20, 0.4);
+		min-height: 330px;
+	}
+	.g__vacia {
+		padding: 40px 0;
+		text-align: center;
+		color: #d5c3b0;
+	}
+	.g__cab,
+	.g__fila {
+		display: grid;
+		grid-template-columns: minmax(130px, 240px) repeat(var(--cols), minmax(0, 1fr));
+		align-items: center;
+	}
+	.g__cab {
+		padding-bottom: 8px;
+		border-bottom: 2px solid rgba(240, 207, 138, 0.5);
+		margin-bottom: 4px;
+	}
+	.g__sem {
+		display: block;
+		font-family: var(--rotulo);
+		font-weight: 700;
+		font-stretch: 108%;
+		font-size: 0.72rem;
+		letter-spacing: 0.08em;
+		color: var(--ocre-claro);
+		border-left: 1px solid rgba(240, 207, 138, 0.3);
+		padding-left: 5px;
+		overflow: hidden;
+	}
+	.g__sem small {
+		display: block;
+		font-family: var(--texto);
+		font-weight: 500;
+		font-stretch: 100%;
+		letter-spacing: 0;
+		color: #d5c3b0;
+		font-size: 0.7rem;
+	}
+	.g__fila {
+		min-height: 58px;
+		border-bottom: 1px dashed rgba(240, 207, 138, 0.25);
+	}
+	.g__etq {
+		padding-right: 12px;
+		line-height: 1.25;
+	}
+	.g__etq b {
+		display: block;
+		font-weight: 600;
+		font-size: 0.94rem;
+	}
+	.g__etq small {
+		color: #d5c3b0;
+		font-size: 0.78rem;
+	}
+	.g__fila--off .g__etq {
+		opacity: 0.55;
+	}
+	.g__barra {
+		position: relative;
+		display: flex;
+		align-items: center;
+		height: 30px;
+		padding: 0 10px;
+		font-style: normal;
+		font-family: var(--rotulo);
+		font-weight: 700;
+		font-stretch: 108%;
+		font-size: 0.7rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		white-space: nowrap;
+		overflow: hidden;
+		border: 2px solid var(--cal);
+		transform-origin: left;
+	}
+	.g__barra--visita,
+	.g__barra--licencia {
+		background: transparent;
+		color: var(--cal);
+		border-style: dashed;
+	}
+	.g__barra--gruesa {
+		background-color: #a8532f;
+		background-image: repeating-linear-gradient(0deg, rgba(240, 220, 200, 0.55) 0 2px, transparent 2px 10px);
+		color: #fff;
+		text-shadow: 0 0 4px #5b2a15, 0 0 4px #5b2a15;
+	}
+	.g__barra--instal {
+		background: var(--tiza);
+		color: #fff;
+		border-color: var(--tiza-claro);
+	}
+	.g__barra--fina {
+		background: var(--ocre-claro);
+		color: var(--sepia);
+		border-color: var(--ocre-claro);
+	}
+	.g__barra--entrega {
+		background: var(--cal);
+		color: var(--sepia);
+	}
+	.js .g .g__barra {
+		transform: scaleX(0);
+		transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+		transition-delay: calc(var(--i) * 110ms);
+	}
+	.js .g.visto .g__barra {
+		transform: none;
+	}
+	@media (max-width: 760px) {
+		.g__cab {
+			grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+		}
+		.g__cab > span:first-child {
+			display: none;
+		}
+		.g__sem {
+			grid-column: span 2 !important;
+		}
+		.g__fila {
+			grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+			padding: 8px 0 10px;
+			row-gap: 6px;
+		}
+		.g__etq {
+			grid-column: 1 / -1;
+		}
+		.g__barra span {
+			display: none;
+		}
+		.g__barra {
+			grid-column: calc(var(--a, 2) - 1) / calc(var(--b, 3) - 1) !important;
+		}
+	}
+	.cal__pie {
+		display: grid;
+		gap: 36px;
+		margin-top: clamp(36px, 5vw, 64px);
+	}
+	.cal__vivir {
+		padding: 22px 26px;
+		border-left: 6px solid var(--ocre-claro);
+		background: rgba(240, 207, 138, 0.08);
+	}
+	.cal__vivir .rotulo {
+		margin-bottom: 8px;
+	}
+	.cal__vivir p:last-child {
+		font-family: var(--titulos);
+		font-size: clamp(1.2rem, 2.4vw, 1.5rem);
+		line-height: 1.25;
+	}
+	.cal__fases {
+		display: grid;
+		gap: 22px 36px;
+	}
+	.cal__fases li {
+		display: grid;
+		grid-template-columns: 38px 1fr;
+		gap: 12px;
+	}
+	.cal__fases span {
+		font-family: var(--rotulo);
+		font-weight: 800;
+		font-stretch: 125%;
+		font-size: 1.2rem;
+		color: var(--ocre-claro);
+	}
+	.cal__fases b {
+		font-weight: 600;
+	}
+	.cal__fases p {
+		font-size: 0.92rem;
+		color: #d5c3b0;
+		margin-top: 2px;
+	}
+	@media (min-width: 900px) {
+		.cal__pie {
+			grid-template-columns: 0.8fr 1.2fr;
+			align-items: start;
+		}
+		.cal__fases {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+</style>
+
+<script>
+	import { calcular, estadoInicial, ganttHtml, lunesInicio, sumaSemanas, textoFecha, textoVivir, type Resultado } from './presupuesto';
+
+	const raiz = document.getElementById('calendario') as HTMLElement;
+	const gantt = raiz.querySelector<HTMLElement>('[data-gantt]')!;
+	const fechas = raiz.querySelector<HTMLElement>('[data-fechas]')!;
+	const vivir = raiz.querySelector<HTMLElement>('[data-vivir]')!;
+	let desfase = 0;
+	let r: Resultado = (window as any).__obrafina?.res ?? calcular(estadoInicial());
+
+	const pinta = () => {
+		const ini = lunesInicio(desfase);
+		gantt.innerHTML = ganttHtml(r, ini);
+		// en móvil la barra empieza en su columna: se pasa como variable
+		gantt.querySelectorAll<HTMLElement>('.g__barra').forEach((b) => {
+			const [a, z] = b.style.gridColumn.split('/').map((x) => x.trim());
+			b.style.setProperty('--a', a);
+			b.style.setProperty('--b', z);
+		});
+		fechas.innerHTML = r.hay
+			? `Empezamos el <b>${textoFecha(ini)}</b> · entrega hacia el <b>${textoFecha(sumaSemanas(ini, r.semanas))}</b>`
+			: 'Sin estancias elegidas';
+		vivir.textContent = textoVivir[r.vivir];
+	};
+	window.addEventListener('obrafina:estado', (e) => {
+		r = (e as CustomEvent).detail.res;
+		pinta();
+	});
+	raiz.querySelector('.cal__cuando')!.addEventListener('change', (e) => {
+		desfase = +(e.target as HTMLInputElement).value;
+		pinta();
+	});
+	pinta();
+
+	const io = new IntersectionObserver(
+		([e]) => {
+			if (e.isIntersecting) {
+				gantt.classList.add('visto');
+				io.disconnect();
+			}
+		},
+		{ threshold: 0.25 },
+	);
+	io.observe(gantt);
+</script>

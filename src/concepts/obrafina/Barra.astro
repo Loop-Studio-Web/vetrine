@@ -1,0 +1,80 @@
+---
+import { TEL } from './datos';
+---
+
+<nav class="barra" data-barra aria-label="Acciones rápidas">
+	<a class="barra__tel" href={`tel:${TEL}`}>
+		<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+			><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"></path></svg
+		>
+		<span>Llamar</span>
+	</a>
+	<a class="barra__cta" href="#visita">Pedir visita</a>
+</nav>
+
+<style>
+	.barra {
+		display: none;
+	}
+	@media (max-width: 720px) {
+		.barra {
+			position: fixed;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			z-index: 130;
+			display: flex;
+			background: var(--sepia);
+			border-top: 3px solid var(--tiza);
+			padding-bottom: env(safe-area-inset-bottom);
+			transform: translateY(110%);
+			transition: transform 0.3s;
+		}
+		.barra.es-visible {
+			transform: none;
+		}
+		.barra a {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 10px;
+			min-height: 56px;
+			text-decoration: none;
+			font-family: var(--rotulo);
+			font-weight: 700;
+			font-stretch: 108%;
+			font-size: 0.86rem;
+			letter-spacing: 0.1em;
+			text-transform: uppercase;
+		}
+		.barra__tel {
+			flex: 1;
+			color: var(--cal);
+			border-right: 2px solid rgba(255, 255, 255, 0.2);
+		}
+		.barra__cta {
+			flex: 1.3;
+			background: var(--arcilla);
+			color: #fff;
+		}
+	}
+</style>
+
+<script>
+	const barra = document.querySelector<HTMLElement>('[data-barra]');
+	const entrada = document.getElementById('top');
+	const visita = document.getElementById('visita');
+	if (barra && entrada && visita) {
+		let fuera = false;
+		let enVisita = false;
+		const act = () => barra.classList.toggle('es-visible', fuera && !enVisita);
+		new IntersectionObserver(([e]) => {
+			fuera = !e.isIntersecting;
+			act();
+		}).observe(entrada);
+		new IntersectionObserver(([e]) => {
+			enVisita = e.isIntersecting;
+			act();
+		}, { threshold: 0.15 }).observe(visita);
+	}
+</script>

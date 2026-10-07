@@ -20,6 +20,8 @@ import cardOrdito from '../assets/hub/card-ordito.jpg';
 import shotOrdito from '../assets/hub/shot-ordito.jpg';
 import cardSifone from '../assets/hub/card-sifone.jpg';
 import shotSifone from '../assets/hub/shot-sifone.jpg';
+import cardObrafina from '../assets/hub/card-obrafina.jpg';
+import shotObrafina from '../assets/hub/shot-obrafina.jpg';
 
 export const SITE = 'https://theloopstudio.org/';
 export const CONTACT = 'https://theloopstudio.org/contatti';
@@ -32,7 +34,7 @@ export const macros = [
 	{ slug: 'studi', nome: 'Studi e servizi' },
 	{ slug: 'benessere', nome: 'Benessere' },
 	{ slug: 'tech', nome: 'Tech' },
-	{ slug: 'casa', nome: 'Casa e artigiani' },
+	{ slug: 'casa', nome: 'Abitare' },
 	{ slug: 'commercio', nome: 'Commercio' },
 ] as const;
 export type MacroSlug = (typeof macros)[number]['slug'];
@@ -580,7 +582,7 @@ export const concepts: Concept[] = [
 		slug: 'sifone',
 		macro: 'casa',
 		nome: 'Sifone',
-		categoria: 'Casa e artigiani',
+		categoria: 'Abitare',
 		archetipo: 'L’idraulico di pronto intervento',
 		claim: 'Perde, scarica, si ferma: arriviamo noi. Una valvola da girare, cosa fare subito, tempi per zona e tariffe in chiaro.',
 		path: '/casa/idraulico/',
@@ -590,7 +592,7 @@ export const concepts: Concept[] = [
 			'Come potrebbe essere la homepage di un idraulico di pronto intervento: valvola interattiva, cosa fare subito per ogni problema, tempi di arrivo per zona, tariffe con contatore e richiesta di intervento. Concept dimostrativo di Loop Studio.',
 		intro: [
 			'Chi chiama un idraulico ha l’acqua sul pavimento, o il bagno che non scarica, e decide in pochi secondi, con il telefono in mano. Questa homepage parte da lì: prima ti dice cosa fare per limitare i danni, poi quanto ci mettiamo ad arrivare e quanto costa, poi lascia il numero ben in vista. Il sito è una bottega che lavora con tubi veri: fotografie di rame e ottone, un’insegna dipinta a mano e un tubo di rame che corre lungo la pagina e si riempie d’acqua mentre scorri.',
-			'È il livello Essenziale della categoria Casa e artigiani e una vetrina dimostrativa: l’impresa, le tariffe, le zone, le recensioni e il numero di telefono sono di fantasia. Serve a mostrare che un artigiano può avere un sito chiaro, immediato e fatto per far chiamare, con fotografie vere al posto delle solite icone e senza effetti inutili.',
+			'È il livello Essenziale della categoria Abitare e una vetrina dimostrativa: l’impresa, le tariffe, le zone, le recensioni e il numero di telefono sono di fantasia. Serve a mostrare che un artigiano può avere un sito chiaro, immediato e fatto per far chiamare, con fotografie vere al posto delle solite icone e senza effetti inutili.',
 		],
 		perChi:
 			'Idraulici, elettricisti, fabbri, caldaisti e altri artigiani di pronto intervento. Adatta a chi lavora su chiamata, vuole ridurre le telefonate che non portano lavoro, far capire subito i prezzi e le zone servite e ricevere richieste già ordinate.',
@@ -630,6 +632,64 @@ export const concepts: Concept[] = [
 		palette: ['#efe9dc', '#e58857', '#08212a', '#0f3a3f', '#34b3a8', '#d8412a'],
 		metriche: [
 			{ label: 'Performance', valore: '98' },
+			{ label: 'Accessibilità', valore: '100' },
+			{ label: 'Buone pratiche', valore: '100' },
+		],
+	},
+	{
+		slug: 'obrafina',
+		macro: 'casa',
+		nome: 'Obra Fina',
+		categoria: 'Abitare',
+		archetipo: 'L’impresa di ristrutturazioni',
+		claim: 'Obra gruesa para que aguante. Obra fina para que se note. Una casa in sezione da toccare stanza per stanza: preventivo, calendario e pavimento a vista.',
+		path: '/casa/ristrutturazioni/',
+		infoPath: '/casa/ristrutturazioni/info/',
+		titoloSeo: 'Sito web per impresa di ristrutturazioni: homepage concept con preventivatore a stanze (in spagnolo)',
+		descrizioneSeo:
+			'Come potrebbe essere la homepage di un’impresa di ristrutturazioni: una casa in sezione da cui scegliere stanza per stanza, preventivo che si calcola da solo, calendario dei lavori, campionario di piastrelle idrauliche e prenotazione della visita. In spagnolo, per il mercato spagnolo. Concept dimostrativo di Loop Studio.',
+		intro: [
+			'Chi vuole ristrutturare casa ha due paure: che il preventivo cresca strada facendo e che i lavori non finiscano mai. Questa homepage le affronta prima di ogni telefonata: si disegna la propria casa stanza per stanza, si sceglie quanto lavoro serve a ciascuna e si vede subito costo, durata e perfino quando si consegna. Il sito è in spagnolo, pensato per il mercato spagnolo, e parla il linguaggio del cantiere: obra gruesa, obra fina, presupuesto cerrado.',
+			'È il livello Evoluto della categoria Abitare e una vetrina dimostrativa: l’impresa, i prezzi, i tempi, le recensioni e il numero di telefono sono di fantasia, e le fotografie sono d’archivio. Serve a mostrare che un’impresa edile può avere un sito che fa il preventivo insieme al cliente, con una sezione di casa da toccare, un calendario vero e una palette di calce, terracotta e un solo blu di gesso.',
+		],
+		perChi:
+			'Imprese di ristrutturazioni e riforme integrali, studi di interior e impiantisti che lavorano su appartamenti e case. Adatta a chi vuole far capire in pochi minuti quanto costa e quanto dura un lavoro, ridurre le visite a vuoto e arrivare al sopralluogo con un cliente già informato.',
+		sezioni: [
+			{
+				t: 'Una casa in sezione da toccare',
+				d: 'Sette stanze in una sezione disegnata in CSS: se ne sceglie una, si decide quanta opera serve (nulla, ritocco, riforma, a fondo) e le pareti si ridipingono con un passaggio di cazzuola. Tre livelli da attraversare con una transizione: struttura, impianti, finiture.',
+			},
+			{
+				t: 'Il preventivo si scrive da solo',
+				d: 'Metri quadri su un righello, extra per stanza e colore delle pareti: la hoja de obra mostra riga per riga i costi, il riparto fra opera grezza, impianti e finiture, IVA e totale con una forbice onesta.',
+			},
+			{
+				t: 'Il calendario della propria obra',
+				d: 'Un diagramma di Gantt calcolato sulle scelte fatte: fasi, settimane, data di inizio e di consegna, e se si può restare a vivere in casa durante i lavori.',
+			},
+			{
+				t: 'Un campionario di piastrelle idrauliche',
+				d: 'Otto disegni fatti a mano in SVG: si sceglie la piastrella e la stanza in prospettiva si posa, cambiando il pavimento anche nel preventivo.',
+			},
+			{
+				t: 'Prima e dopo con il filo a piombo, e la visita',
+				d: 'Un confronto da trascinare con il filo a piombo che oscilla, le garanzie scritte come un contratto con timbro e la prenotazione della visita con giorni e fasce orarie calcolati da oggi.',
+			},
+		],
+		awning: ['#b9482a', '#2b49c8'],
+		glow: 'rgba(185, 72, 42, 0.55)',
+		livello: 2,
+		lingua: 'ES',
+		card: cardObrafina,
+		shot: shotObrafina,
+		shotAlt: '',
+		crop: '55% 40%',
+		cardAlt: 'Obra Fina su desktop e su telefono: titolo in serif su calce azzurrina, un arco di intonaco con fotografia e un filo a piombo, una casa in sezione con stanze colorate, una riga di gesso blu, il menù mobile a tre mani di cazzuola.',
+		mood: 'La bottega dell’obra fina: calce con l’azulete (l’azzurro delle case imbiancate), argilla, seppia e il blu del gesso (il cordello del muratore). Intonaco ovunque, rótulos di cantiere in carattere largo; la barra di avanzamento è una livella a bolla.',
+		caratteri: 'Young Serif, Onest e Anybody',
+		palette: ['#d9e3f1', '#b9482a', '#241a14', '#2b49c8', '#d9a441', '#59582b'],
+		metriche: [
+			{ label: 'Performance', valore: '94' },
 			{ label: 'Accessibilità', valore: '100' },
 			{ label: 'Buone pratiche', valore: '100' },
 		],

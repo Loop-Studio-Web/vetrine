@@ -1,0 +1,591 @@
+---
+import { barrios, franjas, TEL, TEL_VISIBLE } from './datos';
+---
+
+<section class="vis oscuro sec" id="visita">
+	<div class="sec__in vis__in">
+		<div class="vis__txt" data-rev>
+			<p class="rotulo">06 · Visita</p>
+			<h2>Vamos a verlo y te lo ponemos por escrito.</h2>
+			<p class="vis__lead">
+				La visita es gratuita y no te compromete a nada. Medimos con láser, miramos las instalaciones y en 72 horas tienes el presupuesto cerrado, con calendario y fecha de entrega.
+			</p>
+			<ul class="vis__lleva">
+				<li><b>Metro láser</b> y plano de cada estancia</li>
+				<li><b>Cámara térmica</b> para humedades y aislamiento</li>
+				<li><b>Muestras</b> de baldosa, cal y carpintería</li>
+			</ul>
+			<p class="vis__tel">¿Prefieres hablar? <a href={`tel:${TEL}`}>{TEL_VISIBLE}</a><small>Lunes a viernes, 8:30–19:00. Número de ejemplo.</small></p>
+			<div class="vis__hoja" data-resumen hidden>
+				<p class="rotulo">Con tu hoja de obra</p>
+				<p data-resumen-t></p>
+			</div>
+		</div>
+
+		<div class="vis__caja" data-rev>
+			<form class="vf" data-form novalidate>
+				<div class="vf__errores" data-errores tabindex="-1" role="alert" hidden></div>
+
+				<div class="vf__fila">
+					<div class="vf__campo">
+						<label for="v-nombre">Nombre</label>
+						<input id="v-nombre" name="nombre" type="text" autocomplete="name" required aria-describedby="v-nombre-e" />
+						<p class="vf__err" id="v-nombre-e"></p>
+					</div>
+					<div class="vf__campo">
+						<label for="v-tel">Teléfono</label>
+						<input id="v-tel" name="tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="6XX XXX XXX" required aria-describedby="v-tel-e" />
+						<p class="vf__err" id="v-tel-e"></p>
+					</div>
+				</div>
+
+				<div class="vf__fila">
+					<div class="vf__campo">
+						<label for="v-barrio">Barrio</label>
+						<select id="v-barrio" name="barrio" required aria-describedby="v-barrio-e">
+							<option value="">Elige uno</option>
+							{barrios.map((b) => <option value={b}>{b}</option>)}
+						</select>
+						<p class="vf__err" id="v-barrio-e"></p>
+					</div>
+					<fieldset class="vf__campo vf__tipo">
+						<legend>Qué reformas</legend>
+						<div>
+							<label><input type="radio" name="tipo" value="Piso" checked /><span>Piso</span></label>
+							<label><input type="radio" name="tipo" value="Casa" /><span>Casa</span></label>
+							<label><input type="radio" name="tipo" value="Local" /><span>Local</span></label>
+						</div>
+					</fieldset>
+				</div>
+
+				<div class="vf__campo">
+					<label for="v-obra">Cuéntanos qué quieres cambiar</label>
+					<textarea id="v-obra" name="obra" rows="3" placeholder="Por ejemplo: la cocina y el baño, y pintar el resto." data-obra></textarea>
+				</div>
+
+				<fieldset class="vf__campo vf__dia" aria-describedby="v-dia-e">
+					<legend>¿Qué día te va bien?</legend>
+					<div class="vf__dias" data-dias></div>
+					<div class="vf__horas" data-horas hidden>
+						{
+							franjas.map((f) => (
+								<label>
+									<input type="radio" name="hora" value={f.id} />
+									<span>{f.t}</span>
+								</label>
+							))
+						}
+					</div>
+					<p class="vf__err" id="v-dia-e"></p>
+				</fieldset>
+
+				<div class="vf__campo vf__ok">
+					<label class="vf__check"
+						><input type="checkbox" name="priv" required aria-describedby="v-priv-e" /><span>Acepto que usen estos datos para llamarme (en esta vetrina no se envía nada).</span></label
+					>
+					<p class="vf__err" id="v-priv-e"></p>
+				</div>
+
+				<button class="btn vf__enviar" type="submit">Reservar visita gratuita</button>
+			</form>
+
+			<article class="vt" data-ticket hidden aria-live="polite">
+				<p class="rotulo">Hoja de visita</p>
+				<p class="vt__cod" data-cod></p>
+				<h3 class="vt__t" data-vt-t></h3>
+				<dl class="vt__datos" data-vt-datos></dl>
+				<p class="vt__sub">Esto es una simulación: no se ha enviado nada ni existe ninguna empresa detrás. En una web real, aquí llegaría la confirmación por SMS y correo.</p>
+				<button class="btn btn--sepia" type="button" data-otra>Hacer otra reserva</button>
+			</article>
+		</div>
+	</div>
+</section>
+
+<style is:global>
+	.vis {
+		background-color: var(--tiza);
+		background-image:
+			radial-gradient(55% 60% at 90% 0%, oklch(0.62 0.2 262 / 0.9), transparent 70%), radial-gradient(60% 60% at 0% 100%, oklch(0.32 0.15 266 / 0.9), transparent 70%),
+			linear-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.09) 1px, transparent 1px),
+			linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+		background-size: 100% 100%, 100% 100%, 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+		color: #fff;
+		border-top: 3px solid var(--sepia);
+	}
+	.vis .rotulo {
+		color: var(--ocre-claro);
+	}
+	.vis__in {
+		display: grid;
+		gap: 48px;
+	}
+	@media (min-width: 980px) {
+		.vis__in {
+			grid-template-columns: 0.9fr 1.1fr;
+			gap: 72px;
+			align-items: start;
+		}
+	}
+	.vis__txt h2 {
+		font-size: clamp(2.2rem, 5vw, 3.8rem);
+		margin: 18px 0 22px;
+	}
+	.vis__lead {
+		font-size: 1.14rem;
+		max-width: 50ch;
+		color: #e6ebff;
+	}
+	.vis__lleva {
+		display: grid;
+		gap: 10px;
+		margin: 28px 0;
+		padding: 18px 0;
+		border-block: 2px dashed rgba(255, 255, 255, 0.5);
+	}
+	.vis__lleva li {
+		padding-left: 22px;
+		position: relative;
+	}
+	.vis__lleva li::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0.55em;
+		width: 12px;
+		height: 6px;
+		border-left: 3px solid var(--ocre-claro);
+		border-bottom: 3px solid var(--ocre-claro);
+		transform: rotate(-45deg);
+	}
+	.vis__tel {
+		display: grid;
+		gap: 2px;
+		font-size: 1.04rem;
+	}
+	.vis__tel a {
+		font-family: var(--titulos);
+		font-size: 2rem;
+		text-decoration: none;
+		color: #fff;
+		border-bottom: 3px solid var(--ocre-claro);
+		width: max-content;
+	}
+	.vis__tel small {
+		color: #c9d3ff;
+	}
+	.vis__hoja {
+		margin-top: 28px;
+		padding: 16px 20px;
+		border: 2px solid var(--ocre-claro);
+		background: rgba(255, 255, 255, 0.08);
+	}
+	.vis__hoja[hidden] {
+		display: none;
+	}
+	.vis__hoja p:last-child {
+		font-family: var(--titulos);
+		font-size: 1.25rem;
+		margin-top: 4px;
+	}
+
+	.vis__caja {
+		background: var(--papel);
+		color: var(--sepia);
+		border: 2px solid var(--sepia);
+		box-shadow: 10px 10px 0 var(--sepia);
+		padding: clamp(22px, 4vw, 44px);
+		min-height: 520px;
+	}
+	.vf {
+		display: grid;
+		gap: 22px;
+	}
+	.vf[hidden] {
+		display: none;
+	}
+	.vf__fila {
+		display: grid;
+		gap: 22px;
+	}
+	@media (min-width: 640px) {
+		.vf__fila {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+	.vf__campo {
+		display: grid;
+		gap: 6px;
+		border: 0;
+		min-width: 0;
+	}
+	.vf label,
+	.vf legend {
+		font-family: var(--rotulo);
+		font-weight: 700;
+		font-stretch: 108%;
+		font-size: 0.74rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--sepia-3);
+		padding: 0;
+	}
+	.vf input[type='text'],
+	.vf input[type='tel'],
+	.vf select,
+	.vf textarea {
+		width: 100%;
+		min-height: 50px;
+		padding: 10px 14px;
+		background: var(--cal-claro);
+		border: 2px solid var(--sepia);
+		border-radius: 0;
+		font-size: 1.04rem;
+		color: var(--sepia);
+		field-sizing: content;
+		min-width: 0;
+	}
+	.vf select {
+		field-sizing: fixed;
+	}
+	.vf textarea {
+		min-height: 96px;
+		resize: vertical;
+		field-sizing: content;
+		max-height: 260px;
+	}
+	.vf input:focus-visible,
+	.vf select:focus-visible,
+	.vf textarea:focus-visible {
+		outline: 3px solid var(--tiza);
+		outline-offset: 2px;
+		background: #fff;
+	}
+	.vf [aria-invalid='true'] {
+		border-color: var(--error);
+		background: #fbeceb;
+	}
+	.vf__err {
+		min-height: 0;
+		font-size: 0.86rem;
+		font-weight: 600;
+		color: var(--error);
+	}
+	.vf__err:empty {
+		display: none;
+	}
+	.vf__tipo div,
+	.vf__horas,
+	.vf__dias {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+	.vf__tipo label,
+	.vf__dias label,
+	.vf__horas label {
+		position: relative;
+		cursor: pointer;
+		letter-spacing: 0.04em;
+		text-transform: none;
+		font-family: var(--texto);
+		font-stretch: 100%;
+		font-size: 0.94rem;
+		font-weight: 600;
+		color: var(--sepia);
+	}
+	.vf__tipo input,
+	.vf__dias input,
+	.vf__horas input {
+		position: absolute;
+		inset: 0;
+		opacity: 0;
+		cursor: pointer;
+	}
+	.vf__tipo span,
+	.vf__dias span,
+	.vf__horas span {
+		display: grid;
+		place-items: center;
+		min-height: 48px;
+		padding: 4px 16px;
+		border: 2px solid var(--sepia);
+		background: var(--cal-claro);
+		transition: background 0.2s, color 0.2s, transform 0.15s;
+	}
+	.vf__dias span {
+		min-width: 74px;
+		line-height: 1.15;
+		text-align: center;
+	}
+	.vf__dias small {
+		display: block;
+		font-size: 0.72rem;
+		font-weight: 500;
+		color: var(--sepia-3);
+		text-transform: capitalize;
+	}
+	.vf__tipo input:checked + span,
+	.vf__dias input:checked + span,
+	.vf__horas input:checked + span {
+		background: var(--sepia);
+		color: var(--cal);
+		transform: translateY(-2px);
+	}
+	.vf__dias input:checked + span small {
+		color: #d5c3b0;
+	}
+	.vf__horas input:disabled + span {
+		opacity: 0.45;
+		text-decoration: line-through;
+		cursor: not-allowed;
+		background: repeating-linear-gradient(115deg, transparent 0 4px, rgba(36, 26, 20, 0.08) 4px 8px), var(--cal-claro);
+	}
+	.vf__tipo input:focus-visible + span,
+	.vf__dias input:focus-visible + span,
+	.vf__horas input:focus-visible + span {
+		outline: 3px solid var(--tiza);
+		outline-offset: 2px;
+	}
+	.vf__horas {
+		margin-top: 4px;
+	}
+	.vf__horas[hidden] {
+		display: none;
+	}
+	.vf__check {
+		display: flex !important;
+		align-items: flex-start;
+		gap: 12px;
+		font-family: var(--texto) !important;
+		font-stretch: 100% !important;
+		font-size: 0.92rem !important;
+		letter-spacing: 0 !important;
+		text-transform: none !important;
+		font-weight: 500 !important;
+		color: var(--sepia) !important;
+		cursor: pointer;
+	}
+	.vf__check input {
+		flex: none;
+		width: 24px;
+		height: 24px;
+		margin-top: 2px;
+		accent-color: var(--arcilla);
+	}
+	.vf__errores {
+		padding: 14px 18px;
+		background: #fbeceb;
+		border: 2px solid var(--error);
+		color: var(--error);
+		font-weight: 600;
+	}
+	.vf__errores[hidden] {
+		display: none;
+	}
+	.vf__errores ul {
+		margin-top: 6px;
+		list-style: disc;
+		padding-left: 20px;
+		font-weight: 500;
+	}
+	.vf__enviar {
+		justify-self: start;
+		min-height: 58px;
+	}
+
+	/* hoja de visita */
+	.vt {
+		display: grid;
+		gap: 14px;
+	}
+	.vt[hidden] {
+		display: none;
+	}
+	.vt .rotulo {
+		color: var(--arcilla-2);
+	}
+	.vt__cod {
+		font-family: var(--rotulo);
+		font-weight: 800;
+		font-stretch: 125%;
+		font-size: 1.2rem;
+		letter-spacing: 0.08em;
+		color: var(--tiza);
+	}
+	.vt__t {
+		font-size: clamp(1.7rem, 3.4vw, 2.4rem);
+	}
+	.vt__datos {
+		display: grid;
+		gap: 0;
+		border-top: 2px solid var(--sepia);
+	}
+	.vt__datos div {
+		display: grid;
+		grid-template-columns: 8.5em 1fr;
+		gap: 12px;
+		padding: 10px 0;
+		border-bottom: 1px dashed var(--sepia-3);
+	}
+	.vt__datos dt {
+		font-family: var(--rotulo);
+		font-weight: 700;
+		font-stretch: 108%;
+		font-size: 0.7rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--sepia-3);
+		padding-top: 0.2em;
+	}
+	.vt__sub {
+		font-size: 0.86rem;
+		color: var(--sepia-3);
+	}
+	.vt .btn {
+		justify-self: start;
+	}
+</style>
+
+<script>
+	import { franjas } from './datos';
+	import { euros, num } from './presupuesto';
+	import { niveles, estancias } from './datos';
+
+	const raiz = document.getElementById('visita') as HTMLElement;
+	const form = raiz.querySelector<HTMLFormElement>('[data-form]')!;
+	const errores = raiz.querySelector<HTMLElement>('[data-errores]')!;
+	const dias = raiz.querySelector<HTMLElement>('[data-dias]')!;
+	const horas = raiz.querySelector<HTMLElement>('[data-horas]')!;
+	const obra = raiz.querySelector<HTMLTextAreaElement>('[data-obra]')!;
+	const resumen = raiz.querySelector<HTMLElement>('[data-resumen]')!;
+	const resumenT = raiz.querySelector<HTMLElement>('[data-resumen-t]')!;
+	const ticket = raiz.querySelector<HTMLElement>('[data-ticket]')!;
+	const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	// ---- días: los próximos seis laborables, desde mañana ----
+	const fmtDia = new Intl.DateTimeFormat('es-ES', { weekday: 'short', day: 'numeric', month: 'short' });
+	const fmtLargo = new Intl.DateTimeFormat('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+	const lista: Date[] = [];
+	for (let i = 1; lista.length < 6; i++) {
+		const d = new Date();
+		d.setHours(0, 0, 0, 0);
+		d.setDate(d.getDate() + i);
+		if (d.getDay() !== 0 && d.getDay() !== 6) lista.push(d);
+	}
+	// franjas ya ocupadas: determinista a partir de la fecha
+	const ocupada = (d: Date, k: number) => (d.getDate() * 7 + d.getMonth() * 3 + k * 5) % 4 === 0;
+	dias.innerHTML = lista
+		.map((d, i) => {
+			const [dia, ...resto] = fmtDia.format(d).replace(/[.,]/g, '').split(' ');
+			return `<label><input type="radio" name="dia" value="${i}"><span>${resto.join(' ')}<small>${dia}</small></span></label>`;
+		})
+		.join('');
+	dias.addEventListener('change', () => {
+		const i = +(form.elements.namedItem('dia') as RadioNodeList).value;
+		horas.hidden = false;
+		horas.querySelectorAll<HTMLInputElement>('input').forEach((inp, k) => {
+			inp.disabled = ocupada(lista[i], k);
+			inp.checked = false;
+		});
+		const libre = [...horas.querySelectorAll<HTMLInputElement>('input')].find((x) => !x.disabled);
+		if (libre) libre.checked = true;
+	});
+
+	// ---- resumen de la hoja de obra ----
+	let editado = false;
+	obra.addEventListener('input', () => (editado = true));
+	const textoHoja = (res: any, estado: any) => {
+		const partes = res.lineas.map((l: any) => `${estancias.find((s) => s.id === l.id)!.corto.toLowerCase()} (${niveles[l.nivel].corto.toLowerCase()}, ${num(l.m2)} m²)`);
+		return `Mi hoja de obra: ${partes.join(', ')}. Estimado ${euros(res.total)}, unas ${res.semanas} semanas.`;
+	};
+	window.addEventListener('obrafina:visita', (e) => {
+		const { res, estado } = (e as CustomEvent).detail;
+		if (res.hay) {
+			const t = textoHoja(res, estado);
+			resumen.hidden = false;
+			resumenT.textContent = `${res.estancias} ${res.estancias === 1 ? 'estancia' : 'estancias'} · ${euros(res.total)} · ${res.semanas} semanas`;
+			if (!editado || !obra.value.trim()) {
+				obra.value = t;
+				editado = false;
+			}
+		}
+	});
+
+	// ---- validación ----
+	const campo = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+	const poner = (id: string, msg: string, input?: HTMLElement | null) => {
+		const p = document.getElementById(id);
+		if (p) p.textContent = msg;
+		if (input) msg ? input.setAttribute('aria-invalid', 'true') : input.removeAttribute('aria-invalid');
+	};
+	function validar() {
+		const fallos: { id: string; msg: string }[] = [];
+		const nombre = campo('nombre');
+		const tel = campo('tel');
+		const barrio = campo('barrio');
+		const prefijo = tel.value.replace(/[\s.-]/g, '').replace(/^(\+34|0034)/, '');
+		poner('v-nombre-e', '', nombre);
+		poner('v-tel-e', '', tel);
+		poner('v-barrio-e', '', barrio);
+		poner('v-dia-e', '');
+		poner('v-priv-e', '', campo('priv'));
+		if (nombre.value.trim().length < 2) fallos.push({ id: 'v-nombre', msg: 'Escribe tu nombre.' });
+		if (!/^[6789]\d{8}$/.test(prefijo)) fallos.push({ id: 'v-tel', msg: 'Escribe un teléfono de 9 cifras, que empiece por 6, 7, 8 o 9.' });
+		if (!barrio.value) fallos.push({ id: 'v-barrio', msg: 'Elige tu barrio.' });
+		const dia = (form.elements.namedItem('dia') as RadioNodeList).value;
+		const hora = (form.elements.namedItem('hora') as RadioNodeList).value;
+		if (dia === '' || hora === '') fallos.push({ id: 'v-dia', msg: 'Elige un día y una hora para la visita.' });
+		if (!campo('priv').checked) fallos.push({ id: 'v-priv', msg: 'Necesitamos que aceptes para poder llamarte.' });
+		for (const f of fallos) {
+			const el = document.getElementById(f.id) ?? raiz.querySelector('.vf__dia');
+			if (f.id === 'v-nombre') poner('v-nombre-e', f.msg, nombre);
+			if (f.id === 'v-tel') poner('v-tel-e', f.msg, tel);
+			if (f.id === 'v-barrio') poner('v-barrio-e', f.msg, barrio);
+			if (f.id === 'v-dia') poner('v-dia-e', f.msg);
+			if (f.id === 'v-priv') poner('v-priv-e', f.msg, campo('priv'));
+		}
+		return fallos;
+	}
+
+	form.addEventListener('submit', (e) => {
+		e.preventDefault();
+		const fallos = validar();
+		if (fallos.length) {
+			errores.hidden = false;
+			errores.innerHTML = `<p>Revisa ${fallos.length === 1 ? 'este campo' : `estos ${fallos.length} campos`}:</p><ul>${fallos.map((f) => `<li><a href="#${f.id}" style="color:inherit">${f.msg}</a></li>`).join('')}</ul>`;
+			errores.focus();
+			errores.querySelectorAll('a').forEach((a) =>
+				a.addEventListener('click', (ev) => {
+					ev.preventDefault();
+					const t = document.getElementById(a.getAttribute('href')!.slice(1)) ?? raiz.querySelector<HTMLElement>('.vf__dias input');
+					(t as HTMLElement)?.focus();
+				}),
+			);
+			return;
+		}
+		errores.hidden = true;
+		const dia = lista[+(form.elements.namedItem('dia') as RadioNodeList).value];
+		const franja = franjas.find((f) => f.id === (form.elements.namedItem('hora') as RadioNodeList).value)!;
+		const cod = `OF-${String(dia.getMonth() + 1).padStart(2, '0')}${String(dia.getDate()).padStart(2, '0')}-${Math.floor(1000 + Math.random() * 9000)}`;
+		(raiz.querySelector('[data-cod]') as HTMLElement).textContent = `N.º ${cod}`;
+		(raiz.querySelector('[data-vt-t]') as HTMLElement).textContent = `${campo('nombre').value.trim().split(' ')[0]}, te esperamos el ${fmtLargo.format(dia)}.`;
+		const datos: [string, string][] = [
+			['Hora', `${franja.t} h`],
+			['Barrio', campo('barrio').value],
+			['Vivienda', (form.elements.namedItem('tipo') as RadioNodeList).value],
+			['Teléfono', campo('tel').value.trim()],
+			['Qué verá el jefe de obra', obra.value.trim() || 'Lo que nos cuentes en la visita.'],
+		];
+		(raiz.querySelector('[data-vt-datos]') as HTMLElement).innerHTML = datos.map(([k, v]) => `<div><dt>${k}</dt><dd>${v.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]!)}</dd></div>`).join('');
+		form.hidden = true;
+		ticket.hidden = false;
+		ticket.scrollIntoView({ behavior: ridotto ? 'auto' : 'smooth', block: 'center' });
+	});
+	raiz.querySelector('[data-otra]')!.addEventListener('click', () => {
+		ticket.hidden = true;
+		form.hidden = false;
+		form.reset();
+		horas.hidden = true;
+		(campo('nombre') as HTMLElement).focus();
+	});
+</script>

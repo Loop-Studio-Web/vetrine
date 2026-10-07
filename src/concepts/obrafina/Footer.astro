@@ -1,0 +1,86 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../../assets/obrafina/brand/logo-limpio.png';
+import loop from '../../assets/hub/loop-logo-on-dark.svg';
+import { TEL, TEL_VISIBLE } from './datos';
+---
+
+<footer class="pie oscuro">
+	<div class="pie__in">
+		<div class="pie__marca">
+			<Image src={logo} alt="Obra Fina" width={150} height={208} widths={[150, 300]} sizes="150px" />
+		</div>
+		<nav class="pie__nav" aria-label="Pie de página">
+			<a href="#presupuesto">Presupuesto</a>
+			<a href="#calendario">Calendario</a>
+			<a href="#muestrario">Muestrario</a>
+			<a href="#obras">Obras</a>
+			<a href="#garantias">Garantías</a>
+			<a href="#visita">Visita</a>
+			<a href={`tel:${TEL}`}>{TEL_VISIBLE}</a>
+		</nav>
+		<p class="pie__copy">
+			&copy; 2026 Obra Fina. Empresa de fantasía: concept demostrativo. La actividad, los precios, los plazos, las reseñas, las fotografías de obras, el horario y el número de teléfono no
+			existen. Aviso legal, privacidad y cookies: en una web real estarían aquí.
+		</p>
+		<a class="pie__credito" href="https://theloopstudio.org/" target="_blank" rel="noopener">
+			<span>Sitio ideado por</span>
+			<img src={loop.src} width="84" height="44" alt="Loop Studio" />
+			<span class="sr-only">(se abre en una pestaña nueva)</span>
+		</a>
+	</div>
+</footer>
+
+<style>
+	.pie {
+		background-color: var(--sepia);
+		color: #d9c8b4;
+		padding: 56px var(--gutter) 108px;
+		border-top: 8px solid var(--arcilla);
+	}
+	.pie__in {
+		max-width: var(--max);
+		margin-inline: auto;
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		align-items: center;
+		gap: 24px 48px;
+	}
+	.pie__marca img {
+		width: 120px;
+		height: auto;
+	}
+	.pie__nav {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px 26px;
+		font-weight: 600;
+	}
+	.pie__nav a {
+		text-decoration: none;
+		border-bottom: 2px solid transparent;
+	}
+	.pie__nav a:hover {
+		border-bottom-color: var(--tiza-claro);
+		color: #fff;
+	}
+	.pie__copy {
+		grid-column: 1 / -1;
+		max-width: 84ch;
+		font-size: 0.86rem;
+		color: #bfae9a;
+	}
+	.pie__credito {
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		font-size: 0.82rem;
+		text-decoration: none;
+		color: #bfae9a;
+	}
+	@media (max-width: 760px) {
+		.pie__in {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

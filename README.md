@@ -5,7 +5,7 @@
   <img src="docs/img/loop-logo-on-light.svg" alt="Loop Studio" height="64">
 </picture>
 
-<img src="docs/img/header.svg" alt="A street of shop fronts: Trattoria, Ossidiana, Luppolo & Watt, Bottega Tre Rasoi, Atelier Lumen, Aeterna, FIXLAB, Hot Swap, Ordito and Sifone are lit and open, one more window is dark and coming soon." width="100%">
+<img src="docs/img/header.svg" alt="A street of shop fronts: Trattoria, Ossidiana, Luppolo & Watt, Bottega Tre Rasoi, Atelier Lumen, Aeterna, FIXLAB, Hot Swap, Ordito, Sifone and Obra Fina are lit and open, one more window is dark and coming soon." width="100%">
 
 **Full-page homepage concepts for local businesses.<br>Each one designed as if it were the only one on the street.**
 
@@ -226,6 +226,25 @@
 
 <br>
 
+### 11 · Obra Fina
+
+<a href="https://vetrine.theloopstudio.org/casa/ristrutturazioni/"><img src="docs/img/card-obrafina.jpg" alt="Obra Fina on desktop and mobile: a serif headline on azulete-tinted lime wash, a plaster arch around a photograph with a hanging plumb bob, a blue chalk line, and the phone menu as three trowel passes." width="100%"></a>
+
+*Obra gruesa para que aguante. Obra fina para que se note.* A house in cross-section you can touch, room by room.
+
+| | |
+|---|---|
+| **Archetype** | The renovation company (full-home refurbishment): the **evolved** tier of the Home & trades window, where the page does part of the sales visit before anyone calls. **Written in Spanish, for Spain**, the only other concept outside Italian after Hot Swap |
+| **Mood** | Lime wash tinted with *azulete* (the blue of whitewashed houses), terracotta, sepia and one chalk blue, the mason's line. Soft light gradients in OKLCH that move across the wall as you scroll, plaster edges that look trowelled, hand-drawn encaustic tiles. The scroll progress is a **spirit level** with a bubble |
+| **Type** | Young Serif for headlines (it echoes the lettering of the logo), Onest for text, Anybody (variable width, stretches as a section scrolls into view) for the site-hoarding labels, Covered By Your Grace for pencil notes |
+| **Palette** | <img src="docs/img/palette-obrafina.svg" alt="Azulete lime wash, terracotta, sepia, chalk blue, ochre and olive" height="22"> |
+| **Signature moves** | A **house in cross-section drawn in CSS** with seven rooms: tap one, choose how much work it needs (none, refresh, renovation, full) and its walls are repainted with a **trowel-pass wipe**; three layers (structure, installations, finishes) swap through a **View Transitions** wipe. Sliders styled as a mason's ruler, extras per room and a **site receipt** that prices every line, splits the cost into rough work, installations and finishes, adds Spanish 10 % renovation VAT and gives an honest range. A **Gantt chart computed from the same choices** (phases, weeks, start and delivery date, whether you can keep living at home). Eight **encaustic tiles as hand-made SVG** that lay themselves in a perspective room and change the floor of the estimate. Before/after sliders with a **swinging plumb bob**, a contract-style warranty sheet with an ink stamp that lands, a chalkboard of reviews, and a visit booking with days computed from today and a receipt. Modern CSS used for real: scroll-driven animations, `@property`, `color-mix()`, `field-sizing`, the mask zigzag edge. The mobile menu is **three trowel passes** of plaster colour. A fixed call/visit bar on phones |
+| **Lighthouse** | 94 performance on mobile, 100 on desktop, 100 on accessibility and best practices, no layout shift. Photographs are free Unsplash archive pictures, the rest is SVG and CSS; mobile performance is the lowest of the street because of its large heroes of gradients and plaster filters |
+
+[**Open Obra Fina →**](https://vetrine.theloopstudio.org/casa/ristrutturazioni/)
+
+<br>
+
 ### Next on the street
 
 | Category | Archetype | Status |
@@ -257,6 +276,7 @@ flowchart TB
     infra --> H["<b>Hot Swap</b><br/>own markup · CSS · JS · fonts"]
     infra --> D["<b>Ordito</b><br/>own markup · CSS · JS · fonts"]
     infra --> S["<b>Sifone</b><br/>own markup · CSS · JS · fonts"]
+    infra --> P["<b>Obra Fina</b><br/>own markup · CSS · JS · fonts"]
     infra --> N["<b>next concept…</b>"]
     T -.-|nothing shared| O
     O -.-|nothing shared| B
@@ -271,15 +291,15 @@ A piece of code is reused between two concepts only when it is the *exact same t
 
 Before a concept goes on the street, it has to clear the same gate:
 
-| Gate | What it means | Trattoria | Ossidiana | Luppolo & Watt | Tre Rasoi | Lumen | Aeterna | FIXLAB | Hot Swap | Ordito |
-|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| **Builds** | `astro build` is clean | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Accessible** | `axe-core`: zero violations | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Menu on phones** | A real menu with its own open/close effect, keyboard and Escape friendly (a curtain for Ossidiana, an unrolling card for the Trattoria, a pour of beer for Luppolo & Watt, a hot towel for Tre Rasoi, curtains for Lumen, a laser scan for Aeterna, a screwed-on back panel for FIXLAB, a tray with an LED for Hot Swap, a dark room whose lights come on one by one for Ordito, a rolling shutter for Sifone) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Gate | What it means | Trattoria | Ossidiana | Luppolo & Watt | Tre Rasoi | Lumen | Aeterna | FIXLAB | Hot Swap | Ordito | Sifone | Obra Fina |
+|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| **Builds** | `astro build` is clean | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Accessible** | `axe-core`: zero violations | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Menu on phones** | A real menu with its own open/close effect, keyboard and Escape friendly (a curtain for Ossidiana, an unrolling card for the Trattoria, a pour of beer for Luppolo & Watt, a hot towel for Tre Rasoi, curtains for Lumen, a laser scan for Aeterna, a screwed-on back panel for FIXLAB, a tray with an LED for Hot Swap, a dark room whose lights come on one by one for Ordito, a rolling shutter for Sifone, three trowel passes for Obra Fina) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ```text
  LIGHTHOUSE · mobile            Trattoria                Ossidiana

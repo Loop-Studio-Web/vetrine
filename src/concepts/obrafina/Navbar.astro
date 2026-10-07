@@ -1,0 +1,447 @@
+---
+import { Image } from 'astro:assets';
+import simbolo from '../../assets/obrafina/brand/simbolo.png';
+import { TEL, TEL_VISIBLE } from './datos';
+
+const voces = [
+	{ t: 'Presupuesto', href: '#presupuesto' },
+	{ t: 'Calendario', href: '#calendario' },
+	{ t: 'Muestrario', href: '#muestrario' },
+	{ t: 'Obras', href: '#obras' },
+	{ t: 'Garantías', href: '#garantias' },
+	{ t: 'Visita', href: '#visita' },
+];
+---
+
+<header class="nav" data-nav>
+	<div class="nav__in">
+		<a class="nav__logo" href="#top">
+			<Image src={simbolo} alt="" width={36} height={38} widths={[36, 72]} sizes="36px" loading="eager" />
+			<span class="nav__nombre" aria-hidden="true">Obra <b>Fina</b></span>
+			<span class="sr-only">Obra Fina, volver arriba</span>
+		</a>
+		<nav class="nav__links" aria-label="Secciones de la página">
+			{voces.map((v) => <a href={v.href} data-voz={v.href.slice(1)}>{v.t}</a>)}
+		</nav>
+		<div class="nav__az">
+			<a class="nav__cta btn" href="#visita">Pedir visita</a>
+			<button class="nav__burger" type="button" aria-expanded="false" aria-controls="menu" aria-label="Menú" data-burger>
+				<span class="nav__burger-t">Menú</span>
+				<span class="nav__lineas" aria-hidden="true"><i></i><i></i><i></i></span>
+			</button>
+		</div>
+	</div>
+	<!-- nivel de burbuja: la burbuja recorre el vial según lo que llevas leído -->
+	<div class="nivel" aria-hidden="true">
+		<span class="nivel__marca"></span>
+		<span class="nivel__burbuja"></span>
+	</div>
+</header>
+
+<!-- menú móvil, fuera del header (el backdrop-filter de la barra haría de bloque contenedor): tres manos de llana -->
+<div class="menu" id="menu" data-menu role="dialog" aria-modal="true" aria-label="Menú" hidden>
+	<i class="menu__mano menu__mano--1" aria-hidden="true"></i>
+	<i class="menu__mano menu__mano--2" aria-hidden="true"></i>
+	<i class="menu__mano menu__mano--3" aria-hidden="true"></i>
+	<div class="menu__top">
+		<a class="menu__logo" href="#top">
+			<Image src={simbolo} alt="" width={36} height={38} widths={[36, 72]} sizes="36px" />
+			<span class="nav__nombre" aria-hidden="true">Obra <b>Fina</b></span>
+			<span class="sr-only">Obra Fina, volver arriba</span>
+		</a>
+		<button class="menu__x" type="button" data-cerrar aria-label="Cerrar el menú">
+			<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" /></svg>
+		</button>
+	</div>
+	<nav class="menu__nav" aria-label="Secciones de la página">
+		{
+			voces.map((v, i) => (
+				<a href={v.href} style={`--i:${i}`}>
+					<span class="menu__n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+					<span class="menu__t">{v.t}</span>
+				</a>
+			))
+		}
+	</nav>
+	<p class="menu__pie">
+		<a href={`tel:${TEL}`}>Llamar al {TEL_VISIBLE}</a>
+		<span>Lunes a viernes, 8:30–19:00 · Valencia (ejemplo)</span>
+	</p>
+</div>
+
+<style>
+	.nav {
+		position: fixed;
+		top: var(--fascia, 0px);
+		left: 0;
+		right: 0;
+		z-index: 140;
+		height: var(--nav-h);
+		background: rgba(236, 241, 249, 0.86);
+		-webkit-backdrop-filter: blur(14px) saturate(1.2);
+		backdrop-filter: blur(14px) saturate(1.2);
+		border-bottom: 1px solid rgba(36, 26, 20, 0.14);
+	}
+	.nav__in {
+		height: 100%;
+		max-width: calc(var(--max) + var(--gutter) * 2);
+		margin-inline: auto;
+		padding: 0 var(--gutter);
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 24px;
+	}
+	.nav__logo,
+	.menu__logo {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		text-decoration: none;
+	}
+	.nav__logo img,
+	.menu__logo img {
+		width: 36px;
+		height: auto;
+	}
+	.nav__nombre {
+		font-family: var(--titulos);
+		font-size: 1.45rem;
+		line-height: 1;
+		letter-spacing: -0.01em;
+		color: var(--sepia);
+	}
+	.nav__nombre b {
+		font-weight: 400;
+		color: var(--arcilla-2);
+	}
+	.nav__links {
+		display: none;
+		gap: clamp(14px, 2vw, 30px);
+	}
+	.nav__links a {
+		position: relative;
+		font-family: var(--rotulo);
+		font-weight: 600;
+		font-stretch: 106%;
+		font-size: 0.78rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		text-decoration: none;
+		padding: 8px 0;
+	}
+	.nav__links a::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 2px;
+		height: 3px;
+		background: var(--tiza);
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+		border-radius: 2px;
+	}
+	.nav__links a:hover::after,
+	.nav__links a.es-activa::after {
+		transform: scaleX(1);
+	}
+	.nav__az {
+		display: flex;
+		align-items: center;
+		gap: 14px;
+	}
+	.nav__cta {
+		display: none;
+		min-height: 44px;
+		padding: 0 20px;
+		font-size: 0.8rem;
+	}
+	.nav__burger {
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		height: 44px;
+		padding: 0 4px 0 8px;
+		background: none;
+		border: 0;
+		font-family: var(--rotulo);
+		font-weight: 700;
+		font-stretch: 110%;
+		font-size: 0.8rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+	.nav__lineas {
+		display: grid;
+		gap: 5px;
+		width: 28px;
+	}
+	.nav__lineas i {
+		display: block;
+		height: 3px;
+		background: var(--sepia);
+		border-radius: 2px;
+		transition: transform 0.3s;
+	}
+	.nav__lineas i:nth-child(2) {
+		width: 70%;
+		margin-left: auto;
+	}
+	.nav__burger:hover .nav__lineas i:nth-child(2) {
+		width: 100%;
+	}
+	@media (max-width: 520px) {
+		.nav__burger-t {
+			display: none;
+		}
+	}
+	@media (min-width: 1021px) {
+		.nav__links {
+			display: flex;
+		}
+		.nav__cta {
+			display: inline-flex;
+		}
+		.nav__burger {
+			display: none;
+		}
+	}
+
+	/* nivel de burbuja */
+	.nivel {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: -7px;
+		height: 14px;
+		pointer-events: none;
+	}
+	.nivel::before {
+		content: '';
+		position: absolute;
+		inset: 3px 0;
+		background: linear-gradient(#e9c06c, var(--ocre-claro) 45%, #e0b55e);
+		border-top: 1px solid rgba(36, 26, 20, 0.4);
+		border-bottom: 1px solid rgba(36, 26, 20, 0.4);
+	}
+	.nivel__marca {
+		position: absolute;
+		top: 1px;
+		bottom: 1px;
+		left: calc(50% - 26px);
+		width: 52px;
+		border-inline: 2px solid rgba(36, 26, 20, 0.55);
+	}
+	.nivel__burbuja {
+		position: absolute;
+		top: 2px;
+		left: calc(50% - 21px);
+		width: 42px;
+		height: 10px;
+		border-radius: 10px;
+		background: radial-gradient(ellipse at 50% 30%, #fffaf0, #efe0c6 75%);
+		box-shadow: inset 0 0 0 1px rgba(36, 26, 20, 0.45);
+	}
+	@supports (animation-timeline: scroll()) {
+		@media (prefers-reduced-motion: no-preference) {
+			.nivel__burbuja {
+				left: 0;
+				animation: recorre linear both;
+				animation-timeline: scroll(root block);
+			}
+			@keyframes recorre {
+				to {
+					left: calc(100% - 42px);
+				}
+			}
+		}
+	}
+
+	/* ---- menú móvil: tres manos de llana ---- */
+	.menu {
+		position: fixed;
+		inset: 0;
+		z-index: 300;
+		height: 100lvh;
+		overflow: hidden;
+		color: var(--sepia);
+		visibility: hidden;
+	}
+	.menu.is-open {
+		visibility: visible;
+	}
+	.menu__mano {
+		position: absolute;
+		inset: 0;
+		clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+		transition: clip-path 0.7s cubic-bezier(0.7, 0, 0.2, 1);
+	}
+	.menu__mano--1 {
+		background: var(--arcilla);
+	}
+	.menu__mano--2 {
+		background: var(--sepia);
+		transition-delay: 0.08s;
+	}
+	.menu__mano--3 {
+		background-color: var(--cal);
+		background-image:
+			url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='700'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006 .009' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .4 0 0 0 0 .5 0 0 0 0 .7 0 0 0 .4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)'/%3E%3C/svg%3E");
+		transition-delay: 0.16s;
+	}
+	.menu.is-open .menu__mano {
+		clip-path: polygon(0 0, 145% 0, 115% 100%, 0 100%);
+	}
+	.menu__top,
+	.menu__nav,
+	.menu__pie {
+		position: relative;
+		opacity: 0;
+		transition: opacity 0.3s;
+	}
+	.menu.is-open .menu__top,
+	.menu.is-open .menu__nav,
+	.menu.is-open .menu__pie {
+		opacity: 1;
+		transition-delay: 0.5s;
+	}
+	.menu__top {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		height: var(--nav-h);
+		padding: 0 var(--gutter);
+	}
+	.menu__x {
+		width: 46px;
+		height: 46px;
+		display: grid;
+		place-items: center;
+		background: none;
+		border: 2px solid var(--sepia);
+		border-radius: 50%;
+	}
+	.menu__nav {
+		display: grid;
+		padding: 2vh var(--gutter);
+	}
+	.menu__nav a {
+		display: flex;
+		align-items: baseline;
+		gap: 16px;
+		padding: 0.4rem 0;
+		border-bottom: 2px solid rgba(36, 26, 20, 0.2);
+		text-decoration: none;
+		transform: translateX(-24px);
+		opacity: 0;
+		transition:
+			transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1),
+			opacity 0.4s;
+	}
+	.menu.is-open .menu__nav a {
+		transform: none;
+		opacity: 1;
+		transition-delay: calc(0.45s + var(--i) * 60ms);
+	}
+	.menu__n {
+		font-family: var(--rotulo);
+		font-weight: 700;
+		font-stretch: 110%;
+		font-size: 0.8rem;
+		letter-spacing: 0.12em;
+		color: var(--arcilla-2);
+	}
+	.menu__t {
+		font-family: var(--titulos);
+		font-size: clamp(2.2rem, 11vw, 4rem);
+		line-height: 1.06;
+	}
+	.menu__pie {
+		position: absolute;
+		left: var(--gutter);
+		right: var(--gutter);
+		bottom: calc(24px + env(safe-area-inset-bottom));
+		display: grid;
+		gap: 4px;
+		font-size: 0.9rem;
+		color: var(--sepia-3);
+	}
+	.menu__pie a {
+		font-weight: 700;
+		color: var(--sepia);
+	}
+	@media (max-height: 560px) {
+		.menu__pie {
+			display: none;
+		}
+		.menu__t {
+			font-size: 2rem;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.menu__mano,
+		.menu__nav a {
+			transition-duration: 0.01s;
+			transition-delay: 0s !important;
+		}
+	}
+</style>
+
+<script>
+	// ---- menú móvil ----
+	const burger = document.querySelector<HTMLButtonElement>('[data-burger]');
+	const menu = document.querySelector<HTMLElement>('[data-menu]');
+	if (burger && menu) {
+		const cerrar = (devolverFoco = true) => {
+			menu.classList.remove('is-open');
+			burger.setAttribute('aria-expanded', 'false');
+			document.body.classList.remove('menu-abierto');
+			setTimeout(() => !menu.classList.contains('is-open') && (menu.hidden = true), 900);
+			if (devolverFoco) burger.focus();
+		};
+		const abrir = () => {
+			menu.hidden = false;
+			menu.getBoundingClientRect(); // fuerza el reflujo: la transición arranca
+			menu.classList.add('is-open');
+			burger.setAttribute('aria-expanded', 'true');
+			document.body.classList.add('menu-abierto');
+			menu.querySelector<HTMLElement>('.menu__nav a')?.focus({ preventScroll: true });
+		};
+		burger.addEventListener('click', () => (menu.classList.contains('is-open') ? cerrar() : abrir()));
+		menu.querySelector('[data-cerrar]')?.addEventListener('click', () => cerrar());
+		menu.addEventListener('click', (e) => {
+			if ((e.target as HTMLElement).closest('a')) cerrar(false);
+		});
+		addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && menu.classList.contains('is-open')) cerrar();
+			if (e.key === 'Tab' && menu.classList.contains('is-open')) {
+				const el = [...menu.querySelectorAll<HTMLElement>('a, button')];
+				const i = el.indexOf(document.activeElement as HTMLElement);
+				if (e.shiftKey && i <= 0) {
+					e.preventDefault();
+					el[el.length - 1].focus();
+				} else if (!e.shiftKey && i === el.length - 1) {
+					e.preventDefault();
+					el[0].focus();
+				}
+			}
+		});
+		matchMedia('(min-width: 1021px)').addEventListener('change', (m) => m.matches && cerrar(false));
+	}
+
+	// ---- voz activa ----
+	const links = [...document.querySelectorAll<HTMLAnchorElement>('.nav__links a')];
+	const secciones = links.map((a) => document.getElementById(a.dataset.voz || '')).filter(Boolean) as HTMLElement[];
+	const io = new IntersectionObserver(
+		(voces) => {
+			for (const v of voces) {
+				if (!v.isIntersecting) continue;
+				for (const a of links) a.classList.toggle('es-activa', a.dataset.voz === v.target.id);
+			}
+		},
+		{ rootMargin: '-45% 0px -50% 0px' },
+	);
+	secciones.forEach((s) => io.observe(s));
+</script>

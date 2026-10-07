@@ -1,0 +1,355 @@
+---
+import { paredes, suelos, urlSvg } from './datos';
+
+const inicial = suelos[0];
+---
+
+<section class="mue sec" id="muestrario" style={`--suelo:${urlSvg(inicial.svg)};--pared:#ecc9b1`}>
+	<div class="sec__in">
+		<header class="sec__cab" data-rev>
+			<p class="rotulo">03 · Muestrario</p>
+			<h2>Elige el suelo y míralo puesto.</h2>
+			<p>
+				Ocho baldosas dibujadas a mano, de las que se hacían en Valencia con cemento y pigmentos. Toca una y la habitación se coloca; también cambia el suelo de las estancias de tu
+				presupuesto.
+			</p>
+		</header>
+
+		<div class="mue__cuerpo">
+			<fieldset class="mue__tiles" data-tiles>
+				<legend class="sr-only">Baldosa del suelo</legend>
+				{
+					suelos.map((s, i) => (
+						<label class="mue__t" style={`--i:${i};--b:${urlSvg(s.svg)}`}>
+							<input type="radio" name="suelo" value={s.id} checked={i === 0} />
+							<span class="mue__img" aria-hidden="true" />
+							<span class="mue__nom">
+								<b>{s.nombre}</b>
+								<small>{s.dibujo}</small>
+							</span>
+							<span class="mue__eur">+{s.supl} €/m²</span>
+						</label>
+					))
+				}
+			</fieldset>
+
+			<div class="mue__escena" data-rev>
+				<div class="hab" data-hab aria-hidden="true">
+					<div class="hab__pared">
+						<div class="hab__arco"></div>
+						<div class="hab__ventana"></div>
+					</div>
+					<div class="hab__suelo">
+						<i class="hab__capa hab__capa--v"></i>
+						<i class="hab__capa hab__capa--n"></i>
+					</div>
+					<div class="hab__rodapie"></div>
+				</div>
+				<div class="mue__ficha" aria-live="polite">
+					<p class="rotulo">Colocada</p>
+					<p class="mue__nombre" data-nombre>{inicial.nombre}</p>
+					<p class="mue__dib" data-dibujo>{inicial.dibujo}</p>
+				</div>
+				<fieldset class="mue__pared">
+					<legend>Color de la pared de muestra</legend>
+					<div class="par">
+						{
+							paredes.map((p, i) => (
+								<label title={p.nombre}>
+									<input type="radio" name="pared-muestra" value={p.color} checked={i === 0} />
+									<span style={`--c:${p.color}`} />
+									<span class="sr-only">{p.nombre}</span>
+								</label>
+							))
+						}
+					</div>
+				</fieldset>
+			</div>
+		</div>
+		<p class="mue__nota" data-rev>El suelo nuevo se aplica a las estancias con nivel Reforma o A fondo. El precio es un suplemento por m² sobre el suelo base. Dibujos y precios de ejemplo.</p>
+	</div>
+</section>
+
+<style is:global>
+	.mue {
+		background: radial-gradient(50% 45% at 0% 100%, oklch(0.9 0.08 60 / 0.5), transparent 70%), linear-gradient(180deg, var(--cal-2), color-mix(in oklab, var(--cal-2) 80%, white));
+		border-top: 3px solid var(--sepia);
+	}
+	.mue__cuerpo {
+		display: grid;
+		gap: 40px;
+		align-items: start;
+	}
+	@media (min-width: 1000px) {
+		.mue__cuerpo {
+			grid-template-columns: 1.15fr 0.85fr;
+			gap: 56px;
+		}
+		.mue__escena {
+			position: sticky;
+			top: calc(var(--nav-h) + 20px);
+		}
+	}
+	.mue__tiles {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 18px 16px;
+		border: 0;
+	}
+	@media (min-width: 640px) {
+		.mue__tiles {
+			grid-template-columns: repeat(4, 1fr);
+		}
+	}
+	.mue__t {
+		position: relative;
+		display: grid;
+		gap: 8px;
+		cursor: pointer;
+	}
+	.mue__t input {
+		position: absolute;
+		inset: 0;
+		opacity: 0;
+		cursor: pointer;
+	}
+	.mue__img {
+		display: block;
+		aspect-ratio: 1;
+		background-image: var(--b);
+		background-size: 50% 50%;
+		border: 3px solid var(--sepia);
+		box-shadow: 4px 4px 0 var(--sepia);
+		transition:
+			transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1),
+			box-shadow 0.25s;
+	}
+	.mue__t:hover .mue__img {
+		transform: translate(-2px, -3px) rotate(-1.5deg);
+		box-shadow: 7px 8px 0 var(--sepia);
+	}
+	.mue__t input:checked ~ .mue__img {
+		transform: translate(-2px, -3px);
+		box-shadow:
+			7px 8px 0 var(--sepia),
+			0 0 0 5px var(--cal-2),
+			0 0 0 8px var(--tiza);
+	}
+	.mue__t input:focus-visible ~ .mue__img {
+		outline: 4px solid var(--tiza);
+		outline-offset: 5px;
+	}
+	.mue__nom {
+		display: grid;
+		line-height: 1.2;
+		margin-top: 6px;
+	}
+	.mue__nom b {
+		font-family: var(--titulos);
+		font-weight: 400;
+		font-size: 1.25rem;
+	}
+	.mue__nom small {
+		font-size: 0.82rem;
+		color: var(--sepia-3);
+	}
+	.mue__eur {
+		font-family: var(--rotulo);
+		font-weight: 700;
+		font-stretch: 108%;
+		font-size: 0.74rem;
+		letter-spacing: 0.08em;
+		color: var(--arcilla-2);
+	}
+	.mue__t input:checked ~ .mue__eur::before {
+		content: '✓ ';
+	}
+	.mue__t .mue__img {
+		animation: baldosa 0.6s calc(var(--i) * 60ms) cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+	}
+	@keyframes baldosa {
+		from {
+			opacity: 0;
+			transform: translateY(20px) rotate(-6deg);
+		}
+	}
+
+	/* habitación en perspectiva */
+	.hab {
+		position: relative;
+		height: clamp(300px, 46vw, 420px);
+		overflow: hidden;
+		border: 3px solid var(--sepia);
+		box-shadow: 8px 8px 0 var(--sepia);
+		background: #1a120d;
+		perspective: 900px;
+	}
+	.hab__pared {
+		position: absolute;
+		inset: 0 0 38% 0;
+		background-color: var(--pared);
+		background-image:
+			radial-gradient(ellipse at 78% 20%, rgba(255, 244, 215, 0.55), transparent 50%),
+			url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.02 .06' numOctaves='3' seed='6' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .22 0 0 0 0 .14 0 0 0 .4 -.06'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+		background-blend-mode: normal, multiply;
+		transition: background-color 0.5s;
+	}
+	.hab__arco {
+		position: absolute;
+		left: 14%;
+		bottom: 0;
+		width: 26%;
+		height: 78%;
+		border-radius: 999px 999px 0 0;
+		background: linear-gradient(#f8e6c4, #f3c590 70%, #e9a56d);
+		box-shadow:
+			inset 0 0 0 5px rgba(36, 26, 20, 0.3),
+			0 0 0 7px rgba(255, 255, 255, 0.35);
+	}
+	.hab__ventana {
+		position: absolute;
+		right: 12%;
+		top: 14%;
+		width: 20%;
+		height: 44%;
+		background: linear-gradient(#fdf1d4, #f3d8a4);
+		border: 5px solid rgba(36, 26, 20, 0.7);
+		box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.4);
+	}
+	.hab__ventana::before {
+		content: '';
+		position: absolute;
+		left: 50%;
+		top: 0;
+		bottom: 0;
+		width: 4px;
+		margin-left: -2px;
+		background: rgba(36, 26, 20, 0.7);
+	}
+	.hab__suelo {
+		position: absolute;
+		left: -40%;
+		right: -40%;
+		top: 62%;
+		height: 120%;
+		transform-origin: 50% 0;
+		transform: rotateX(62deg);
+		overflow: hidden;
+		background: #3b2d23;
+	}
+	.hab__capa {
+		position: absolute;
+		inset: 0;
+		background-image: var(--suelo);
+		background-size: 150px 150px;
+	}
+	.hab__capa--v {
+		background-image: var(--suelo-v, var(--suelo));
+	}
+	.hab__capa--n.pasa {
+		animation: llana 0.9s cubic-bezier(0.7, 0, 0.2, 1) both;
+	}
+	.hab__suelo::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(180deg, rgba(36, 26, 20, 0.55), transparent 40%), radial-gradient(ellipse at 80% 0%, rgba(255, 238, 190, 0.5), transparent 55%);
+	}
+	.hab__rodapie {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: calc(62% - 12px);
+		height: 12px;
+		background: var(--cal-claro);
+		border-top: 2px solid rgba(36, 26, 20, 0.5);
+		border-bottom: 3px solid rgba(36, 26, 20, 0.5);
+	}
+	.hab__mueble {
+		position: absolute;
+		right: 6%;
+		bottom: 12%;
+		width: 44%;
+		z-index: 2;
+		fill: rgba(36, 26, 20, 0.88);
+		stroke: var(--cal);
+		stroke-width: 2.2px;
+		stroke-linejoin: round;
+		stroke-linecap: round;
+		opacity: 0.92;
+	}
+	.mue__ficha {
+		margin-top: 26px;
+	}
+	.mue__nombre {
+		font-family: var(--titulos);
+		font-size: clamp(1.9rem, 4vw, 2.6rem);
+		line-height: 1.05;
+		margin-top: 4px;
+	}
+	.mue__dib {
+		color: var(--sepia-3);
+	}
+	.mue__pared {
+		margin-top: 18px;
+		border: 0;
+	}
+	.mue__pared legend {
+		padding: 0;
+		margin-bottom: 10px;
+		font-family: var(--rotulo);
+		font-weight: 700;
+		font-stretch: 108%;
+		font-size: 0.74rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--sepia-3);
+	}
+	.mue__nota {
+		margin-top: 44px;
+		font-size: 0.86rem;
+		color: var(--sepia-3);
+		max-width: 80ch;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.mue__t .mue__img {
+			animation: none;
+		}
+		.hab__capa--n.pasa {
+			animation: none;
+		}
+	}
+</style>
+
+<script>
+	import { suelos, urlSvg } from './datos';
+
+	const raiz = document.getElementById('muestrario') as HTMLElement;
+	const hab = raiz.querySelector<HTMLElement>('[data-hab]')!;
+	const nuevo = hab.querySelector<HTMLElement>('.hab__capa--n')!;
+	const nombre = raiz.querySelector<HTMLElement>('[data-nombre]')!;
+	const dibujo = raiz.querySelector<HTMLElement>('[data-dibujo]')!;
+	const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+	let actual = suelos[0].id;
+
+	raiz.querySelector('[data-tiles]')!.addEventListener('change', (e) => {
+		const id = (e.target as HTMLInputElement).value;
+		const s = suelos.find((x) => x.id === id);
+		if (!s || id === actual) return;
+		const viejo = suelos.find((x) => x.id === actual)!;
+		hab.style.setProperty('--suelo-v', urlSvg(viejo.svg));
+		raiz.style.setProperty('--suelo', urlSvg(s.svg));
+		if (!ridotto) {
+			nuevo.classList.remove('pasa');
+			void nuevo.offsetWidth;
+			nuevo.classList.add('pasa');
+		}
+		actual = id;
+		nombre.textContent = s.nombre;
+		dibujo.textContent = `${s.dibujo} · +${s.supl} €/m²`;
+		window.dispatchEvent(new CustomEvent('obrafina:suelo', { detail: { id } }));
+	});
+	raiz.querySelector('.mue__pared')!.addEventListener('change', (e) => {
+		raiz.style.setProperty('--pared', (e.target as HTMLInputElement).value);
+	});
+</script>

@@ -1,0 +1,1272 @@
+---
+import { estancias, niveles, paredes, suelos, urlSvg } from './datos';
+import { calcular, estadoInicial, hojaHtml, num } from './presupuesto';
+
+const e0 = estadoInicial();
+const r0 = calcular(e0);
+const pared = (id: string) => paredes.find((p) => p.id === id)!.color;
+const suelo0 = suelos.find((s) => s.id === e0.suelo)!;
+
+// dibujos de muebles, línea fina de sepia (viewBox 120 × 70)
+const muebles: Record<string, string> = {
+	terraza: `<path d="M30 40H8Q19 14 30 40ZM19 40V62M26 62h-14"/><path d="M62 54h26M66 54v10M84 54v10M62 48h26"/><path d="M100 62V44M100 50c-8-2-10-9-7-14M100 48c8-2 10-9 7-14"/><path d="M0 64h120M6 64V52M30 64V52M54 64V52M78 64V52M102 64V52M0 52h120"/>`,
+	dorm2: `<rect x="8" y="42" width="48" height="18" rx="2"/><path d="M8 34v26M12 42h14v-6H12"/><path d="M68 46h42M72 46v18M106 46v18M84 46v-8h14v8"/><path d="M68 14h42M72 14v8M104 14v8"/>`,
+	bano: `<rect x="8" y="38" width="52" height="22" rx="8"/><path d="M14 38V30h6M54 38v-8"/><path d="M72 42h28v6H72zM86 48v14"/><circle cx="86" cy="24" r="12"/><path d="M106 54h10v8h-10z"/>`,
+	dorm1: `<rect x="8" y="42" width="68" height="18" rx="2"/><path d="M8 28v32M12 42h16v-8H12M32 42h14v-8H32"/><path d="M84 52h8v10h-8z"/><rect x="96" y="8" width="20" height="54"/><path d="M106 8v54"/>`,
+	entrada: `<rect x="8" y="8" width="26" height="56" rx="2"/><circle cx="29" cy="38" r="2"/><path d="M48 20h30M54 20v10M62 20v10M70 20v10"/><path d="M46 52h40v6H46zM50 58v8M82 58v8"/><path d="M104 64V46M104 52c-8-2-10-9-7-14M104 50c8-2 10-9 7-14"/>`,
+	cocina: `<rect x="8" y="10" width="36" height="16"/><rect x="48" y="10" width="36" height="16"/><rect x="6" y="44" width="108" height="20"/><circle cx="26" cy="44" r="0"/><path d="M16 44v-3h8v3M30 44v-3h8v3"/><path d="M58 44v-5h18v5M67 39v-8h7"/><rect x="92" y="8" width="22" height="26"/><path d="M103 8v26M92 21h22"/>`,
+	salon: `<path d="M10 46h62v14H10zM10 34h62v12M6 40v22M76 40v22"/><rect x="82" y="52" width="28" height="8"/><path d="M86 60v6M106 60v6"/><path d="M98 10v34M90 10h16"/><rect x="22" y="8" width="28" height="16"/>`,
+};
+
+// cañerías y cables, capa de instalaciones
+const instal = `<path class="t1" d="M12 70V48H44V30H88V8"/><path class="t2" d="M20 70V54H52V36H96V8"/><path class="cb" d="M0 10H36V24M56 10H120"/><rect class="en" x="33" y="22" width="6" height="8" rx="1"/><rect class="en" x="85" y="46" width="6" height="8" rx="1"/>`;
+
+const orden = ['terraza', 'dorm2', 'bano', 'dorm1', 'entrada', 'cocina', 'salon'];
+const est = (id: string) => estancias.find((s) => s.id === id)!;
+---
+
+<section class="pre sec" id="presupuesto" style={`--suelo:${urlSvg(suelo0.svg)}`}>
+	<div class="sec__in">
+		<header class="sec__cab" data-rev>
+			<p class="rotulo">01 · Presupuesto a medida</p>
+			<h2>Tu casa, estancia a estancia.</h2>
+			<p>
+				Toca una estancia, di cuánta obra necesita y mira cómo cambia la casa y cuánto cuesta. Abre las capas para ver lo que normalmente se tapa. Es una estimación honrada: con la visita
+				la dejamos cerrada.
+			</p>
+		</header>
+
+		<div class="pre__rejilla">
+			<div class="pre__casa">
+				<div class="capas" role="radiogroup" aria-label="Capa de la obra que quieres ver" data-capas>
+					<label class="capas__op">
+						<input type="radio" name="capa" value="estructura" />
+						<span><b>Estructura</b><small>obra gruesa</small></span>
+					</label>
+					<label class="capas__op">
+						<input type="radio" name="capa" value="instalaciones" />
+						<span><b>Instalaciones</b><small>lo que se tapa</small></span>
+					</label>
+					<label class="capas__op">
+						<input type="radio" name="capa" value="acabados" checked />
+						<span><b>Acabados</b><small>obra fina</small></span>
+					</label>
+				</div>
+
+				<div class="casa" data-casa data-capa="acabados">
+					<div class="casa__tejado">
+						<div class="casa__caseta" aria-hidden="true"></div>
+						<button class="est est--terraza" type="button" data-est="terraza" aria-pressed="false" aria-controls="ficha">
+							<span class="est__pared est__pared--v"></span>
+							<span class="est__pared est__pared--n"></span>
+							<span class="est__estructura"></span>
+							<svg class="est__instal" viewBox="0 0 120 70" preserveAspectRatio="none" aria-hidden="true"><Fragment set:html={instal} /></svg>
+							<span class="est__suelo"></span>
+							<svg class="est__mueble" viewBox="0 0 120 70" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><Fragment set:html={muebles.terraza} /></svg>
+							<span class="est__nombre">Azotea</span>
+							<span class="est__chip"></span>
+						</button>
+					</div>
+					<div class="casa__plantas">
+						{
+							orden
+								.filter((id) => id !== 'terraza')
+								.map((id) => {
+									const s = est(id);
+									const st = e0.estancias[id];
+									return (
+										<button
+											class={`est est--${id}`}
+											type="button"
+											data-est={id}
+											aria-pressed="false"
+											aria-controls="ficha"
+											data-g={st.nivel >= 2 ? 1 : 0}
+											data-i={st.nivel >= 1 ? 1 : 0}
+											data-f={st.nivel >= 1 ? 1 : 0}
+											data-n={st.nivel}
+											style={`--c:${pared(st.pared)}`}
+										>
+											<span class="est__pared est__pared--v" />
+											<span class="est__pared est__pared--n" />
+											<span class="est__estructura" />
+											<svg class="est__instal" viewBox="0 0 120 70" preserveAspectRatio="none" aria-hidden="true">
+												<Fragment set:html={instal} />
+											</svg>
+											<span class="est__suelo" />
+											<svg class="est__mueble" viewBox="0 0 120 70" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+												<Fragment set:html={muebles[id]} />
+											</svg>
+											<span class="est__nombre">{s.corto}</span>
+											<span class="est__chip">
+												{niveles[st.nivel].corto}<span class="est__m2"> · {num(st.m2)} m²</span>
+											</span>
+										</button>
+									);
+								})
+						}
+					</div>
+					<div class="casa__base" aria-hidden="true"></div>
+				</div>
+				<p class="pre__leyenda"><span class="pre__sin" aria-hidden="true"></span> Sin obra <span class="pre__con" aria-hidden="true"></span> Con obra · el suelo sale del <a class="enlace" href="#muestrario">muestrario</a></p>
+			</div>
+
+			<aside class="ficha" id="ficha" data-ficha aria-label="Detalle de la estancia" aria-live="polite"></aside>
+		</div>
+
+		<div class="hoja" data-hoja>
+			<header class="hoja__cab">
+				<p class="rotulo">Hoja de obra</p>
+				<p class="hoja__plazo" data-plazo></p>
+			</header>
+			<div class="hoja__cuerpo" data-hoja-cuerpo set:html={hojaHtml(r0)} />
+			<footer class="hoja__pie">
+				<button class="btn" type="button" data-pedir>Pedir visita con esta hoja</button>
+				<button class="btn btn--sepia" type="button" data-copiar>Copiar resumen</button>
+				<p class="hoja__aviso" role="status" data-aviso></p>
+			</footer>
+			<p class="hoja__nota">Estimación orientativa con precios de ejemplo, IVA de reforma de vivienda incluido. Los datos, los precios y las empresas de esta página son de fantasía.</p>
+		</div>
+	</div>
+</section>
+
+<style is:global>
+	/* ---- sección ---- */
+	.pre {
+		background: radial-gradient(60% 40% at 100% 0%, oklch(0.93 0.05 60 / 0.55), transparent 70%), linear-gradient(180deg, var(--cal-claro), var(--cal));
+		border-top: 3px solid var(--sepia);
+	}
+	.pre__rejilla {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: 40px;
+		align-items: start;
+	}
+	.pre__casa {
+		min-width: 0;
+	}
+	@media (min-width: 1040px) {
+		.pre__rejilla {
+			grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.85fr);
+			gap: 56px;
+		}
+		.ficha {
+			position: sticky;
+			top: calc(var(--nav-h) + 20px);
+		}
+	}
+
+	/* ---- capas ---- */
+	.capas {
+		display: flex;
+		gap: 0;
+		margin-bottom: 26px;
+		border: 2px solid var(--sepia);
+		background: var(--papel);
+		width: max-content;
+		max-width: 100%;
+	}
+	.capas__op {
+		position: relative;
+		flex: 1 1 auto;
+		cursor: pointer;
+	}
+	.capas__op + .capas__op {
+		border-left: 2px solid var(--sepia);
+	}
+	.capas__op input {
+		position: absolute;
+		inset: 0;
+		opacity: 0;
+		cursor: pointer;
+	}
+	.capas__op span {
+		display: grid;
+		gap: 1px;
+		padding: 10px clamp(10px, 2.4vw, 22px);
+		text-align: center;
+		transition:
+			background 0.2s,
+			color 0.2s;
+	}
+	.capas__op b {
+		font-family: var(--rotulo);
+		font-weight: 700;
+		font-stretch: 108%;
+		font-size: 0.8rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+	.capas__op small {
+		font-size: 0.74rem;
+		color: var(--sepia-3);
+	}
+	.capas__op input:checked + span {
+		background: var(--sepia);
+		color: var(--cal);
+	}
+	.capas__op input:checked + span small {
+		color: #d5c3b0;
+	}
+	.capas__op input:focus-visible + span {
+		outline: 3px solid var(--tiza);
+		outline-offset: 2px;
+	}
+	@media (max-width: 480px) {
+		.capas {
+			width: 100%;
+		}
+		.capas__op {
+			flex: 1 1 0;
+		}
+		.capas__op span {
+			padding: 10px 4px;
+		}
+		.capas__op b {
+			font-size: 0.66rem;
+			letter-spacing: 0.04em;
+		}
+		.capas__op small {
+			display: none;
+		}
+	}
+
+	/* ---- casa en sección ---- */
+	.casa {
+		position: relative;
+		--forjado: 10px;
+	}
+	.casa__tejado,
+	.casa__plantas {
+		display: grid;
+		grid-template-columns: 1fr 1.2fr 1.6fr;
+	}
+	.casa__tejado {
+		grid-template-rows: auto;
+		align-items: end;
+		padding: 0 var(--forjado);
+		gap: var(--forjado);
+	}
+	.casa__caseta {
+		height: 54%;
+		min-height: 64px;
+		align-self: end;
+		background: var(--sepia);
+		background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.07) 0 2px, transparent 2px 8px);
+		position: relative;
+	}
+	.casa__caseta::after {
+		content: '';
+		position: absolute;
+		left: 18%;
+		right: 18%;
+		bottom: 0;
+		height: 62%;
+		background: var(--cal-2);
+		border-radius: 999px 999px 0 0;
+	}
+	.casa__plantas {
+		grid-template-rows: 1fr 1fr;
+		gap: var(--forjado);
+		padding: var(--forjado);
+		background-color: var(--sepia);
+		background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.06) 0 2px, transparent 2px 8px);
+	}
+	.casa__tejado .est--terraza {
+		grid-column: 2 / 4;
+		min-height: clamp(86px, 13vw, 130px);
+		margin-bottom: -2px;
+		border-bottom: 0;
+	}
+	.casa__base {
+		height: 26px;
+		margin: 0 -14px;
+		background-color: #7a5f48;
+		background-image:
+			repeating-linear-gradient(135deg, rgba(36, 26, 20, 0.35) 0 2px, transparent 2px 9px),
+			radial-gradient(circle at 20% 40%, rgba(255, 255, 255, 0.12) 0 2px, transparent 3px);
+		border-top: 4px solid var(--sepia);
+	}
+
+	/* ---- estancia ---- */
+	.est {
+		position: relative;
+		display: block;
+		min-height: clamp(120px, 17vw, 190px);
+		padding: 0;
+		overflow: hidden;
+		border: 0;
+		background: var(--cal-2);
+		text-align: left;
+		isolation: isolate;
+	}
+	.est > * {
+		pointer-events: none;
+	}
+	.est__pared {
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+		background-color: var(--c, var(--cal-2));
+		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.02 .07' numOctaves='3' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .22 0 0 0 0 .14 0 0 0 .45 -.08'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+		background-blend-mode: multiply;
+	}
+	/* pared vieja: sucia, sin pintar */
+	.est__pared--v {
+		background-color: var(--v, #d6c2ab);
+	}
+	.est[data-n='0'] .est__pared--n {
+		opacity: 0;
+	}
+	.est[data-n='0'] .est__pared--v::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background:
+			radial-gradient(ellipse at 18% 12%, rgba(90, 60, 30, 0.22), transparent 38%), radial-gradient(ellipse at 80% 70%, rgba(90, 60, 30, 0.18), transparent 42%),
+			repeating-linear-gradient(115deg, rgba(36, 26, 20, 0.05) 0 3px, transparent 3px 11px);
+	}
+	.est__pared--n.pasa {
+		animation: llana 0.75s cubic-bezier(0.7, 0, 0.2, 1) both;
+	}
+	@keyframes llana {
+		from {
+			clip-path: polygon(0 0, 0 0, -25% 100%, 0 100%);
+		}
+		to {
+			clip-path: polygon(0 0, 140% 0, 115% 100%, 0 100%);
+		}
+	}
+
+	.est__estructura {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		opacity: 0;
+		transition: opacity 0.4s;
+		background-color: #a8532f;
+		background-image:
+			linear-gradient(180deg, #4b3a2e 0 11px, transparent 11px),
+			url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='24'%3E%3Crect width='48' height='24' fill='%23a8532f'/%3E%3Cpath d='M0 0H48M0 12H48M0 24H48M12 0V12M36 0V12M0 12V24M24 12V24M48 12V24' stroke='%23e8d3ba' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+		background-size:
+			100% 100%,
+			48px 24px;
+	}
+	.est__instal {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 2;
+		opacity: 0;
+		transition: opacity 0.4s;
+		overflow: visible;
+	}
+	.est__instal path {
+		fill: none;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		vector-effect: non-scaling-stroke;
+	}
+	.est__instal .t1 {
+		stroke: #7f95ff;
+		stroke-width: 5px;
+	}
+	.est__instal .t2 {
+		stroke: #ff9a7a;
+		stroke-width: 5px;
+	}
+	.est__instal .cb {
+		stroke: var(--ocre-claro);
+		stroke-width: 3px;
+		stroke-dasharray: 2 7;
+	}
+	.est__instal .en {
+		fill: var(--ocre-claro);
+		stroke: var(--sepia);
+		stroke-width: 1.5px;
+		vector-effect: non-scaling-stroke;
+	}
+	.est__suelo {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: 18%;
+		z-index: 3;
+		border-top: 3px solid var(--sepia);
+		background-color: #b79f86;
+		background-image: repeating-linear-gradient(90deg, rgba(36, 26, 20, 0.2) 0 2px, transparent 2px 34px);
+	}
+	.est[data-n='2'] .est__suelo,
+	.est[data-n='3'] .est__suelo,
+	.est--terraza[data-n='2'] .est__suelo,
+	.est--terraza[data-n='3'] .est__suelo {
+		background-image: var(--suelo);
+		background-size: 38px 38px;
+		background-position: left bottom;
+	}
+	.est__mueble {
+		position: absolute;
+		left: 6%;
+		right: 6%;
+		bottom: 14%;
+		height: 62%;
+		width: 88%;
+		z-index: 4;
+		fill: none;
+		stroke: var(--sepia);
+		stroke-width: 2.2px;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		opacity: 0.8;
+		transition: opacity 0.4s;
+	}
+	.est__nombre {
+		position: absolute;
+		left: 10px;
+		top: 9px;
+		z-index: 6;
+		padding: 3px 9px;
+		background: var(--papel);
+		border: 1.5px solid var(--sepia);
+		font-family: var(--rotulo);
+		font-weight: 700;
+		font-stretch: 108%;
+		font-size: 0.7rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+	.est__chip {
+		position: absolute;
+		right: 8px;
+		bottom: 4px;
+		z-index: 6;
+		padding: 3px 9px;
+		background: var(--sepia);
+		color: var(--cal);
+		font-family: var(--texto);
+		font-weight: 600;
+		font-size: 0.74rem;
+		letter-spacing: 0.02em;
+	}
+	@media (max-width: 640px) {
+		.est__m2 {
+			display: none;
+		}
+		.est__nombre {
+			left: 6px;
+			top: 6px;
+			padding: 2px 6px;
+			font-size: 0.58rem;
+			letter-spacing: 0.05em;
+			max-width: calc(100% - 12px);
+		}
+		.est__chip {
+			right: 5px;
+			bottom: 3px;
+			padding: 2px 6px;
+			font-size: 0.66rem;
+		}
+		.casa[data-capa='estructura'] .est[data-g='1']::before,
+		.casa[data-capa='instalaciones'] .est[data-i='1']::before {
+			left: 6px;
+			top: 30px;
+			font-size: 0.54rem;
+		}
+	}
+	.est[data-n='0'] .est__chip {
+		background: var(--papel);
+		color: var(--sepia);
+		box-shadow: inset 0 0 0 1.5px var(--sepia);
+	}
+	.est[data-n='0'] {
+		filter: saturate(0.55);
+	}
+	.est:hover .est__chip {
+		background: var(--arcilla);
+		color: #fff;
+	}
+	.est[aria-pressed='true'] {
+		outline: 4px dashed var(--tiza);
+		outline-offset: -6px;
+	}
+	.est[aria-pressed='true']::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: 7;
+		box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.55);
+		pointer-events: none;
+	}
+	.est:focus-visible {
+		outline: 4px solid var(--tiza);
+		outline-offset: -4px;
+		border-radius: 0;
+	}
+	/* capas */
+	.casa[data-capa='estructura'] .est__estructura {
+		opacity: 1;
+	}
+	.casa[data-capa='estructura'] .est__suelo,
+	.casa[data-capa='estructura'] .est__mueble,
+	.casa[data-capa='estructura'] .est__pared {
+		opacity: 0;
+	}
+	.casa[data-capa='instalaciones'] .est__estructura {
+		opacity: 0.55;
+	}
+	.casa[data-capa='instalaciones'] .est__instal {
+		opacity: 1;
+	}
+	.casa[data-capa='instalaciones'] .est__suelo,
+	.casa[data-capa='instalaciones'] .est__mueble,
+	.casa[data-capa='instalaciones'] .est__pared {
+		opacity: 0;
+	}
+	.casa[data-capa='estructura'] .est[data-g='0'] .est__estructura,
+	.casa[data-capa='instalaciones'] .est[data-i='0'] .est__estructura,
+	.casa[data-capa='instalaciones'] .est[data-i='0'] .est__instal {
+		filter: grayscale(0.9) brightness(0.55);
+	}
+	.est__pared,
+	.est__suelo {
+		transition: opacity 0.4s;
+	}
+	.casa[data-capa='estructura'] .est[data-g='1']::before,
+	.casa[data-capa='instalaciones'] .est[data-i='1']::before {
+		content: attr(data-etq);
+		position: absolute;
+		z-index: 8;
+		left: 10px;
+		top: 38px;
+		padding: 3px 9px;
+		background: var(--tiza);
+		color: #fff;
+		font-family: var(--rotulo);
+		font-weight: 700;
+		font-stretch: 108%;
+		font-size: 0.66rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+
+	/* transición de capas: una pasada de llana con la View Transitions API */
+	::view-transition-group(casa),
+	::view-transition-image-pair(casa) {
+		animation-duration: 0.01s;
+	}
+	::view-transition-old(casa) {
+		animation: none;
+	}
+	::view-transition-new(casa) {
+		animation: barrido 0.8s cubic-bezier(0.7, 0, 0.2, 1) both;
+		mix-blend-mode: normal;
+	}
+	@keyframes barrido {
+		from {
+			clip-path: polygon(0 0, 0 0, -20% 100%, 0 100%);
+		}
+		to {
+			clip-path: polygon(0 0, 140% 0, 120% 100%, 0 100%);
+		}
+	}
+
+	.pre__leyenda {
+		margin-top: 16px;
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 8px 10px;
+		font-size: 0.9rem;
+		color: var(--sepia-3);
+	}
+	.pre__sin,
+	.pre__con {
+		width: 18px;
+		height: 18px;
+		border: 1.5px solid var(--sepia);
+	}
+	.pre__sin {
+		background: #d6c2ab repeating-linear-gradient(115deg, rgba(36, 26, 20, 0.2) 0 2px, transparent 2px 6px);
+	}
+	.pre__con {
+		margin-left: 14px;
+		background: #ecc9b1;
+	}
+
+	/* ---- ficha ---- */
+	.ficha {
+		min-height: 560px;
+		background: var(--papel);
+		border: 2px solid var(--sepia);
+		box-shadow: 8px 8px 0 var(--sepia);
+		padding: clamp(18px, 3vw, 30px);
+		display: grid;
+		gap: 22px;
+	}
+	.ficha__cab {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		gap: 12px;
+		padding-bottom: 14px;
+		border-bottom: 2px solid var(--sepia);
+	}
+	.ficha__cab h3 {
+		font-size: clamp(1.7rem, 3.2vw, 2.3rem);
+		margin-top: 6px;
+	}
+	.ficha__eur {
+		text-align: right;
+		font-size: 0.82rem;
+		color: var(--sepia-3);
+		line-height: 1.2;
+	}
+	.ficha__eur strong {
+		display: block;
+		font-family: var(--titulos);
+		font-weight: 400;
+		font-size: 1.6rem;
+		color: var(--sepia);
+		font-variant-numeric: tabular-nums;
+	}
+	.ficha__bloque {
+		display: grid;
+		gap: 10px;
+	}
+	.ficha__t {
+		font-family: var(--rotulo);
+		font-weight: 700;
+		font-stretch: 108%;
+		font-size: 0.74rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--sepia-3);
+		display: flex;
+		justify-content: space-between;
+		gap: 10px;
+	}
+	.ficha__t output {
+		color: var(--arcilla-2);
+		font-variant-numeric: tabular-nums;
+	}
+	/* deslizador: una regla de albañil */
+	.ficha input[type='range'] {
+		-webkit-appearance: none;
+		appearance: none;
+		width: 100%;
+		height: 30px;
+		background: transparent;
+		cursor: pointer;
+	}
+	.ficha input[type='range']::-webkit-slider-runnable-track {
+		height: 12px;
+		background: repeating-linear-gradient(90deg, var(--sepia) 0 2px, transparent 2px 12px), linear-gradient(var(--ocre-claro), var(--ocre-claro));
+		background-size:
+			100% 6px,
+			100% 100%;
+		background-repeat: no-repeat;
+		background-position: 0 100%, 0 0;
+		border: 1.5px solid var(--sepia);
+	}
+	.ficha input[type='range']::-moz-range-track {
+		height: 12px;
+		background: repeating-linear-gradient(90deg, var(--sepia) 0 2px, transparent 2px 12px), var(--ocre-claro);
+		background-size:
+			100% 6px,
+			100% 100%;
+		background-repeat: no-repeat;
+		background-position: 0 100%, 0 0;
+		border: 1.5px solid var(--sepia);
+	}
+	.ficha input[type='range']::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		width: 22px;
+		height: 30px;
+		margin-top: -10px;
+		background: var(--arcilla);
+		border: 2px solid var(--sepia);
+		clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
+	}
+	.ficha input[type='range']::-moz-range-thumb {
+		width: 18px;
+		height: 28px;
+		background: var(--arcilla);
+		border: 2px solid var(--sepia);
+		border-radius: 0;
+	}
+	.niv {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 6px;
+	}
+	.niv label {
+		position: relative;
+		cursor: pointer;
+	}
+	.niv input {
+		position: absolute;
+		inset: 0;
+		opacity: 0;
+		cursor: pointer;
+	}
+	.niv span {
+		display: grid;
+		place-items: center;
+		min-height: 48px;
+		padding: 4px;
+		text-align: center;
+		border: 2px solid var(--sepia);
+		background: var(--cal-claro);
+		font-family: var(--rotulo);
+		font-weight: 700;
+		font-stretch: 104%;
+		font-size: 0.74rem;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		line-height: 1.15;
+		transition:
+			background 0.2s,
+			color 0.2s,
+			transform 0.15s;
+	}
+	.niv input:checked + span {
+		background: var(--arcilla);
+		color: #fff;
+		transform: translateY(-2px);
+		box-shadow: 0 4px 0 var(--sepia);
+	}
+	.niv input:focus-visible + span {
+		outline: 3px solid var(--tiza);
+		outline-offset: 2px;
+	}
+	.niv label:hover span {
+		background: var(--ocre-claro);
+	}
+	.niv label:hover input:checked + span {
+		background: var(--arcilla);
+	}
+	.ficha__d {
+		font-size: 0.96rem;
+		color: var(--sepia-3);
+	}
+	.ficha__incl {
+		display: grid;
+		gap: 4px;
+		margin-top: 6px;
+		font-size: 0.9rem;
+	}
+	.ficha__incl li {
+		padding-left: 22px;
+		position: relative;
+	}
+	.ficha__incl li::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0.5em;
+		width: 12px;
+		height: 6px;
+		border-left: 3px solid var(--oliva);
+		border-bottom: 3px solid var(--oliva);
+		transform: rotate(-45deg);
+	}
+	.ext {
+		display: grid;
+		gap: 4px;
+	}
+	.ext label {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		padding: 8px 10px;
+		border: 1.5px dashed transparent;
+		cursor: pointer;
+		font-size: 0.94rem;
+		line-height: 1.3;
+	}
+	.ext label:hover {
+		border-color: var(--raya);
+		background: var(--cal-claro);
+	}
+	.ext input {
+		appearance: none;
+		-webkit-appearance: none;
+		flex: none;
+		width: 22px;
+		height: 22px;
+		border: 2px solid var(--sepia);
+		background: var(--cal-claro);
+		display: grid;
+		place-items: center;
+		cursor: pointer;
+	}
+	.ext input:checked {
+		background: var(--sepia);
+	}
+	.ext input:checked::after {
+		content: '';
+		width: 10px;
+		height: 5px;
+		border-left: 3px solid var(--cal);
+		border-bottom: 3px solid var(--cal);
+		transform: rotate(-45deg) translate(1px, -1px);
+	}
+	.ext input:focus-visible {
+		outline: 3px solid var(--tiza);
+		outline-offset: 2px;
+	}
+	.ext label.off {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+	.ext label.off input {
+		cursor: not-allowed;
+	}
+	.ext em {
+		margin-left: auto;
+		font-style: normal;
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
+		white-space: nowrap;
+		color: var(--sepia-3);
+		font-size: 0.86rem;
+	}
+	.par {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+	.par label {
+		position: relative;
+		cursor: pointer;
+	}
+	.par input {
+		position: absolute;
+		inset: 0;
+		opacity: 0;
+		cursor: pointer;
+	}
+	.par span {
+		display: block;
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		background: var(--c);
+		border: 2px solid var(--sepia);
+		box-shadow: inset 0 0 0 3px var(--papel);
+		transition: transform 0.18s;
+	}
+	.par input:checked + span {
+		transform: scale(1.18);
+		box-shadow:
+			inset 0 0 0 3px var(--papel),
+			0 0 0 3px var(--tiza);
+	}
+	.par input:focus-visible + span {
+		outline: 3px solid var(--tiza);
+		outline-offset: 4px;
+	}
+	.par label:hover span {
+		transform: scale(1.1);
+	}
+
+	/* ---- hoja de obra: un recibo de cantera ---- */
+	.hoja {
+		margin-top: clamp(48px, 6vw, 80px);
+		position: relative;
+		background: var(--papel);
+		color: var(--sepia);
+		padding: clamp(22px, 4vw, 44px) clamp(20px, 4vw, 48px) clamp(34px, 5vw, 56px);
+		border: 2px solid var(--sepia);
+		/* borde inferior dentado, como una hoja arrancada */
+		-webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 18px 100%;
+		mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 18px 100%;
+		padding-bottom: clamp(40px, 5vw, 62px);
+	}
+	.hoja__cab {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 8px 24px;
+		padding-bottom: 14px;
+		border-bottom: 2px dashed var(--sepia);
+		margin-bottom: 20px;
+	}
+	.hoja__plazo {
+		font-family: var(--titulos);
+		font-size: clamp(1.2rem, 2.4vw, 1.6rem);
+	}
+	.hoja__plazo b {
+		color: var(--arcilla-2);
+		font-weight: 400;
+	}
+	.hoja__cuerpo {
+		display: grid;
+		gap: 12px 56px;
+		font-variant-numeric: tabular-nums;
+	}
+	.hoja__vacia {
+		padding: 20px 0;
+		color: var(--sepia-3);
+	}
+	.hoja__fila {
+		display: flex;
+		justify-content: space-between;
+		gap: 16px;
+		padding: 4px 0;
+		align-items: baseline;
+	}
+	.hoja__n small {
+		display: block;
+		font-size: 0.8rem;
+		color: var(--sepia-3);
+	}
+	.hoja__fila--extra {
+		padding-left: 14px;
+		font-size: 0.9rem;
+		color: var(--sepia-3);
+	}
+	.hoja__i {
+		white-space: nowrap;
+		font-weight: 600;
+	}
+	.hoja__linea {
+		padding: 8px 0;
+		border-bottom: 1px solid var(--raya);
+	}
+	.hoja__capas {
+		display: flex;
+		height: 18px;
+		border: 2px solid var(--sepia);
+		margin-top: 4px;
+	}
+	.hoja__capas i {
+		display: block;
+		min-width: 0;
+		transition: flex 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+	}
+	.c0 {
+		background: #a8532f;
+	}
+	.c1 {
+		background: var(--tiza);
+	}
+	.c2 {
+		background: var(--ocre);
+	}
+	.hoja__leyenda {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 4px 18px;
+		font-size: 0.84rem;
+		color: var(--sepia-3);
+	}
+	.hoja__leyenda b {
+		display: inline-block;
+		width: 12px;
+		height: 12px;
+		margin-right: 7px;
+		vertical-align: -1px;
+		border: 1.5px solid var(--sepia);
+	}
+	.hoja__sub {
+		padding-top: 10px;
+		border-top: 2px dashed var(--sepia);
+		margin-top: 6px;
+	}
+	.hoja__total {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 16px;
+		padding: 14px 0 6px;
+		border-top: 3px solid var(--sepia);
+		margin-top: 10px;
+		font-family: var(--rotulo);
+		font-weight: 700;
+		font-stretch: 110%;
+		font-size: 0.86rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+	.hoja__total strong {
+		font-family: var(--titulos);
+		font-weight: 400;
+		font-size: clamp(2rem, 4.4vw, 3rem);
+		letter-spacing: -0.01em;
+		text-transform: none;
+		color: var(--arcilla-2);
+	}
+	.hoja__rango {
+		font-size: 0.92rem;
+		color: var(--sepia-3);
+	}
+	.hoja__pie {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 14px;
+		margin-top: 28px;
+	}
+	.hoja__aviso {
+		font-size: 0.9rem;
+		color: var(--ok);
+		font-weight: 600;
+		min-height: 1.3em;
+	}
+	.hoja__nota {
+		margin-top: 18px;
+		font-size: 0.82rem;
+		color: var(--sepia-3);
+		max-width: 80ch;
+	}
+	@media (min-width: 900px) {
+		.hoja__cuerpo {
+			grid-template-columns: 1.1fr 0.9fr;
+			align-items: start;
+		}
+		.hoja__lineas {
+			grid-column: 1;
+			grid-row: 1 / span 6;
+		}
+		.hoja__cuerpo > :not(.hoja__lineas) {
+			grid-column: 2;
+		}
+	}
+	@media (max-width: 640px) {
+		.niv span {
+			font-size: 0.66rem;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.est__pared--n.pasa {
+			animation: none;
+		}
+	}
+</style>
+
+<script>
+	import { estancias, niveles, paredes, suelos, urlSvg } from './datos';
+	import { calcular, estadoInicial, euros, hojaHtml, num, textoVivir, type Estado } from './presupuesto';
+	import type { Nivel } from './datos';
+
+	const raiz = document.getElementById('presupuesto') as HTMLElement;
+	const casa = raiz.querySelector<HTMLElement>('[data-casa]')!;
+	const ficha = raiz.querySelector<HTMLElement>('[data-ficha]')!;
+	const cuerpo = raiz.querySelector<HTMLElement>('[data-hoja-cuerpo]')!;
+	const plazo = raiz.querySelector<HTMLElement>('[data-plazo]')!;
+	const aviso = raiz.querySelector<HTMLElement>('[data-aviso]')!;
+	const celdas = new Map<string, HTMLButtonElement>();
+	raiz.querySelectorAll<HTMLButtonElement>('[data-est]').forEach((b) => celdas.set(b.dataset.est!, b));
+
+	const estado: Estado = estadoInicial();
+	let sel = 'cocina';
+	const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+	const colorPared = (id: string) => paredes.find((p) => p.id === id)!.color;
+	const def = (id: string) => estancias.find((s) => s.id === id)!;
+	// pared que se ve en cada celda (para que la llana barra de la anterior a la nueva)
+	const visto = new Map<string, string>();
+	for (const [id, c] of celdas) visto.set(id, c.style.getPropertyValue('--c') || '#d6c2ab');
+
+	function pintaCelda(id: string) {
+		const c = celdas.get(id)!;
+		const st = estado.estancias[id];
+		c.dataset.n = String(st.nivel);
+		c.dataset.g = st.nivel >= 2 ? '1' : '0';
+		c.dataset.i = st.nivel >= 1 ? '1' : '0';
+		c.dataset.f = st.nivel >= 1 ? '1' : '0';
+		c.dataset.etq = st.nivel >= 2 ? 'Se interviene' : st.nivel === 1 ? 'Retoques' : '';
+		const chip = c.querySelector('.est__chip')!;
+		chip.innerHTML = `${niveles[st.nivel].corto}<span class="est__m2"> · ${num(st.m2)} m²</span>`;
+		c.setAttribute('aria-pressed', String(id === sel));
+		const nuevo = st.nivel > 0 ? colorPared(st.pared) : '';
+		const antes = visto.get(id) ?? '';
+		if (nuevo && nuevo !== antes) {
+			const v = c.querySelector<HTMLElement>('.est__pared--v')!;
+			const n = c.querySelector<HTMLElement>('.est__pared--n')!;
+			if (antes) v.style.setProperty('--v', antes);
+			c.style.setProperty('--c', nuevo);
+			if (!ridotto) {
+				n.classList.remove('pasa');
+				void n.offsetWidth;
+				n.classList.add('pasa');
+			}
+			visto.set(id, nuevo);
+		} else if (!nuevo && antes && antes !== '#d6c2ab') {
+			visto.set(id, '#d6c2ab');
+		}
+	}
+
+	function pintaFicha() {
+		const d = def(sel);
+		const st = estado.estancias[sel];
+		const lvl = niveles[st.nivel];
+		const sueloSel = suelos.find((s) => s.id === estado.suelo)!;
+		const linea = calcular(estado).lineas.find((l) => l.id === sel);
+		const extra = d.extras
+			.map((x) => {
+				const off = x.desde > st.nivel;
+				const on = st.extras.includes(x.id) && !off;
+				const precio = x.por === 'm2' ? `${euros(x.precio)}/m²` : euros(x.precio);
+				return `<label class="${off ? 'off' : ''}"><input type="checkbox" value="${x.id}" ${on ? 'checked' : ''} ${off ? 'disabled' : ''}><span>${x.nombre}${off ? ` <small>(desde ${niveles[x.desde].nombre})</small>` : ''}</span><em>${precio}</em></label>`;
+			})
+			.join('');
+		ficha.innerHTML = `
+<header class="ficha__cab">
+	<div><p class="rotulo">Estás editando</p><h3>${d.nombre}</h3></div>
+	<p class="ficha__eur">Esta estancia<strong>${linea ? euros(linea.total) : '0 €'}</strong>sin gestión ni IVA</p>
+</header>
+<div class="ficha__bloque">
+	<label class="ficha__t" for="of-m2">Superficie <output id="of-m2-o">${num(st.m2)} m²</output></label>
+	<input id="of-m2" type="range" min="${d.m2.min}" max="${d.m2.max}" step="1" value="${st.m2}">
+</div>
+<div class="ficha__bloque">
+	<p class="ficha__t" id="of-niv-t">Cuánta obra</p>
+	<div class="niv" role="radiogroup" aria-labelledby="of-niv-t">${niveles
+		.map((n) => `<label><input type="radio" name="of-nivel" value="${n.n}" ${n.n === st.nivel ? 'checked' : ''}><span>${n.corto}</span></label>`)
+		.join('')}</div>
+	<p class="ficha__d">${lvl.d}</p>
+	${lvl.incluye.length ? `<ul class="ficha__incl">${lvl.incluye.map((i) => `<li>${i}</li>`).join('')}</ul>` : ''}
+</div>
+<div class="ficha__bloque" ${st.nivel === 0 ? 'hidden' : ''}>
+	<p class="ficha__t">Color de las paredes</p>
+	<div class="par" role="radiogroup" aria-label="Color de las paredes">${paredes
+		.map((p) => `<label title="${p.nombre}"><input type="radio" name="of-pared" value="${p.id}" ${p.id === st.pared ? 'checked' : ''}><span style="--c:${p.color}"></span><span class="sr-only">${p.nombre}</span></label>`)
+		.join('')}</div>
+	${st.nivel >= 2 && d.id !== 'terraza' ? `<p class="ficha__d">Suelo: <b>${sueloSel.nombre}</b>, ${sueloSel.dibujo.toLowerCase()}. <a class="enlace" href="#muestrario">Cambiarlo en el muestrario</a></p>` : ''}
+</div>
+<div class="ficha__bloque" ${st.nivel === 0 ? 'hidden' : ''}>
+	<p class="ficha__t">Añadir a esta estancia</p>
+	<div class="ext">${extra}</div>
+</div>`;
+	}
+
+	let pideTotal = 0;
+	function animaTotal(el: HTMLElement | null, a: number, b: number) {
+		if (!el) return;
+		if (ridotto || a === b) {
+			el.textContent = euros(b);
+			return;
+		}
+		const t0 = performance.now();
+		const paso = (t: number) => {
+			const p = Math.min(1, (t - t0) / 600);
+			const e = 1 - Math.pow(1 - p, 3);
+			el.textContent = euros(a + (b - a) * e);
+			if (p < 1) requestAnimationFrame(paso);
+		};
+		requestAnimationFrame(paso);
+	}
+
+	function render(quePinta: 'todo' | 'celda' = 'todo') {
+		const r = calcular(estado);
+		for (const id of celdas.keys()) pintaCelda(id);
+		if (quePinta === 'todo') pintaFicha();
+		else {
+			// solo cifras de la ficha, sin recrear los controles (para no perder el foco del deslizador)
+			const st = estado.estancias[sel];
+			const linea = r.lineas.find((l) => l.id === sel);
+			ficha.querySelector('.ficha__eur strong')!.textContent = linea ? euros(linea.total) : '0 €';
+			const o = ficha.querySelector('#of-m2-o');
+			if (o) o.textContent = `${num(st.m2)} m²`;
+		}
+		const antes = pideTotal;
+		cuerpo.innerHTML = hojaHtml(r);
+		animaTotal(cuerpo.querySelector('[data-total]'), antes, r.total);
+		pideTotal = r.total;
+		plazo.innerHTML = r.hay ? `Plazo orientativo: <b>${r.semanas} semanas</b> · ${r.estancias} ${r.estancias === 1 ? 'estancia' : 'estancias'}` : 'Aún sin estancias';
+		casa.style.setProperty('--suelo', urlSvg(suelos.find((s) => s.id === estado.suelo)!.svg));
+		raiz.style.setProperty('--suelo', urlSvg(suelos.find((s) => s.id === estado.suelo)!.svg));
+		(window as any).__obrafina = { estado, res: r, textoVivir: textoVivir[r.vivir] };
+		window.dispatchEvent(new CustomEvent('obrafina:estado', { detail: { estado, res: r } }));
+	}
+
+	// ---- elegir estancia ----
+	celdas.forEach((c, id) =>
+		c.addEventListener('click', () => {
+			sel = id;
+			celdas.forEach((x, k) => x.setAttribute('aria-pressed', String(k === id)));
+			pintaFicha();
+			if (matchMedia('(max-width: 1039px)').matches) ficha.scrollIntoView({ behavior: ridotto ? 'auto' : 'smooth', block: 'start' });
+		}),
+	);
+
+	// ---- cambios en la ficha ----
+	ficha.addEventListener('input', (e) => {
+		const t = e.target as HTMLInputElement;
+		const st = estado.estancias[sel];
+		if (t.id === 'of-m2') {
+			st.m2 = +t.value;
+			render('celda');
+		}
+	});
+	ficha.addEventListener('change', (e) => {
+		const t = e.target as HTMLInputElement;
+		const st = estado.estancias[sel];
+		if (t.name === 'of-nivel') {
+			st.nivel = +t.value as Nivel;
+			st.extras = st.extras.filter((x) => def(sel).extras.find((d) => d.id === x && d.desde <= st.nivel));
+			render('todo');
+			ficha.querySelector<HTMLInputElement>('input[name="of-nivel"]:checked')?.focus();
+		} else if (t.name === 'of-pared') {
+			st.pared = t.value;
+			render('celda');
+		} else if (t.closest('.ext')) {
+			st.extras = t.checked ? [...new Set([...st.extras, t.value])] : st.extras.filter((x) => x !== t.value);
+			render('todo');
+			ficha.querySelector<HTMLInputElement>(`.ext input[value="${t.value}"]`)?.focus();
+		}
+	});
+
+	// ---- capas, con una pasada de llana ----
+	raiz.querySelector('[data-capas]')!.addEventListener('change', (e) => {
+		const v = (e.target as HTMLInputElement).value;
+		const aplica = () => (casa.dataset.capa = v);
+		const vt = (document as any).startViewTransition?.bind(document);
+		if (vt && !ridotto) {
+			casa.style.viewTransitionName = 'casa';
+			const t = vt(aplica);
+			t.finished.finally(() => (casa.style.viewTransitionName = ''));
+		} else aplica();
+	});
+
+	// ---- el muestrario cambia el suelo ----
+	window.addEventListener('obrafina:suelo', (e) => {
+		const id = (e as CustomEvent).detail?.id as string;
+		if (id && id !== estado.suelo) {
+			estado.suelo = id;
+			render('todo');
+		}
+	});
+
+	// ---- acciones de la hoja ----
+	raiz.querySelector('[data-pedir]')!.addEventListener('click', () => {
+		const r = calcular(estado);
+		window.dispatchEvent(new CustomEvent('obrafina:visita', { detail: { estado, res: r } }));
+		document.getElementById('visita')?.scrollIntoView({ behavior: ridotto ? 'auto' : 'smooth', block: 'start' });
+	});
+	raiz.querySelector('[data-copiar]')!.addEventListener('click', async () => {
+		const r = calcular(estado);
+		const txt = [
+			'Hoja de obra (estimación orientativa) — Obra Fina',
+			...r.lineas.map((l) => `· ${l.nombre}: ${niveles[l.nivel].nombre}, ${num(l.m2)} m² → ${euros(l.total)}`),
+			`Total estimado (IVA incluido): ${euros(r.total)} (entre ${euros(r.rango[0])} y ${euros(r.rango[1])})`,
+			`Plazo orientativo: ${r.semanas} semanas`,
+		].join('\n');
+		try {
+			await navigator.clipboard.writeText(txt);
+			aviso.textContent = 'Resumen copiado.';
+		} catch {
+			aviso.textContent = 'No se pudo copiar: selecciona el texto de la hoja.';
+		}
+		setTimeout(() => (aviso.textContent = ''), 3500);
+	});
+
+	// ---- en marcha: la cocina ya elegida ----
+	sel = 'cocina';
+	render('todo');
+	celdas.get('cocina')!.setAttribute('aria-pressed', 'true');
+</script>

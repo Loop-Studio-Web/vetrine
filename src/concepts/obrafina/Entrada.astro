@@ -1,0 +1,417 @@
+---
+import { Image } from 'astro:assets';
+import foto from '../../assets/obrafina/foto/salon-naranja.jpg';
+
+const polvo = Array.from({ length: 16 }, (_, i) => {
+	const a = (i / 16) * Math.PI * 2 + (i % 3) * 0.4;
+	const d = 22 + ((i * 37) % 46);
+	return { dx: Math.round(Math.cos(a) * d), dy: Math.round(Math.sin(a) * d * 0.7 - 6), r: 1.4 + ((i * 7) % 5) * 0.5, t: (i % 5) * 40 };
+});
+const servicios = ['Cocinas', 'Baños', 'Reformas integrales', 'Suelos hidráulicos', 'Cal a la llana', 'Instalaciones', 'Licencias y permisos', 'Terrazas y azoteas'];
+---
+
+<section class="ent" id="top">
+	<svg class="ent__cordel ent__cordel--d" viewBox="0 0 1440 700" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+		<defs>
+			<filter id="of-tiza" x="-2%" y="-20%" width="104%" height="140%">
+				<feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="5" result="n"></feTurbulence>
+				<feDisplacementMap in="SourceGraphic" in2="n" scale="3.4"></feDisplacementMap>
+			</filter>
+		</defs>
+		<g class="ent__cordel-g">
+			<path d="M1190 790 L1490 170" fill="none" stroke="#2b49c8" stroke-width="3.2" stroke-linecap="round" filter="url(#of-tiza)" pathLength="1"></path>
+		</g>
+	</svg>
+	<svg class="ent__cordel ent__cordel--m" viewBox="0 0 400 800" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+		<g class="ent__cordel-g">
+			<path d="M-10 735 L410 560" fill="none" stroke="#2b49c8" stroke-width="3.2" stroke-linecap="round" filter="url(#of-tiza)" pathLength="1"></path>
+		</g>
+	</svg>
+	<div class="ent__polvo" aria-hidden="true">
+		{polvo.map((p) => <i style={`--dx:${p.dx}px;--dy:${p.dy}px;--r:${p.r}px;--t:${p.t}ms`}></i>)}
+	</div>
+
+	<div class="ent__in">
+		<div class="ent__txt">
+			<p class="rotulo ent__rot">Reformas integrales · Valencia</p>
+			<h1>
+				Obra gruesa para que aguante.
+				<span class="ent__fina"
+					>Obra fina<svg viewBox="0 0 320 22" preserveAspectRatio="none" aria-hidden="true" focusable="false"
+						><path d="M4 14 C 60 4, 110 20, 170 10 S 280 6, 316 12" fill="none" stroke="#2b49c8" stroke-width="5" stroke-linecap="round" pathLength="1" filter="url(#of-tiza)"></path></svg
+					></span
+				>{' '}
+				para que se note.
+			</h1>
+			<p class="ent__lead">
+				Reformamos pisos y casas en Valencia con presupuesto cerrado, un único jefe de obra y fecha de entrega por escrito. Pruébalo abajo: dibuja tu reforma estancia a estancia y
+				mira cuánto cuesta y cuánto dura, antes de hablar con nadie.
+			</p>
+			<div class="ent__cta">
+				<a class="btn" href="#presupuesto">Calcula tu reforma</a>
+				<a class="enlace" href="#visita">o pide una visita gratuita</a>
+			</div>
+			<ul class="ent__prom">
+				<li><span>72 h</span> para tener el presupuesto cerrado</li>
+				<li><span>1</span> jefe de obra, con nombre y teléfono</li>
+				<li><span>Por escrito</span> la fecha de entrega</li>
+			</ul>
+		</div>
+
+		<figure class="ent__arco">
+			<div class="ent__marco">
+				<div class="ent__foto">
+					<Image src={foto} alt="Salón con una pared de cal naranja, suelo de baldosa de barro cocido, un sillón de madera y una mesa baja" widths={[420, 640, 900]} sizes="(max-width: 900px) 80vw, 460px" loading="eager" fetchpriority="high" />
+				</div>
+				<!-- plomada colgada del arco -->
+				<svg class="ent__plomada" viewBox="0 0 60 300" aria-hidden="true" focusable="false">
+					<line x1="30" y1="0" x2="30" y2="218" stroke="#241a14" stroke-width="2.4"></line>
+					<g class="ent__plomo">
+						<ellipse cx="30" cy="226" rx="11" ry="9" fill="#9a3a1f"></ellipse>
+						<path d="M12 238 H48 L30 292 Z" fill="#b9482a" stroke="#241a14" stroke-width="2" stroke-linejoin="round"></path>
+						<path d="M20 244 H30 L28 270 Z" fill="rgba(255,255,255,.22)"></path>
+					</g>
+				</svg>
+			</div>
+			<figcaption class="ent__pie">Foto de archivo, obra ilustrativa.</figcaption>
+		</figure>
+	</div>
+
+	<div class="cinta" aria-hidden="true">
+		<div class="cinta__pista">
+			{[0, 1].map(() => <ul>{servicios.map((s) => <li>{s}</li>)}</ul>)}
+		</div>
+	</div>
+</section>
+
+<style>
+	.ent {
+		position: relative;
+		background:
+			radial-gradient(52% 64% at var(--luz-x) var(--luz-y), oklch(0.9 0.1 62 / 0.9), oklch(0.93 0.06 40 / 0.5) 40%, transparent 72%),
+			radial-gradient(46% 56% at 6% 8%, oklch(0.985 0.02 250 / 0.95), transparent 66%),
+			radial-gradient(40% 40% at 98% 100%, oklch(0.82 0.08 250 / 0.7), transparent 70%),
+			linear-gradient(180deg, var(--cal-claro), var(--cal));
+		padding: calc(var(--fascia-h) + var(--nav-h) + clamp(28px, 5vw, 64px)) 0 0;
+		overflow: clip;
+	}
+	.ent__cordel {
+		position: absolute;
+		inset: 0 0 56px;
+		width: 100%;
+		height: calc(100% - 56px);
+		z-index: 0;
+		pointer-events: none;
+	}
+	.ent__cordel-g path {
+		stroke-dasharray: 1;
+		stroke-dashoffset: 1;
+		animation: tiende 0.7s 0.35s cubic-bezier(0.5, 0, 0.2, 1) forwards;
+	}
+	.ent__cordel-g {
+		transform-origin: 50% 50%;
+		animation: chasquido 1.1s 1.05s cubic-bezier(0.3, 0.7, 0.4, 1) both;
+	}
+	@keyframes tiende {
+		to {
+			stroke-dashoffset: 0;
+		}
+	}
+	@keyframes chasquido {
+		0% {
+			transform: translateY(0);
+		}
+		14% {
+			transform: translateY(-22px);
+		}
+		30% {
+			transform: translateY(14px);
+		}
+		48% {
+			transform: translateY(-8px);
+		}
+		66% {
+			transform: translateY(4px);
+		}
+		84% {
+			transform: translateY(-1.5px);
+		}
+		100% {
+			transform: translateY(0);
+		}
+	}
+	.ent__cordel--m {
+		display: none;
+	}
+	.ent__polvo {
+		position: absolute;
+		left: 86%;
+		top: 52%;
+		width: 0;
+		height: 0;
+		z-index: 1;
+	}
+	.ent__polvo i {
+		position: absolute;
+		width: calc(var(--r) * 2);
+		height: calc(var(--r) * 2);
+		border-radius: 50%;
+		background: var(--tiza);
+		opacity: 0;
+		animation: polvo 1.3s calc(1.05s + var(--t)) ease-out both;
+	}
+	@keyframes polvo {
+		0% {
+			opacity: 0.85;
+			transform: translate(0, 0) scale(1);
+		}
+		100% {
+			opacity: 0;
+			transform: translate(var(--dx), var(--dy)) scale(0.4);
+		}
+	}
+
+	.ent__in {
+		position: relative;
+		z-index: 2;
+		max-width: calc(var(--max) + var(--gutter) * 2);
+		margin-inline: auto;
+		padding: 0 var(--gutter) clamp(48px, 7vw, 96px);
+		display: grid;
+		gap: 44px;
+		align-items: center;
+	}
+	.ent h1 {
+		font-size: clamp(2.4rem, 7.6vw, 4.7rem);
+		margin: 20px 0 26px;
+		letter-spacing: -0.02em;
+	}
+	.ent__fina {
+		position: relative;
+		display: inline-block;
+		color: var(--arcilla-2);
+		white-space: nowrap;
+	}
+	.ent__fina svg {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: -0.12em;
+		width: 100%;
+		height: 0.2em;
+		overflow: visible;
+	}
+	.ent__fina path {
+		stroke-dasharray: 1;
+		stroke-dashoffset: 1;
+		animation: tiende 0.8s 1.5s ease-out forwards;
+	}
+	.ent__lead {
+		font-size: clamp(1.08rem, 1.5vw, 1.24rem);
+		max-width: 52ch;
+		color: var(--sepia-3);
+	}
+	.ent__cta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 18px 26px;
+		margin: 32px 0 38px;
+	}
+	.ent__prom {
+		display: grid;
+		gap: 14px;
+		max-width: 56ch;
+		padding-top: 22px;
+		border-top: 2px solid var(--sepia);
+	}
+	.ent__prom li {
+		display: flex;
+		align-items: baseline;
+		gap: 12px;
+		font-size: 0.98rem;
+		line-height: 1.35;
+	}
+	.ent__prom span {
+		flex: none;
+		min-width: 5.2em;
+		font-family: var(--rotulo);
+		font-weight: 800;
+		font-stretch: 120%;
+		font-size: 1.05rem;
+		color: var(--arcilla-2);
+	}
+
+	/* arco con foto: yeso rugoso alrededor, la plomada cuelga del centro */
+	.ent__arco {
+		position: relative;
+		justify-self: center;
+		width: min(100%, 440px);
+	}
+	.ent__marco {
+		position: relative;
+		padding: 18px 18px 0;
+	}
+	.ent__marco::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: 999px 999px 0 0;
+		background-color: var(--arcilla);
+		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.045 .09' numOctaves='3' seed='8' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .1 0 0 0 0 .05 0 0 0 1.1 -.25'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+		background-blend-mode: multiply;
+		filter: url(#of-ruvido);
+	}
+	.ent__foto {
+		position: relative;
+		aspect-ratio: 4 / 5;
+		border-radius: 999px 999px 0 0;
+		overflow: hidden;
+		background: var(--cal-2);
+	}
+	.ent__foto img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 72% 60%;
+		animation: acerca 14s ease-out both;
+	}
+	@keyframes acerca {
+		from {
+			transform: scale(1.12);
+		}
+		to {
+			transform: scale(1);
+		}
+	}
+	.ent__plomada {
+		position: absolute;
+		z-index: 3;
+		left: calc(50% - 30px);
+		top: -6px;
+		width: 60px;
+		height: 300px;
+		overflow: visible;
+		filter: drop-shadow(0 6px 5px rgba(36, 26, 20, 0.25));
+	}
+	.ent__plomada {
+		transform-origin: 50% 0;
+		animation: pendulo 5.6s 0.4s ease-in-out infinite;
+	}
+	@keyframes pendulo {
+		0%,
+		100% {
+			transform: rotate(2.4deg);
+		}
+		50% {
+			transform: rotate(-2.4deg);
+		}
+	}
+	.ent__pie {
+		margin-top: 14px;
+		font-family: var(--mano);
+		font-size: 1.05rem;
+		color: var(--sepia-3);
+		transform: rotate(-1.2deg);
+	}
+
+	/* cinta de servicios */
+	.cinta {
+		position: relative;
+		z-index: 2;
+		overflow: hidden;
+		background: linear-gradient(90deg, #a53d22, var(--arcilla) 30%, #d0583a 55%, var(--arcilla) 80%, #a53d22);
+		color: var(--cal-claro);
+		border-block: 3px solid var(--sepia);
+	}
+	.cinta__pista {
+		display: flex;
+		width: max-content;
+		animation: cinta 46s linear infinite;
+	}
+	.cinta ul {
+		display: flex;
+		flex: none;
+	}
+	.cinta li {
+		padding: 14px 0;
+		font-family: var(--rotulo);
+		font-weight: 800;
+		font-stretch: 125%;
+		font-size: clamp(0.95rem, 2vw, 1.25rem);
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		white-space: nowrap;
+	}
+	.cinta li::after {
+		content: '✦';
+		margin: 0 1.4em;
+		color: var(--ocre-claro);
+	}
+	@keyframes cinta {
+		to {
+			transform: translateX(-50%);
+		}
+	}
+	@supports (animation-timeline: scroll()) {
+		@media (prefers-reduced-motion: no-preference) {
+			.ent {
+				animation: luz linear both;
+				animation-timeline: scroll(root block);
+				animation-range: 0 90vh;
+			}
+			@keyframes luz {
+				from {
+					--luz-x: 78%;
+					--luz-y: 62%;
+				}
+				to {
+					--luz-x: 34%;
+					--luz-y: 30%;
+				}
+			}
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.cinta__pista {
+			animation: none;
+		}
+		.ent__plomada,
+		.ent__foto img,
+		.ent__cordel-g,
+		.ent__polvo i {
+			animation: none;
+		}
+		.ent__cordel-g path,
+		.ent__fina path {
+			animation: none;
+			stroke-dashoffset: 0;
+		}
+	}
+
+	@media (min-width: 960px) {
+		.ent__in {
+			grid-template-columns: 1.25fr 0.75fr;
+			gap: clamp(32px, 6vw, 96px);
+		}
+		.ent__arco {
+			justify-self: end;
+			margin-top: 14px;
+		}
+	}
+	@media (max-width: 959px) {
+		.ent__cordel--d {
+			display: none;
+		}
+		.ent__cordel--m {
+			display: block;
+		}
+		.ent__polvo {
+			left: 55%;
+			top: 80%;
+		}
+		.ent__arco {
+			width: min(86%, 360px);
+		}
+	}
+</style>

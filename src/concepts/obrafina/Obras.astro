@@ -1,0 +1,387 @@
+---
+import { Image } from 'astro:assets';
+import antes1 from '../../assets/obrafina/foto/antes-vacio.jpg';
+import desp1 from '../../assets/obrafina/foto/estancia-cal.jpg';
+import antes2 from '../../assets/obrafina/foto/antes-obra.jpg';
+import desp2 from '../../assets/obrafina/foto/salon-naranja.jpg';
+import yeso from '../../assets/obrafina/foto/yeso-manos.jpg';
+import llana from '../../assets/obrafina/foto/llana.jpg';
+import suelo from '../../assets/obrafina/foto/suelo-ceramica.jpg';
+
+const obras = [
+	{
+		id: 'cabanyal',
+		titulo: 'Un piso de los sesenta que volvió a tener luz',
+		donde: 'El Cabanyal · 74 m²',
+		datos: [
+			['Nivel', 'A fondo'],
+			['Plazo', '11 semanas'],
+			['Inversión', '48.900 €'],
+		],
+		hicimos: ['Se tiró un tabique y se abrió la cocina al salón', 'Instalaciones nuevas, suelo continuo y cal a la llana', 'Se conservaron las puertas de madera y el zócalo'],
+		antes: antes1,
+		despues: desp1,
+		altA: 'Una estancia vacía con el yeso caído del techo y escombros en el suelo',
+		altD: 'La misma estancia reformada: paredes lisas de cal beige, luz suave y dos lámparas colgadas',
+	},
+	{
+		id: 'ruzafa',
+		titulo: 'Casa con patio: de la estructura al salón',
+		donde: 'Ruzafa · 112 m²',
+		datos: [
+			['Nivel', 'A fondo y terraza'],
+			['Plazo', '14 semanas'],
+			['Inversión', '71.300 €'],
+		],
+		hicimos: ['Apuntalamiento y refuerzo de la planta baja', 'Suelo de barro cocido recuperado en el salón', 'Pared de arcilla y carpintería nueva a medida'],
+		antes: antes2,
+		despues: desp2,
+		altA: 'Un salón en obra, con puntales metálicos, escombros de ladrillo y herramientas por el suelo',
+		altD: 'El salón terminado: pared naranja de cal, suelo de baldosa de barro cocido y mobiliario de madera',
+	},
+];
+
+const oficio = [
+	{ img: yeso, alt: 'Manos aplicando yeso con dos llanas sobre una pared', t: 'Cal a la llana, tres manos', c: 'Cada mano se deja secar. Por eso la pared no se ve plana: se ve viva.', r: -2.2 },
+	{ img: llana, alt: 'Una mano con una paleta de albañil recogiendo mortero', t: 'Mortero, paciencia y buen pulso', c: 'Un albañil de los de antes hace en una tarde lo que un rodillo no hace en una semana.', r: 1.6 },
+	{ img: suelo, alt: 'Un operario colocando baldosas de barro cocido en el suelo', t: 'Juntas de dos milímetros', c: 'Se nivela dos veces: antes de colocar y cuando ya está puesto.', r: -1 },
+];
+---
+
+<section class="obr sec" id="obras">
+	<div class="sec__in">
+		<header class="sec__cab" data-rev>
+			<p class="rotulo">04 · Obras</p>
+			<h2>Antes y después, sin trucos.</h2>
+			<p>Arrastra la plomada para ver cómo estaba. Las fotografías son de archivo: ilustran el tipo de obra, no son obras reales ni clientes reales.</p>
+		</header>
+
+		{
+			obras.map((o, i) => (
+				<article class={`ba-caso ${i % 2 ? 'ba-caso--der' : ''}`} data-rev>
+					<figure class="ba" data-ba style="--x:50%">
+						<div class="ba__img ba__img--d">
+							<Image src={o.despues} alt={o.altD} widths={[640, 960, 1400]} sizes="(max-width: 900px) 92vw, 760px" />
+						</div>
+						<div class="ba__img ba__img--a">
+							<Image src={o.antes} alt={o.altA} widths={[640, 960, 1400]} sizes="(max-width: 900px) 92vw, 760px" />
+						</div>
+						<span class="ba__etq ba__etq--a" aria-hidden="true">Antes</span>
+						<span class="ba__etq ba__etq--d" aria-hidden="true">Después</span>
+						<div class="ba__linea" aria-hidden="true">
+							<svg viewBox="0 0 40 72" width="40" height="72"><path d="M20 0V24" stroke="#241a14" stroke-width="2.4" /><ellipse cx="20" cy="29" rx="7" ry="5" fill="#9a3a1f" /><path d="M9 34H31L20 68Z" fill="#b9482a" stroke="#241a14" stroke-width="2" stroke-linejoin="round" /></svg>
+						</div>
+						<input class="ba__r" type="range" min="2" max="98" value="50" aria-label={`Comparar antes y después: ${o.titulo}`} />
+					</figure>
+					<div class="ba__txt">
+						<p class="rotulo">{o.donde}</p>
+						<h3>{o.titulo}</h3>
+						<dl class="ba__datos">
+							{o.datos.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+						</dl>
+						<ul class="ba__hicimos">
+							{o.hicimos.map((h) => <li>{h}</li>)}
+						</ul>
+					</div>
+				</article>
+			))
+		}
+
+		<div class="ofi">
+			<h3 class="ofi__t" data-rev>El oficio, de cerca.</h3>
+			<div class="ofi__fotos">
+				{
+					oficio.map((f, i) => (
+						<figure class="ofi__f" data-rev style={`--r:${f.r}deg;--d:${i}`}>
+							<span class="ofi__cinta" aria-hidden="true" />
+							<Image src={f.img} alt={f.alt} widths={[420, 640, 900]} sizes="(max-width: 800px) 80vw, 360px" />
+							<figcaption>
+								<b>{f.t}</b>
+								<span>{f.c}</span>
+							</figcaption>
+						</figure>
+					))
+				}
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.obr {
+		background: var(--cal-claro);
+		border-top: 3px solid var(--sepia);
+		overflow: clip;
+	}
+	.ba-caso {
+		display: grid;
+		gap: 26px;
+		margin-bottom: clamp(56px, 8vw, 110px);
+	}
+	@media (min-width: 960px) {
+		.ba-caso {
+			grid-template-columns: 1.5fr 1fr;
+			align-items: end;
+			gap: 0;
+		}
+		.ba-caso--der {
+			grid-template-columns: 1fr 1.5fr;
+		}
+		.ba-caso--der .ba {
+			order: 2;
+		}
+		.ba__txt {
+			margin: 0 0 -28px -64px;
+			position: relative;
+			z-index: 2;
+			background: var(--papel);
+			border: 2px solid var(--sepia);
+			box-shadow: 8px 8px 0 var(--sepia);
+			padding: 30px 32px;
+		}
+		.ba-caso--der .ba__txt {
+			margin: 0 -64px -28px 0;
+		}
+	}
+	.ba__txt {
+		background: var(--papel);
+		border: 2px solid var(--sepia);
+		padding: 22px 22px 26px;
+	}
+	.ba__txt h3 {
+		font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+		margin: 10px 0 16px;
+	}
+	.ba__datos {
+		display: grid;
+		grid-template-columns: repeat(3, auto);
+		justify-content: start;
+		gap: 4px 28px;
+		padding: 12px 0;
+		border-block: 2px dashed var(--sepia);
+		margin-bottom: 14px;
+	}
+	.ba__datos dt {
+		font-family: var(--rotulo);
+		font-weight: 700;
+		font-stretch: 108%;
+		font-size: 0.68rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--sepia-3);
+	}
+	.ba__datos dd {
+		font-family: var(--titulos);
+		font-size: 1.1rem;
+	}
+	.ba__hicimos {
+		display: grid;
+		gap: 6px;
+		font-size: 0.95rem;
+	}
+	.ba__hicimos li {
+		padding-left: 20px;
+		position: relative;
+	}
+	.ba__hicimos li::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0.55em;
+		width: 11px;
+		height: 5px;
+		border-left: 3px solid var(--oliva);
+		border-bottom: 3px solid var(--oliva);
+		transform: rotate(-45deg);
+	}
+
+	/* comparador */
+	.ba {
+		position: relative;
+		aspect-ratio: 4 / 3;
+		overflow: hidden;
+		border: 3px solid var(--sepia);
+		box-shadow: 10px 10px 0 var(--sepia);
+		background: var(--cal-2);
+		touch-action: pan-y;
+	}
+	.ba__img {
+		position: absolute;
+		inset: 0;
+	}
+	.ba__img img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.ba__img--a {
+		clip-path: inset(0 calc(100% - var(--x)) 0 0);
+		filter: sepia(0.35) contrast(1.05) saturate(0.8);
+	}
+	.ba__linea {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: var(--x);
+		width: 0;
+		border-left: 3px solid var(--tiza);
+		pointer-events: none;
+	}
+	.ba__linea svg {
+		position: absolute;
+		top: 0;
+		left: -20px;
+		transform-origin: 50% 0;
+		filter: drop-shadow(0 6px 4px rgba(36, 26, 20, 0.3));
+	}
+	.ba__etq {
+		position: absolute;
+		top: 14px;
+		z-index: 2;
+		padding: 4px 12px;
+		background: var(--papel);
+		border: 2px solid var(--sepia);
+		font-family: var(--rotulo);
+		font-weight: 800;
+		font-stretch: 112%;
+		font-size: 0.72rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+	}
+	.ba__etq--a {
+		left: 14px;
+	}
+	.ba__etq--d {
+		right: 14px;
+		background: var(--sepia);
+		color: var(--cal);
+	}
+	.ba__r {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		opacity: 0;
+		cursor: ew-resize;
+		-webkit-appearance: none;
+		appearance: none;
+	}
+	.ba__r::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		width: 60px;
+		height: 100px;
+	}
+	.ba:has(.ba__r:focus-visible) {
+		outline: 4px solid var(--tiza);
+		outline-offset: 6px;
+	}
+
+	/* el oficio: fotos pegadas con cinta, ligeramente torcidas */
+	.ofi__t {
+		font-size: clamp(1.8rem, 4vw, 3rem);
+		margin-bottom: 34px;
+	}
+	.ofi__fotos {
+		display: grid;
+		gap: 38px 30px;
+	}
+	@media (min-width: 800px) {
+		.ofi__fotos {
+			grid-template-columns: repeat(3, 1fr);
+			align-items: start;
+		}
+		.ofi__f:nth-child(2) {
+			margin-top: 44px;
+		}
+		.ofi__f:nth-child(3) {
+			margin-top: 12px;
+		}
+	}
+	.ofi__f {
+		position: relative;
+		background: var(--papel);
+		padding: 12px 12px 16px;
+		border: 2px solid var(--sepia);
+		box-shadow: 6px 6px 0 var(--sepia);
+		rotate: var(--r);
+		transition: rotate 0.3s, opacity 0.8s, transform 0.8s;
+	}
+	.ofi__f:hover {
+		rotate: 0deg;
+	}
+	.ofi__f img {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+	}
+	.ofi__cinta {
+		position: absolute;
+		top: -14px;
+		left: 50%;
+		width: 90px;
+		height: 26px;
+		margin-left: -45px;
+		background: rgba(217, 164, 65, 0.7);
+		transform: rotate(-3deg);
+		clip-path: polygon(0 0, 100% 0, 96% 50%, 100% 100%, 0 100%, 4% 50%);
+		z-index: 2;
+	}
+	.ofi__f figcaption {
+		display: grid;
+		gap: 4px;
+		margin-top: 14px;
+	}
+	.ofi__f figcaption b {
+		font-family: var(--mano);
+		font-weight: 400;
+		font-size: 1.45rem;
+		line-height: 1.1;
+		color: var(--arcilla-2);
+	}
+	.ofi__f figcaption span {
+		font-size: 0.92rem;
+		color: var(--sepia-3);
+	}
+</style>
+
+<script>
+	const reducir = matchMedia('(prefers-reduced-motion: reduce)').matches;
+	document.querySelectorAll<HTMLElement>('[data-ba]').forEach((ba) => {
+		const r = ba.querySelector<HTMLInputElement>('.ba__r')!;
+		const plomada = ba.querySelector<SVGElement>('.ba__linea svg')!;
+		let ultimo = 50;
+		const pone = (v: number) => {
+			ba.style.setProperty('--x', `${v}%`);
+			// la plomada se balancea según la velocidad con que la arrastras
+			const dif = v - ultimo;
+			ultimo = v;
+			plomada.style.transform = `rotate(${Math.max(-24, Math.min(24, -dif * 3))}deg)`;
+		};
+		r.addEventListener('input', () => pone(+r.value));
+		// pequeña demostración al entrar en vista: invita a arrastrar
+		if (!reducir) {
+			const io = new IntersectionObserver(
+				([e]) => {
+					if (!e.isIntersecting) return;
+					io.disconnect();
+					const t0 = performance.now();
+					const paso = (t: number) => {
+						const p = Math.min(1, (t - t0) / 1600);
+						const v = 50 + Math.sin(p * Math.PI * 2) * 26 * (1 - p);
+						if (document.activeElement !== r) {
+							r.value = String(v);
+							pone(v);
+						}
+						if (p < 1) requestAnimationFrame(paso);
+						else plomada.style.transform = '';
+					};
+					requestAnimationFrame(paso);
+				},
+				{ threshold: 0.6 },
+			);
+			io.observe(ba);
+		}
+	});
+</script>
