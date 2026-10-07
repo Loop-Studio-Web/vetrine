@@ -37,6 +37,29 @@ export const macros = [
 ] as const;
 export type MacroSlug = (typeof macros)[number]['slug'];
 
+// I livelli sono relativi alla macrocategoria: dalla vetrina più essenziale alla più ricca del settore.
+export const livelli = [
+	{
+		n: 1,
+		nome: 'Essenziale',
+		d: 'Una homepage chiara, con carattere, che fa bene il suo lavoro: si capisce chi sei, cosa offri e come contattarti. Movimento discreto, pochi strumenti.',
+		perChi: 'Per chi vuole farsi trovare e dare subito fiducia.',
+	},
+	{
+		n: 2,
+		nome: 'Evoluto',
+		d: 'Oltre a presentarti, la pagina fa qualcosa: si sceglie, si filtra, si prenota con più passaggi, si esplora. Movimento curato e dettagli che si notano.',
+		perChi: 'Per chi vuole distinguersi dalla concorrenza e guidare il cliente verso una scelta.',
+	},
+	{
+		n: 3,
+		nome: 'Esperienza',
+		d: 'La homepage è parte del servizio: un percorso orchestrato, scene e interazioni che raccontano l’attività prima ancora di incontrarla.',
+		perChi: 'Per chi vende atmosfera, fiducia o innovazione e vuole che il sito sia memorabile.',
+	},
+] as const;
+export const lingueNomi = { IT: 'Italiano', EN: 'Inglese', ES: 'Spagnolo' } as const;
+
 export type Concept = {
 	slug: string;
 	macro: MacroSlug;
@@ -53,6 +76,8 @@ export type Concept = {
 	sezioni: { t: string; d: string }[];
 	awning: [string, string];
 	glow: string;
+	livello: 1 | 2 | 3; // relativo al settore: 1 Essenziale, 2 Evoluto, 3 Esperienza
+	lingua: 'IT' | 'EN' | 'ES';
 	card: ImageMetadata;
 	shot: ImageMetadata;
 	shotAlt: string;
@@ -103,6 +128,8 @@ export const concepts: Concept[] = [
 		],
 		awning: ['#b5412a', '#f6f0e6'],
 		glow: 'rgba(181, 65, 42, 0.55)',
+		livello: 1,
+		lingua: 'IT',
 		card: cardTrattoria,
 		shot: shotTrattoria,
 		shotAlt: '',
@@ -155,6 +182,8 @@ export const concepts: Concept[] = [
 		],
 		awning: ['#e8921a', '#1a1815'],
 		glow: 'rgba(232, 146, 26, 0.55)',
+		livello: 2,
+		lingua: 'IT',
 		card: cardRistopub,
 		shot: shotRistopub,
 		shotAlt: '',
@@ -207,6 +236,8 @@ export const concepts: Concept[] = [
 		],
 		awning: ['#7a1426', '#151517'],
 		glow: 'rgba(210, 86, 107, 0.5)',
+		livello: 3,
+		lingua: 'IT',
 		card: cardOssidiana,
 		shot: shotOssidiana,
 		shotAlt: '',
@@ -259,6 +290,8 @@ export const concepts: Concept[] = [
 		],
 		awning: ['#1f4d3a', '#f2e8d5'],
 		glow: 'rgba(31, 110, 78, 0.55)',
+		livello: 1,
+		lingua: 'IT',
 		card: cardBarbiere,
 		shot: shotBarbiere,
 		shotAlt: '',
@@ -311,6 +344,8 @@ export const concepts: Concept[] = [
 		],
 		awning: ['#b9715f', '#f7e3dc'],
 		glow: 'rgba(231, 169, 148, 0.55)',
+		livello: 2,
+		lingua: 'IT',
 		card: cardLumen,
 		shot: shotLumen,
 		shotAlt: '',
@@ -330,7 +365,7 @@ export const concepts: Concept[] = [
 		macro: 'benessere',
 		nome: 'Aeterna',
 		categoria: 'Benessere',
-		archetipo: 'La clinica di longevità, livello High',
+		archetipo: 'La clinica di longevità',
 		claim: 'La longevità si misura e si progetta. Un’elica di DNA in 3D, un Bio-Assessment e una suite da prenotare.',
 		path: '/benessere/longevity/',
 		infoPath: '/benessere/longevity/info/',
@@ -339,7 +374,7 @@ export const concepts: Concept[] = [
 			'Come potrebbe essere la homepage di una clinica di longevità: elica di DNA in WebGL, protocolli a scorrimento orizzontale, Bio-Assessment con grafico radar, scanner cellulare e prenotazione della suite. Concept dimostrativo di Loop Studio.',
 		intro: [
 			'Una clinica di longevità vende fiducia nei dati prima ancora dei trattamenti: chi arriva vuole capire che cosa viene misurato, con quale metodo e che cosa ne esce. Aeterna lo mette in scena con un linguaggio da laboratorio: un’elica di DNA che reagisce al mouse, indicatori biometrici, un percorso in cinque tempi.',
-			'È il livello più alto della macrocategoria Benessere e una vetrina dimostrativa: la clinica, i medici, i valori, i prezzi e gli indirizzi sono di fantasia, e nulla è un parere medico. Serve a mostrare fin dove si può spingere un sito quando c’è budget per animazioni, grafica in tempo reale e interazioni su misura.',
+			'È il livello Esperienza della macrocategoria Benessere e una vetrina dimostrativa: la clinica, i medici, i valori, i prezzi e gli indirizzi sono di fantasia, e nulla è un parere medico. Serve a mostrare fin dove si può spingere un sito quando c’è budget per animazioni, grafica in tempo reale e interazioni su misura.',
 		],
 		perChi:
 			'Cliniche private, centri di medicina estetica e della longevità, poliambulatori e brand del benessere premium che vogliono distinguersi con un’esperienza digitale memorabile e un percorso di prenotazione guidato.',
@@ -363,6 +398,8 @@ export const concepts: Concept[] = [
 		],
 		awning: ['#2b6a5c', '#0c1626'],
 		glow: 'rgba(78, 159, 142, 0.55)',
+		livello: 3,
+		lingua: 'IT',
 		card: cardAeterna,
 		shot: shotAeterna,
 		shotAlt: '',
@@ -382,7 +419,7 @@ export const concepts: Concept[] = [
 		macro: 'tech',
 		nome: 'FIXLAB',
 		categoria: 'Tech',
-		archetipo: 'Il laboratorio di riparazioni, livello Low key',
+		archetipo: 'Il laboratorio di riparazioni',
 		claim: 'La tecnologia si rompe, noi la rimettiamo in funzione. Una scheda di lavoro in due tocchi, prezzi indicativi e un banco con lo smartphone aperto.',
 		path: '/tech/riparazioni/',
 		infoPath: '/tech/riparazioni/info/',
@@ -391,7 +428,7 @@ export const concepts: Concept[] = [
 			'Come potrebbe essere la homepage di un laboratorio di riparazione di smartphone, PC, tablet e console: smartphone in vista esplosa, scheda di lavoro con prezzo indicativo, stato della riparazione e richiesta di assistenza. Concept dimostrativo di Loop Studio.',
 		intro: [
 			'Chi porta un dispositivo rotto ha fretta e un po’ d’ansia: vuole sapere cosa non va, quanto costa e quando torna a usarlo. Questa homepage risponde a queste tre domande prima ancora di entrare in negozio. Il sito è una scheda di lavoro: ogni sezione è un campo da compilare, dalla diagnosi alla richiesta di assistenza.',
-			'È il livello Low key della categoria Tech e una vetrina dimostrativa: il laboratorio, i prezzi, le recensioni, gli orari e l’indirizzo sono di fantasia. Serve a mostrare che un negozio di quartiere può avere un sito chiaro, rapido e senza effetti inutili, pensato per far arrivare alla richiesta.',
+			'È il livello Essenziale della categoria Tech e una vetrina dimostrativa: il laboratorio, i prezzi, le recensioni, gli orari e l’indirizzo sono di fantasia. Serve a mostrare che un negozio di quartiere può avere un sito chiaro, rapido e senza effetti inutili, pensato per far arrivare alla richiesta.',
 		],
 		perChi:
 			'Laboratori di riparazione di smartphone e PC, negozi di assistenza informatica, centri di recupero dati e piccoli negozi tech di quartiere. Adatta a chi vuole ridurre le telefonate ripetitive, far capire i prezzi “da” e ricevere richieste già ordinate.',
@@ -415,6 +452,8 @@ export const concepts: Concept[] = [
 		],
 		awning: ['#1d5fd9', '#f5f7f9'],
 		glow: 'rgba(40, 120, 255, 0.55)',
+		livello: 1,
+		lingua: 'IT',
 		card: cardFixlab,
 		shot: shotFixlab,
 		shotAlt: '',
@@ -434,7 +473,7 @@ export const concepts: Concept[] = [
 		macro: 'tech',
 		nome: 'Hot Swap',
 		categoria: 'Tech',
-		archetipo: 'Il negozio di computer e gaming, livello Medium',
+		archetipo: 'Il negozio di computer e gaming',
 		claim: 'Il tuo PC, a modo tuo. Un configuratore che si trascina pezzo per pezzo, con prezzo, consumi e fotogrammi al secondo in tempo reale.',
 		path: '/tech/pc-gaming/',
 		infoPath: '/tech/pc-gaming/info/',
@@ -443,7 +482,7 @@ export const concepts: Concept[] = [
 			'Come potrebbe essere la homepage di un negozio di computer e gaming: catalogo con filtri e confronto, configuratore di PC con compatibilità reali, offerte del giorno, prenotazione del ritiro in negozio. Concept dimostrativo di Loop Studio.',
 		intro: [
 			'Chi compra un PC vuole capire cosa sta comprando: se i pezzi stanno insieme, quanto consumano, quanti fotogrammi faranno nei giochi. Questa homepage lascia che sia il cliente a scoprirlo, costruendo il suo computer trascinando i pezzi in uno chassis, con le regole di compatibilità vere e un conto che si aggiorna a ogni scelta.',
-			'È il livello Medium della categoria Tech e una vetrina dimostrativa, scritta in inglese come farebbe un negozio rivolto a un pubblico internazionale: il negozio, i marchi, i prezzi, le recensioni, gli orari e l’indirizzo sono di fantasia. Lo stile richiama una tastiera meccanica: ogni bottone è un tasto che si abbassa quando lo premi.',
+			'È il livello Evoluto della categoria Tech e una vetrina dimostrativa, scritta in inglese come farebbe un negozio rivolto a un pubblico internazionale: il negozio, i marchi, i prezzi, le recensioni, gli orari e l’indirizzo sono di fantasia. Lo stile richiama una tastiera meccanica: ogni bottone è un tasto che si abbassa quando lo premi.',
 		],
 		perChi:
 			'Negozi di informatica e gaming, assemblatori di PC su misura, rivenditori di componenti e periferiche, store che offrono assistenza e montaggio. Adatta a chi vuole far giocare il cliente con il prodotto prima dell’acquisto e portarlo in negozio con una lista già pronta.',
@@ -467,6 +506,8 @@ export const concepts: Concept[] = [
 		],
 		awning: ['#ff6b2c', '#e7e0d1'],
 		glow: 'rgba(255, 107, 44, 0.55)',
+		livello: 2,
+		lingua: 'EN',
 		card: cardHotswap,
 		shot: shotHotswap,
 		shotAlt: '',
@@ -486,7 +527,7 @@ export const concepts: Concept[] = [
 		macro: 'tech',
 		nome: 'Ordito',
 		categoria: 'Tech',
-		archetipo: 'Lo studio tecnologico per casa e ufficio, livello High',
+		archetipo: 'Lo studio tecnologico per casa e ufficio',
 		claim: 'La casa che ti conosce. Una casa in 3D da toccare: sposti il sole, accendi le stanze, scrivi le regole e guardi l’impianto eseguirle.',
 		path: '/tech/studio/',
 		infoPath: '/tech/studio/info/',
@@ -495,7 +536,7 @@ export const concepts: Concept[] = [
 			'Come potrebbe essere la homepage di uno studio di domotica, sicurezza ed energia per case e uffici: una casa in 3D che reagisce a luci, clima e allarme, un editor di regole “quando… allora…”, un capitolato su misura e la richiesta di sopralluogo. Concept dimostrativo di Loop Studio.',
 		intro: [
 			'Chi si rivolge a uno studio di domotica ha un dubbio semplice: che cosa farà davvero questo impianto a casa mia? Questa homepage risponde mostrando una casa di prova, costruita in 3D, che si attraversa scorrendo: ogni stanza è un passo del racconto e ogni pannello cambia davvero la scena, dalla luce del sole ai consumi.',
-			'È il livello High della categoria Tech e una vetrina dimostrativa: lo studio, i progetti, i prezzi, i numeri e i recapiti sono di fantasia. Il colore è luce: il cielo della casa passa dall’alba rosa al giorno ciano, dal tramonto magenta alla notte viola, e tinge anche bottoni e schede. Serve a mostrare quanto può spingersi un sito quando il budget lo permette, senza perdere velocità né accessibilità.',
+			'È il livello Esperienza della categoria Tech e una vetrina dimostrativa: lo studio, i progetti, i prezzi, i numeri e i recapiti sono di fantasia. Il colore è luce: il cielo della casa passa dall’alba rosa al giorno ciano, dal tramonto magenta alla notte viola, e tinge anche bottoni e schede. Serve a mostrare quanto può spingersi un sito quando il budget lo permette, senza perdere velocità né accessibilità.',
 		],
 		perChi:
 			'Studi di domotica e integratori di smart home, installatori di impianti di sicurezza, energia e fotovoltaico, studi di progettazione impiantistica e aziende che vendono automazione per case, uffici e negozi. Adatta a chi vuole far capire un servizio invisibile facendolo toccare.',
@@ -519,6 +560,8 @@ export const concepts: Concept[] = [
 		],
 		awning: ['#6a2cff', '#ff2e93'],
 		glow: 'rgba(255, 46, 147, 0.6)',
+		livello: 3,
+		lingua: 'IT',
 		card: cardOrdito,
 		shot: shotOrdito,
 		shotAlt: '',
@@ -538,7 +581,7 @@ export const concepts: Concept[] = [
 		macro: 'casa',
 		nome: 'Sifone',
 		categoria: 'Casa e artigiani',
-		archetipo: 'L’idraulico di pronto intervento, livello Low key',
+		archetipo: 'L’idraulico di pronto intervento',
 		claim: 'Perde, scarica, si ferma: arriviamo noi. Una valvola da girare, cosa fare subito, tempi per zona e tariffe in chiaro.',
 		path: '/casa/idraulico/',
 		infoPath: '/casa/idraulico/info/',
@@ -547,7 +590,7 @@ export const concepts: Concept[] = [
 			'Come potrebbe essere la homepage di un idraulico di pronto intervento: valvola interattiva, cosa fare subito per ogni problema, tempi di arrivo per zona, tariffe con contatore e richiesta di intervento. Concept dimostrativo di Loop Studio.',
 		intro: [
 			'Chi chiama un idraulico ha l’acqua sul pavimento, o il bagno che non scarica, e decide in pochi secondi, con il telefono in mano. Questa homepage parte da lì: prima ti dice cosa fare per limitare i danni, poi quanto ci mettiamo ad arrivare e quanto costa, poi lascia il numero ben in vista. Il sito è una bottega che lavora con tubi veri: fotografie di rame e ottone, un’insegna dipinta a mano e un tubo di rame che corre lungo la pagina e si riempie d’acqua mentre scorri.',
-			'È il livello Low key della categoria Casa e artigiani e una vetrina dimostrativa: l’impresa, le tariffe, le zone, le recensioni e il numero di telefono sono di fantasia. Serve a mostrare che un artigiano può avere un sito chiaro, immediato e fatto per far chiamare, con fotografie vere al posto delle solite icone e senza effetti inutili.',
+			'È il livello Essenziale della categoria Casa e artigiani e una vetrina dimostrativa: l’impresa, le tariffe, le zone, le recensioni e il numero di telefono sono di fantasia. Serve a mostrare che un artigiano può avere un sito chiaro, immediato e fatto per far chiamare, con fotografie vere al posto delle solite icone e senza effetti inutili.',
 		],
 		perChi:
 			'Idraulici, elettricisti, fabbri, caldaisti e altri artigiani di pronto intervento. Adatta a chi lavora su chiamata, vuole ridurre le telefonate che non portano lavoro, far capire subito i prezzi e le zone servite e ricevere richieste già ordinate.',
@@ -575,6 +618,8 @@ export const concepts: Concept[] = [
 		],
 		awning: ['#e58857', '#0f3a3f'],
 		glow: 'rgba(229, 136, 87, 0.55)',
+		livello: 1,
+		lingua: 'IT',
 		card: cardSifone,
 		shot: shotSifone,
 		shotAlt: '',

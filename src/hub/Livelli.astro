@@ -1,0 +1,129 @@
+---
+// "Come scegliere il livello": tre colonne e la promessa del "parti da una vetrina". Nessuna cifra: lo sconto si dà nel preventivo.
+import { livelli, CONTACT } from './data';
+import Livello from './Livello.astro';
+---
+
+<section class="livelli" id="livelli" aria-labelledby="livelli-title">
+	<div class="wrap">
+		<header class="livelli__head" data-reveal>
+			<p class="eyebrow">Come scegliere</p>
+			<h2 id="livelli-title" class="h2" data-scramble>Tre livelli, nessuna gerarchia di valore.</h2>
+			<p class="livelli__lead">
+				Il livello giusto non è il più alto: è quello che serve alla tua attività. Ogni riga della via cresce in ricchezza,
+				dalla vetrina più essenziale alla più ricca <em>del suo settore</em>: un’Esperienza per un ristorante non è la stessa cosa di
+				un’Esperienza per una clinica.
+			</p>
+		</header>
+
+		<ol class="lv-list" role="list">
+			{
+				livelli.map((l, i) => (
+					<li class="lv-col" data-reveal style={`--d:${i * 0.1}s`}>
+						<Livello n={l.n} />
+						<h3>{l.nome}</h3>
+						<p>{l.d}</p>
+						<p class="lv-col__per">{l.perChi}</p>
+					</li>
+				))
+			}
+		</ol>
+
+		<div class="pronto" data-reveal>
+			<div>
+				<h3>Parti da una vetrina, non da zero.</h3>
+				<p>
+					Se una di queste homepage ti convince, la struttura e la direzione visiva esistono già: si adattano a te, con il tuo
+					nome, i tuoi contenuti e le tue foto. Ogni vetrina viene assegnata a un solo cliente: una volta scelta, esce dalla via.
+					Il preventivo tiene conto del lavoro già fatto.
+				</p>
+			</div>
+			<a class="btn" href={CONTACT}>Non sai quale scegliere? Parliamone</a>
+		</div>
+	</div>
+</section>
+
+<style>
+	.livelli {
+		padding: clamp(70px, 10vw, 140px) 0;
+	}
+	.livelli__head {
+		max-width: 62ch;
+	}
+	.livelli__head .h2 {
+		margin-top: 14px;
+	}
+	.livelli__lead {
+		margin-top: 20px;
+		color: var(--muted);
+		font-size: 1.12rem;
+	}
+	.livelli__lead em {
+		font-style: normal;
+		color: var(--text);
+	}
+	.lv-list {
+		list-style: none;
+		padding: 0;
+		display: grid;
+		gap: 18px;
+		margin-top: clamp(36px, 5vw, 60px);
+	}
+	.lv-col {
+		padding: clamp(24px, 3vw, 36px);
+		border: 1px solid var(--border);
+		border-radius: 20px;
+		background: var(--bg-2);
+	}
+	.lv-col h3 {
+		margin-top: 18px;
+		font-family: var(--display);
+		font-weight: 700;
+		font-size: 1.6rem;
+		line-height: 1.1;
+		letter-spacing: -0.02em;
+	}
+	.lv-col p {
+		margin-top: 12px;
+		color: var(--muted);
+	}
+	.lv-col .lv-col__per {
+		color: var(--text);
+		font-weight: 600;
+	}
+	.pronto {
+		display: grid;
+		gap: 24px;
+		align-items: center;
+		margin-top: 18px;
+		padding: clamp(26px, 4vw, 48px);
+		border: 1px solid var(--border);
+		border-left: 3px solid var(--accent);
+		border-radius: 4px 20px 20px 4px;
+		background: var(--surface);
+	}
+	.pronto h3 {
+		font-family: var(--display);
+		font-weight: 700;
+		font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+		line-height: 1.15;
+		letter-spacing: -0.02em;
+	}
+	.pronto p {
+		margin-top: 12px;
+		max-width: 62ch;
+		color: var(--muted);
+	}
+	.pronto .btn {
+		justify-self: start;
+	}
+	@media (min-width: 800px) {
+		.lv-list {
+			grid-template-columns: repeat(3, 1fr);
+		}
+		.pronto {
+			grid-template-columns: 1fr auto;
+			gap: 40px;
+		}
+	}
+</style>

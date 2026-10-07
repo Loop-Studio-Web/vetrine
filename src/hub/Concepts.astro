@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
-import { concepts, macros, prossime, CONTACT } from './data';
+import { concepts, macros, prossime, CONTACT, lingueNomi } from './data';
+import Livello from './Livello.astro';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const live = (slug: string) => concepts.filter((c) => c.macro === slug).length;
@@ -49,6 +50,12 @@ const live = (slug: string) => concepts.filter((c) => c.macro === slug).length;
 						<div class="card__body">
 							<p class="card__cat">
 								{c.categoria} · {c.archetipo}
+							</p>
+							<p class="card__meta">
+								<Livello n={c.livello} />
+								<span class="card__lang" title={`Lingua: ${lingueNomi[c.lingua]}`}>
+									<span aria-hidden="true">{c.lingua}</span><span class="sr-only">Lingua: {lingueNomi[c.lingua]}</span>
+								</span>
 							</p>
 							<h3 class="card__name">{c.nome}</h3>
 							<p class="card__claim">{c.claim}</p>
@@ -178,6 +185,22 @@ const live = (slug: string) => concepts.filter((c) => c.macro === slug).length;
 		height: auto;
 		aspect-ratio: 5 / 3;
 		object-fit: cover;
+	}
+	.card__meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 12px;
+		margin-top: 10px;
+	}
+	.card__lang {
+		padding: 2px 8px;
+		border: 1px solid var(--border);
+		border-radius: 4px;
+		font-size: 0.7rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		color: var(--muted);
 	}
 	.card__cat {
 		font-size: 0.78rem;

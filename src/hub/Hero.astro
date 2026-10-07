@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import logoDark from '../assets/hub/loop-logo-on-dark.svg';
 import logoLight from '../assets/hub/loop-logo-on-light.svg';
 import { concepts, macros, prossime, CONTACT } from './data';
+import Livello from './Livello.astro';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
@@ -132,6 +133,10 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 				{haPresto && ' Altre stanno per aprire, e altre'}{!haPresto && ' Altre'} sono ancora in cantiere, dietro le tende abbassate.
 				Nessun modello, nessun locale vero: serve a farti vedere cosa può diventare il tuo.
 			</p>
+			<p class="welcome__legend">
+				<strong>Come leggere le vetrine.</strong> Ogni riga è un settore e va dalla vetrina più essenziale alla più ricca: le lampadine
+				sotto il nome indicano quanto la homepage osa, in carattere, movimento e interazione. Il livello è relativo al settore: <a href="#livelli">come scegliere</a>.
+			</p>
 		</div>
 
 		<div class="street" data-reveal>
@@ -183,6 +188,7 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 										</span>
 										<span class="shop__name">{c.nome}</span>
 										<span class="shop__cat">{c.archetipo}<span class="sr-only"> (si apre in una nuova scheda)</span></span>
+										<span class="shop__lv"><Livello n={c.livello} piccolo /></span>
 									</a>
 								</li>
 							))}
@@ -344,6 +350,20 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 		margin-top: 18px;
 		color: var(--muted);
 		font-size: 1.08rem;
+	}
+	.welcome__legend {
+		margin-top: 18px;
+		padding-top: 18px;
+		border-top: 1px solid var(--border);
+		color: var(--muted);
+		font-size: 0.95rem;
+	}
+	.welcome__legend strong {
+		color: var(--text);
+	}
+	.welcome__legend a {
+		color: var(--text);
+		text-underline-offset: 3px;
 	}
 
 	/* La via di negozi */
@@ -560,6 +580,10 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 		font-weight: 700;
 		font-size: 1.05rem;
 		line-height: 1.2;
+	}
+	.shop__lv {
+		display: block;
+		margin-top: 10px;
 	}
 	.shop__cat {
 		margin-top: 2px;

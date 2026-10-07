@@ -4,7 +4,8 @@
 // le pagine di questo tipo: i testi vivono in data.ts, uno per concept.
 import { Image } from 'astro:assets';
 import Layout from './Layout.astro';
-import { concepts, macros, CONTACT } from './data';
+import { concepts, macros, CONTACT, livelli, lingueNomi } from './data';
+import Livello from './Livello.astro';
 
 interface Props {
 	slug: string;
@@ -65,6 +66,20 @@ const title = `${c.titoloSeo} | Loop Studio`;
 
 			<aside class="det__facts" aria-label="Scheda tecnica">
 				<dl>
+					<div>
+						<dt>Livello</dt>
+						<dd>
+							<Livello n={c.livello} />
+							<span class="det__lv">{livelli[c.livello - 1].perChi} Il livello è relativo al settore.</span>
+						</dd>
+					</div>
+					<div>
+						<dt>Lingua</dt>
+						<dd>
+							<span class="det__lang" aria-hidden="true">{c.lingua}</span>
+							{lingueNomi[c.lingua]}
+						</dd>
+					</div>
 					<div>
 						<dt>Atmosfera</dt>
 						<dd>{c.mood}</dd>
@@ -238,6 +253,23 @@ const title = `${c.titoloSeo} | Loop Studio`;
 	.det__facts dd {
 		margin-top: 4px;
 		font-size: 0.98rem;
+	}
+	.det__lv {
+		display: block;
+		margin-top: 8px;
+		font-size: 0.9rem;
+		color: var(--muted);
+	}
+	.det__lang {
+		display: inline-block;
+		margin-right: 8px;
+		padding: 2px 8px;
+		border: 1px solid var(--border);
+		border-radius: 4px;
+		font-size: 0.7rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		color: var(--muted);
 	}
 	.swatches {
 		display: inline-flex;

@@ -1,0 +1,57 @@
+---
+// Cartellino del livello: tre lampadine come i lampioni della via, accese in base al livello (relativo al settore).
+import { livelli } from './data';
+
+interface Props {
+	n: 1 | 2 | 3;
+	piccolo?: boolean;
+}
+const { n, piccolo = false } = Astro.props;
+const l = livelli[n - 1];
+---
+
+<span class:list={['lv', { 'lv--sm': piccolo }]}>
+	<span class="sr-only">Livello {n} di 3: {l.nome}</span>
+	<span class="lv__bulbs" aria-hidden="true">
+		{[1, 2, 3].map((i) => <span class:list={['lv__b', { 'is-on': i <= n }]} />)}
+	</span>
+	<span class="lv__n" aria-hidden="true">{l.nome}</span>
+</span>
+
+<style>
+	.lv {
+		display: inline-flex;
+		align-items: center;
+		gap: 9px;
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--muted);
+	}
+	.lv__bulbs {
+		display: inline-flex;
+		gap: 4px;
+	}
+	.lv__b {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		border: 1px solid color-mix(in srgb, var(--muted) 60%, transparent);
+		background: transparent;
+	}
+	.lv__b.is-on {
+		border-color: var(--accent);
+		background: var(--accent);
+		box-shadow: 0 0 8px 1px color-mix(in srgb, var(--accent) 55%, transparent);
+	}
+	.lv--sm {
+		font-size: 0.64rem;
+		letter-spacing: 0.12em;
+		gap: 7px;
+	}
+	.lv--sm .lv__b {
+		width: 6px;
+		height: 6px;
+	}
+</style>
