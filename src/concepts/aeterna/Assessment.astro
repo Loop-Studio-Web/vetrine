@@ -810,7 +810,8 @@ const etichette = assi.map((a, i) => ({ ...a, pos: punto(i, RAGGIO + 26), asse: 
 		const eEl = num('[data-r-eta]');
 		num('[data-r-fragile]').textContent = fragile.nome;
 		const o = { v: 0 };
-		const testoEta = `${delta <= 0 ? '−' : '+'}${Math.abs(delta).toFixed(1).replace('.', ',')} anni`;
+		const segno = delta < 0 ? '−' : delta > 0 ? '+' : '';
+		const testoEta = `${segno}${Math.abs(delta).toFixed(1).replace('.', ',')} anni`;
 		if (ridotto) {
 			iEl.textContent = String(media);
 			eEl.textContent = testoEta;
