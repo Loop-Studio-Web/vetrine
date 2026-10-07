@@ -61,6 +61,7 @@ il proprio menù su mobile (hub: pannello a cerchio; Trattoria: cartoncino che s
 ## Convenzioni di un concept
 
 - **Niente aspetto "da AI"** (regola dell'utente, 2026-10-07): ogni concept, anche Low key, deve avere carattere visivo vero. Prima di disegnare cercare riferimenti reali, preferire fotografia/texture vere e tipografia con personalità, imperfezioni volute e dettagli artigianali; evitare griglie di schede uguali, palette "da brief", bordi netti + ombre piene, icone SVG troppo pulite, copy da template. Confrontare sempre con i concept esistenti: palette e font non devono ripetersi.
+- **Niente beige, crema o avorio come base** (regola dell'utente, 2026-10-07): il portfolio ne è già pieno (Barbiere, Lumen, Sifone, RistoPub, Hot Swap) e Obra Fina è passata a calce azzurrina (*azulete*) proprio per questo. Per ogni nuovo concept scegliere una base che non somigli a quelle già usate (azzurri, verdi, grigi freddi, toni scuri, colori pieni). I **gradienti sono graditi**: usarli con intenzione (OKLCH, `@property`, luce che si sposta con lo scroll), non come decorazione.
 - **Strumenti di collaudo** in `tools/` (package.json proprio, non fanno parte del sito né del deploy): `cd tools && npm install` una volta per PC, poi `node shot.mjs <url> [w] [h] [prefisso]` (screenshot a pezzi, overflow orizzontale, errori in console), `node axe.mjs <url> [selettore da cliccare]` (axe a 1440 e 390 px, anche col menù aperto), `node lh.mjs <url>` (Lighthouse mobile e desktop su `astro preview`). Usano il Chrome di sistema (`CHROME_PATH` per forzarlo).
 - **Un componente per sezione**, con markup, CSS (scoped) e JS propri. Gli
   elementi creati via JavaScript non ricevono lo scope: i loro stili vanno in
@@ -256,6 +257,8 @@ astro dev --background
 ```
 
 Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
+
+**Porte (regola dell'utente, 2026-10-07):** per i test (screenshot, axe, Lighthouse) si usa l'anteprima su `http://localhost:4401/` (`astro preview --port 4401` sulla cartella `dist`, da rifare con `astro build` dopo ogni modifica). La porta **4321 è il server di sviluppo dell'utente: non toccarla mai** (niente `astro dev stop`, niente `taskkill` su node). Se la 4401 è già occupata da un'anteprima, riusarla così com'è.
 
 ## Documentation
 
