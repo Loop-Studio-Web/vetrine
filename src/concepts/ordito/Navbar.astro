@@ -1,0 +1,353 @@
+---
+import simbolo from '../../assets/ordito/brand/simbolo.svg';
+import marchio from '../../assets/ordito/brand/marchio.svg';
+
+const voci = [
+	{ t: 'La casa', href: '#casa' },
+	{ t: 'Su misura', href: '#capitolato' },
+	{ t: 'Casi', href: '#casi' },
+	{ t: 'Metodo', href: '#metodo' },
+];
+---
+
+<header class="nav" data-nav>
+	<div class="nav__in">
+		<a class="nav__logo" href="#top">
+			<img src={simbolo.src} alt="" width="40" height="40" />
+			<img class="nav__marchio" src={marchio.src} alt="" width="90" height="20" />
+			<span class="sr-only">Ordito, torna in cima</span>
+		</a>
+		<nav class="nav__links" aria-label="Sezioni della pagina">
+			{voci.map((v) => <a href={v.href} data-voce={v.href.slice(1)}>{v.t}</a>)}
+		</nav>
+		<div class="nav__az">
+			<a class="pulsante pulsante--piccolo nav__cta" href="#sopralluogo">Prenota un sopralluogo</a>
+			<button class="nav__burger" type="button" aria-expanded="false" aria-controls="menu" data-burger>
+				<span class="nav__burger-t">Menu</span>
+				<span class="nav__lampadina" aria-hidden="true"><i></i></span>
+			</button>
+		</div>
+	</div>
+	<div class="nav__filo" aria-hidden="true"><i></i></div>
+</header>
+
+<!-- menù mobile, fuori dall'header (il backdrop-filter farebbe da blocco contenitore): una stanza buia in cui le luci si accendono una dopo l'altra -->
+<div class="menu" id="menu" data-menu role="dialog" aria-modal="true" aria-label="Menu" hidden>
+	<nav class="menu__nav" aria-label="Sezioni della pagina">
+		{
+			voci.map((v, i) => (
+				<a href={v.href} style={`--i:${i}`}>
+					<span class="menu__n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+					<span class="menu__t">{v.t}</span>
+				</a>
+			))
+		}
+		<a class="menu__cta" href="#sopralluogo" style={`--i:${voci.length}`}><span class="menu__t">Prenota un sopralluogo</span></a>
+	</nav>
+	<p class="menu__nota">Vetrina dimostrativa di Loop Studio</p>
+</div>
+
+<style>
+	/* barra a pillola che galleggia sopra la scena */
+	.nav {
+		position: fixed;
+		top: calc(var(--fascia, 0px) + 14px);
+		left: 50%;
+		transform: translateX(-50%);
+		z-index: 140;
+		width: min(100% - var(--gutter) * 2, 1180px);
+		height: 62px;
+		border-radius: 999px;
+		background: rgba(14, 8, 40, 0.82);
+		border: 1px solid rgba(255, 255, 255, 0.2);
+		-webkit-backdrop-filter: blur(18px) saturate(1.5);
+		backdrop-filter: blur(18px) saturate(1.5);
+		box-shadow: 0 18px 50px -20px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+	}
+	.nav__in {
+		height: 100%;
+		padding-inline: 12px 10px;
+		display: flex;
+		align-items: center;
+		gap: 24px;
+	}
+	.nav__logo {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		text-decoration: none;
+		flex: none;
+	}
+	.nav__logo img:first-child {
+		width: 38px;
+		height: 38px;
+		transition: transform 0.6s var(--ease);
+	}
+	.nav__logo:hover img:first-child {
+		transform: rotate(-12deg) scale(1.08);
+	}
+	.nav__logo img.nav__marchio {
+		height: 20px;
+		width: auto;
+	}
+	.nav__links {
+		display: flex;
+		gap: 2px;
+		margin-left: auto;
+	}
+	.nav__links a {
+		position: relative;
+		padding: 8px 15px;
+		border-radius: 999px;
+		text-decoration: none;
+		font-weight: 600;
+		font-size: 0.92rem;
+		color: var(--nebbia);
+		transition: background 0.3s, color 0.3s;
+	}
+	.nav__links a:hover {
+		background: rgba(255, 255, 255, 0.12);
+	}
+	.nav__links a.is-attiva {
+		background: rgba(var(--bagliore), 0.32);
+		color: var(--bianco);
+		box-shadow: inset 0 0 0 1px rgba(var(--bagliore), 0.7);
+	}
+	.nav__az {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+	.nav__burger {
+		display: none;
+		align-items: center;
+		gap: 10px;
+		min-height: 42px;
+		padding: 0 6px 0 16px;
+		border: 1px solid rgba(255, 255, 255, 0.3);
+		border-radius: 999px;
+		background: rgba(255, 255, 255, 0.08);
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: 0.74rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--bianco);
+	}
+	.nav__lampadina {
+		display: grid;
+		place-items: center;
+		width: 32px;
+		height: 32px;
+		border-radius: 50%;
+		background: var(--aurora);
+		transition: transform 0.5s var(--ease);
+	}
+	.nav__lampadina i {
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
+		background: var(--bianco);
+		transition: transform 0.4s var(--ease);
+	}
+	.nav__burger[aria-expanded='true'] .nav__lampadina {
+		transform: rotate(135deg);
+	}
+	.nav__burger[aria-expanded='true'] .nav__lampadina i {
+		transform: scale(0.4, 2.2);
+	}
+	/* il filo: avanzamento della lettura, dentro il bordo della pillola */
+	.nav__filo {
+		position: absolute;
+		left: 28px;
+		right: 28px;
+		bottom: -1px;
+		height: 3px;
+		border-radius: 3px;
+		overflow: hidden;
+		pointer-events: none;
+	}
+	.nav__filo i {
+		display: block;
+		height: 100%;
+		background: var(--aurora-fredda);
+		transform: scaleX(var(--avanza, 0));
+		transform-origin: left;
+	}
+
+	/* menù mobile: una tenda di colore che scende, con le voci giganti */
+	.menu {
+		position: fixed;
+		inset: 0;
+		z-index: 160;
+		background:
+			radial-gradient(90% 60% at 100% 0%, #ff2e93 0%, transparent 60%),
+			radial-gradient(80% 60% at 0% 100%, #2be4ff 0%, transparent 55%),
+			linear-gradient(160deg, #3b10c8, #0b0620 80%);
+		color: var(--bianco);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		padding: calc(var(--nav-h) + 30px) var(--gutter) 40px;
+		clip-path: circle(0% at calc(100% - 52px) 46px);
+		transition: clip-path 0.75s var(--ease);
+	}
+	.menu.is-open {
+		clip-path: circle(150% at calc(100% - 52px) 46px);
+	}
+	.menu[hidden] {
+		display: none;
+	}
+	.menu__nav {
+		display: grid;
+		gap: 2px;
+	}
+	.menu__nav a {
+		display: flex;
+		align-items: baseline;
+		gap: 16px;
+		padding: 6px 0;
+		text-decoration: none;
+		font-family: var(--titoli);
+		font-size: clamp(2.3rem, 11vw, 3.8rem);
+		font-weight: 700;
+		letter-spacing: -0.045em;
+		line-height: 1;
+		color: var(--bianco);
+		opacity: 0;
+		transform: translateY(24px);
+		transition: opacity 0.5s, transform 0.6s var(--ease), color 0.3s;
+	}
+	.menu.is-open .menu__nav a {
+		opacity: 1;
+		transform: none;
+		transition-delay: calc(var(--i) * 80ms + 300ms), calc(var(--i) * 80ms + 300ms), 0s;
+	}
+	.menu__nav a:hover,
+	.menu__nav a:focus-visible {
+		color: var(--lime);
+	}
+	.menu__n {
+		font-family: var(--testo);
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		color: var(--lime);
+	}
+	.menu__nav a.menu__cta {
+		margin-top: 22px;
+		width: fit-content;
+		padding: 16px 26px;
+		border-radius: 14px;
+		background: var(--lime);
+		font-size: 0.9rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--inchiostro);
+	}
+	.menu__nota {
+		margin-top: 36px;
+		font-size: 0.85rem;
+		color: rgba(255, 255, 255, 0.75);
+	}
+	@media (max-width: 1020px) {
+		.nav__links,
+		.nav__cta {
+			display: none;
+		}
+		.nav__az {
+			margin-left: auto;
+		}
+		.nav__burger {
+			display: inline-flex;
+		}
+	}
+	@media (max-width: 380px) {
+		.nav__burger-t {
+			display: none;
+		}
+		.nav__burger {
+			padding-left: 6px;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.menu {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	// ---- menù mobile ----
+	const burger = document.querySelector<HTMLButtonElement>('[data-burger]');
+	const menu = document.querySelector<HTMLElement>('[data-menu]');
+	if (burger && menu) {
+		const chiudi = (rendiFocus = true) => {
+			menu.classList.remove('is-open');
+			burger.setAttribute('aria-expanded', 'false');
+			document.body.classList.remove('menu-aperto');
+			setTimeout(() => !menu.classList.contains('is-open') && (menu.hidden = true), 650);
+			if (rendiFocus) burger.focus();
+		};
+		const apri = () => {
+			menu.hidden = false;
+			menu.getBoundingClientRect(); // forza il riflusso: la transizione parte
+			menu.classList.add('is-open');
+			burger.setAttribute('aria-expanded', 'true');
+			document.body.classList.add('menu-aperto');
+			menu.querySelector<HTMLElement>('a')?.focus({ preventScroll: true });
+		};
+		burger.addEventListener('click', () => (menu.classList.contains('is-open') ? chiudi() : apri()));
+		menu.addEventListener('click', (e) => {
+			const t = e.target as HTMLElement;
+			if (t.closest('a') || t === menu) chiudi(false);
+		});
+		addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && menu.classList.contains('is-open')) chiudi();
+			if (e.key === 'Tab' && menu.classList.contains('is-open')) {
+				const el = [burger, ...menu.querySelectorAll<HTMLElement>('a')];
+				const i = el.indexOf(document.activeElement as HTMLElement);
+				if (e.shiftKey && i <= 0) {
+					e.preventDefault();
+					el[el.length - 1].focus();
+				} else if (!e.shiftKey && i === el.length - 1) {
+					e.preventDefault();
+					el[0].focus();
+				}
+			}
+		});
+		matchMedia('(min-width: 1021px)').addEventListener('change', (m) => m.matches && chiudi(false));
+	}
+
+	// ---- voce attiva e avanzamento ----
+	const link = [...document.querySelectorAll<HTMLAnchorElement>('.nav__links a')];
+	const sezioni = link.map((a) => document.getElementById(a.dataset.voce || '')).filter(Boolean) as HTMLElement[];
+	const io = new IntersectionObserver(
+		(voci) => {
+			for (const v of voci) {
+				if (!v.isIntersecting) continue;
+				for (const a of link) a.classList.toggle('is-attiva', a.dataset.voce === v.target.id);
+			}
+		},
+		{ rootMargin: '-45% 0px -50% 0px' },
+	);
+	sezioni.forEach((s) => io.observe(s));
+	let attesa = false;
+	const avanza = () => {
+		attesa = false;
+		const max = document.documentElement.scrollHeight - innerHeight;
+		document.documentElement.style.setProperty('--avanza', String(max > 0 ? Math.min(1, scrollY / max) : 0));
+		if (scrollY < 200) for (const a of link) a.classList.remove('is-attiva');
+	};
+	addEventListener(
+		'scroll',
+		() => {
+			if (!attesa) {
+				attesa = true;
+				requestAnimationFrame(avanza);
+			}
+		},
+		{ passive: true },
+	);
+	avanza();
+</script>

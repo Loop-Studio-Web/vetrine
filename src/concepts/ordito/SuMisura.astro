@@ -1,0 +1,406 @@
+---
+// Su misura: tipo di immobile, metri quadri e aree da automatizzare diventano un capitolato con prezzo "da", tempi e risparmio stimato.
+// Il risultato si può portare nel modulo del sopralluogo (evento ordito:capitolato).
+import { aree, tipi } from './dati';
+---
+
+<section class="mis sezione" id="capitolato" aria-labelledby="mis-t">
+	<div class="wrap">
+		<header class="sezione__testa" data-reveal>
+			<p class="etichetta">Su misura</p>
+			<h2 id="mis-t">Dimmi com’è fatto il posto: <span class="contorno">ti scrivo il capitolato.</span></h2>
+			<p>Scegli il tipo di immobile, la superficie e cosa vuoi automatizzare. Il capitolato si compila mentre scegli, con prezzo indicativo, tempi e risparmio stimato.</p>
+		</header>
+
+		<div class="mis__griglia" data-mis>
+			<form class="mis__form" data-reveal onsubmit="return false">
+				<fieldset>
+					<legend>Di che si tratta?</legend>
+					<div class="chips">
+						{tipi.map((t, i) => <button class="chip" type="button" aria-pressed={i === 0 ? 'true' : 'false'} data-tipo={t.id}>{t.nome}</button>)}
+					</div>
+				</fieldset>
+				<label class="cursore">
+					<span class="cursore__l">Superficie <b><span data-mq-v>110</span> m²</b></span>
+					<input type="range" min="50" max="400" step="5" value="110" data-mq />
+				</label>
+				<fieldset>
+					<legend>Cosa vuoi automatizzare?</legend>
+					<div class="aree">
+						{
+							aree.map((a, i) => (
+								<button class="area" type="button" aria-pressed={i < 3 ? 'true' : 'false'} data-area={a.id}>
+									<span class="area__s" aria-hidden="true"></span>
+									<span class="area__t"><b>{a.nome}</b><i>{a.nota}</i></span>
+								</button>
+							))
+						}
+					</div>
+				</fieldset>
+			</form>
+
+			<article class="cap" data-reveal aria-live="polite" aria-label="Il tuo capitolato">
+				<header class="cap__testa">
+					<p class="cap__t">Capitolato</p>
+					<p class="cap__n" data-cap-n>OR-0000</p>
+				</header>
+				<p class="cap__sogg" data-cap-sogg></p>
+				<ul class="cap__voci" data-cap-voci></ul>
+				<dl class="cap__tot">
+					<div class="cap__big"><dt>Investimento indicativo</dt><dd data-cap-tot>—</dd></div>
+					<div><dt>Installazione</dt><dd data-cap-giorni>—</dd></div>
+					<div><dt>Risparmio stimato di energia</dt><dd data-cap-risp>—</dd></div>
+				</dl>
+				<p class="cap__nota">Cifre di fantasia, solo per mostrare come ragiona il preventivo: nessuna offerta reale.</p>
+				<button class="pulsante pulsante--lime" type="button" data-cap-invia>Chiedi un sopralluogo con questo capitolato <span aria-hidden="true">→</span></button>
+			</article>
+		</div>
+	</div>
+</section>
+
+<style>
+	.mis {
+		background: var(--lime);
+		color: var(--inchiostro);
+	}
+	.mis .etichetta {
+		color: var(--inchiostro);
+	}
+	.mis .sezione__testa h2 {
+		color: var(--inchiostro);
+	}
+	.mis .contorno {
+		color: var(--viola);
+	}
+	.mis__griglia {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		gap: clamp(28px, 5vw, 80px);
+		align-items: start;
+	}
+	.mis__form {
+		display: grid;
+		gap: 30px;
+	}
+	.mis fieldset {
+		border: 0;
+		display: grid;
+		gap: 12px;
+		min-width: 0;
+	}
+	.mis legend {
+		font-family: var(--titoli);
+		font-weight: 800;
+		font-size: 1.15rem;
+		letter-spacing: -0.02em;
+		margin-bottom: 6px;
+	}
+	.mis .chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+	.mis .chip {
+		min-height: 46px;
+		padding: 0.4em 1.2em;
+		border: 2px solid var(--inchiostro);
+		border-radius: 12px;
+		background: transparent;
+		color: var(--inchiostro);
+		font-weight: 700;
+		font-size: 0.95rem;
+		transition: background 0.25s, color 0.25s, transform 0.15s;
+	}
+	.mis .chip::before {
+		display: none;
+	}
+	.mis .chip:hover {
+		background: rgba(11, 6, 32, 0.12);
+	}
+	.mis .chip[aria-pressed='true'] {
+		background: var(--inchiostro);
+		color: var(--lime);
+		box-shadow: none;
+		border-color: var(--inchiostro);
+	}
+	.mis .cursore__l {
+		font-weight: 700;
+	}
+	.mis .cursore__l b {
+		font-family: var(--titoli);
+		font-size: 1.1rem;
+		color: var(--inchiostro);
+	}
+	.mis input[type='range']::-webkit-slider-runnable-track {
+		background: var(--inchiostro);
+		border: 0;
+		height: 6px;
+	}
+	.mis input[type='range']::-moz-range-track {
+		background: var(--inchiostro);
+		border: 0;
+		height: 6px;
+	}
+	.mis input[type='range']::-webkit-slider-thumb {
+		background: var(--magenta);
+		border: 4px solid var(--inchiostro);
+		box-shadow: none;
+		margin-top: -10px;
+	}
+	.mis input[type='range']::-moz-range-thumb {
+		background: var(--magenta);
+		border: 4px solid var(--inchiostro);
+		box-shadow: none;
+	}
+	.aree {
+		display: grid;
+		gap: 10px;
+	}
+	.area {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		gap: 16px;
+		align-items: center;
+		padding: 14px 16px;
+		border: 2px solid var(--inchiostro);
+		border-radius: 16px;
+		background: transparent;
+		color: var(--inchiostro);
+		text-align: left;
+		transition: background 0.3s, color 0.3s, transform 0.25s var(--ease);
+	}
+	.area:hover {
+		transform: translateX(4px);
+	}
+	.area__s {
+		width: 42px;
+		height: 24px;
+		border-radius: 999px;
+		background: transparent;
+		border: 2px solid currentColor;
+		position: relative;
+		flex: none;
+	}
+	.area__s::after {
+		content: '';
+		position: absolute;
+		top: 3px;
+		left: 3px;
+		width: 14px;
+		height: 14px;
+		border-radius: 50%;
+		background: currentColor;
+		transition: transform 0.35s var(--ease), background 0.3s;
+	}
+	.area[aria-pressed='true'] {
+		background: var(--inchiostro);
+		color: var(--bianco);
+	}
+	.area[aria-pressed='true'] .area__s {
+		background: var(--lime);
+		border-color: var(--lime);
+	}
+	.area[aria-pressed='true'] .area__s::after {
+		transform: translateX(18px);
+		background: var(--inchiostro);
+	}
+	.area__t {
+		display: grid;
+		line-height: 1.3;
+	}
+	.area__t b {
+		font-family: var(--titoli);
+		font-weight: 800;
+		letter-spacing: -0.02em;
+		font-size: 1.05rem;
+	}
+	.area__t i {
+		font-style: normal;
+		font-size: 0.88rem;
+		opacity: 0.8;
+	}
+
+	/* il capitolato: un biglietto d'inchiostro con il bordo perforato */
+	.cap {
+		position: sticky;
+		top: calc(var(--nav-h) + 24px);
+		display: grid;
+		gap: 16px;
+		padding: clamp(24px, 3vw, 38px);
+		background: var(--inchiostro);
+		color: var(--bianco);
+		border-radius: 24px;
+		transform: rotate(1.2deg);
+		box-shadow: 0 40px 80px -30px rgba(11, 6, 32, 0.8);
+		-webkit-mask: radial-gradient(circle 11px at 0 50%, transparent 98%, #000) left / 51% 28px repeat-y, radial-gradient(circle 11px at 100% 50%, transparent 98%, #000) right / 51% 28px repeat-y;
+		mask: radial-gradient(circle 11px at 0 50%, transparent 98%, #000) left / 51% 28px repeat-y, radial-gradient(circle 11px at 100% 50%, transparent 98%, #000) right / 51% 28px repeat-y;
+	}
+	.cap__testa {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 12px;
+		padding-bottom: 14px;
+		border-bottom: 1px dashed rgba(255, 255, 255, 0.35);
+	}
+	.cap__t {
+		font-family: var(--titoli);
+		font-weight: 800;
+		font-size: 1.5rem;
+		letter-spacing: -0.03em;
+	}
+	.cap__n {
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: 0.85rem;
+		letter-spacing: 0.16em;
+		color: var(--lime);
+	}
+	.cap__sogg {
+		font-weight: 600;
+		color: var(--nebbia);
+	}
+	.cap__voci {
+		list-style: none;
+		display: grid;
+		gap: 8px;
+		min-height: 60px;
+	}
+	.cap__voci li {
+		display: flex;
+		justify-content: space-between;
+		gap: 16px;
+		padding-bottom: 8px;
+		border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+		animation: cap-riga 0.4s var(--ease);
+	}
+	@keyframes cap-riga {
+		from {
+			opacity: 0;
+			transform: translateX(-8px);
+		}
+	}
+	.cap__voci b {
+		font-weight: 600;
+	}
+	.cap__voci span {
+		font-family: var(--titoli);
+		font-weight: 700;
+		white-space: nowrap;
+		font-variant-numeric: tabular-nums;
+		color: var(--lime);
+	}
+	.cap__vuoto {
+		color: var(--nebbia-2);
+		font-style: italic;
+	}
+	.cap__tot {
+		display: grid;
+		gap: 10px;
+	}
+	.cap__tot div {
+		display: flex;
+		justify-content: space-between;
+		gap: 16px;
+		align-items: baseline;
+	}
+	.cap__tot dt {
+		color: var(--nebbia-2);
+		font-size: 0.92rem;
+	}
+	.cap__tot dd {
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: 1.1rem;
+		text-align: right;
+		font-variant-numeric: tabular-nums;
+	}
+	.cap__big {
+		display: grid !important;
+		justify-content: stretch !important;
+		gap: 2px !important;
+	}
+	.cap__big dd {
+		text-align: left;
+		font-size: clamp(1.9rem, 4vw, 2.9rem);
+		font-weight: 800;
+		letter-spacing: -0.05em;
+		line-height: 1;
+		background: var(--aurora-fredda);
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+		-webkit-text-fill-color: transparent;
+	}
+	.cap__nota {
+		font-size: 0.82rem;
+		color: var(--nebbia-2);
+	}
+	@media (max-width: 860px) {
+		.mis__griglia {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.cap {
+			position: static;
+		}
+	}
+</style>
+
+<script>
+	import { aree, tipi } from './dati';
+	const radice = document.querySelector<HTMLElement>('[data-mis]')!;
+	const q = <T extends HTMLElement>(s: string) => radice.querySelector<T>(s)!;
+	const eur = (n: number) => `€${n.toLocaleString('it-IT')}`;
+	const arrotonda = (n: number, p: number) => Math.round(n / p) * p;
+	let tipo = tipi[0] as (typeof tipi)[number];
+	let attive = new Set<string>(aree.slice(0, 3).map((a) => a.id));
+	const mq = q<HTMLInputElement>('[data-mq]');
+	let ultimo = { riassunto: '', totale: '' };
+
+	function calcola() {
+		const m = Number(mq.value);
+		q('[data-mq-v]').textContent = String(m);
+		const scelte = aree.filter((a) => attive.has(a.id));
+		const righe = scelte.map((a) => ({ nome: a.nome, prezzo: arrotonda(a.da * m * tipo.coeff, 10) }));
+		const da = scelte.length ? arrotonda(tipo.base + righe.reduce((t, r) => t + r.prezzo, 0), 50) : 0;
+		const a = arrotonda(da * 1.28, 50);
+		const risp = Math.min(0.45, scelte.reduce((t, x) => t + x.risp, 0));
+		const bolletta = m * 17; // euro/anno, di fantasia
+		const giorni = Math.max(1, Math.ceil(0.8 + m / 130 + scelte.length * 0.45));
+		q('[data-cap-sogg]').textContent = `${tipo.nome} · ${m} m² · ${scelte.length} ${scelte.length === 1 ? 'area' : 'aree'}`;
+		q('[data-cap-voci]').innerHTML = scelte.length
+			? righe.map((r) => `<li><b>${r.nome}</b><span>da ${eur(r.prezzo)}</span></li>`).join('') + `<li><b>Progetto, messa in servizio e collaudo</b><span>${eur(tipo.base)}</span></li>`
+			: '<li class="cap__vuoto">Scegli almeno un’area da automatizzare.</li>';
+		q('[data-cap-tot]').textContent = scelte.length ? `${eur(da)} – ${eur(a)}` : '—';
+		q('[data-cap-giorni]').textContent = scelte.length ? `${giorni} ${giorni === 1 ? 'giorno' : 'giorni'}` : '—';
+		q('[data-cap-risp]').textContent = scelte.length && risp > 0 ? `circa ${Math.round(risp * 100)}% · ${eur(arrotonda(bolletta * risp, 10))} l’anno` : scelte.length ? 'nessuno (non è questo il suo scopo)' : '—';
+		q('[data-cap-n]').textContent = `OR-${String((m * 7 + scelte.length * 131 + tipi.indexOf(tipo) * 17) % 9000 + 1000)}`;
+		q<HTMLButtonElement>('[data-cap-invia]').disabled = !scelte.length;
+		ultimo = { riassunto: `${tipo.nome}, ${m} m²: ${scelte.map((x) => x.nome.toLowerCase()).join(', ')}.`, totale: scelte.length ? `${eur(da)} – ${eur(a)}` : '' };
+	}
+
+	radice.addEventListener('click', (e) => {
+		const t = e.target as HTMLElement;
+		const bt = t.closest<HTMLElement>('[data-tipo]');
+		if (bt) {
+			tipo = tipi.find((x) => x.id === bt.dataset.tipo)!;
+			radice.querySelectorAll('[data-tipo]').forEach((b) => b.setAttribute('aria-pressed', String(b === bt)));
+			const [min, max, def] = tipo.mq;
+			mq.min = String(min); mq.max = String(max); mq.value = String(def);
+			return calcola();
+		}
+		const ba = t.closest<HTMLElement>('[data-area]');
+		if (ba) {
+			const id = ba.dataset.area!;
+			attive.has(id) ? attive.delete(id) : attive.add(id);
+			ba.setAttribute('aria-pressed', String(attive.has(id)));
+			return calcola();
+		}
+		if (t.closest('[data-cap-invia]')) {
+			dispatchEvent(new CustomEvent('ordito:capitolato', { detail: ultimo }));
+			document.getElementById('sopralluogo')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+		}
+	});
+	mq.addEventListener('input', calcola);
+	calcola();
+</script>

@@ -5,7 +5,7 @@
   <img src="docs/img/loop-logo-on-light.svg" alt="Loop Studio" height="64">
 </picture>
 
-<img src="docs/img/header.svg" alt="A street of shop fronts: Trattoria, Ossidiana, Luppolo & Watt, Bottega Tre Rasoi, Atelier Lumen, Aeterna, FIXLAB and Hot Swap are lit and open, one more window is dark and coming soon." width="100%">
+<img src="docs/img/header.svg" alt="A street of shop fronts: Trattoria, Ossidiana, Luppolo & Watt, Bottega Tre Rasoi, Atelier Lumen, Aeterna, FIXLAB, Hot Swap and Ordito are lit and open, one more window is dark and coming soon." width="100%">
 
 **Full-page homepage concepts for local businesses.<br>Each one designed as if it were the only one on the street.**
 
@@ -188,11 +188,29 @@
 
 <br>
 
+### 09 · Ordito
+
+<a href="https://vetrine.theloopstudio.org/tech/studio/"><img src="docs/img/card-ordito.jpg" alt="Ordito on desktop and mobile: a large title over a violet and magenta sunset sky, a two-storey 3D house with glowing edges, a clock and energy readouts, and the mobile view." width="100%"></a>
+
+*The house that knows you. A 3D house you can touch, in full colour.*
+
+| | |
+|---|---|
+| **Archetype** | The technology studio for homes and offices (home automation, security, energy): the **high-key** tier of the Tech window, where the budget buys real-time 3D and a more ambitious interaction |
+| **Mood** | **Aurora**: ink-violet black, electric violet, magenta, cyan and acid lime. Colour is light: the sky of the house goes from pink dawn to cyan day, magenta dusk and a violet night with stars, and tints the buttons and cards of the whole page. Below the house, full-width blocks of flat colour (magenta, lime, violet, cyan). Glass, grain, glowing edges and a scrolling ticker |
+| **Type** | Share Tech for the main headline and the clock, Syne for section titles, Schibsted Grotesk for text (no mono, no serif) |
+| **Palette** | <img src="docs/img/palette-ordito.svg" alt="Ink, electric violet, magenta, cyan, acid lime and lavender white" height="22"> |
+| **Signature moves** | A **3D house built only from simple shapes** (Three.js, no model files) in a pinned stage: scrolling flies the camera from room to room, and every panel on the left changes the scene for real. A **clock** moves the sun across the sky (colour of the sky, shadows, windows, exposure) and five scenes (morning, arrival, dinner, night, holiday) set lights, blinds, heating, alarm, lock and presence together, with **kW consumed, produced and drawn from the grid** computed from the same state. **Rules written inside a sentence** ("When I get home and it is evening, then turn on the living-room lights"), not dragged as blocks, then a simulated day runs and shows when each rule fires. A **made-to-measure specification** (type, size, areas) priced live on a perforated ticket. A **floating glass navigation pill** and a mobile menu that opens like a colour curtain. Three **case studies that open full-screen** with a View Transitions morph of the floor plan. On phones the 3D scene starts on the first touch, with a poster in its place |
+| **Lighthouse** | 99 performance on mobile, 100 on desktop, 100 on accessibility and best practices, zero layout shift. Three.js is a dynamic import (on desktop after idle, on phones after the first interaction); the stage shows a pre-rendered poster until it is ready and falls back to it without WebGL |
+
+[**Open Ordito →**](https://vetrine.theloopstudio.org/tech/studio/)
+
+<br>
+
 ### Next on the street
 
 | Category | Archetype | Status |
 |---|---|---|
-| Tech | Technology studio (high) | Planned |
 | Legal & professional | to be decided | Planned |
 | Local shop / e-commerce | to be decided | Planned |
 
@@ -218,6 +236,7 @@ flowchart TB
     infra --> A["<b>Aeterna</b><br/>own markup · CSS · JS · fonts"]
     infra --> F["<b>FIXLAB</b><br/>own markup · CSS · JS · fonts"]
     infra --> H["<b>Hot Swap</b><br/>own markup · CSS · JS · fonts"]
+    infra --> D["<b>Ordito</b><br/>own markup · CSS · JS · fonts"]
     infra --> N["<b>next concept…</b>"]
     T -.-|nothing shared| O
     O -.-|nothing shared| B
@@ -232,15 +251,15 @@ A piece of code is reused between two concepts only when it is the *exact same t
 
 Before a concept goes on the street, it has to clear the same gate:
 
-| Gate | What it means | Trattoria | Ossidiana | Luppolo & Watt | Tre Rasoi | Lumen | Aeterna | FIXLAB | Hot Swap |
-|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| **Builds** | `astro build` is clean | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Accessible** | `axe-core`: zero violations | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Menu on phones** | A real menu with its own open/close effect, keyboard and Escape friendly (a curtain for Ossidiana, an unrolling card for the Trattoria, a pour of beer for Luppolo & Watt, a hot towel for Tre Rasoi, curtains for Lumen, a laser scan for Aeterna, a screwed-on back panel for FIXLAB, a tray with an LED for Hot Swap) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Gate | What it means | Trattoria | Ossidiana | Luppolo & Watt | Tre Rasoi | Lumen | Aeterna | FIXLAB | Hot Swap | Ordito |
+|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| **Builds** | `astro build` is clean | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Accessible** | `axe-core`: zero violations | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Menu on phones** | A real menu with its own open/close effect, keyboard and Escape friendly (a curtain for Ossidiana, an unrolling card for the Trattoria, a pour of beer for Luppolo & Watt, a hot towel for Tre Rasoi, curtains for Lumen, a laser scan for Aeterna, a screwed-on back panel for FIXLAB, a tray with an LED for Hot Swap, a dark room whose lights come on one by one for Ordito) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ```text
  LIGHTHOUSE · mobile            Trattoria                Ossidiana
@@ -271,7 +290,8 @@ src/
 │  │  └─ longevity/index.astro
 │  └─ tech/
 │     ├─ riparazioni/index.astro
-│     └─ pc-gaming/index.astro
+│     ├─ pc-gaming/index.astro
+│     └─ studio/index.astro
 ├─ hub/                                data, styles and sections of the hub page
 ├─ concepts/
 │  ├─ trattoria/                       one component per section + base.css
@@ -281,7 +301,8 @@ src/
 │  ├─ lumen/                           and again
 │  ├─ aeterna/                         and again, with WebGL
 │  ├─ fixlab/                          and again, with no photos at all
-│  └─ hotswap/                         and again, in English
+│  ├─ hotswap/                         and again, in English
+│  └─ ordito/                          and again, with a 3D house
 └─ assets/<concept>/ and hub/          local images only, no hotlinking
 public/images/<concept>/               fixed URLs: og:image, favicon
 docs/img/                              the pictures you are looking at

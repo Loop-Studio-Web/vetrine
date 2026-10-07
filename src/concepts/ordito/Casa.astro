@@ -1,0 +1,933 @@
+---
+// La casa: una scena 3D a tutto schermo, sempre dietro, e sopra i passi del racconto come schede di vetro. Ogni passo è anche un pannello
+// di comando: quello che tocchi cambia lo stato condiviso e la casa reagisce. L'ultimo passo (le regole) arriva dallo slot.
+import { caldi } from './dati';
+import { scenari, stanze } from './stato.ts';
+import posterDesk from '../../assets/ordito/poster-desk.jpg';
+import posterMob from '../../assets/ordito/poster-mob.jpg';
+
+const luci = stanze;
+const scenariGiorno = scenari.filter((s) => ['mattino', 'arrivo', 'cena', 'notte'].includes(s.id));
+---
+
+<section class="casa grana" id="casa" aria-label="La casa di Ordito">
+	<div class="scena" data-scena>
+		<picture>
+			<source media="(max-width: 900px)" srcset={posterMob.src} width={posterMob.width} height={posterMob.height} />
+			<img class="scena__poster" src={posterDesk.src} width={posterDesk.width} height={posterDesk.height} alt="" fetchpriority="high" decoding="async" />
+		</picture>
+		<canvas class="scena__canvas" data-canvas aria-hidden="true"></canvas>
+		<div class="scena__velo" aria-hidden="true"></div>
+
+		<div class="hud" aria-hidden="true">
+			<p class="hud__ora"><b data-ora>18:12</b><span data-fase>tramonto</span></p>
+			<ul class="hud__kw">
+				<li><span>Consumo</span><b data-h-consumo>0,0</b><i>kW</i></li>
+				<li><span>Solare</span><b data-h-solare>0,0</b><i>kW</i></li>
+				<li><span>Rete</span><b data-h-rete>0,0</b><i>kW</i></li>
+			</ul>
+		</div>
+
+		{
+			caldi.map((c) => (
+				<button class="caldo" type="button" tabindex="-1" aria-hidden="true" data-caldo={c.id} data-passi={c.passi.join(',')} {...c.attr}>
+					<span class="caldo__punto"></span>
+					<span class="caldo__t">{c.nome}</span>
+				</button>
+			))
+		}
+		<p class="scena__stato" data-carica>Accendo la casa…</p>
+	</div>
+
+	<div class="passi">
+		<!-- 0 · la casa -->
+		<article class="passo passo--apertura" data-passo="0">
+			<div class="passo__in">
+				<p class="etichetta">Studio tecnologico · domotica, sicurezza, energia</p>
+				<h1>La casa che <span class="aurora-testo">ti conosce.</span></h1>
+				<p class="passo__testo">
+					Ordito progetta e installa l’impianto intelligente di case, studi e uffici: luci, clima, sicurezza ed energia che lavorano insieme, con regole scritte da te. Questa è una casa di prova. <strong>Toccala.</strong>
+				</p>
+				<div class="passo__az">
+					<a class="pulsante" href="#passo-1" data-vai="1">Entra in casa <span aria-hidden="true">↓</span></a>
+					<a class="pulsante pulsante--vetro" href="#sopralluogo">Prenota un sopralluogo</a>
+				</div>
+				<p class="passo__nota">Scorri: la casa si muove con te. Dimostrazione: nessun dato reale, nessuna casa vera.</p>
+			</div>
+		</article>
+
+		<!-- 1 · arrivo -->
+		<article class="passo" id="passo-1" data-passo="1">
+			<div class="passo__in vetro">
+				<p class="passo__n" aria-hidden="true">01<i>/06</i></p>
+				<h2>Arrivi, e la casa&nbsp;lo&nbsp;sa.</h2>
+				<p class="passo__testo">Serratura e telecamere parlano con il resto dell’impianto: quando rientri, le luci dell’ingresso e del giardino si accendono prima che tu tocchi la maniglia.</p>
+				<div class="pannello">
+					<button class="inter" type="button" role="switch" aria-checked="true" data-toggle="serratura"><span class="inter__t">Serratura</span><span class="inter__v" data-v="serratura">chiusa</span></button>
+					<button class="pulsante pulsante--piccolo" type="button" data-scenario="arrivo">Prova “Arrivo a casa”</button>
+				</div>
+			</div>
+		</article>
+
+		<!-- 2 · luce -->
+		<article class="passo" id="passo-2" data-passo="2">
+			<div class="passo__in vetro">
+				<p class="passo__n" aria-hidden="true">02<i>/06</i></p>
+				<h2>La luce segue la&nbsp;giornata.</h2>
+				<p class="passo__testo">Scegli un momento o sposta l’orologio: il sole attraversa il cielo, le tapparelle e le luci si adattano. Ogni stanza si accende anche da sola.</p>
+				<div class="pannello">
+					<div class="chips" role="group" aria-label="Momenti della giornata">
+						{scenariGiorno.map((s) => <button class="chip" type="button" aria-pressed="false" data-scenario={s.id} title={s.nota}>{s.nome}</button>)}
+					</div>
+					<label class="cursore">
+						<span class="cursore__l">Ora del giorno <b data-ora-testo>18:12</b></span>
+						<input type="range" min="0" max="1439" step="5" value="1092" data-ora-slider />
+					</label>
+					<div class="chips" role="group" aria-label="Luci per stanza">
+						{luci.map((s) => <button class="chip chip--luce" type="button" aria-pressed="false" data-luce={s.id}>{s.nome}</button>)}
+						<button class="chip chip--luce" type="button" aria-pressed="false" data-toggle="tv">Televisore</button>
+					</div>
+				</div>
+			</div>
+		</article>
+
+		<!-- 3 · energia -->
+		<article class="passo" id="passo-3" data-passo="3">
+			<div class="passo__in vetro">
+				<p class="passo__n" aria-hidden="true">03<i>/06</i></p>
+				<h2>Produci, consumi, scambi con la&nbsp;rete.</h2>
+				<p class="passo__testo">Il fotovoltaico, la ricarica dell’auto e gli elettrodomestici si parlano: l’impianto sposta i consumi quando il sole c’è. Prova a spegnere la ricarica o a cambiare ora.</p>
+				<div class="pannello">
+					<ul class="misure" aria-label="Energia in questo momento">
+						<li><span>Consumo</span><b data-m-consumo>0,0</b><i>kW</i><em class="barra"><span data-b-consumo></span></em></li>
+						<li><span>Solare</span><b data-m-solare>0,0</b><i>kW</i><em class="barra barra--lime"><span data-b-solare></span></em></li>
+						<li><span>Dalla rete</span><b data-m-rete>0,0</b><i>kW</i><em class="barra barra--ciano"><span data-b-rete></span></em></li>
+					</ul>
+					<button class="inter" type="button" role="switch" aria-checked="true" data-toggle="ev"><span class="inter__t">Auto in carica</span><span class="inter__v" data-v="ev">sì</span></button>
+					<p class="passo__nota">Valori stimati e di fantasia, per mostrare come ragiona un impianto.</p>
+				</div>
+			</div>
+		</article>
+
+		<!-- 4 · clima -->
+		<article class="passo" id="passo-4" data-passo="4">
+			<div class="passo__in vetro">
+				<p class="passo__n" aria-hidden="true">04<i>/06</i></p>
+				<h2>Clima e riposo, senza&nbsp;pensarci.</h2>
+				<p class="passo__testo">Il pavimento si scalda solo dove serve e la camera si prepara alla notte. Tapparelle e temperatura le decidi tu, o le decide l’orario.</p>
+				<div class="pannello">
+					<div class="stepper" role="group" aria-label="Temperatura impostata">
+						<button class="pulsante pulsante--vetro pulsante--piccolo" type="button" data-clima="-1" aria-label="Un grado in meno">−</button>
+						<p class="stepper__v"><span class="stepper__n"><b data-clima-v>21</b><em>°C</em></span><span>fuori <i data-t-est>14</i>°</span></p>
+						<button class="pulsante pulsante--vetro pulsante--piccolo" type="button" data-clima="1" aria-label="Un grado in più">+</button>
+					</div>
+					<label class="cursore">
+						<span class="cursore__l">Tapparelle <b data-tap-testo>100%</b> aperte</span>
+						<input type="range" min="0" max="100" step="5" value="100" data-tap-slider class="cursore--grigio" />
+					</label>
+				</div>
+			</div>
+		</article>
+
+		<!-- 5 · sicurezza -->
+		<article class="passo" id="passo-5" data-passo="5">
+			<div class="passo__in vetro">
+				<p class="passo__n" aria-hidden="true">05<i>/06</i></p>
+				<h2>Quando sei via, la casa fa la&nbsp;guardia.</h2>
+				<p class="passo__testo">Allarme per zone, telecamere che seguono il movimento e una casa che non spreca energia a vuoto. Dimmi dove sei e vedi come si comporta.</p>
+				<div class="pannello">
+					<div class="chips" role="group" aria-label="Dove sei">
+						<button class="chip" type="button" aria-pressed="true" data-presenza="casa">In casa</button>
+						<button class="chip" type="button" aria-pressed="false" data-presenza="via">Fuori</button>
+						<button class="chip" type="button" aria-pressed="false" data-presenza="letto">A letto</button>
+					</div>
+					<button class="inter" type="button" role="switch" aria-checked="false" data-toggle="allarme"><span class="inter__t">Allarme</span><span class="inter__v" data-v="allarme">spento</span></button>
+					<button class="pulsante pulsante--piccolo" type="button" data-scenario="vacanza">Prova “Vacanza”</button>
+				</div>
+			</div>
+		</article>
+
+		<slot />
+	</div>
+</section>
+
+<style is:global>
+	.casa {
+		position: relative;
+		background: var(--inchiostro);
+	}
+	/* palco: a tutto schermo, sempre dietro; il cielo è un gradiente che segue l'ora (lo scrive la scena) */
+	.scena {
+		--cielo-su: #7a2bd6;
+		--cielo-giu: #ff6a5a;
+		position: sticky;
+		top: 0;
+		height: 100svh;
+		width: 100%;
+		background: linear-gradient(var(--cielo-su), var(--cielo-giu));
+		overflow: hidden;
+		isolation: isolate;
+	}
+	.scena__poster,
+	.scena__canvas {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.scena__canvas {
+		opacity: 0;
+		transition: opacity 0.9s var(--ease);
+	}
+	.scena[data-pronta] .scena__canvas {
+		opacity: 1;
+	}
+	/* il poster serve solo finché la scena non c'è: il canvas ha il fondo trasparente (il cielo è CSS), quindi va tolto */
+	.scena__poster {
+		transition: opacity 0.9s var(--ease) 0.4s;
+	}
+	.scena[data-pronta] .scena__poster {
+		opacity: 0;
+	}
+	/* velo: scurisce a sinistra (dove stanno le schede) e in basso, e sfuma verso la sezione dopo */
+	.scena__velo {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background:
+			linear-gradient(90deg, rgba(11, 6, 32, 0.92) 0%, rgba(11, 6, 32, 0.72) 32%, rgba(11, 6, 32, 0) 62%),
+			linear-gradient(0deg, rgba(11, 6, 32, 0.8), rgba(11, 6, 32, 0) 24%),
+			linear-gradient(180deg, rgba(11, 6, 32, 0.55), rgba(11, 6, 32, 0) 22%);
+	}
+	.scena__stato {
+		position: absolute;
+		left: 50%;
+		bottom: 22px;
+		transform: translateX(-50%);
+		padding: 7px 16px;
+		border-radius: 999px;
+		background: rgba(11, 6, 32, 0.7);
+		border: 1px solid rgba(255, 255, 255, 0.2);
+		color: var(--nebbia);
+		font-size: 0.8rem;
+		font-weight: 600;
+		white-space: nowrap;
+		transition: opacity 0.5s;
+		pointer-events: none;
+	}
+	.scena[data-pronta] .scena__stato,
+	.scena[data-nogl] .scena__stato {
+		opacity: 0;
+	}
+
+	.hud {
+		position: absolute;
+		top: calc(var(--fascia-h) + 96px);
+		right: var(--gutter);
+		display: grid;
+		justify-items: end;
+		gap: 12px;
+		pointer-events: none;
+		z-index: 2;
+	}
+	.hud__ora {
+		display: grid;
+		justify-items: end;
+		line-height: 1;
+	}
+	.hud__ora b {
+		font-family: var(--tecnico);
+		font-size: clamp(2.8rem, 5vw, 4.6rem);
+		font-weight: 400;
+		font-synthesis: none;
+		letter-spacing: 0;
+		font-variant-numeric: tabular-nums;
+		color: var(--bianco);
+		text-shadow: 0 0 40px rgba(var(--bagliore), 0.9);
+	}
+	.hud__ora span {
+		margin-top: 4px;
+		font-family: var(--titoli);
+		font-size: 0.74rem;
+		font-weight: 700;
+		letter-spacing: 0.24em;
+		text-transform: uppercase;
+		color: var(--lime);
+	}
+	.hud__kw {
+		list-style: none;
+		display: flex;
+		gap: 18px;
+		padding: 10px 16px;
+		border-radius: 16px;
+		background: rgba(11, 6, 32, 0.55);
+		border: 1px solid rgba(255, 255, 255, 0.16);
+		-webkit-backdrop-filter: blur(12px);
+		backdrop-filter: blur(12px);
+	}
+	.hud__kw li {
+		display: grid;
+		grid-template-columns: auto auto;
+		justify-content: start;
+		column-gap: 3px;
+		align-items: baseline;
+		line-height: 1.1;
+	}
+	.hud__kw li span {
+		grid-column: 1 / 3;
+		font-size: 0.64rem;
+		font-weight: 700;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--nebbia-2);
+	}
+	.hud__kw b {
+		font-family: var(--titoli);
+		font-size: 1.2rem;
+		font-weight: 700;
+		font-variant-numeric: tabular-nums;
+		color: var(--bianco);
+	}
+	.hud__kw i {
+		font-style: normal;
+		font-size: 0.72rem;
+		color: var(--nebbia-2);
+	}
+
+	/* punti caldi sulla scena */
+	.caldo {
+		position: absolute;
+		left: 0;
+		top: 0;
+		z-index: 3;
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		padding: 0;
+		border: 0;
+		background: none;
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.5s var(--ease);
+		will-change: transform;
+	}
+	.caldo.is-on {
+		opacity: 1;
+		pointer-events: auto;
+	}
+	.caldo[data-fuori='1'] {
+		opacity: 0 !important;
+		pointer-events: none !important;
+	}
+	.caldo__punto {
+		width: 24px;
+		height: 24px;
+		border-radius: 50%;
+		background: var(--lime);
+		border: 3px solid var(--inchiostro);
+		box-shadow: 0 0 0 0 rgba(214, 255, 61, 0.8), 0 0 18px 2px rgba(214, 255, 61, 0.7);
+		animation: caldo-pulsa 2.2s ease-out infinite;
+	}
+	@keyframes caldo-pulsa {
+		to {
+			box-shadow: 0 0 0 16px rgba(214, 255, 61, 0), 0 0 18px 2px rgba(214, 255, 61, 0.7);
+		}
+	}
+	.caldo__t {
+		padding: 4px 11px;
+		border-radius: 999px;
+		background: var(--lime);
+		color: var(--inchiostro);
+		font-family: var(--titoli);
+		font-size: 0.7rem;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		white-space: nowrap;
+		opacity: 0;
+		transform: translateX(-6px);
+		transition: opacity 0.25s, transform 0.25s;
+	}
+	.caldo:hover .caldo__t {
+		opacity: 1;
+		transform: none;
+	}
+
+	/* passi: scorrono sopra la scena */
+	.passi {
+		position: relative;
+		z-index: 2;
+		margin-top: -100svh;
+		width: min(100% - var(--gutter) * 2, var(--max));
+		margin-inline: auto;
+		display: grid;
+	}
+	.passo {
+		min-height: 100svh;
+		display: flex;
+		align-items: center;
+		padding-block: 56px;
+	}
+	.passo--apertura {
+		padding-top: calc(var(--fascia-h) + var(--nav-h) + 36px);
+	}
+	.passo__in {
+		position: relative;
+		display: grid;
+		gap: 18px;
+		width: min(100%, 500px);
+	}
+	.passo__in.vetro {
+		padding: clamp(22px, 3vw, 34px);
+		transform: translateX(-14px);
+		transition: transform 0.7s var(--ease), box-shadow 0.7s;
+	}
+	.passo.is-attivo .passo__in.vetro {
+		transform: none;
+		box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(var(--bagliore), 0.55), 0 0 50px -10px rgba(var(--bagliore), 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+	}
+	.passo--apertura .passo__in {
+		width: min(100%, 720px);
+	}
+	.passo h1 {
+		font-family: var(--tecnico);
+		font-size: clamp(3.1rem, 7.6vw, 7rem);
+		line-height: 0.92;
+		letter-spacing: -0.02em;
+		font-weight: 400;
+		font-synthesis: none;
+		color: var(--bianco);
+	}
+	.passo h1 .aurora-testo {
+		display: inline-block;
+		padding-bottom: 0.08em;
+	}
+	.passo h2 {
+		font-size: clamp(1.5rem, 2.5vw, 2.1rem);
+		color: var(--bianco);
+		line-height: 1.05;
+	}
+	.passo__n {
+		font-family: var(--titoli);
+		font-weight: 800;
+		font-size: 3.4rem;
+		letter-spacing: -0.06em;
+		line-height: 0.8;
+		background: var(--aurora-fredda);
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+		-webkit-text-fill-color: transparent;
+	}
+	.passo__n i {
+		font-style: normal;
+		font-size: 1rem;
+		letter-spacing: 0;
+		margin-left: 4px;
+		-webkit-text-fill-color: var(--nebbia-2);
+		color: var(--nebbia-2);
+	}
+	.passo__testo {
+		font-size: 1.1rem;
+		color: var(--nebbia);
+		max-width: 46ch;
+	}
+	.passo__testo strong {
+		color: var(--lime);
+	}
+	.passo__az {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px;
+		margin-top: 6px;
+	}
+	.passo__nota {
+		font-size: 0.86rem;
+		color: var(--nebbia-2);
+	}
+
+	/* pannelli di comando */
+	.pannello {
+		display: grid;
+		gap: 16px;
+		padding-top: 6px;
+	}
+	.chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+	.chip {
+		position: relative;
+		min-height: 40px;
+		padding: 0.35em 1em 0.35em 2.1em;
+		border: 1px solid rgba(255, 255, 255, 0.26);
+		border-radius: 12px;
+		background: rgba(255, 255, 255, 0.06);
+		font-weight: 600;
+		font-size: 0.9rem;
+		color: var(--nebbia);
+		transition: background 0.25s, border-color 0.25s, box-shadow 0.25s, transform 0.15s;
+	}
+	.chip::before {
+		content: '';
+		position: absolute;
+		left: 0.85em;
+		top: 50%;
+		width: 8px;
+		height: 8px;
+		margin-top: -4px;
+		border-radius: 50%;
+		background: rgba(255, 255, 255, 0.3);
+		transition: background 0.25s, box-shadow 0.25s;
+	}
+	.chip:hover {
+		background: rgba(255, 255, 255, 0.14);
+	}
+	.chip:active {
+		transform: scale(0.96);
+	}
+	.chip[aria-pressed='true'] {
+		background: rgba(var(--bagliore), 0.28);
+		border-color: rgba(var(--bagliore), 0.9);
+		color: var(--bianco);
+		box-shadow: 0 0 22px -4px rgba(var(--bagliore), 0.9);
+	}
+	.chip[aria-pressed='true']::before {
+		background: var(--lime);
+		box-shadow: 0 0 10px 2px var(--lime);
+	}
+	.inter {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 14px;
+		padding: 12px 16px;
+		border: 1px solid rgba(255, 255, 255, 0.22);
+		border-radius: 14px;
+		background: rgba(255, 255, 255, 0.05);
+		text-align: left;
+	}
+	.inter__t {
+		font-weight: 700;
+	}
+	.inter__v {
+		position: relative;
+		padding: 0.2em 3em 0.2em 0.9em;
+		border-radius: 999px;
+		background: rgba(255, 255, 255, 0.14);
+		font-size: 0.82rem;
+		font-weight: 700;
+		min-width: 7em;
+		transition: background 0.3s, box-shadow 0.3s;
+	}
+	.inter__v::after {
+		content: '';
+		position: absolute;
+		right: 4px;
+		top: 50%;
+		width: 20px;
+		height: 20px;
+		margin-top: -10px;
+		border-radius: 50%;
+		background: var(--nebbia);
+		transition: transform 0.3s var(--ease), background 0.3s;
+	}
+	.inter[aria-checked='true'] .inter__v {
+		background: var(--aurora);
+		box-shadow: 0 0 20px -4px rgba(var(--bagliore), 1);
+	}
+	.cursore {
+		display: grid;
+		gap: 8px;
+	}
+	.cursore__l {
+		font-weight: 600;
+		font-size: 0.92rem;
+	}
+	.cursore__l b {
+		font-family: var(--titoli);
+		font-variant-numeric: tabular-nums;
+		color: var(--lime);
+	}
+	input[type='range'] {
+		-webkit-appearance: none;
+		appearance: none;
+		width: 100%;
+		height: 28px;
+		background: transparent;
+		cursor: pointer;
+	}
+	input[type='range']::-webkit-slider-runnable-track {
+		height: 10px;
+		border-radius: 999px;
+		background: linear-gradient(90deg, #1a0b4a, #5a2bd6 22%, #ff8a5c 28%, #2b9bff 50%, #ffd1a0 70%, #ff4d8a 77%, #1a0b4a);
+		border: 1px solid rgba(255, 255, 255, 0.3);
+	}
+	input[type='range']::-moz-range-track {
+		height: 10px;
+		border-radius: 999px;
+		background: linear-gradient(90deg, #1a0b4a, #5a2bd6 22%, #ff8a5c 28%, #2b9bff 50%, #ffd1a0 70%, #ff4d8a 77%, #1a0b4a);
+		border: 1px solid rgba(255, 255, 255, 0.3);
+	}
+	input[type='range']::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		width: 26px;
+		height: 26px;
+		margin-top: -9px;
+		border-radius: 50%;
+		background: var(--lime);
+		border: 4px solid var(--inchiostro);
+		box-shadow: 0 0 16px 2px rgba(214, 255, 61, 0.8);
+	}
+	input[type='range']::-moz-range-thumb {
+		width: 18px;
+		height: 18px;
+		border-radius: 50%;
+		background: var(--lime);
+		border: 4px solid var(--inchiostro);
+		box-shadow: 0 0 16px 2px rgba(214, 255, 61, 0.8);
+	}
+	input.cursore--grigio::-webkit-slider-runnable-track {
+		background: linear-gradient(90deg, #4b4470, #ece8ff);
+	}
+	input.cursore--grigio::-moz-range-track {
+		background: linear-gradient(90deg, #4b4470, #ece8ff);
+	}
+	.stepper {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+	}
+	.stepper .pulsante {
+		width: 52px;
+		padding: 0;
+		font-size: 1.4rem;
+	}
+	.stepper__v {
+		display: grid;
+		justify-items: center;
+		line-height: 1;
+		font-family: var(--titoli);
+	}
+	.stepper__n {
+		display: flex;
+		align-items: baseline;
+	}
+	.stepper__n b {
+		font-size: 4rem;
+		font-weight: 800;
+		letter-spacing: -0.06em;
+		font-variant-numeric: tabular-nums;
+		background: var(--aurora);
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+		-webkit-text-fill-color: transparent;
+	}
+	.stepper__n em {
+		font-style: normal;
+		font-size: 1.6rem;
+		margin-left: 2px;
+	}
+	.stepper__v > span:last-child {
+		margin-top: 6px;
+		font-family: var(--testo);
+		font-size: 0.8rem;
+		font-weight: 500;
+		color: var(--nebbia-2);
+	}
+	.stepper__v i {
+		font-style: normal;
+	}
+	.misure {
+		list-style: none;
+		display: grid;
+		gap: 14px;
+	}
+	.misure li {
+		display: grid;
+		grid-template-columns: 5.6em auto 1fr;
+		grid-template-areas: 'e b i' 'ba ba ba';
+		align-items: baseline;
+		column-gap: 6px;
+		row-gap: 6px;
+	}
+	.misure li span {
+		grid-area: e;
+		font-size: 0.82rem;
+		font-weight: 700;
+		letter-spacing: 0.04em;
+		color: var(--nebbia-2);
+	}
+	.misure b {
+		grid-area: b;
+		font-family: var(--titoli);
+		font-size: 1.9rem;
+		font-weight: 800;
+		letter-spacing: -0.04em;
+		font-variant-numeric: tabular-nums;
+		color: var(--bianco);
+	}
+	.misure i {
+		grid-area: i;
+		font-style: normal;
+		font-size: 0.85rem;
+		color: var(--nebbia-2);
+	}
+	.barra {
+		grid-area: ba;
+		display: block;
+		height: 8px;
+		border-radius: 999px;
+		background: rgba(255, 255, 255, 0.12);
+		overflow: hidden;
+	}
+	.barra > span {
+		display: block;
+		height: 100%;
+		width: 0;
+		background: var(--aurora);
+		border-radius: 999px;
+		transition: width 0.5s var(--ease);
+	}
+	.barra--lime > span {
+		background: var(--lime);
+		box-shadow: 0 0 14px var(--lime);
+	}
+	.barra--ciano > span {
+		background: var(--ciano);
+		box-shadow: 0 0 14px var(--ciano);
+	}
+
+	/* telefono: scena in alto (fissa), schede che scorrono sotto */
+	@media (max-width: 900px) {
+		.scena {
+			height: 54svh;
+			min-height: 300px;
+			z-index: 5;
+			border-radius: 0 0 28px 28px;
+		}
+		.scena__velo {
+			background: linear-gradient(0deg, rgba(11, 6, 32, 0.85), rgba(11, 6, 32, 0) 30%), linear-gradient(180deg, rgba(11, 6, 32, 0.6), rgba(11, 6, 32, 0) 30%);
+		}
+		.passi {
+			margin-top: 0;
+			width: min(100% - var(--gutter) * 2, 640px);
+		}
+		.passo {
+			min-height: 76svh;
+			align-items: flex-start;
+			padding-block: 34px;
+		}
+		.passo--apertura {
+			min-height: auto;
+			padding-top: 36px;
+		}
+		.passo__in,
+		.passo--apertura .passo__in {
+			width: 100%;
+		}
+		.passo__in.vetro {
+			transform: none;
+		}
+		.hud {
+			top: calc(var(--fascia-h) + 78px);
+			right: 14px;
+			gap: 8px;
+		}
+		.hud__ora b {
+			font-size: 2.1rem;
+		}
+		.hud__kw {
+			padding: 6px 10px;
+			gap: 10px;
+		}
+		.hud__kw b {
+			font-size: 1rem;
+		}
+	}
+	@media (max-width: 420px) {
+		.hud__kw li:nth-child(2) {
+			display: none;
+		}
+	}
+</style>
+
+<script>
+	import { stato, imposta, applicaScenario, scenarioAttivo, derivati, oraTesto, fraseOra, stanze, type Stanza } from './stato';
+	import { caldi } from './dati';
+	import type { Controllo } from './casa3d';
+
+	const radice = document.querySelector<HTMLElement>('#casa')!;
+	const scena = radice.querySelector<HTMLElement>('[data-scena]')!;
+	const canvas = radice.querySelector<HTMLCanvasElement>('[data-canvas]')!;
+	const passi = [...radice.querySelectorAll<HTMLElement>('[data-passo]')];
+	const q = <T extends HTMLElement>(s: string) => radice.querySelector<T>(s);
+	const qa = <T extends HTMLElement>(s: string) => [...radice.querySelectorAll<T>(s)];
+	const f1 = (n: number) => n.toFixed(1).replace('.', ',');
+
+	// ---------- interfaccia → stato ----------
+	radice.addEventListener('click', (e) => {
+		const t = e.target as HTMLElement;
+		const el = t.closest<HTMLElement>('[data-scenario],[data-luce],[data-toggle],[data-presenza],[data-clima],[data-tap-toggle]');
+		if (!el) return;
+		if (el.dataset.scenario) return applicaScenario(el.dataset.scenario);
+		if (el.dataset.luce) {
+			const s = el.dataset.luce as Stanza;
+			return imposta({ luci: { [s]: stato.luci[s] > 0.05 ? 0 : 0.9 } });
+		}
+		if (el.dataset.toggle) {
+			const k = el.dataset.toggle as 'serratura' | 'allarme' | 'tv' | 'ev';
+			return imposta({ [k]: !stato[k] });
+		}
+		if (el.dataset.presenza) return imposta({ presenza: el.dataset.presenza as 'casa' | 'via' | 'letto' });
+		if (el.dataset.clima) {
+			const d = el.dataset.clima === '1' && el.classList.contains('caldo') ? 1 : Number(el.dataset.clima);
+			return imposta({ clima: Math.min(26, Math.max(15, stato.clima + d)) });
+		}
+		if (el.dataset.tapToggle) return imposta({ tapparelle: stato.tapparelle > 0.5 ? 0 : 1 });
+	});
+	q<HTMLInputElement>('[data-ora-slider]')!.addEventListener('input', (e) => imposta({ ora: Number((e.target as HTMLInputElement).value) / 60 }));
+	q<HTMLInputElement>('[data-tap-slider]')!.addEventListener('input', (e) => imposta({ tapparelle: Number((e.target as HTMLInputElement).value) / 100 }));
+
+	// scorrimento verso il passo (senza ancora nativa: vedi pagina)
+	radice.addEventListener('click', (e) => {
+		const a = (e.target as HTMLElement).closest<HTMLElement>('[data-vai]');
+		if (!a) return;
+		e.preventDefault();
+		passi[Number(a.dataset.vai)]?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
+	});
+
+	// ---------- stato → interfaccia ----------
+	function aggiorna() {
+		const d = derivati();
+		const ora = oraTesto(stato.ora);
+		qa('[data-ora],[data-ora-testo]').forEach((e) => (e.textContent = ora));
+		q('[data-fase]')!.textContent = fraseOra(stato.ora);
+		const sl = q<HTMLInputElement>('[data-ora-slider]')!;
+		if (document.activeElement !== sl) sl.value = String(Math.round(stato.ora * 60));
+		qa('[data-scenario]').forEach((b) => {
+			if (b.classList.contains('chip')) b.setAttribute('aria-pressed', String(scenarioAttivo() === b.dataset.scenario));
+		});
+		stanze.forEach((s) => qa(`[data-luce="${s.id}"].chip`).forEach((b) => b.setAttribute('aria-pressed', String(stato.luci[s.id] > 0.05))));
+		const set = (k: string, v: boolean, on: string, off: string) => {
+			qa(`[data-toggle="${k}"]`).forEach((b) => (b.getAttribute('role') === 'switch' ? b.setAttribute('aria-checked', String(v)) : b.setAttribute('aria-pressed', String(v))));
+			const t = q(`[data-v="${k}"]`);
+			if (t) t.textContent = v ? on : off;
+		};
+		set('serratura', stato.serratura, 'chiusa', 'aperta');
+		set('allarme', stato.allarme, 'inserito', 'spento');
+		set('tv', stato.tv, 'acceso', 'spento');
+		set('ev', stato.ev, 'sì', 'no');
+		qa('[data-presenza]').forEach((b) => b.setAttribute('aria-pressed', String(stato.presenza === b.dataset.presenza)));
+		q('[data-clima-v]')!.textContent = String(Math.round(stato.clima));
+		q('[data-t-est]')!.textContent = String(Math.round(d.tEst));
+		const ts = q<HTMLInputElement>('[data-tap-slider]')!;
+		if (document.activeElement !== ts) ts.value = String(Math.round(stato.tapparelle * 100));
+		q('[data-tap-testo]')!.textContent = `${Math.round(stato.tapparelle * 100)}%`;
+		// numeri
+		const rete = Math.max(0, d.rete);
+		q('[data-m-consumo]')!.textContent = f1(d.consumo);
+		q('[data-m-solare]')!.textContent = f1(d.produzione);
+		q('[data-m-rete]')!.textContent = d.rete < 0 ? `−${f1(-d.rete)}` : f1(d.rete);
+		q('[data-h-consumo]')!.textContent = f1(d.consumo);
+		q('[data-h-solare]')!.textContent = f1(d.produzione);
+		q('[data-h-rete]')!.textContent = d.rete < 0 ? `−${f1(-d.rete)}` : f1(d.rete);
+		const pct = (v: number) => `${Math.min(100, (v / 8) * 100)}%`;
+		q('[data-b-consumo]')!.style.width = pct(d.consumo);
+		q('[data-b-solare]')!.style.width = pct(d.produzione);
+		q('[data-b-rete]')!.style.width = pct(rete);
+	}
+	addEventListener('ordito:stato', aggiorna);
+	aggiorna();
+
+	// ---------- passo attivo e posa della camera ----------
+	let ctrl: Controllo | null = null;
+	let attivo = -1;
+	let inCoda = false;
+	function calcola() {
+		inCoda = false;
+		const vh = innerHeight;
+		const rif = innerWidth <= 900 ? vh * 0.76 : vh * 0.5;
+		const c = passi.map((p) => {
+			const r = p.getBoundingClientRect();
+			return r.top + r.height / 2;
+		});
+		let f = 0;
+		if (rif <= c[0]) f = 0;
+		else if (rif >= c[c.length - 1]) f = c.length - 1;
+		else for (let i = 0; i < c.length - 1; i++) if (rif >= c[i] && rif < c[i + 1]) f = i + (rif - c[i]) / (c[i + 1] - c[i]);
+		ctrl?.setF(f);
+		const a = Math.round(f);
+		if (a !== attivo) {
+			attivo = a;
+			passi.forEach((p, i) => p.classList.toggle('is-attivo', i === a));
+			qa('[data-caldo]').forEach((h) => h.classList.toggle('is-on', (h.dataset.passi ?? '').split(',').includes(String(a))));
+		}
+	}
+	const coda = () => {
+		if (!inCoda) {
+			inCoda = true;
+			requestAnimationFrame(calcola);
+		}
+	};
+	addEventListener('scroll', coda, { passive: true });
+	addEventListener('resize', coda);
+	calcola();
+
+	// ---------- la scena 3D: parte quando serve ----------
+	const mobile = matchMedia('(max-width: 900px), (pointer: coarse)').matches;
+	const rgb = (hex: string) => `${parseInt(hex.slice(1, 3), 16)}, ${parseInt(hex.slice(3, 5), 16)}, ${parseInt(hex.slice(5, 7), 16)}`;
+	// il bagliore prende un colore tra orizzonte e cielo, ravvivato
+	function mixa(a: string, b: string) {
+		const n = (h: string, i: number) => parseInt(h.slice(i, i + 2), 16);
+		const m = (i: number) => Math.min(255, Math.round((n(a, i) * 0.65 + n(b, i) * 0.35) * 1.15));
+		return '#' + [1, 3, 5].map((i) => m(i).toString(16).padStart(2, '0')).join('');
+	}
+	let avviata = false;
+	async function accendi() {
+		if (avviata) return;
+		avviata = true;
+		try {
+			const prova = document.createElement('canvas');
+			if (!(prova.getContext('webgl2') || prova.getContext('webgl'))) throw new Error('niente WebGL');
+			const { avvia } = await import('./casa3d');
+			const hotspots = qa('[data-caldo]').map((el) => ({ id: el.dataset.caldo!, el, pos: caldi.find((c) => c.id === el.dataset.caldo)!.pos }));
+			ctrl = await avvia(canvas, {
+				mobile,
+				hotspots,
+				// il cielo della scena colora la pagina: il gradiente del palco e il bagliore di bottoni e schede
+				cielo: (su, giu) => {
+					scena.style.setProperty('--cielo-su', su);
+					scena.style.setProperty('--cielo-giu', giu);
+					document.documentElement.style.setProperty('--bagliore', rgb(mixa(giu, su)));
+				},
+			});
+			scena.dataset.pronta = '1';
+			calcola();
+			// non disegna quando la scena è fuori vista o la scheda è in secondo piano
+			new IntersectionObserver((v) => (v[0].isIntersecting ? ctrl!.riprendi() : ctrl!.ferma()), { rootMargin: '120px' }).observe(scena);
+			document.addEventListener('visibilitychange', () => (document.hidden ? ctrl!.ferma() : ctrl!.riprendi()));
+		} catch {
+			scena.dataset.nogl = '1';
+		}
+	}
+	if (mobile) {
+		const una = () => {
+			accendi();
+			removeEventListener('scroll', una);
+			removeEventListener('touchstart', una);
+			removeEventListener('pointerdown', una);
+		};
+		addEventListener('scroll', una, { passive: true, once: true });
+		addEventListener('touchstart', una, { passive: true, once: true });
+		addEventListener('pointerdown', una, { passive: true, once: true });
+	} else {
+		const via = () => ('requestIdleCallback' in window ? requestIdleCallback(accendi, { timeout: 1500 }) : setTimeout(accendi, 600));
+		if (document.readyState === 'complete') via();
+		else addEventListener('load', via, { once: true });
+	}
+</script>

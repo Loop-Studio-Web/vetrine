@@ -16,6 +16,8 @@ import cardFixlab from '../assets/hub/card-fixlab.jpg';
 import shotFixlab from '../assets/hub/shot-fixlab.jpg';
 import cardHotswap from '../assets/hub/card-hotswap.jpg';
 import shotHotswap from '../assets/hub/shot-hotswap.jpg';
+import cardOrdito from '../assets/hub/card-ordito.jpg';
+import shotOrdito from '../assets/hub/shot-ordito.jpg';
 
 export const SITE = 'https://theloopstudio.org/';
 export const CONTACT = 'https://theloopstudio.org/contatti';
@@ -476,12 +478,63 @@ export const concepts: Concept[] = [
 			{ label: 'Buone pratiche', valore: '100' },
 		],
 	},
+	{
+		slug: 'ordito',
+		macro: 'tech',
+		nome: 'Ordito',
+		categoria: 'Tech',
+		archetipo: 'Lo studio tecnologico per casa e ufficio, livello High',
+		claim: 'La casa che ti conosce. Una casa in 3D da toccare: sposti il sole, accendi le stanze, scrivi le regole e guardi l’impianto eseguirle.',
+		path: '/tech/studio/',
+		infoPath: '/tech/studio/info/',
+		titoloSeo: 'Sito web per studio di domotica e smart home: homepage concept con casa 3D interattiva',
+		descrizioneSeo:
+			'Come potrebbe essere la homepage di uno studio di domotica, sicurezza ed energia per case e uffici: una casa in 3D che reagisce a luci, clima e allarme, un editor di regole “quando… allora…”, un capitolato su misura e la richiesta di sopralluogo. Concept dimostrativo di Loop Studio.',
+		intro: [
+			'Chi si rivolge a uno studio di domotica ha un dubbio semplice: che cosa farà davvero questo impianto a casa mia? Questa homepage risponde mostrando una casa di prova, costruita in 3D, che si attraversa scorrendo: ogni stanza è un passo del racconto e ogni pannello cambia davvero la scena, dalla luce del sole ai consumi.',
+			'È il livello High della categoria Tech e una vetrina dimostrativa: lo studio, i progetti, i prezzi, i numeri e i recapiti sono di fantasia. Il colore è luce: il cielo della casa passa dall’alba rosa al giorno ciano, dal tramonto magenta alla notte viola, e tinge anche bottoni e schede. Serve a mostrare quanto può spingersi un sito quando il budget lo permette, senza perdere velocità né accessibilità.',
+		],
+		perChi:
+			'Studi di domotica e integratori di smart home, installatori di impianti di sicurezza, energia e fotovoltaico, studi di progettazione impiantistica e aziende che vendono automazione per case, uffici e negozi. Adatta a chi vuole far capire un servizio invisibile facendolo toccare.',
+		sezioni: [
+			{
+				t: 'Una casa in 3D, attraversata scorrendo',
+				d: 'La casa è costruita con forme semplici e luce vera: scorrendo, la camera si sposta di stanza in stanza. Su telefono la scena parte alla prima interazione, con un fotogramma pronto al suo posto.',
+			},
+			{
+				t: 'Sposti il sole, la casa risponde',
+				d: 'Un orologio e cinque momenti (mattino, arrivo, cena, notte, vacanza) cambiano cielo, luci, tapparelle, clima, allarme e persino i consumi in kW e la produzione del fotovoltaico.',
+			},
+			{
+				t: 'Le regole le scrivi in una frase',
+				d: '“Quando torno a casa e è sera, allora accendi le luci del soggiorno”: si compone dentro la frase, non trascinando blocchi. Poi si fa correre una giornata e si vede quando le regole scattano.',
+			},
+			{
+				t: 'Capitolato su misura e sopralluogo',
+				d: 'Tipo di immobile, metri quadri e aree da automatizzare diventano un capitolato con prezzo indicativo, tempi e risparmio stimato. Tre casi si aprono a schermo intero con una transizione, e il modulo del sopralluogo si precompila.',
+			},
+		],
+		awning: ['#6a2cff', '#ff2e93'],
+		glow: 'rgba(255, 46, 147, 0.6)',
+		card: cardOrdito,
+		shot: shotOrdito,
+		shotAlt: '',
+		crop: '75% 50%',
+		cardAlt: 'Ordito su desktop e su telefono: titolo grande su un cielo al tramonto viola e magenta, una casa a due piani in 3D con bordi al neon, orologio e consumi, il menù mobile.',
+		mood: 'Aurora: inchiostro viola-nero, viola elettrico, magenta, ciano e lime acido. Il cielo della casa cambia con l’ora e colora tutta la pagina; sotto, blocchi di colore a tutta larghezza, vetro e scritte che scorrono.',
+		caratteri: 'Share Tech, Syne e Schibsted Grotesk',
+		palette: ['#0b0620', '#6a2cff', '#ff2e93', '#2be4ff', '#d6ff3d', '#ece8ff'],
+		metriche: [
+			{ label: 'Performance', valore: '99' },
+			{ label: 'Accessibilità', valore: '100' },
+			{ label: 'Buone pratiche', valore: '100' },
+		],
+	},
 ];
 
 // stato: 'presto' = quasi pronta, 'cantiere' = ancora in costruzione (nessuna data promessa)
 export type StatoProssima = 'presto' | 'cantiere';
 export const prossime: { nome: string; categoria: string; macro: MacroSlug; stato: StatoProssima }[] = [
-	{ nome: 'Studio tecnologico', categoria: 'Tech', macro: 'tech', stato: 'cantiere' },
 	{ nome: 'Legale e professionale', categoria: 'Studi e servizi', macro: 'studi', stato: 'cantiere' },
 	{ nome: 'Negozio locale', categoria: 'Commercio', macro: 'commercio', stato: 'cantiere' },
 ];

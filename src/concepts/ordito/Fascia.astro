@@ -1,0 +1,88 @@
+---
+// Fascia di ritorno: dice che è una vetrina dimostrativa e porta all'hub o al contatto. Non è fissa:
+// scorre via con la pagina e la navbar, che le sta sotto, risale mentre si scorre.
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<aside class="fascia" data-fascia aria-label="Informazioni su questa vetrina">
+	<p class="fascia__testo">Vetrina dimostrativa · <span class="fascia__studio">concept di Loop Studio</span></p>
+	<nav class="fascia__link" aria-label="Vetrine">
+		<a href={`${base}/`}><span aria-hidden="true">←</span> Tutte le vetrine</a>
+		<a href="https://theloopstudio.org/contatti/?concept=ordito" class="fascia__cta">Ne voglio una così <span aria-hidden="true">→</span></a>
+	</nav>
+</aside>
+
+<style>
+	.fascia {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		z-index: 150;
+		height: var(--fascia-h);
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
+		padding: 0 var(--gutter);
+		background: var(--inchiostro);
+		color: var(--nebbia);
+		font-family: var(--testo);
+		font-weight: 600;
+		font-size: 0.8rem;
+		letter-spacing: 0.03em;
+		white-space: nowrap;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+	}
+	.fascia__link {
+		display: flex;
+		gap: 22px;
+	}
+	.fascia a {
+		text-decoration: none;
+		border-bottom: 1px solid transparent;
+	}
+	.fascia a:hover {
+		border-bottom-color: var(--lime);
+	}
+	.fascia__cta {
+		color: var(--lime);
+	}
+	@media (max-width: 640px) {
+		.fascia__studio {
+			display: none;
+		}
+	}
+	@media (max-width: 480px) {
+		.fascia__testo {
+			display: none;
+		}
+		.fascia {
+			justify-content: center;
+		}
+	}
+</style>
+
+<script>
+	// la navbar fissa sta sotto la fascia, poi risale mentre la fascia scorre via
+	const fascia = document.querySelector<HTMLElement>('[data-fascia]');
+	if (fascia) {
+		let attesa = false;
+		const aggiorna = () => {
+			attesa = false;
+			document.documentElement.style.setProperty('--fascia', `${Math.max(0, fascia.offsetHeight - scrollY)}px`);
+		};
+		addEventListener(
+			'scroll',
+			() => {
+				if (!attesa) {
+					attesa = true;
+					requestAnimationFrame(aggiorna);
+				}
+			},
+			{ passive: true },
+		);
+		addEventListener('resize', aggiorna);
+		aggiorna();
+	}
+</script>

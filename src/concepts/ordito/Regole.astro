@@ -1,0 +1,344 @@
+---
+// Le regole: una frase da comporre ("Quando… e… allora…") e una giornata simulata in cui la casa le esegue davvero.
+// Non è un editor a blocchi da trascinare: qui si sceglie dentro la frase, e il risultato si vede sulla scena.
+const eventi = [
+	{ id: 'esco', t: 'esco di casa' },
+	{ id: 'torno', t: 'torno a casa' },
+	{ id: 'alba', t: 'sorge il sole' },
+	{ id: 'tramonto', t: 'il sole tramonta' },
+	{ id: 'letto', t: 'vado a letto' },
+];
+const condizioni = [
+	{ id: 'sempre', t: 'sempre' },
+	{ id: 'sera', t: 'è sera' },
+	{ id: 'giorno', t: 'è giorno' },
+	{ id: 'freddo', t: 'fa freddo fuori' },
+	{ id: 'caldo', t: 'fa caldo fuori' },
+];
+const azioni = [
+	{ id: 'luci-soggiorno', t: 'accendi le luci del soggiorno' },
+	{ id: 'luci-giardino', t: 'accendi le luci del giardino' },
+	{ id: 'luci-spente', t: 'spegni tutte le luci' },
+	{ id: 'tap-giu', t: 'abbassa le tapparelle' },
+	{ id: 'tap-su', t: 'alza le tapparelle' },
+	{ id: 'clima-comfort', t: 'porta il clima a 21°' },
+	{ id: 'clima-eco', t: 'metti il clima in risparmio' },
+	{ id: 'allarme', t: 'inserisci l’allarme' },
+	{ id: 'serratura', t: 'chiudi la serratura' },
+];
+---
+
+<article class="passo passo--regole" id="passo-6" data-passo="6">
+	<div class="passo__in vetro">
+		<p class="passo__n" aria-hidden="true">06<i>/06</i></p>
+		<h2>Le regole le scrivi&nbsp;tu.</h2>
+		<p class="passo__testo">“Quando… e… allora…”. Componi una frase, aggiungila e poi fai correre una giornata intera: vedi la casa eseguire le tue regole al momento giusto.</p>
+
+		<div class="pannello" data-regole>
+			<form class="frase" data-frase>
+				<p class="frase__t" id="frase-t">Nuova regola</p>
+				<p class="frase__r" aria-labelledby="frase-t">
+					<span>Quando</span>
+					<label><span class="sr-only">Evento</span><select data-sel="evento">{eventi.map((e) => <option value={e.id}>{e.t}</option>)}</select></label>
+					<span>e</span>
+					<label><span class="sr-only">Condizione</span><select data-sel="cond">{condizioni.map((e) => <option value={e.id}>{e.t}</option>)}</select></label><span>,</span>
+					<span>allora</span>
+					<label><span class="sr-only">Azione</span><select data-sel="azione">{azioni.map((e) => <option value={e.id}>{e.t}</option>)}</select></label><span>.</span>
+				</p>
+				<button class="pulsante pulsante--piccolo" type="submit">Aggiungi la regola</button>
+			</form>
+
+			<ol class="elenco" data-elenco aria-label="Le tue regole"></ol>
+			<p class="vuoto" data-vuoto hidden>Nessuna regola: la casa non fa niente da sola. Aggiungine una.</p>
+
+			<div class="prova">
+				<button class="pulsante pulsante--lime" type="button" data-prova>Fai correre la giornata</button>
+				<button class="pulsante pulsante--vetro pulsante--piccolo" type="button" data-ferma hidden>Ferma</button>
+			</div>
+			<ol class="diario" data-diario tabindex="0" aria-live="polite" aria-label="Cosa è successo durante la giornata"></ol>
+		</div>
+	</div>
+</article>
+
+<style is:global>
+	.frase {
+		display: grid;
+		gap: 12px;
+	}
+	.frase__t {
+		font-family: var(--titoli);
+		font-size: 0.74rem;
+		font-weight: 700;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: var(--lime);
+	}
+	.frase__r {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 8px;
+		font-family: var(--titoli);
+		font-size: 1.1rem;
+		font-weight: 700;
+		letter-spacing: -0.02em;
+		line-height: 1.5;
+	}
+	.frase__r select {
+		max-width: 100%;
+		padding: 0.3em 1.9em 0.3em 0.8em;
+		border: 1px solid var(--lime);
+		border-radius: 10px;
+		background: rgba(214, 255, 61, 0.14) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23d6ff3d' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 0.6em center / 0.7em;
+		-webkit-appearance: none;
+		appearance: none;
+		color: var(--bianco);
+		font-family: var(--testo);
+		font-weight: 600;
+		font-size: 0.98rem;
+		cursor: pointer;
+	}
+	.frase__r select option {
+		color: var(--inchiostro);
+		background: var(--bianco);
+	}
+	.elenco {
+		list-style: none;
+		display: grid;
+		gap: 8px;
+		counter-reset: r;
+	}
+	.elenco li {
+		counter-increment: r;
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		gap: 12px;
+		align-items: center;
+		padding: 10px 12px;
+		border: 1px solid rgba(255, 255, 255, 0.2);
+		border-radius: 14px;
+		background: rgba(255, 255, 255, 0.05);
+		animation: regola-entra 0.4s var(--ease);
+		transition: background 0.3s, box-shadow 0.3s, border-color 0.3s;
+	}
+	.elenco li::before {
+		content: counter(r);
+		display: grid;
+		place-items: center;
+		width: 28px;
+		height: 28px;
+		border-radius: 50%;
+		background: var(--aurora);
+		color: var(--bianco);
+		font-family: var(--titoli);
+		font-size: 0.85rem;
+		font-weight: 800;
+	}
+	.elenco li.scatta {
+		background: rgba(214, 255, 61, 0.2);
+		border-color: var(--lime);
+		box-shadow: 0 0 26px -2px rgba(214, 255, 61, 0.8);
+	}
+	@keyframes regola-entra {
+		from {
+			opacity: 0;
+			transform: translateY(8px);
+		}
+	}
+	.elenco p {
+		font-size: 0.93rem;
+		font-weight: 500;
+		color: var(--nebbia);
+	}
+	.elenco b {
+		font-weight: 700;
+		color: var(--bianco);
+	}
+	.elenco button {
+		width: 34px;
+		height: 34px;
+		border: 1px solid rgba(255, 255, 255, 0.3);
+		border-radius: 50%;
+		background: transparent;
+		font-size: 1rem;
+		line-height: 1;
+		color: var(--nebbia);
+	}
+	.elenco button:hover {
+		background: var(--magenta);
+		border-color: var(--magenta);
+	}
+	.vuoto {
+		padding: 14px;
+		border: 1px dashed rgba(255, 255, 255, 0.4);
+		border-radius: 14px;
+		font-size: 0.92rem;
+		font-weight: 600;
+	}
+	.prova {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+	.diario {
+		list-style: none;
+		display: grid;
+		gap: 4px;
+		font-size: 0.9rem;
+		max-height: 190px;
+		overflow: auto;
+	}
+	.diario:empty {
+		display: none;
+	}
+	.diario li {
+		display: grid;
+		grid-template-columns: 3.6em 1fr;
+		gap: 8px;
+		animation: regola-entra 0.35s var(--ease);
+		color: var(--nebbia-2);
+	}
+	.diario time {
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-variant-numeric: tabular-nums;
+		color: var(--bianco);
+	}
+	.diario li.fatto {
+		color: var(--bianco);
+		font-weight: 600;
+	}
+	.diario li.fatto span::before {
+		content: '→ ';
+		color: var(--lime);
+	}
+</style>
+
+<script>
+	import { stato, imposta, oraTesto, tempEsterna, scenari } from './stato';
+
+	type Regola = { evento: string; cond: string; azione: string };
+	const T: Record<string, Record<string, string>> = {
+		evento: { esco: 'esco di casa', torno: 'torno a casa', alba: 'sorge il sole', tramonto: 'il sole tramonta', letto: 'vado a letto' },
+		cond: { sempre: 'sempre', sera: 'è sera', giorno: 'è giorno', freddo: 'fa freddo fuori', caldo: 'fa caldo fuori' },
+		azione: {
+			'luci-soggiorno': 'accendi le luci del soggiorno', 'luci-giardino': 'accendi le luci del giardino', 'luci-spente': 'spegni tutte le luci',
+			'tap-giu': 'abbassa le tapparelle', 'tap-su': 'alza le tapparelle', 'clima-comfort': 'porta il clima a 21°', 'clima-eco': 'metti il clima in risparmio',
+			allarme: 'inserisci l’allarme', serratura: 'chiudi la serratura',
+		},
+	};
+	const radice = document.querySelector<HTMLElement>('[data-regole]')!;
+	const elenco = radice.querySelector<HTMLOListElement>('[data-elenco]')!;
+	const vuoto = radice.querySelector<HTMLElement>('[data-vuoto]')!;
+	const diario = radice.querySelector<HTMLOListElement>('[data-diario]')!;
+	const bProva = radice.querySelector<HTMLButtonElement>('[data-prova]')!;
+	const bFerma = radice.querySelector<HTMLButtonElement>('[data-ferma]')!;
+
+	let regole: Regola[] = [
+		{ evento: 'torno', cond: 'sera', azione: 'luci-soggiorno' },
+		{ evento: 'esco', cond: 'sempre', azione: 'clima-eco' },
+	];
+	const MAX = 5;
+
+	function disegna() {
+		elenco.innerHTML = regole
+			.map((r, i) => `<li data-i="${i}"><p>Quando <b>${T.evento[r.evento]}</b> e <b>${T.cond[r.cond]}</b>, allora <b>${T.azione[r.azione]}</b>.</p><button type="button" data-via="${i}" aria-label="Togli la regola ${i + 1}">✕</button></li>`)
+			.join('');
+		vuoto.hidden = regole.length > 0;
+	}
+	disegna();
+
+	radice.querySelector('[data-frase]')!.addEventListener('submit', (e) => {
+		e.preventDefault();
+		const v = (k: string) => radice.querySelector<HTMLSelectElement>(`[data-sel="${k}"]`)!.value;
+		if (regole.length >= MAX) regole.shift();
+		regole.push({ evento: v('evento'), cond: v('cond'), azione: v('azione') });
+		disegna();
+	});
+	elenco.addEventListener('click', (e) => {
+		const b = (e.target as HTMLElement).closest<HTMLElement>('[data-via]');
+		if (!b) return;
+		regole.splice(Number(b.dataset.via), 1);
+		disegna();
+	});
+
+	// ---- la giornata simulata ----
+	const copione: { ora: number; evento: string; testo: string; patch?: Parameters<typeof imposta>[0] }[] = [
+		{ ora: 6.6, evento: 'alba', testo: 'Sorge il sole' },
+		{ ora: 7.9, evento: 'esco', testo: 'Esci di casa', patch: { presenza: 'via' } },
+		{ ora: 18.5, evento: 'tramonto', testo: 'Il sole tramonta' },
+		{ ora: 18.9, evento: 'torno', testo: 'Torni a casa', patch: { presenza: 'casa' } },
+		{ ora: 23.0, evento: 'letto', testo: 'Vai a letto', patch: { presenza: 'letto' } },
+	];
+	function condizioneVera(c: string) {
+		const o = stato.ora;
+		const te = tempEsterna(o);
+		return c === 'sempre' || (c === 'sera' && (o >= 18 || o < 6)) || (c === 'giorno' && o >= 6.5 && o < 18) || (c === 'freddo' && te < 13) || (c === 'caldo' && te >= 20);
+	}
+	function esegui(a: string) {
+		switch (a) {
+			case 'luci-soggiorno': return imposta({ luci: { soggiorno: 0.85, ingresso: 0.5 } });
+			case 'luci-giardino': return imposta({ luci: { giardino: 0.9 } });
+			case 'luci-spente': return imposta({ luci: { ingresso: 0, soggiorno: 0, cucina: 0, camera: 0, studio: 0, giardino: 0 } });
+			case 'tap-giu': return imposta({ tapparelle: 0 });
+			case 'tap-su': return imposta({ tapparelle: 1 });
+			case 'clima-comfort': return imposta({ clima: 21 });
+			case 'clima-eco': return imposta({ clima: 16 });
+			case 'allarme': return imposta({ allarme: true });
+			case 'serratura': return imposta({ serratura: true });
+		}
+	}
+	let timer = 0;
+	let corre = false;
+	function fine(msg: string) {
+		clearInterval(timer);
+		corre = false;
+		bProva.hidden = false;
+		bFerma.hidden = true;
+		bProva.textContent = 'Fai correre la giornata';
+		if (msg) aggiungi('24:00', msg, true);
+	}
+	function aggiungi(ora: string, testo: string, fatto: boolean) {
+		const li = document.createElement('li');
+		if (fatto) li.className = 'fatto';
+		li.innerHTML = `<time>${ora}</time><span></span>`;
+		li.querySelector('span')!.textContent = testo;
+		diario.append(li);
+		diario.scrollTop = diario.scrollHeight;
+	}
+	function avvia() {
+		diario.innerHTML = '';
+		const base = scenari.find((s) => s.id === 'mattino')!;
+		imposta({ ora: 6, luci: { ingresso: 0, soggiorno: 0, cucina: 0, camera: 0, studio: 0, giardino: 0 }, tapparelle: 0, clima: 19, allarme: false, serratura: true, tv: false, presenza: 'casa' });
+		void base;
+		corre = true;
+		bProva.hidden = true;
+		bFerma.hidden = false;
+		let prossimo = 0;
+		let scattate = 0;
+		timer = window.setInterval(() => {
+			const nuova = stato.ora + 0.12;
+			if (nuova >= 23.95) return fine(`Giornata finita: ${scattate} ${scattate === 1 ? 'regola scattata' : 'regole scattate'}.`);
+			imposta({ ora: nuova });
+			while (prossimo < copione.length && stato.ora >= copione[prossimo].ora) {
+				const ev = copione[prossimo++];
+				if (ev.patch) imposta(ev.patch);
+				aggiungi(oraTesto(stato.ora), ev.testo, false);
+				regole.forEach((r, i) => {
+					if (r.evento === ev.evento && condizioneVera(r.cond)) {
+						esegui(r.azione);
+						scattate++;
+						aggiungi(oraTesto(stato.ora), `Regola ${i + 1}: ${T.azione[r.azione]}`, true);
+						const li = elenco.querySelector(`[data-i="${i}"]`);
+						li?.classList.add('scatta');
+						setTimeout(() => li?.classList.remove('scatta'), 1800);
+					}
+				});
+			}
+		}, 110);
+	}
+	bProva.addEventListener('click', () => !corre && avvia());
+	bFerma.addEventListener('click', () => fine('Fermata.'));
+	// se l'utente tocca l'orologio mentre corre, la simulazione si ferma da sola
+	document.querySelector('[data-ora-slider]')?.addEventListener('pointerdown', () => corre && fine(''));
+</script>

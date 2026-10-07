@@ -1,0 +1,401 @@
+---
+// Casi di esempio: tre manifesti viola con una planimetria al neon. Il clic apre il caso a tutto schermo con una transizione che fa crescere la planimetria
+// (View Transitions API, dove c'è; altrimenti si apre e basta).
+import { casi } from './dati';
+---
+
+<section class="casi sezione" id="casi" aria-labelledby="casi-t">
+	<div class="casi__aura" aria-hidden="true"></div>
+	<div class="wrap">
+		<header class="sezione__testa" data-reveal>
+			<p class="etichetta">Casi di esempio</p>
+			<h2 id="casi-t">Tre posti, tre problemi, <span class="contorno">tre soluzioni.</span></h2>
+			<p>Progetti inventati per mostrare come ragiona lo studio. Apri un caso: la planimetria si allarga e racconta cosa è stato fatto.</p>
+		</header>
+
+		<ul class="casi__lista">
+			{
+				casi.map((c, i) => (
+					<li style={`--i:${i}`} data-reveal>
+						<button class="caso vetro" type="button" data-caso={c.id} aria-haspopup="dialog">
+							<span class="caso__n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+							<svg class="caso__piano" viewBox="0 0 140 130" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d={c.piano} /><circle class="caso__punto" cx="40" cy="55" r="4" fill="var(--lime)" stroke="none" /></svg>
+							<span class="caso__luogo">{c.luogo} · {c.tipo}</span>
+							<span class="caso__nome">{c.nome}</span>
+							<span class="caso__titolo">{c.titolo}</span>
+							<span class="caso__vai" aria-hidden="true">Apri il caso <b>→</b></span>
+						</button>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+
+	<dialog class="dlg grana" data-dlg aria-labelledby="dlg-t">
+		<div class="dlg__in">
+			<button class="pulsante pulsante--vetro pulsante--piccolo dlg__x" type="button" data-chiudi>Chiudi <span aria-hidden="true">✕</span></button>
+			<svg class="dlg__piano" viewBox="0 0 140 130" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path data-dlg-piano d="" /><circle cx="40" cy="55" r="3" fill="var(--lime)" stroke="none" /></svg>
+			<div class="dlg__testo">
+				<p class="etichetta" data-dlg-luogo></p>
+				<h3 id="dlg-t" data-dlg-titolo></h3>
+				<p class="dlg__nome" data-dlg-nome></p>
+				<dl class="dlg__blocchi">
+					<div><dt>La sfida</dt><dd data-dlg-sfida></dd></div>
+					<div><dt>Cosa abbiamo fatto</dt><dd data-dlg-soluzione></dd></div>
+				</dl>
+				<ul class="dlg__numeri" data-dlg-numeri></ul>
+				<p class="dlg__nota">Caso di fantasia, numeri inventati.</p>
+				<a class="pulsante" href="#sopralluogo" data-chiudi>Chiedi un progetto simile <span aria-hidden="true">→</span></a>
+			</div>
+		</div>
+	</dialog>
+</section>
+
+<style>
+	.casi {
+		background: linear-gradient(160deg, #5a1fe0, #3b10c8 60%, #2a0aa0);
+		color: var(--bianco);
+	}
+	.casi__aura {
+		position: absolute;
+		width: 70vmax;
+		height: 70vmax;
+		right: -25vmax;
+		top: -25vmax;
+		border-radius: 50%;
+		background: radial-gradient(circle, rgba(255, 46, 147, 0.7), transparent 62%);
+		filter: blur(30px);
+		pointer-events: none;
+		animation: casi-aura 14s ease-in-out infinite alternate;
+	}
+	@keyframes casi-aura {
+		to {
+			transform: translate(-6vmax, 8vmax) scale(1.15);
+		}
+	}
+	.casi .wrap {
+		position: relative;
+	}
+	.casi .sezione__testa h2 {
+		color: var(--bianco);
+	}
+	.casi .contorno {
+		color: var(--lime);
+	}
+	.casi__lista {
+		list-style: none;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+		gap: 24px;
+	}
+	.casi__lista li {
+		transition-delay: calc(var(--i) * 100ms);
+	}
+	.caso {
+		width: 100%;
+		display: grid;
+		gap: 8px;
+		padding: 26px;
+		text-align: left;
+		color: inherit;
+		transition: transform 0.45s var(--ease), box-shadow 0.45s var(--ease);
+	}
+	.caso:hover,
+	.caso:focus-visible {
+		transform: translateY(-8px) rotate(-0.5deg);
+		box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(214, 255, 61, 0.7), 0 0 50px -10px rgba(214, 255, 61, 0.5);
+	}
+	.caso__n {
+		position: absolute;
+		top: 6px;
+		right: 18px;
+		font-family: var(--titoli);
+		font-size: 5.6rem;
+		font-weight: 800;
+		letter-spacing: -0.06em;
+		line-height: 1;
+		color: rgba(255, 255, 255, 0.13);
+		pointer-events: none;
+	}
+	.caso__piano {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 140 / 100;
+		margin-bottom: 8px;
+		padding: 10px;
+		border-radius: 16px;
+		background: rgba(11, 6, 32, 0.4);
+		color: var(--ciano);
+		filter: drop-shadow(0 0 6px rgba(43, 228, 255, 0.7));
+	}
+	.caso__piano path {
+		stroke-dasharray: 600;
+		stroke-dashoffset: 0;
+	}
+	.caso:hover .caso__piano path {
+		animation: caso-disegna 1.3s var(--ease);
+	}
+	@keyframes caso-disegna {
+		from {
+			stroke-dashoffset: 600;
+		}
+	}
+	.caso__punto {
+		animation: caso-punto 2.4s ease-in-out infinite;
+		transform-box: fill-box;
+		transform-origin: center;
+	}
+	@keyframes caso-punto {
+		50% {
+			transform: scale(1.8);
+			opacity: 0.5;
+		}
+	}
+	.caso__luogo {
+		font-size: 0.74rem;
+		font-weight: 700;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--lime);
+	}
+	.caso__nome {
+		font-family: var(--titoli);
+		font-size: 1.6rem;
+		font-weight: 700;
+		letter-spacing: -0.04em;
+		line-height: 1;
+	}
+	.caso__titolo {
+		color: var(--nebbia);
+	}
+	.caso__vai {
+		margin-top: 8px;
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: 0.8rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+	.caso__vai b {
+		display: inline-block;
+		transition: transform 0.3s var(--ease);
+	}
+	.caso:hover .caso__vai b {
+		transform: translateX(6px);
+	}
+
+	/* il caso a tutto schermo */
+	.dlg {
+		position: fixed;
+		inset: 0;
+		width: 100vw;
+		max-width: none;
+		height: 100dvh;
+		max-height: none;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		background:
+			radial-gradient(80% 60% at 100% 0%, rgba(255, 46, 147, 0.75), transparent 60%),
+			radial-gradient(70% 60% at 0% 100%, rgba(43, 228, 255, 0.55), transparent 60%),
+			linear-gradient(160deg, #3b10c8, #0b0620 85%);
+		color: var(--bianco);
+		overflow: auto;
+	}
+	.dlg::backdrop {
+		background: var(--inchiostro);
+	}
+	.dlg__in {
+		position: relative;
+		z-index: 1;
+		min-height: 100%;
+		display: grid;
+		grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+		gap: clamp(24px, 5vw, 80px);
+		align-items: center;
+		padding: clamp(72px, 9vw, 110px) var(--gutter) 48px;
+		max-width: 1440px;
+		margin-inline: auto;
+	}
+	.dlg__x {
+		position: absolute;
+		top: 20px;
+		right: var(--gutter);
+	}
+	.dlg__piano {
+		width: 100%;
+		height: auto;
+		max-height: 70dvh;
+		color: var(--ciano);
+		filter: drop-shadow(0 0 10px rgba(43, 228, 255, 0.8));
+		padding: clamp(16px, 3vw, 40px);
+		border: 1px solid rgba(255, 255, 255, 0.25);
+		border-radius: 28px;
+		background:
+			linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px) 0 0 / 100% 20px,
+			linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px) 0 0 / 20px 100%,
+			rgba(11, 6, 32, 0.45);
+	}
+	.dlg__testo {
+		display: grid;
+		gap: 18px;
+	}
+	.dlg h3 {
+		font-size: clamp(2rem, 4.4vw, 3.6rem);
+		line-height: 0.95;
+	}
+	.dlg__nome {
+		color: var(--nebbia-2);
+		font-weight: 600;
+	}
+	.dlg__blocchi {
+		display: grid;
+		gap: 16px;
+	}
+	.dlg__blocchi dt {
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: 0.74rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--lime);
+		margin-bottom: 4px;
+	}
+	.dlg__blocchi dd {
+		color: var(--nebbia);
+	}
+	.dlg__numeri {
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px;
+	}
+	.dlg__numeri li {
+		display: grid;
+		padding: 14px 18px;
+		border: 1px solid rgba(255, 255, 255, 0.28);
+		border-radius: 16px;
+		background: rgba(11, 6, 32, 0.4);
+		line-height: 1.2;
+	}
+	.dlg__numeri b {
+		font-family: var(--titoli);
+		font-size: 2rem;
+		font-weight: 800;
+		letter-spacing: -0.05em;
+		background: var(--aurora-fredda);
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+		-webkit-text-fill-color: transparent;
+	}
+	.dlg__numeri span {
+		font-size: 0.82rem;
+		color: var(--nebbia-2);
+	}
+	.dlg__nota {
+		font-size: 0.84rem;
+		color: var(--nebbia-2);
+	}
+	.dlg .pulsante:not(.pulsante--vetro) {
+		justify-self: start;
+	}
+	@media (max-width: 860px) {
+		.dlg__in {
+			grid-template-columns: minmax(0, 1fr);
+			padding-top: 84px;
+		}
+		.dlg__piano {
+			max-height: 34dvh;
+		}
+	}
+</style>
+
+<style is:global>
+	::view-transition-group(caso) {
+		animation-duration: 0.7s;
+		animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+	}
+	::view-transition-old(caso),
+	::view-transition-new(caso) {
+		height: 100%;
+		object-fit: contain;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		::view-transition-group(*),
+		::view-transition-old(*),
+		::view-transition-new(*) {
+			animation: none !important;
+		}
+	}
+</style>
+
+<script>
+	import { casi } from './dati';
+	const dlg = document.querySelector<HTMLDialogElement>('[data-dlg]')!;
+	const q = <T extends HTMLElement | SVGElement>(s: string) => dlg.querySelector<T>(s)!;
+	const pianoGrande = dlg.querySelector<SVGElement>('.dlg__piano')!;
+	let origine: HTMLElement | null = null;
+	let pianoOrigine: SVGElement | null = null;
+	const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	function riempi(id: string) {
+		const c = casi.find((x) => x.id === id)!;
+		q('[data-dlg-piano]').setAttribute('d', c.piano);
+		q('[data-dlg-luogo]').textContent = `${c.luogo} · ${c.tipo}`;
+		q('[data-dlg-titolo]').textContent = c.titolo;
+		q('[data-dlg-nome]').textContent = c.nome;
+		q('[data-dlg-sfida]').textContent = c.sfida;
+		q('[data-dlg-soluzione]').textContent = c.soluzione;
+		q('[data-dlg-numeri]').innerHTML = c.numeri.map(([n, t]) => `<li><b>${n}</b><span>${t}</span></li>`).join('');
+	}
+	const transizione = (fn: () => void) => {
+		const doc = document as Document & { startViewTransition?: (f: () => void) => unknown };
+		if (doc.startViewTransition && !ridotto) doc.startViewTransition(fn);
+		else fn();
+	};
+
+	document.querySelectorAll<HTMLElement>('[data-caso]').forEach((b) =>
+		b.addEventListener('click', () => {
+			origine = b;
+			pianoOrigine = b.querySelector<SVGElement>('.caso__piano');
+			if (pianoOrigine) pianoOrigine.style.viewTransitionName = 'caso';
+			transizione(() => {
+				if (pianoOrigine) pianoOrigine.style.viewTransitionName = '';
+				pianoGrande.style.viewTransitionName = 'caso';
+				riempi(b.dataset.caso!);
+				dlg.showModal();
+				document.body.classList.add('menu-aperto');
+			});
+		}),
+	);
+	function chiudi() {
+		if (pianoOrigine) pianoOrigine.style.viewTransitionName = '';
+		transizione(() => {
+			pianoGrande.style.viewTransitionName = '';
+			if (pianoOrigine) pianoOrigine.style.viewTransitionName = 'caso';
+			dlg.close();
+			document.body.classList.remove('menu-aperto');
+		});
+		setTimeout(() => {
+			if (pianoOrigine) pianoOrigine.style.viewTransitionName = '';
+			origine?.focus({ preventScroll: true });
+		}, 700);
+	}
+	dlg.addEventListener('click', (e) => {
+		const t = e.target as HTMLElement;
+		if (t.closest('[data-chiudi]')) {
+			const verso = t.closest('a');
+			if (verso) {
+				dlg.close();
+				document.body.classList.remove('menu-aperto');
+				return; // il link porta al sopralluogo
+			}
+			chiudi();
+		}
+	});
+	dlg.addEventListener('cancel', (e) => {
+		e.preventDefault();
+		chiudi();
+	});
+</script>

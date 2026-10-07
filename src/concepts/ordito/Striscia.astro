@@ -1,0 +1,73 @@
+---
+// Striscia di parole che scorre: pura decorazione (nascosta ai lettori di schermo), stacca la casa dalle sezioni di colore.
+const parole = ['Domotica', 'Sicurezza', 'Energia', 'Automazioni', 'Luce', 'Clima', 'Regole tue'];
+---
+
+<div class="strisc-box" aria-hidden="true">
+<div class="strisc">
+	<div class="strisc__fila">
+		{[0, 1].map(() => <p>{parole.map((p) => <span>{p}<i></i></span>)}</p>)}
+	</div>
+</div>
+</div>
+
+<style>
+	.strisc-box {
+		overflow: hidden;
+		position: relative;
+		z-index: 3;
+		padding-block: 14px;
+		margin-block: -20px;
+	}
+	.strisc {
+		position: relative;
+		overflow: hidden;
+		background: var(--magenta);
+		color: var(--inchiostro);
+		padding-block: 18px;
+		transform: rotate(-1.4deg) scale(1.03);
+		margin-block: -8px;
+		z-index: 3;
+	}
+	.strisc__fila {
+		display: flex;
+		width: max-content;
+		animation: strisc-corre 38s linear infinite;
+	}
+	.strisc p {
+		display: flex;
+		flex: none;
+	}
+	.strisc span {
+		display: inline-flex;
+		align-items: center;
+		gap: 28px;
+		padding-right: 28px;
+		font-family: var(--titoli);
+		font-size: clamp(2rem, 5vw, 3.8rem);
+		font-weight: 700;
+		letter-spacing: -0.04em;
+		text-transform: uppercase;
+		line-height: 1;
+		white-space: nowrap;
+	}
+	.strisc span:nth-child(even) {
+		color: var(--bianco);
+	}
+	.strisc i {
+		width: 0.42em;
+		height: 0.42em;
+		border-radius: 50%;
+		background: var(--inchiostro);
+	}
+	@keyframes strisc-corre {
+		to {
+			transform: translateX(-50%);
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.strisc__fila {
+			animation: none;
+		}
+	}
+</style>

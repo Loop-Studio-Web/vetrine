@@ -1,0 +1,359 @@
+/* ORDITO — identità "Aurora": inchiostro viola-nero, viola elettrico, magenta, ciano e lime acido.
+   Il colore è luce: il cielo della casa e i bagliori della pagina seguono l'ora; sotto la casa, blocchi di colore a tutta larghezza.
+   Titoli in Syne ExtraBold, testo in Schibsted Grotesk. Vetro, gradienti, grana e scritte che scorrono. */
+:root {
+	--inchiostro: #0b0620;
+	--notte: #150a3b;
+	--notte-2: #1f1058;
+	--viola: #6a2cff;
+	--viola-chiaro: #a98bff;
+	--magenta: #ff2e93;
+	--ciano: #2be4ff;
+	--lime: #d6ff3d;
+	--bianco: #ffffff;
+	--nebbia: #ece8ff;
+	--nebbia-2: #b9b1de; /* testo secondario su inchiostro (contrasto > 7) */
+	--errore: #ff6b6b;
+
+	--aurora: linear-gradient(100deg, var(--viola) 0%, var(--magenta) 52%, #ff9a3d 100%);
+	--aurora-fredda: linear-gradient(100deg, var(--viola-chiaro), var(--ciano) 60%, var(--lime));
+
+	--titoli: 'Syne Variable', system-ui, sans-serif;
+	--testo: 'Schibsted Grotesk Variable', system-ui, sans-serif;
+	--tecnico: 'Share Tech', 'Syne Variable', system-ui, sans-serif; /* h1 e numeri dell'orologio */
+
+	--gutter: clamp(18px, 5vw, 64px);
+	--max: 1320px;
+	--nav-h: 76px;
+	--fascia-h: 34px;
+	--ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+	--bagliore: 255, 46, 147; /* RGB del bagliore che segue l'ora: lo imposta la scena */
+	color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	scroll-behavior: smooth;
+	scroll-padding-top: calc(var(--nav-h) + 8px);
+	-webkit-text-size-adjust: 100%;
+	scrollbar-color: var(--magenta) var(--inchiostro);
+	background: var(--inchiostro);
+	overflow-x: clip;
+}
+
+body {
+	background: var(--inchiostro);
+	color: var(--nebbia);
+	font-family: var(--testo);
+	font-size: 1.06rem;
+	line-height: 1.6;
+	overflow-x: clip;
+}
+body.menu-aperto {
+	overflow: hidden;
+}
+
+/* Scrollbar: filo di gradiente viola → magenta → lime */
+@supports selector(::-webkit-scrollbar) {
+	html {
+		scrollbar-color: auto;
+	}
+	::-webkit-scrollbar {
+		width: 12px;
+		height: 12px;
+	}
+	::-webkit-scrollbar-track {
+		background: var(--inchiostro);
+	}
+	::-webkit-scrollbar-thumb {
+		background: linear-gradient(var(--viola), var(--magenta), var(--lime));
+		border: 3px solid var(--inchiostro);
+		border-radius: 10px;
+	}
+}
+
+::selection {
+	background: var(--lime);
+	color: var(--inchiostro);
+}
+
+img,
+svg,
+canvas {
+	display: block;
+	max-width: 100%;
+}
+a {
+	color: inherit;
+}
+button,
+input,
+select,
+textarea {
+	font: inherit;
+	color: inherit;
+}
+button {
+	cursor: pointer;
+}
+
+h1,
+h2,
+h3,
+h4 {
+	font-family: var(--titoli);
+	line-height: 1;
+	letter-spacing: -0.04em;
+	text-wrap: balance;
+	font-weight: 700;
+}
+
+:focus-visible {
+	outline: 3px solid var(--lime);
+	outline-offset: 3px;
+	border-radius: 6px;
+}
+
+.skip-link {
+	position: absolute;
+	left: 12px;
+	top: -60px;
+	z-index: 400;
+	background: var(--lime);
+	color: var(--inchiostro);
+	padding: 10px 16px;
+	border-radius: 10px;
+	font-weight: 800;
+	text-decoration: none;
+}
+.skip-link:focus {
+	top: calc(var(--fascia, 0px) + 8px);
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+
+.wrap {
+	width: min(100% - var(--gutter) * 2, var(--max));
+	margin-inline: auto;
+}
+
+/* grana: un velo di rumore sulle parti scure, per togliere l'aria "digitale" ai gradienti */
+.grana::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	opacity: 0.09;
+	mix-blend-mode: overlay;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- Il pulsante: gradiente con bagliore, la freccia scorre al passaggio ---------- */
+.pulsante {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.7em;
+	min-height: 52px;
+	padding: 0.7em 1.5em;
+	border: 0;
+	border-radius: 14px;
+	background: var(--aurora);
+	background-size: 160% 100%;
+	background-position: 0 0;
+	color: var(--bianco);
+	font-family: var(--titoli);
+	font-weight: 700;
+	font-size: 0.82rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	text-decoration: none;
+	line-height: 1.1;
+	box-shadow: 0 10px 30px -8px rgba(var(--bagliore), 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+	transition: background-position 0.5s var(--ease), transform 0.25s var(--ease), box-shadow 0.3s;
+	-webkit-tap-highlight-color: transparent;
+}
+.pulsante:hover {
+	background-position: 100% 0;
+	transform: translateY(-2px);
+	box-shadow: 0 16px 38px -8px rgba(var(--bagliore), 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+.pulsante:active {
+	transform: scale(0.97);
+}
+.pulsante span[aria-hidden='true'] {
+	display: inline-block;
+	transition: transform 0.3s var(--ease);
+}
+.pulsante:hover span[aria-hidden='true'] {
+	transform: translateX(4px);
+}
+.pulsante--lime {
+	background: var(--lime);
+	color: var(--inchiostro);
+	box-shadow: 0 10px 30px -10px rgba(214, 255, 61, 0.7);
+}
+.pulsante--lime:hover {
+	background: #e6ff7a;
+	box-shadow: 0 16px 38px -10px rgba(214, 255, 61, 0.9);
+}
+.pulsante--vetro {
+	background: rgba(255, 255, 255, 0.08);
+	border: 1px solid rgba(255, 255, 255, 0.28);
+	box-shadow: none;
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
+}
+.pulsante--vetro:hover {
+	background: rgba(255, 255, 255, 0.16);
+	box-shadow: none;
+}
+.pulsante--inchiostro {
+	background: var(--inchiostro);
+	color: var(--bianco);
+	box-shadow: 0 10px 30px -10px rgba(11, 6, 32, 0.6);
+}
+.pulsante--inchiostro:hover {
+	background: var(--notte-2);
+}
+.pulsante--piccolo {
+	min-height: 42px;
+	padding: 0.5em 1.1em;
+	font-size: 0.74rem;
+}
+.pulsante[disabled],
+.pulsante[aria-disabled='true'] {
+	opacity: 0.45;
+	cursor: not-allowed;
+	transform: none;
+}
+
+/* ---------- Vetro: schede traslucide con bagliore che segue il mouse ---------- */
+.vetro {
+	position: relative;
+	border-radius: 26px;
+	background: linear-gradient(140deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03)), rgba(14, 8, 40, 0.58);
+	border: 1px solid rgba(255, 255, 255, 0.16);
+	-webkit-backdrop-filter: blur(22px) saturate(1.5);
+	backdrop-filter: blur(22px) saturate(1.5);
+	box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+	overflow: hidden;
+}
+.vetro::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	opacity: 0;
+	background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), rgba(var(--bagliore), 0.28), transparent 60%);
+	transition: opacity 0.4s;
+}
+.vetro:hover::before {
+	opacity: 1;
+}
+
+/* ---------- Etichette e titoli ---------- */
+.etichetta {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.7em;
+	font-family: var(--titoli);
+	font-weight: 700;
+	font-size: 0.74rem;
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
+	color: var(--lime);
+}
+.etichetta::before {
+	content: '';
+	width: 9px;
+	height: 9px;
+	border-radius: 50%;
+	background: currentColor;
+	box-shadow: 0 0 12px 2px currentColor;
+}
+
+/* testo con gradiente d'aurora e testo a contorno */
+.aurora-testo {
+	background: var(--aurora-fredda);
+	background-size: 200% 100%;
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+	-webkit-text-fill-color: transparent;
+	animation: aurora-scorre 8s ease-in-out infinite alternate;
+}
+@keyframes aurora-scorre {
+	to {
+		background-position: 100% 0;
+	}
+}
+.contorno {
+	color: var(--viola-chiaro);
+}
+
+.sezione {
+	position: relative;
+	padding-block: clamp(80px, 11vw, 150px);
+	overflow: hidden;
+}
+.sezione__testa {
+	display: grid;
+	gap: 18px;
+	max-width: 62ch;
+	margin-bottom: clamp(36px, 5vw, 64px);
+}
+.sezione__testa h2 {
+	font-size: clamp(2.1rem, 4.8vw, 4rem);
+	line-height: 1.02;
+}
+.sezione__testa p:not(.etichetta) {
+	font-size: 1.14rem;
+	max-width: 52ch;
+}
+
+/* Rivelazione allo scroll (solo con JS) */
+.js [data-reveal] {
+	opacity: 0;
+	transform: translateY(28px);
+	filter: blur(6px);
+	transition: opacity 0.8s var(--ease), transform 0.8s var(--ease), filter 0.8s var(--ease);
+}
+.js [data-reveal].is-visible {
+	opacity: 1;
+	transform: none;
+	filter: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+	}
+	.js [data-reveal] {
+		opacity: 1;
+		transform: none;
+		filter: none;
+	}
+}

@@ -1,0 +1,325 @@
+---
+// Richiesta di sopralluogo: modulo con errori chiari e ricevuta finale. Si precompila dal capitolato (evento ordito:capitolato).
+import { tipi } from './dati';
+---
+
+<section class="sop sezione grana" id="sopralluogo" aria-labelledby="sop-t">
+	<div class="wrap sop__in">
+		<header class="sezione__testa" data-reveal>
+			<p class="etichetta">Sopralluogo</p>
+			<h2 id="sop-t">Vieni a vedere dove abiti, <span class="aurora-testo">o dove lavori.</span></h2>
+			<p>Un’ora insieme sul posto, senza impegno. Scegli un giorno e raccontaci cosa vorresti che la casa facesse da sola.</p>
+			<ul class="sop__fatti">
+				<li><b>Gratuito</b> entro 40 km</li>
+				<li><b>Capitolato</b> in 5 giorni</li>
+				<li><b>Nessun</b> obbligo di acquisto</li>
+			</ul>
+		</header>
+
+		<div class="sop__scheda vetro" data-sop>
+			<form class="sop__form" data-form novalidate data-reveal>
+				<div class="campo">
+					<label for="s-nome">Nome e cognome</label>
+					<input id="s-nome" name="nome" autocomplete="name" aria-describedby="e-nome" />
+					<p class="campo__err" id="e-nome" hidden></p>
+				</div>
+				<div class="campo">
+					<label for="s-mail">Email</label>
+					<input id="s-mail" name="mail" type="email" inputmode="email" autocomplete="email" aria-describedby="e-mail" />
+					<p class="campo__err" id="e-mail" hidden></p>
+				</div>
+				<div class="campo">
+					<label for="s-tipo">Tipo di immobile</label>
+					<select id="s-tipo" name="tipo">
+						{tipi.map((t) => <option value={t.nome}>{t.nome}</option>)}
+					</select>
+				</div>
+				<fieldset class="campo">
+					<legend>Giorno preferito</legend>
+					<div class="chips" data-giorni></div>
+					<p class="campo__err" id="e-giorno" hidden></p>
+				</fieldset>
+				<div class="campo">
+					<label for="s-msg">Cosa vorresti automatizzare?</label>
+					<textarea id="s-msg" name="msg" rows="4" placeholder="Per esempio: luci e tapparelle, un impianto che mi avvisi se esco con le finestre aperte…"></textarea>
+				</div>
+				<button class="pulsante pulsante--lime" type="submit">Prenota il sopralluogo <span aria-hidden="true">→</span></button>
+				<p class="sop__nota">Dimostrazione: nessun dato viene inviato o salvato.</p>
+			</form>
+
+			<div class="ric" data-ricevuta hidden role="status" tabindex="-1">
+				<p class="ric__t">Sopralluogo richiesto</p>
+				<p class="ric__n" data-r-n>SOP-0000</p>
+				<dl class="ric__dati">
+					<div><dt>Per</dt><dd data-r-nome></dd></div>
+					<div><dt>Immobile</dt><dd data-r-tipo></dd></div>
+					<div><dt>Giorno</dt><dd data-r-giorno></dd></div>
+					<div class="ric__note" hidden><dt>Appunti</dt><dd data-r-msg></dd></div>
+				</dl>
+				<p class="sop__nota">Nei fatti non succede niente: è una vetrina. In una vera pagina qui arriverebbe una conferma via email.</p>
+				<button class="pulsante pulsante--vetro pulsante--piccolo" type="button" data-r-nuova>Compila di nuovo</button>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.sop {
+		background:
+			radial-gradient(60% 70% at 100% 0%, rgba(255, 46, 147, 0.45), transparent 65%),
+			radial-gradient(60% 70% at 0% 100%, rgba(106, 44, 255, 0.55), transparent 65%),
+			var(--inchiostro);
+		color: var(--nebbia);
+	}
+	.sop__in {
+		position: relative;
+		display: grid;
+		grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+		gap: clamp(28px, 5vw, 80px);
+		align-items: start;
+	}
+	.sop__in .sezione__testa {
+		margin-bottom: 0;
+	}
+	.sop .sezione__testa h2 {
+		color: var(--bianco);
+	}
+	.sop__fatti {
+		list-style: none;
+		display: grid;
+		gap: 10px;
+		margin-top: 10px;
+	}
+	.sop__fatti li {
+		padding-left: 30px;
+		position: relative;
+		font-size: 1rem;
+	}
+	.sop__fatti li::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0.35em;
+		width: 16px;
+		height: 16px;
+		border-radius: 50%;
+		background: var(--lime);
+		box-shadow: 0 0 14px var(--lime);
+	}
+	.sop__fatti b {
+		color: var(--lime);
+	}
+	.sop__scheda {
+		min-width: 0;
+		padding: clamp(22px, 3vw, 38px);
+	}
+	.sop__form {
+		display: grid;
+		gap: 20px;
+	}
+	.campo {
+		display: grid;
+		gap: 8px;
+		border: 0;
+		min-width: 0;
+	}
+	.campo label,
+	.campo legend {
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: 0.78rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--nebbia);
+	}
+	.campo input,
+	.campo select,
+	.campo textarea {
+		width: 100%;
+		min-width: 0;
+		padding: 0.85em 1em;
+		border: 1px solid rgba(255, 255, 255, 0.28);
+		border-radius: 14px;
+		background: rgba(255, 255, 255, 0.07);
+		color: var(--bianco);
+		transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+	}
+	.campo select option {
+		color: var(--inchiostro);
+	}
+	.campo textarea {
+		resize: vertical;
+	}
+	.campo input::placeholder,
+	.campo textarea::placeholder {
+		color: var(--nebbia-2);
+	}
+	.campo input:focus-visible,
+	.campo select:focus-visible,
+	.campo textarea:focus-visible {
+		border-color: var(--lime);
+		box-shadow: 0 0 0 4px rgba(214, 255, 61, 0.25);
+		background: rgba(255, 255, 255, 0.12);
+		outline: none;
+	}
+	.campo [aria-invalid='true'] {
+		border-color: var(--errore);
+		background: rgba(255, 107, 107, 0.12);
+	}
+	.campo__err {
+		color: var(--errore);
+		font-size: 0.9rem;
+		font-weight: 700;
+	}
+	.sop__nota {
+		font-size: 0.84rem;
+		color: var(--nebbia-2);
+	}
+	.ric {
+		display: grid;
+		gap: 14px;
+		animation: sop-entra 0.6s var(--ease);
+	}
+	.ric[hidden] {
+		display: none;
+	}
+	@keyframes sop-entra {
+		from {
+			opacity: 0;
+			transform: translateY(14px) scale(0.97);
+		}
+	}
+	.ric:focus {
+		outline: none;
+	}
+	.ric__t {
+		font-family: var(--titoli);
+		font-size: 0.78rem;
+		font-weight: 700;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: var(--lime);
+	}
+	.ric__n {
+		font-family: var(--titoli);
+		font-size: clamp(2.8rem, 8vw, 5rem);
+		font-weight: 800;
+		letter-spacing: -0.06em;
+		line-height: 1;
+		background: var(--aurora-fredda);
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+		-webkit-text-fill-color: transparent;
+	}
+	.ric__dati {
+		display: grid;
+		gap: 10px;
+		padding-block: 16px;
+		border-block: 1px dashed rgba(255, 255, 255, 0.35);
+	}
+	.ric__dati div {
+		display: grid;
+		grid-template-columns: 6.5em 1fr;
+		gap: 12px;
+	}
+	.ric__dati div[hidden] {
+		display: none;
+	}
+	.ric__dati dt {
+		color: var(--nebbia-2);
+		font-size: 0.9rem;
+	}
+	.ric__dati dd {
+		font-weight: 700;
+		color: var(--bianco);
+		overflow-wrap: anywhere;
+	}
+	.ric .pulsante {
+		justify-self: start;
+	}
+	@media (max-width: 900px) {
+		.sop__in {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+</style>
+
+<script>
+	const radice = document.querySelector<HTMLElement>('[data-sop]')!;
+	const q = <T extends HTMLElement>(s: string) => radice.querySelector<T>(s)!;
+	const form = q<HTMLFormElement>('[data-form]');
+	const ric = q<HTMLElement>('[data-ricevuta]');
+	const giorni = q<HTMLElement>('[data-giorni]');
+	let scelto = '';
+
+	// i prossimi cinque giorni lavorativi, da oggi
+	const nomi = ['dom', 'lun', 'mar', 'mer', 'gio', 'ven', 'sab'];
+	const mesi = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
+	const d = new Date();
+	const lista: { id: string; t: string; lungo: string }[] = [];
+	for (let k = 1; lista.length < 5 && k < 14; k++) {
+		const x = new Date(d.getFullYear(), d.getMonth(), d.getDate() + k);
+		if (x.getDay() === 0 || x.getDay() === 6) continue;
+		lista.push({ id: x.toISOString().slice(0, 10), t: `${nomi[x.getDay()]} ${x.getDate()}/${x.getMonth() + 1}`, lungo: `${nomi[x.getDay()]} ${x.getDate()} ${mesi[x.getMonth()]}` });
+	}
+	giorni.innerHTML = lista.map((g) => `<button class="chip" type="button" aria-pressed="false" data-g="${g.id}">${g.t}</button>`).join('');
+	giorni.addEventListener('click', (e) => {
+		const b = (e.target as HTMLElement).closest<HTMLElement>('[data-g]');
+		if (!b) return;
+		scelto = b.dataset.g!;
+		giorni.querySelectorAll('[data-g]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+		const er = q('#e-giorno');
+		er.hidden = true;
+	});
+
+	// precompila dal capitolato
+	addEventListener('ordito:capitolato', (e) => {
+		const { riassunto, totale } = (e as CustomEvent<{ riassunto: string; totale: string }>).detail;
+		q<HTMLTextAreaElement>('#s-msg').value = `Capitolato: ${riassunto}${totale ? ` Investimento indicativo ${totale}.` : ''}`;
+		const tipoTesto = riassunto.split(',')[0];
+		const sel = q<HTMLSelectElement>('#s-tipo');
+		[...sel.options].forEach((o) => o.value === tipoTesto && (sel.value = o.value));
+	});
+
+	function errore(id: string, campo: HTMLElement | null, testo: string) {
+		const p = q(`#e-${id}`);
+		p.hidden = !testo;
+		p.textContent = testo;
+		campo?.setAttribute('aria-invalid', testo ? 'true' : 'false');
+		return !testo;
+	}
+	form.addEventListener('submit', (e) => {
+		e.preventDefault();
+		const nome = q<HTMLInputElement>('#s-nome'), mail = q<HTMLInputElement>('#s-mail');
+		const ok = [
+			errore('nome', nome, nome.value.trim().length < 3 ? 'Scrivi il tuo nome e cognome.' : ''),
+			errore('mail', mail, !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail.value.trim()) ? 'Controlla l’email: manca qualcosa (per esempio la chiocciola).' : ''),
+			errore('giorno', null, scelto ? '' : 'Scegli un giorno per il sopralluogo.'),
+		];
+		if (ok.includes(false)) {
+			(form.querySelector('[aria-invalid="true"]') as HTMLElement | null)?.focus();
+			if (!scelto) q<HTMLElement>('[data-g]').focus();
+			return;
+		}
+		const g = lista.find((x) => x.id === scelto)!;
+		q('[data-r-n]').textContent = `SOP-${String(1000 + ((nome.value.length * 37 + mail.value.length * 11 + Number(scelto.slice(-2)) * 13) % 9000))}`;
+		q('[data-r-nome]').textContent = nome.value.trim();
+		q('[data-r-tipo]').textContent = q<HTMLSelectElement>('#s-tipo').value;
+		q('[data-r-giorno]').textContent = g.lungo;
+		const msg = q<HTMLTextAreaElement>('#s-msg').value.trim();
+		q('[data-r-msg]').textContent = msg;
+		(ric.querySelector('.ric__note') as HTMLElement).hidden = !msg;
+		form.hidden = true;
+		ric.hidden = false;
+		ric.focus();
+	});
+	q('[data-r-nuova]').addEventListener('click', () => {
+		ric.hidden = true;
+		form.hidden = false;
+		form.reset();
+		scelto = '';
+		giorni.querySelectorAll('[data-g]').forEach((x) => x.setAttribute('aria-pressed', 'false'));
+		q<HTMLInputElement>('#s-nome').focus();
+	});
+</script>

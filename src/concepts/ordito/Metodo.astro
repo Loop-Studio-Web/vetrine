@@ -1,0 +1,176 @@
+---
+// Metodo: quattro passaggi su un blocco ciano, con numeri giganti a contorno e un filo d'inchiostro che si tende quando la sezione entra in vista.
+const passi = [
+	{ t: 'Sopralluogo', d: 'Veniamo a vedere il posto, parliamo di come lo vivi e prendiamo le misure. Niente preventivi a distanza.', k: '1 ora' },
+	{ t: 'Progetto', d: 'Ti consegniamo un capitolato chiaro: cosa si installa, dove, quanto costa e cosa si risparmia.', k: '5 giorni' },
+	{ t: 'Installazione', d: 'Lavoriamo con pochi interventi e senza lasciare il cantiere aperto. Collaudiamo ogni regola con te.', k: '1–5 giorni' },
+	{ t: 'Assistenza', d: 'Un numero solo, aggiornamenti dell’impianto e un controllo dopo tre mesi, per sistemare ciò che si può migliorare.', k: 'Sempre' },
+];
+---
+
+<section class="met sezione" id="metodo" aria-labelledby="met-t">
+	<div class="wrap">
+		<header class="sezione__testa" data-reveal>
+			<p class="etichetta">Metodo</p>
+			<h2 id="met-t">Prima capiamo, <span class="contorno">poi tessiamo.</span></h2>
+			<p>Quattro passaggi, sempre gli stessi, per non lasciarti mai con un impianto che non sai usare.</p>
+		</header>
+
+		<ol class="met__fili" data-met>
+			{
+				passi.map((p, i) => (
+					<li style={`--i:${i}`}>
+						<span class="met__n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+						<h3>{p.t}</h3>
+						<p>{p.d}</p>
+						<p class="met__k">{p.k}</p>
+					</li>
+				))
+			}
+		</ol>
+	</div>
+</section>
+
+<style>
+	.met {
+		background: var(--ciano);
+		color: var(--inchiostro);
+	}
+	.met .etichetta {
+		color: var(--inchiostro);
+	}
+	.met .sezione__testa h2 {
+		color: var(--inchiostro);
+	}
+	.met .contorno {
+		color: var(--viola);
+	}
+	.met__fili {
+		position: relative;
+		list-style: none;
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 30px;
+		padding-top: 30px;
+	}
+	/* il filo: una trama d'inchiostro che attraversa i quattro passaggi */
+	.met__fili::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 8px;
+		height: 4px;
+		border-radius: 4px;
+		background: var(--inchiostro);
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 1.6s var(--ease) 0.2s;
+	}
+	.met__fili.is-visibile::before {
+		transform: scaleX(1);
+	}
+	.met__fili li {
+		position: relative;
+		display: grid;
+		gap: 10px;
+		align-content: start;
+		opacity: 0;
+		transform: translateY(24px);
+		transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+		transition-delay: calc(var(--i) * 220ms + 400ms);
+	}
+	.met__fili.is-visibile li {
+		opacity: 1;
+		transform: none;
+	}
+	.met__fili li::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: -30px;
+		width: 20px;
+		height: 20px;
+		border-radius: 50%;
+		background: var(--magenta);
+		border: 4px solid var(--inchiostro);
+	}
+	.met__n {
+		font-family: var(--titoli);
+		font-size: clamp(3.8rem, 6.4vw, 5.6rem);
+		font-weight: 700;
+		letter-spacing: -0.07em;
+		line-height: 0.85;
+		color: var(--viola);
+	}
+	.met__fili h3 {
+		font-size: 1.5rem;
+	}
+	.met__fili p {
+		font-size: 1rem;
+	}
+	.met__fili .met__k {
+		margin-top: 4px;
+		align-self: start;
+		justify-self: start;
+		padding: 5px 12px;
+		border-radius: 999px;
+		background: var(--inchiostro);
+		color: var(--ciano);
+		font-family: var(--titoli);
+		font-weight: 700;
+		font-size: 0.72rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+	@media (max-width: 960px) {
+		.met__fili {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+	@media (max-width: 560px) {
+		.met__fili {
+			grid-template-columns: minmax(0, 1fr);
+			padding-top: 0;
+			padding-left: 34px;
+		}
+		.met__fili::before {
+			left: 8px;
+			right: auto;
+			top: 0;
+			bottom: 0;
+			width: 4px;
+			height: auto;
+			transform: scaleY(0);
+			transform-origin: top;
+		}
+		.met__fili.is-visibile::before {
+			transform: scaleY(1);
+		}
+		.met__fili li::before {
+			left: -34px;
+			top: 14px;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.met__fili::before,
+		.met__fili li {
+			transition: none;
+			opacity: 1;
+			transform: none;
+		}
+	}
+</style>
+
+<script>
+	const el = document.querySelector<HTMLElement>('[data-met]')!;
+	new IntersectionObserver(
+		(v, io) => {
+			if (v[0].isIntersecting) {
+				el.classList.add('is-visibile');
+				io.disconnect();
+			}
+		},
+		{ threshold: 0.25 },
+	).observe(el);
+</script>
