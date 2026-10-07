@@ -33,6 +33,16 @@ const voci = [
 
 <!-- menù mobile, fuori dall'header (il backdrop-filter farebbe da blocco contenitore): una stanza buia in cui le luci si accendono una dopo l'altra -->
 <div class="menu" id="menu" data-menu role="dialog" aria-modal="true" aria-label="Menu" hidden>
+	<div class="menu__top">
+		<a class="menu__logo" href="#top">
+			<img src={simbolo.src} alt="" width="40" height="40" />
+			<img class="menu__marchio" src={marchio.src} alt="" width="90" height="20" />
+			<span class="sr-only">Ordito, torna in cima</span>
+		</a>
+		<button class="menu__x" type="button" data-chiudi aria-label="Chiudi il menu">
+			<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" /></svg>
+		</button>
+	</div>
 	<nav class="menu__nav" aria-label="Sezioni della pagina">
 		{
 			voci.map((v, i) => (
@@ -179,6 +189,9 @@ const voci = [
 	.menu {
 		position: fixed;
 		inset: 0;
+		height: 100vh;
+		height: 100lvh;
+		min-height: 100%;
 		z-index: 160;
 		background:
 			radial-gradient(90% 60% at 100% 0%, #ff2e93 0%, transparent 60%),
@@ -187,8 +200,9 @@ const voci = [
 		color: var(--bianco);
 		display: flex;
 		flex-direction: column;
-		justify-content: center;
-		padding: calc(var(--nav-h) + 30px) var(--gutter) 40px;
+		justify-content: flex-start;
+		overflow-y: auto;
+		padding: 100px var(--gutter) 20px;
 		clip-path: circle(0% at calc(100% - 52px) 46px);
 		transition: clip-path 0.75s var(--ease);
 	}
@@ -245,8 +259,50 @@ const voci = [
 		text-transform: uppercase;
 		color: var(--inchiostro);
 	}
+	.menu__top {
+		position: absolute;
+		top: 14px;
+		left: var(--gutter);
+		right: var(--gutter);
+		height: 62px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+	.menu__logo {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		text-decoration: none;
+	}
+	.menu__logo img:first-child {
+		width: 38px;
+		height: 38px;
+	}
+	.menu__logo img.menu__marchio {
+		height: 20px;
+		width: auto;
+	}
+	.menu__x {
+		display: grid;
+		place-items: center;
+		width: 46px;
+		height: 46px;
+		border-radius: 50%;
+		border: 1px solid rgba(255, 255, 255, 0.4);
+		background: rgba(255, 255, 255, 0.12);
+		color: var(--bianco);
+		cursor: pointer;
+		transition: background 0.3s, color 0.3s, transform 0.5s var(--ease);
+	}
+	.menu__x:hover,
+	.menu__x:focus-visible {
+		background: var(--lime);
+		color: var(--inchiostro);
+		transform: rotate(90deg);
+	}
 	.menu__nota {
-		margin-top: 36px;
+		margin-top: 24px;
 		font-size: 0.85rem;
 		color: rgba(255, 255, 255, 0.75);
 	}
@@ -295,8 +351,9 @@ const voci = [
 			menu.classList.add('is-open');
 			burger.setAttribute('aria-expanded', 'true');
 			document.body.classList.add('menu-aperto');
-			menu.querySelector<HTMLElement>('a')?.focus({ preventScroll: true });
+			menu.querySelector<HTMLElement>('.menu__nav a')?.focus({ preventScroll: true });
 		};
+		menu.querySelector('[data-chiudi]')?.addEventListener('click', () => chiudi());
 		burger.addEventListener('click', () => (menu.classList.contains('is-open') ? chiudi() : apri()));
 		menu.addEventListener('click', (e) => {
 			const t = e.target as HTMLElement;
@@ -305,7 +362,7 @@ const voci = [
 		addEventListener('keydown', (e) => {
 			if (e.key === 'Escape' && menu.classList.contains('is-open')) chiudi();
 			if (e.key === 'Tab' && menu.classList.contains('is-open')) {
-				const el = [burger, ...menu.querySelectorAll<HTMLElement>('a')];
+				const el = [...menu.querySelectorAll<HTMLElement>('a, button')];
 				const i = el.indexOf(document.activeElement as HTMLElement);
 				if (e.shiftKey && i <= 0) {
 					e.preventDefault();
