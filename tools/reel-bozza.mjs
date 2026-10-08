@@ -18,12 +18,12 @@ mkdirSync(WORK, { recursive: true });
 
 const T = {
 	it: {
-		t1: 'Apre<br><em>Loop Street.</em>', t2: '11 vetrine.<br><em>11 mestieri.</em>', t3: 'Ogni dettaglio<br><em>è diverso.</em>',
+		t1: 'Apre<br><em>Loop Street.</em>', t2: 'Ogni mestiere.<br><em>Una vetrina.</em>', t3: 'Ogni dettaglio<br><em>è diverso.</em>',
 		t4: 'Non sono immagini.<br><em>Funzionano.</em>', t5: 'Scegline una.<br><em>Parti da qui.</em>',
 		macro: { ristorazione: 'Ristorazione', benessere: 'Benessere', tech: 'Tech', abitare: 'Abitare' }, url: 'vetrine.theloopstudio.org', t6: 'Ne vuoi una<br><em>così?</em>',
 	},
 	en: {
-		t1: 'Loop Street<br><em>is opening.</em>', t2: '11 storefronts.<br><em>11 trades.</em>', t3: 'Every detail<br><em>is different.</em>',
+		t1: 'Loop Street<br><em>is opening.</em>', t2: 'Every trade.<br><em>One storefront.</em>', t3: 'Every detail<br><em>is different.</em>',
 		t4: 'Not just pictures.<br><em>They work.</em>', t5: 'Pick one.<br><em>Start here.</em>',
 		macro: { ristorazione: 'Dining', benessere: 'Wellness', tech: 'Tech', abitare: 'Home & craft' }, url: 'vetrine.theloopstudio.org', t6: 'Want one<br><em>like it?</em>',
 	},
@@ -110,7 +110,7 @@ const X = 0.9;
 ff('-i', `${WORK}/s1.mp4`, '-i', `${WORK}/s2.mp4`, '-filter_complex', `[0:v][1:v]xfade=transition=fade:duration=${X}:offset=${d1 - X}[v]`, '-map', '[v]', ...ENC, `${WORK}/ab.mp4`);
 const parts = ['ab'];
 
-// 3) undici concept leggibili: fermi con lento zoom (2 battiti) e, su Ossidiana e Aeterna, uno scroll lento x2 (4 battiti), col nome del settore
+// 3) i concept leggibili: fermi con lento zoom (2 battiti) e, su Ossidiana e Aeterna, uno scroll lento x2 (4 battiti), col nome del settore
 const lenti = new Set(['grande-ristorante', 'longevity']);
 const ordine = ['trattoria', 'ristopub', 'grande-ristorante', 'barbiere', 'estetica', 'longevity', 'riparazioni', 'pc-gaming', 'studio', 'idraulico', 'ristrutturazioni'];
 for (const slug of ordine) {
@@ -145,12 +145,12 @@ parts.push('fin', 'fin2');
 const inputs = parts.flatMap((p) => ['-i', `${WORK}/${p}.mp4`]);
 const chain = parts.map((_, i) => `[${i}:v]`).join('');
 ff(...inputs, '-filter_complex', `${chain}concat=n=${parts.length}:v=1:a=0[v]`, '-map', '[v]', '-r', '30', '-c:v', 'libx264', '-crf', '15', '-preset', 'medium', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', '-an', `${OUT}/bozza-${lang}.mp4`);
-// 7) musica: il brano parte dal primo battito; per i primi 26 battiti è attutito (passa-basso) e si apre in 2 battiti, quando partono i fermi
-const MUSICA = process.env.MUSICA || 'C:/Users/utente/Downloads/monume-house-519225.mp3';
+// 7) musica: il brano originale, senza filtri né normalizzazione (che distorcevano i bassi), solo dissolvenza in entrata e uscita
+const MUSICA = process.env.MUSICA || `${OUT}/monume-house-519225.mp3`;
 if (MUSICA !== '0') {
-	const tot = prevF / 30, x0 = (AB_BEATS - 2) * B, w = 2 * B;
+	const tot = prevF / 30;
 	ff('-i', `${OUT}/bozza-${lang}.mp4`, '-ss', String(process.env.SS || 0), '-i', MUSICA, '-filter_complex',
-		`[1:a]atrim=duration=${tot + 1},asetpts=PTS-STARTPTS,asplit[a1][a2];[a1]lowpass=f=420,volume='1-min(1,max(0,(t-${x0})/${w}))':eval=frame[b];[a2]volume='min(1,max(0,(t-${x0})/${w}))':eval=frame[c];[b][c]amix=inputs=2:normalize=0,atrim=duration=${tot},afade=t=in:d=0.6,afade=t=out:st=${tot - 6 * B}:d=${6 * B},loudnorm=I=-14:TP=-1.5[a]`,
+		`[1:a]atrim=duration=${tot + 1},asetpts=PTS-STARTPTS,atrim=duration=${tot},afade=t=in:d=0.6,afade=t=out:st=${tot - 6 * B}:d=${6 * B}[a]`,
 		'-map', '0:v', '-map', '[a]', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', `${OUT}/bozza-${lang}-musica.mp4`);
 	console.log('ok', `${OUT}/bozza-${lang}-musica.mp4`, tot.toFixed(2), 's');
 }
