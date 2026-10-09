@@ -1,0 +1,395 @@
+---
+/* 1:1 — La materioteca: un campione a grandezza naturale nel buio, una torcia radente
+   (cursore, dito o automatica) che fa uscire la materia. Si sceglie il campione, lo si
+   aggiunge al brief (evento scalavera:campione). Senza WebGL2 resta la foto del campione. */
+import { getImage } from 'astro:assets';
+import { MATERIALI } from './dati';
+
+const col = import.meta.glob<{ default: ImageMetadata }>('../../assets/scalavera/materia/*-colore.jpg', { eager: true });
+const ril = import.meta.glob<{ default: ImageMetadata }>('../../assets/scalavera/materia/*-rilievo.jpg', { eager: true });
+const trova = (g: typeof col, id: string, suff: string) => Object.entries(g).find(([k]) => k.endsWith(`/${id}-${suff}.jpg`))?.[1].default;
+
+const campioni = await Promise.all(
+	MATERIALI.map(async (m) => {
+		const c = trova(col, m.id, 'colore');
+		const r = trova(ril, m.id, 'rilievo');
+		const colore = c ? await getImage({ src: c, width: 1280, format: 'webp', quality: 80 }) : null;
+		const rilievo = r ? await getImage({ src: r, width: 1280, format: 'webp', quality: 90 }) : null;
+		const mini = c ? await getImage({ src: c, width: 160, format: 'webp', quality: 70 }) : null;
+		return { ...m, col: colore?.src, ril: rilievo?.src, mini: mini?.src };
+	}),
+);
+const primo = campioni[0];
+---
+
+<section class="materia scuro" id="materia" data-tono="scuro" aria-labelledby="materia-titolo">
+	<div class="materia__in">
+		<header class="materia__testa">
+			<p class="etichetta"><span class="giallo">1:1</span> · La materioteca</p>
+			<h2 id="materia-titolo">Qui non si disegna. <em>Si tocca.</em></h2>
+			<p>
+				Sette campioni dal nostro archivio, a grandezza naturale. La luce arriva di taglio, come in cantiere alle sette di sera: è così che si vede se una pietra è viva.
+			</p>
+		</header>
+
+		<div class="banco">
+			<figure class="campione" data-campione>
+				<img class="campione__foto" src={primo.col} alt="" width="1280" height="1280" loading="lazy" decoding="async" />
+				<canvas aria-hidden="true"></canvas>
+				<figcaption class="campione__nota" aria-live="polite">
+					<span class="etichetta" data-dida-fam>{primo.famiglia}</span>
+					<span class="campione__nome" data-dida-nome>{primo.nome}</span>
+				</figcaption>
+				<p class="campione__aiuto etichetta" aria-hidden="true">
+					<span class="solo-mouse">Muovi il cursore: la torcia sei tu</span>
+					<span class="solo-touch">Tocca il campione per spostare la luce</span>
+				</p>
+			</figure>
+
+			<div class="scheda">
+				<fieldset class="scelta">
+					<legend class="etichetta">Campioni</legend>
+					<ul>
+						{campioni.map((c, i) => (
+							<li>
+								<label class="tessera">
+									<input type="radio" name="campione" value={c.id} checked={i === 0} data-col={c.col} data-ril={c.ril} data-tipo={c.tipo} />
+									<span class={`tessera__colore tessera__colore--${c.id}`} style={c.mini ? `background-image:url(${c.mini})` : undefined} aria-hidden="true"></span>
+									<span class="tessera__nome">{c.nome}</span>
+								</label>
+							</li>
+						))}
+					</ul>
+				</fieldset>
+
+				{campioni.map((c, i) => (
+					<dl class="dati" data-dati={c.id} hidden={i !== 0}>
+						<div><dt>Famiglia</dt><dd>{c.famiglia}</dd></div>
+						<div><dt>Provenienza</dt><dd>{c.origine}</dd></div>
+						<div><dt>Finitura</dt><dd>{c.finitura}</dd></div>
+						<div><dt>Dove lo usiamo</dt><dd>{c.uso}</dd></div>
+					</dl>
+				))}
+
+				<button type="button" class="bottone su-scuro scheda__brief" aria-pressed="false" data-brief>
+					<span data-brief-t>Aggiungi al tuo brief</span>
+				</button>
+				<p class="scheda__nota">Nel brief diventa la tua tavola materiali. Campioni fisici in studio su appuntamento.</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.materia {
+		position: relative;
+		padding: clamp(5rem, 10vw, 9rem) var(--gutter);
+		background:
+			radial-gradient(80% 60% at 20% 0%, oklch(0.22 0.008 210), transparent 70%),
+			var(--basalto);
+	}
+	.materia__in {
+		max-width: var(--max);
+		margin-inline: auto;
+	}
+	.giallo {
+		color: var(--metro);
+	}
+	.materia__testa {
+		max-width: 46rem;
+		margin-bottom: clamp(2.5rem, 5vw, 4rem);
+	}
+	.materia__testa h2 {
+		font-size: clamp(2.4rem, 5.4vw, 5rem);
+		margin: 1rem 0 1.4rem;
+		color: #f1f3f1;
+	}
+	.materia__testa em {
+		font-style: italic;
+		font-weight: 300;
+	}
+	.materia__testa p:last-child {
+		font-size: 1.08rem;
+		max-width: 36rem;
+		margin: 0;
+	}
+	.banco {
+		display: grid;
+		grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+		gap: clamp(1.5rem, 4vw, 4rem);
+		align-items: start;
+	}
+	.campione {
+		position: relative;
+		margin: 0;
+		aspect-ratio: 1;
+		background: #050607;
+		overflow: hidden;
+		cursor: crosshair;
+		touch-action: pan-y;
+	}
+	.campione__foto,
+	.campione canvas {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	/* Senza WebGL: la foto con una luce radente finta. */
+	.campione__foto {
+		filter: brightness(0.75) contrast(1.1);
+	}
+	.campione::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: radial-gradient(60% 60% at 30% 30%, transparent, oklch(0 0 0 / 0.75));
+		pointer-events: none;
+		transition: opacity 0.6s ease;
+	}
+	.campione canvas {
+		opacity: 0;
+		transition: opacity 0.8s ease;
+	}
+	.campione.pronto canvas {
+		opacity: 1;
+	}
+	.campione.pronto::after {
+		opacity: 0;
+	}
+	.campione__nota {
+		position: absolute;
+		left: 1.2rem;
+		bottom: 1.1rem;
+		display: grid;
+		gap: 0.3rem;
+		color: #f1f3f1;
+		text-shadow: 0 1px 10px oklch(0 0 0 / 0.8);
+		pointer-events: none;
+	}
+	.campione__nome {
+		font-family: var(--titoli);
+		font-size: clamp(1.6rem, 3vw, 2.4rem);
+		font-weight: 350;
+	}
+	.campione__aiuto {
+		position: absolute;
+		right: 1.2rem;
+		top: 1.1rem;
+		margin: 0;
+		color: var(--nebbia);
+		font-size: 0.64rem;
+		text-shadow: 0 1px 8px oklch(0 0 0 / 0.9);
+		pointer-events: none;
+	}
+	.solo-touch {
+		display: none;
+	}
+	@media (pointer: coarse) {
+		.solo-mouse {
+			display: none;
+		}
+		.solo-touch {
+			display: inline;
+		}
+	}
+	.scelta {
+		border: 0;
+		margin: 0;
+		padding: 0;
+		min-width: 0;
+	}
+	.scelta legend {
+		padding: 0;
+		margin-bottom: 1rem;
+		color: var(--nebbia-2);
+	}
+	.scelta ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.5rem;
+	}
+	.scelta li:last-child:nth-child(odd) {
+		grid-column: 1 / -1;
+	}
+	.tessera {
+		display: flex;
+		align-items: center;
+		gap: 0.8rem;
+		min-height: 56px;
+		padding: 0.4rem 0.6rem 0.4rem 0.4rem;
+		border: 1px solid oklch(1 0 0 / 0.12);
+		cursor: pointer;
+		transition:
+			border-color 0.25s ease,
+			background-color 0.25s ease;
+	}
+	.tessera:hover {
+		border-color: oklch(1 0 0 / 0.35);
+	}
+	.tessera:has(input:checked) {
+		border-color: var(--metro);
+		background: oklch(1 0 0 / 0.04);
+	}
+	.tessera:has(input:focus-visible) {
+		outline: 2px solid var(--metro);
+		outline-offset: 2px;
+	}
+	.tessera input {
+		position: absolute;
+		opacity: 0;
+		pointer-events: none;
+	}
+	.tessera__colore {
+		width: 44px;
+		height: 44px;
+		flex: none;
+		background-size: cover;
+		box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.1);
+	}
+	.tessera__colore--bronzo {
+		background: repeating-linear-gradient(90deg, oklch(1 0 0 / 0.06) 0 1px, transparent 1px 3px), linear-gradient(100deg, #6e5230, #b08a58 45%, #7a5c36);
+	}
+	.tessera__colore--lacca {
+		background: radial-gradient(70% 50% at 35% 25%, oklch(1 0 0 / 0.35), transparent 60%), linear-gradient(175deg, #6a1422, #3e0912);
+	}
+	.tessera__nome {
+		font-size: 0.92rem;
+		font-weight: 600;
+		line-height: 1.25;
+		color: #eef0ee;
+	}
+	.dati {
+		margin: 1.8rem 0 1.8rem;
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem 1.5rem;
+	}
+	.dati[hidden] {
+		display: none;
+	}
+	.dati div {
+		border-top: 1px solid oklch(1 0 0 / 0.15);
+		padding-top: 0.6rem;
+	}
+	.dati dt {
+		font-size: 0.66rem;
+		font-weight: 650;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--nebbia-2);
+	}
+	.dati dd {
+		margin: 0.3rem 0 0;
+		color: #eef0ee;
+	}
+	.scheda__brief[aria-pressed='true'] {
+		background: var(--metro);
+		color: var(--basalto);
+		border-color: var(--metro);
+	}
+	.scheda__brief[aria-pressed='true']::before {
+		background: var(--basalto);
+	}
+	.scheda__nota {
+		font-size: 0.86rem;
+		color: var(--nebbia-2);
+		margin: 1rem 0 0;
+	}
+	@media (max-width: 899px) {
+		.banco {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.campione {
+			margin-inline: calc(var(--gutter) * -1);
+		}
+	}
+	@media (max-width: 420px) {
+		.scelta ul,
+		.dati {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+</style>
+
+<script>
+	import { avviaMateria, type Materioteca } from './motore/materia';
+
+	const sez = document.querySelector<HTMLElement>('#materia')!;
+	const fig = sez.querySelector<HTMLElement>('[data-campione]')!;
+	const canvas = fig.querySelector('canvas')!;
+	const foto = fig.querySelector<HTMLImageElement>('.campione__foto')!;
+	const radio = [...sez.querySelectorAll<HTMLInputElement>('input[name="campione"]')];
+	const nome = sez.querySelector<HTMLElement>('[data-dida-nome]')!;
+	const fam = sez.querySelector<HTMLElement>('[data-dida-fam]')!;
+	const brief = sez.querySelector<HTMLButtonElement>('[data-brief]')!;
+	const briefT = sez.querySelector<HTMLElement>('[data-brief-t]')!;
+	const scelti = new Set<string>();
+	let m: Materioteca | null = null;
+
+	const attuale = () => radio.find((r) => r.checked)!;
+	const tipo = (r: HTMLInputElement) => ({ scansione: 0, bronzo: 1, lacca: 2, velluto: 3 })[r.dataset.tipo as 'scansione'] as 0 | 1 | 2 | 3;
+
+	const aggiorna = () => {
+		const r = attuale();
+		const id = r.value;
+		const label = r.closest('label')!.querySelector('.tessera__nome')!.textContent!;
+		nome.textContent = label;
+		sez.querySelectorAll<HTMLElement>('[data-dati]').forEach((d) => (d.hidden = d.dataset.dati !== id));
+		fam.textContent = sez.querySelector(`[data-dati="${id}"] dd`)!.textContent!;
+		if (r.dataset.col) foto.src = r.dataset.col;
+		brief.setAttribute('aria-pressed', String(scelti.has(id)));
+		briefT.textContent = scelti.has(id) ? 'Nel tuo brief ✓' : 'Aggiungi al tuo brief';
+		m?.mostra({ tipo: tipo(r), col: r.dataset.col, ril: r.dataset.ril, rilievo: ({ onice: 1.2, travertino: 3.5, terrazzo: 2.2, noce: 2.4, velluto: 0.6 } as Record<string, number>)[id] ?? 2 });
+	};
+	radio.forEach((r) => r.addEventListener('change', aggiorna));
+
+	brief.addEventListener('click', () => {
+		const r = attuale();
+		const id = r.value;
+		if (scelti.has(id)) scelti.delete(id);
+		else scelti.add(id);
+		aggiorna();
+		dispatchEvent(new CustomEvent('scalavera:campione', { detail: { id, aggiunto: scelti.has(id) } }));
+	});
+	// Il brief può togliere un campione: la materioteca si allinea.
+	addEventListener('scalavera:campione-tolto', (e) => {
+		scelti.delete((e as CustomEvent).detail.id);
+		aggiorna();
+	});
+
+	// La torcia: mouse = cursore; dito = tocco (la luce va un poco sopra il dito, che non la copre).
+	let ritorno = 0;
+	fig.addEventListener('pointermove', (e) => {
+		if (!m) return;
+		const r = canvas.getBoundingClientRect();
+		const su = e.pointerType === 'touch' ? 70 : 0;
+		m.luce(e.clientX - r.left, e.clientY - r.top - su);
+		clearTimeout(ritorno);
+		if (e.pointerType === 'touch') ritorno = window.setTimeout(() => m?.automatica(true), 2500);
+	});
+	fig.addEventListener('pointerdown', (e) => {
+		if (!m || e.pointerType !== 'touch') return;
+		const r = canvas.getBoundingClientRect();
+		m.luce(e.clientX - r.left, e.clientY - r.top - 70);
+		clearTimeout(ritorno);
+		ritorno = window.setTimeout(() => m?.automatica(true), 2500);
+	});
+	fig.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') m?.automatica(true); });
+
+	const parti = async () => {
+		m = await avviaMateria(canvas);
+		if (!m) return;
+		if (matchMedia('(prefers-reduced-motion: reduce)').matches) m.automatica(false);
+		await m.mostra({ tipo: 0, col: radio[0].dataset.col, ril: radio[0].dataset.ril, rilievo: 3.5 });
+		fig.classList.add('pronto');
+		aggiorna();
+	};
+	// Il motore parte quando la sezione si avvicina.
+	const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { io.disconnect(); parti(); } }, { rootMargin: '400px' });
+	io.observe(fig);
+</script>

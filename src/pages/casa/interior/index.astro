@@ -1,0 +1,77 @@
+---
+import '@fontsource-variable/playfair/opsz.css';
+import '@fontsource-variable/playfair/opsz-italic.css';
+import '@fontsource-variable/manrope';
+import '../../../concepts/scalavera/base.css';
+import playfairUrl from '@fontsource-variable/playfair/files/playfair-latin-opsz-normal.woff2?url';
+import manropeUrl from '@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2?url';
+import Fascia from '../../../concepts/scalavera/Fascia.astro';
+import Navbar from '../../../concepts/scalavera/Navbar.astro';
+import Apertura from '../../../concepts/scalavera/Apertura.astro';
+import Discesa from '../../../concepts/scalavera/Discesa.astro';
+import Materioteca from '../../../concepts/scalavera/Materioteca.astro';
+import Riarreda from '../../../concepts/scalavera/Riarreda.astro';
+import Progetti from '../../../concepts/scalavera/Progetti.astro';
+import Studio from '../../../concepts/scalavera/Studio.astro';
+import Brief from '../../../concepts/scalavera/Brief.astro';
+import Footer from '../../../concepts/scalavera/Footer.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const title = 'Scala Vera — Studio di interni, dalla pianta alla materia';
+const description = 'Studio di interni di fantasia: un progetto raccontato scala dopo scala, dalla pianta a inchiostro alla materioteca con luce radente. Vetrina dimostrativa di Loop Studio.';
+const ogImage = new URL(`${base}/images/scalavera/og.jpg`, Astro.site).href;
+const pageUrl = new URL(`${base}/casa/interior/`, Astro.site).href;
+---
+
+<html lang="it">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href={`${base}/images/scalavera/favicon.svg`} />
+		<link rel="icon" type="image/png" href={`${base}/images/scalavera/favicon.png`} />
+		<link rel="apple-touch-icon" href={`${base}/images/scalavera/apple-touch-icon.png`} />
+		<link rel="preload" as="font" type="font/woff2" href={playfairUrl} crossorigin />
+		<link rel="preload" as="font" type="font/woff2" href={manropeUrl} crossorigin />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<meta name="robots" content="noindex, nofollow" />
+		<meta name="theme-color" content="#e2e9e2" />
+		<meta property="og:type" content="website" />
+		<meta property="og:locale" content="it_IT" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={pageUrl} />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<script is:inline>
+			document.documentElement.classList.add('js');
+		</script>
+	</head>
+	<body>
+		<a href="#main" class="skip-link">Vai al contenuto</a>
+		<span id="top"></span>
+		<Fascia />
+		<Navbar />
+		<main id="main">
+			<Apertura />
+			<Discesa />
+			<Materioteca />
+			<Riarreda />
+			<Progetti />
+			<Studio />
+			<Brief />
+		</main>
+		<Footer />
+		<script>
+			// Comparse all'ingresso in vista.
+			const io = new IntersectionObserver(
+				(es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('visto'); io.unobserve(e.target); } }),
+				{ rootMargin: '0px 0px -8% 0px' },
+			);
+			document.querySelectorAll('[data-rev]').forEach((el) => io.observe(el));
+		</script>
+	</body>
+</html>

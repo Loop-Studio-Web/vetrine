@@ -1,0 +1,491 @@
+---
+/* Il tuo brief: "da che scala parti?", la tavola materiali composta dalla materioteca
+   (evento scalavera:campione), i contatti e la prenotazione della consulenza.
+   Alla fine una ricevuta impaginata come un cartiglio. Nessun dato viene inviato. */
+import { MATERIALI } from './dati';
+
+const scale = [
+	{ id: 'pezzo', scala: '1:5', nome: 'Un pezzo', d: 'Un mobile su misura, una cucina, una libreria.', prezzo: 'Consulenza da 180 €' },
+	{ id: 'stanza', scala: '1:20', nome: 'Una stanza', d: 'Un soggiorno, un bagno, la camera dei ragazzi.', prezzo: 'Progetto da 2.800 €' },
+	{ id: 'casa', scala: '1:50', nome: 'Tutta la casa', d: 'Rilievo, progetto completo e direzione lavori.', prezzo: 'Progetto da 9.500 €' },
+];
+const materiali = JSON.stringify(MATERIALI.map((m) => ({ id: m.id, nome: m.nome, campione: m.campione })));
+---
+
+<section class="brief scuro" id="brief" data-tono="scuro" aria-labelledby="brief-titolo">
+	<div class="brief__in">
+		<header class="brief__testa">
+			<p class="etichetta">Il tuo brief</p>
+			<h2 id="brief-titolo">Da che scala <em>parti</em>?</h2>
+			<p>Raccontaci il progetto in due minuti. Ti richiamiamo per fissare la consulenza in studio, con i campioni che hai scelto già sul tavolo.</p>
+		</header>
+
+		<form class="modulo" novalidate data-modulo>
+			<fieldset class="scale">
+				<legend class="etichetta">1 · La scala del progetto</legend>
+				<div class="scale__elenco">
+					{scale.map((s, i) => (
+						<label class="scala-c">
+							<input type="radio" name="scala" value={s.id} checked={i === 1} />
+							<span class="scala-c__n">{s.scala}</span>
+							<span class="scala-c__nome">{s.nome}</span>
+							<span class="scala-c__d">{s.d}</span>
+							<span class="scala-c__prezzo">{s.prezzo}</span>
+						</label>
+					))}
+				</div>
+				<p class="nota">Prezzi di esempio, IVA esclusa. Il preventivo vero arriva dopo il rilievo.</p>
+			</fieldset>
+
+			<fieldset class="tavola-m">
+				<legend class="etichetta">2 · La tua tavola materiali</legend>
+				<ul class="tavola-m__elenco" data-tavola-m aria-live="polite"></ul>
+				<p class="tavola-m__vuota" data-vuota>Ancora nessun campione. <a href="#materia" class="collegamento">Sceglili nella materioteca <span aria-hidden="true">↑</span></a></p>
+			</fieldset>
+
+			<fieldset class="contatti">
+				<legend class="etichetta">3 · Come ti troviamo</legend>
+				<div class="campi">
+					<div class="campo">
+						<label for="b-nome">Nome e cognome</label>
+						<input id="b-nome" name="nome" autocomplete="name" required aria-describedby="b-nome-e" />
+						<p class="errore" id="b-nome-e" hidden>Scrivi come ti chiami.</p>
+					</div>
+					<div class="campo">
+						<label for="b-email">Email</label>
+						<input id="b-email" name="email" type="email" autocomplete="email" required aria-describedby="b-email-e" />
+						<p class="errore" id="b-email-e" hidden>Serve un indirizzo email valido.</p>
+					</div>
+					<div class="campo">
+						<label for="b-tel">Telefono <span class="facoltativo">(facoltativo)</span></label>
+						<input id="b-tel" name="tel" type="tel" autocomplete="tel" />
+					</div>
+					<div class="campo">
+						<label for="b-quando">Quando ti chiamiamo</label>
+						<select id="b-quando" name="quando">
+							<option>In mattinata</option>
+							<option>Nel primo pomeriggio</option>
+							<option>Dopo le 18</option>
+						</select>
+					</div>
+					<div class="campo campo--largo">
+						<label for="b-msg">La casa in poche righe <span class="facoltativo">(facoltativo)</span></label>
+						<textarea id="b-msg" name="msg" rows="3" placeholder="Metri, piano, cosa non ti piace, cosa vuoi salvare…"></textarea>
+					</div>
+				</div>
+				<label class="consenso">
+					<input type="checkbox" name="ok" required aria-describedby="b-ok-e" />
+					<span>Ho capito che è una vetrina dimostrativa: nessun dato viene inviato.</span>
+				</label>
+				<p class="errore" id="b-ok-e" hidden>Spunta la casella per continuare.</p>
+			</fieldset>
+
+			<button type="submit" class="bottone su-scuro modulo__invia">Prenota la consulenza</button>
+		</form>
+
+		<div class="ricevuta" data-ricevuta hidden tabindex="-1" aria-labelledby="ricevuta-t">
+			<p class="etichetta">Brief ricevuto · di esempio</p>
+			<h3 id="ricevuta-t">Grazie, <span data-r-nome></span>.</h3>
+			<p>Ti chiamiamo <span data-r-quando></span> per fissare la consulenza. Sul tavolo troverai:</p>
+			<ul class="ricevuta__campioni" data-r-campioni></ul>
+			<dl class="ricevuta__cartiglio">
+				<div><dt>Brief</dt><dd data-r-codice></dd></div>
+				<div><dt>Scala</dt><dd data-r-scala></dd></div>
+				<div><dt>Data</dt><dd data-r-data></dd></div>
+			</dl>
+			<p class="nota">Vetrina dimostrativa: niente è stato inviato e nessuno ti chiamerà.</p>
+			<button type="button" class="collegamento ricevuta__nuovo" data-r-nuovo>Scrivi un altro brief</button>
+		</div>
+	</div>
+	<script type="application/json" data-materiali set:html={materiali} />
+</section>
+
+<style>
+	.brief {
+		padding: clamp(5rem, 10vw, 9rem) var(--gutter);
+		background:
+			radial-gradient(70% 50% at 100% 0%, oklch(0.26 0.01 200), transparent 70%),
+			var(--grafite);
+	}
+	.brief__in {
+		max-width: 1080px;
+		margin-inline: auto;
+	}
+	.brief__testa {
+		max-width: 40rem;
+		margin-bottom: 3rem;
+	}
+	.brief__testa h2 {
+		font-size: clamp(2.4rem, 5.4vw, 5rem);
+		margin: 1rem 0 1.2rem;
+		color: #f1f3f1;
+	}
+	.brief__testa em {
+		font-style: italic;
+		font-weight: 300;
+	}
+	.brief__testa p:last-child {
+		margin: 0;
+		font-size: 1.08rem;
+	}
+	fieldset {
+		border: 0;
+		padding: 0;
+		margin: 0 0 3rem;
+		min-width: 0;
+	}
+	legend {
+		padding: 0;
+		margin-bottom: 1.2rem;
+		color: var(--nebbia-2);
+	}
+	.scale__elenco {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 0.8rem;
+	}
+	.scala-c {
+		position: relative;
+		display: grid;
+		gap: 0.35rem;
+		padding: 1.2rem 1.2rem 1.3rem;
+		border: 1px solid oklch(1 0 0 / 0.16);
+		cursor: pointer;
+		transition:
+			border-color 0.25s ease,
+			background-color 0.25s ease;
+	}
+	.scala-c:hover {
+		border-color: oklch(1 0 0 / 0.4);
+	}
+	.scala-c:has(input:checked) {
+		border-color: var(--metro);
+		background: oklch(1 0 0 / 0.05);
+	}
+	.scala-c:has(input:focus-visible) {
+		outline: 2px solid var(--metro);
+		outline-offset: 2px;
+	}
+	.scala-c input {
+		position: absolute;
+		opacity: 0;
+		pointer-events: none;
+	}
+	.scala-c__n {
+		font-family: var(--titoli);
+		font-size: 2.4rem;
+		font-weight: 300;
+		line-height: 1;
+		color: #f1f3f1;
+	}
+	.scala-c:has(input:checked) .scala-c__n {
+		color: var(--metro);
+	}
+	.scala-c__nome {
+		font-weight: 700;
+		color: #f1f3f1;
+	}
+	.scala-c__d {
+		font-size: 0.9rem;
+	}
+	.scala-c__prezzo {
+		margin-top: 0.4rem;
+		font-size: 0.78rem;
+		font-weight: 650;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--nebbia-2);
+	}
+	.nota {
+		font-size: 0.84rem;
+		color: var(--nebbia-2);
+		margin: 0.9rem 0 0;
+	}
+	.tavola-m__elenco {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+	}
+	.tavola-m__elenco:empty {
+		display: none;
+	}
+	.tavola-m__vuota {
+		margin: 0;
+	}
+	.campi {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1.2rem 1.4rem;
+	}
+	.campo {
+		display: grid;
+		gap: 0.4rem;
+	}
+	.campo--largo {
+		grid-column: 1 / -1;
+	}
+	.campo label {
+		font-size: 0.86rem;
+		font-weight: 600;
+		color: #e8ebe8;
+	}
+	.facoltativo {
+		font-weight: 400;
+		color: var(--nebbia-2);
+	}
+	.campo input,
+	.campo select,
+	.campo textarea {
+		min-height: 48px;
+		padding: 0.6rem 0.2rem;
+		background: transparent;
+		border: 0;
+		border-bottom: 1px solid oklch(1 0 0 / 0.35);
+		border-radius: 0;
+		color: #f1f3f1;
+		transition: border-color 0.2s ease;
+	}
+	.campo select option {
+		background: var(--grafite);
+	}
+	.campo textarea {
+		resize: vertical;
+		field-sizing: content;
+		min-height: 5rem;
+	}
+	.campo input:focus,
+	.campo select:focus,
+	.campo textarea:focus {
+		outline: none;
+		border-bottom: 2px solid var(--metro);
+	}
+	.campo input[aria-invalid='true'] {
+		border-bottom-color: #ff9a8a;
+	}
+	.campo textarea::placeholder {
+		color: var(--nebbia-2);
+	}
+	.errore {
+		margin: 0;
+		font-size: 0.82rem;
+		color: #ffb3a7;
+	}
+	.errore[hidden] {
+		display: none;
+	}
+	.consenso {
+		display: flex;
+		gap: 0.7rem;
+		align-items: flex-start;
+		margin-top: 1.6rem;
+		font-size: 0.92rem;
+		cursor: pointer;
+	}
+	.consenso input {
+		width: 20px;
+		height: 20px;
+		margin: 0.15rem 0 0;
+		accent-color: var(--metro);
+		flex: none;
+	}
+	.ricevuta {
+		background: var(--carta);
+		color: var(--inchiostro);
+		padding: clamp(1.5rem, 4vw, 3rem);
+		max-width: 46rem;
+		box-shadow: 0 30px 60px -30px oklch(0 0 0 / 0.6);
+	}
+	.ricevuta[hidden] {
+		display: none;
+	}
+	.ricevuta:focus {
+		outline: none;
+	}
+	.ricevuta h3 {
+		font-size: clamp(2rem, 4vw, 3rem);
+		margin: 0.8rem 0 1rem;
+	}
+	.ricevuta .nota {
+		color: var(--inchiostro-2);
+	}
+	.ricevuta__campioni {
+		list-style: none;
+		padding: 0;
+		margin: 1rem 0 1.6rem;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+	}
+	.ricevuta__cartiglio {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		margin: 0;
+		border: 1px solid var(--inchiostro);
+	}
+	.ricevuta__cartiglio div {
+		padding: 0.6rem 0.8rem;
+	}
+	.ricevuta__cartiglio div + div {
+		border-left: 1px solid var(--inchiostro);
+	}
+	.ricevuta__cartiglio dt {
+		font-size: 0.62rem;
+		font-weight: 700;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+	}
+	.ricevuta__cartiglio dd {
+		margin: 0.2rem 0 0;
+		font-weight: 650;
+		font-variant-numeric: tabular-nums;
+	}
+	.ricevuta__nuovo {
+		background: none;
+		border: 0;
+		border-bottom: 1px solid currentColor;
+		cursor: pointer;
+		padding: 0 0 2px;
+		margin-top: 1rem;
+		font-weight: 650;
+	}
+	@media (max-width: 760px) {
+		.scale__elenco,
+		.campi {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.ricevuta__cartiglio {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.ricevuta__cartiglio div + div {
+			border-left: 0;
+			border-top: 1px solid var(--inchiostro);
+		}
+	}
+</style>
+
+<style is:global>
+	/* Elementi creati via JS: il campione nella tavola materiali e nella ricevuta. */
+	.sv-chip {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		min-height: 44px;
+		padding: 0.3rem 0.4rem 0.3rem 0.3rem;
+		border: 1px solid oklch(1 0 0 / 0.2);
+		font-size: 0.9rem;
+		font-weight: 600;
+	}
+	.ricevuta .sv-chip {
+		border-color: color-mix(in oklch, var(--inchiostro) 30%, transparent);
+		padding-right: 0.8rem;
+	}
+	.sv-chip__colore {
+		width: 34px;
+		height: 34px;
+		flex: none;
+		box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.15);
+	}
+	.sv-chip button {
+		width: 34px;
+		height: 34px;
+		display: grid;
+		place-items: center;
+		background: none;
+		border: 0;
+		cursor: pointer;
+		color: var(--nebbia);
+		font-size: 1.1rem;
+	}
+	.sv-chip button:hover {
+		color: var(--metro);
+	}
+</style>
+
+<script>
+	type M = { id: string; nome: string; campione: string };
+	const sez = document.querySelector<HTMLElement>('#brief')!;
+	const materiali: M[] = JSON.parse(sez.querySelector('[data-materiali]')!.textContent!);
+	const elenco = sez.querySelector<HTMLUListElement>('[data-tavola-m]')!;
+	const vuota = sez.querySelector<HTMLElement>('[data-vuota]')!;
+	const form = sez.querySelector<HTMLFormElement>('[data-modulo]')!;
+	const ric = sez.querySelector<HTMLElement>('[data-ricevuta]')!;
+	const scelti: string[] = [];
+
+	const chip = (m: M, togli: boolean) => {
+		const li = document.createElement('li');
+		li.className = 'sv-chip';
+		const c = document.createElement('span');
+		c.className = 'sv-chip__colore';
+		c.style.background = m.campione;
+		c.setAttribute('aria-hidden', 'true');
+		li.append(c, m.nome);
+		if (togli) {
+			const b = document.createElement('button');
+			b.type = 'button';
+			b.textContent = '×';
+			b.setAttribute('aria-label', `Togli ${m.nome} dal brief`);
+			b.addEventListener('click', () => {
+				scelti.splice(scelti.indexOf(m.id), 1);
+				disegna();
+				dispatchEvent(new CustomEvent('scalavera:campione-tolto', { detail: { id: m.id } }));
+			});
+			li.append(b);
+		}
+		return li;
+	};
+	const disegna = () => {
+		elenco.replaceChildren(...scelti.map((id) => chip(materiali.find((m) => m.id === id)!, true)));
+		vuota.hidden = scelti.length > 0;
+	};
+	addEventListener('scalavera:campione', (e) => {
+		const { id, aggiunto } = (e as CustomEvent).detail;
+		const i = scelti.indexOf(id);
+		if (aggiunto && i < 0) scelti.push(id);
+		if (!aggiunto && i >= 0) scelti.splice(i, 1);
+		disegna();
+	});
+	disegna();
+
+	const errore = (campo: HTMLInputElement, ok: boolean) => {
+		campo.setAttribute('aria-invalid', String(!ok));
+		const e = document.getElementById(campo.getAttribute('aria-describedby')!);
+		if (e) e.hidden = ok;
+		return ok;
+	};
+	form.addEventListener('submit', (e) => {
+		e.preventDefault();
+		const nome = form.elements.namedItem('nome') as HTMLInputElement;
+		const email = form.elements.namedItem('email') as HTMLInputElement;
+		const ok = form.elements.namedItem('ok') as HTMLInputElement;
+		const v = [
+			errore(nome, nome.value.trim().length > 1),
+			errore(email, /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())),
+			errore(ok, ok.checked),
+		];
+		if (v.includes(false)) {
+			[nome, email, ok][v.indexOf(false)].focus();
+			return;
+		}
+		const scala = (form.querySelector('input[name="scala"]:checked') as HTMLInputElement).closest('label')!;
+		const q = (s: string) => ric.querySelector<HTMLElement>(s)!;
+		q('[data-r-nome]').textContent = nome.value.trim().split(' ')[0];
+		q('[data-r-quando]').textContent = (form.elements.namedItem('quando') as HTMLSelectElement).value.toLowerCase();
+		q('[data-r-scala]').textContent = `${scala.querySelector('.scala-c__n')!.textContent} · ${scala.querySelector('.scala-c__nome')!.textContent}`;
+		q('[data-r-codice]').textContent = `SV-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 9000) + 1000)}`;
+		q('[data-r-data]').textContent = new Date().toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
+		const lista = q('[data-r-campioni]');
+		lista.replaceChildren(...(scelti.length ? scelti.map((id) => chip(materiali.find((m) => m.id === id)!, false)) : [Object.assign(document.createElement('li'), { textContent: 'i campioni che sceglieremo insieme.' })]));
+		form.hidden = true;
+		ric.hidden = false;
+		ric.focus();
+	});
+	sez.querySelector('[data-r-nuovo]')!.addEventListener('click', () => {
+		form.reset();
+		ric.hidden = true;
+		form.hidden = false;
+		(form.elements.namedItem('nome') as HTMLInputElement).focus();
+	});
+</script>

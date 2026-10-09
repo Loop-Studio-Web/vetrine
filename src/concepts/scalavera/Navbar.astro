@@ -1,0 +1,479 @@
+---
+/* Navbar fissa (sotto la fascia, poi risale) che cambia tono con la sezione sotto di lei,
+   righello di scala a destra come indicatore di avanzamento e menù mobile a mazzetta di campioni. */
+import Marchio from './Marchio.astro';
+import { MATERIALI } from './dati';
+
+const voci = [
+	{ href: '#pianta', nome: 'La pianta', scala: '1:100' },
+	{ href: '#metodo', nome: 'Il metodo', scala: '1:50' },
+	{ href: '#materia', nome: 'La materia', scala: '1:1' },
+	{ href: '#progetti', nome: 'Progetti', scala: 'Tav.' },
+	{ href: '#studio', nome: 'Lo studio', scala: 'Studio' },
+	{ href: '#brief', nome: 'Il tuo brief', scala: 'Brief' },
+];
+const lame = voci.map((v, i) => ({ ...v, m: MATERIALI[i] }));
+---
+
+<header class="barra" data-barra>
+	<a href="#top" class="barra__marchio" aria-label="Scala Vera, torna all'inizio"><Marchio /></a>
+	<nav class="barra__nav" aria-label="Principale">
+		<ul>
+			{voci.slice(1, 5).map((v) => <li><a href={v.href}>{v.nome}</a></li>)}
+		</ul>
+	</nav>
+	<a href="#brief" class="bottone barra__cta">Prenota la consulenza</a>
+	<button class="barra__menu" type="button" aria-expanded="false" aria-controls="mazzetta" data-apri>
+		<span class="barra__menu-t">Menu</span>
+		<span class="barra__menu-i" aria-hidden="true"><i></i><i></i><i></i></span>
+	</button>
+	<div class="avanzamento" aria-hidden="true"><i></i></div>
+</header>
+
+<!-- Fuori dall'header: il backdrop-filter della barra farebbe da blocco contenitore ai fixed. -->
+<div class="mazzetta" id="mazzetta" role="dialog" aria-modal="true" aria-label="Menu" hidden data-mazzetta>
+	<div class="mazzetta__testa">
+		<Marchio />
+		<button type="button" class="mazzetta__chiudi" data-chiudi aria-label="Chiudi il menu">
+			<span aria-hidden="true"></span>
+		</button>
+	</div>
+	<nav aria-label="Menu mobile">
+		<ul class="mazzetta__lame">
+			{lame.map((l, i) => (
+				<li style={`--i:${i}; --n:${lame.length}`}>
+					<a href={l.href} class={`lama lama--${l.m.id}`}>
+						<span class="lama__scala">{l.scala}</span>
+						<span class="lama__nome">{l.nome}</span>
+					</a>
+				</li>
+			))}
+		</ul>
+	</nav>
+	<span class="mazzetta__perno" aria-hidden="true"></span>
+	<p class="mazzetta__piede etichetta">Campionario · {lame.length} lame</p>
+</div>
+
+<nav class="righello" aria-label="Scala della pagina" data-righello>
+	<ol>
+		{voci.map((v) => (
+			<li>
+				<a href={v.href}>
+					<span class="righello__scala">{v.scala}</span>
+					<span class="righello__nome">{v.nome}</span>
+				</a>
+			</li>
+		))}
+	</ol>
+</nav>
+
+<style>
+	.barra {
+		position: fixed;
+		top: var(--fascia, var(--fascia-h));
+		left: 0;
+		right: 0;
+		z-index: 120;
+		height: var(--nav-h);
+		display: flex;
+		align-items: center;
+		gap: 2rem;
+		padding: 0 var(--gutter);
+		color: var(--tono-fg, var(--inchiostro));
+		background: color-mix(in oklch, var(--tono-bg, var(--fondo)) 93%, transparent);
+		backdrop-filter: blur(10px) saturate(1.1);
+		-webkit-backdrop-filter: blur(10px) saturate(1.1);
+		border-bottom: 1px solid color-mix(in oklch, currentColor 14%, transparent);
+		transition:
+			background-color 0.5s ease,
+			color 0.5s ease;
+	}
+	:global(:root[data-tono='scuro']) .barra {
+		--tono-bg: var(--basalto);
+		--tono-fg: var(--nebbia);
+	}
+	.barra__marchio {
+		text-decoration: none;
+		font-size: 0.95rem;
+		flex: none;
+	}
+	.barra__nav {
+		margin-left: auto;
+	}
+	.barra__nav ul {
+		display: flex;
+		gap: 1.8rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	.barra__nav a {
+		text-decoration: none;
+		font-size: 0.9rem;
+		font-weight: 550;
+		padding: 0.4rem 0;
+		background: linear-gradient(var(--metro), var(--metro)) left bottom / 0 1px no-repeat;
+		transition: background-size 0.35s ease;
+	}
+	.barra__nav a:hover {
+		background-size: 100% 1px;
+	}
+	.barra__cta {
+		min-height: 42px;
+		font-size: 0.85rem;
+	}
+	:global(:root[data-tono='scuro']) .barra__cta:hover {
+		background: var(--carta);
+		color: var(--basalto);
+	}
+	.barra__menu {
+		display: none;
+		margin-left: auto;
+		align-items: center;
+		gap: 0.6rem;
+		min-height: 44px;
+		padding: 0 0.2rem 0 0.8rem;
+		background: none;
+		border: 0;
+		cursor: pointer;
+		font-weight: 650;
+		font-size: 0.85rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+	.barra__menu-i {
+		display: grid;
+		gap: 4px;
+		width: 22px;
+	}
+	.barra__menu-i i {
+		display: block;
+		height: 2px;
+		background: currentColor;
+	}
+	.barra__menu-i i:nth-child(2) {
+		width: 70%;
+		background: var(--metro);
+	}
+	.barra__menu-i i:nth-child(3) {
+		width: 45%;
+	}
+	.avanzamento {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: -1px;
+		height: 2px;
+		display: none;
+	}
+	.avanzamento i {
+		display: block;
+		height: 100%;
+		background: var(--metro);
+		transform-origin: left;
+		transform: scaleX(var(--avanza, 0));
+	}
+
+	/* Righello: tacche verticali a destra, la tacca attiva gialla. */
+	.righello {
+		position: fixed;
+		right: 0;
+		top: 50%;
+		translate: 0 -50%;
+		z-index: 110;
+		color: var(--tono-fg, var(--inchiostro));
+		transition: color 0.5s ease;
+	}
+	:global(:root[data-tono='scuro']) .righello {
+		--tono-fg: var(--nebbia);
+	}
+	.righello ol {
+		list-style: none;
+		margin: 0;
+		padding: 0 14px 0 0;
+		display: grid;
+		gap: 0;
+		background: repeating-linear-gradient(to bottom, color-mix(in oklch, currentColor 40%, transparent) 0 1px, transparent 1px 9px) right 14px top / 8px 100% no-repeat;
+	}
+	.righello a {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 10px;
+		height: 44px;
+		text-decoration: none;
+		font-size: 0.68rem;
+		font-weight: 650;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		font-variant-numeric: tabular-nums;
+	}
+	.righello a::after {
+		content: '';
+		width: 18px;
+		height: 1.5px;
+		background: currentColor;
+		transition:
+			width 0.3s ease,
+			background-color 0.3s ease;
+	}
+	.righello__scala {
+		opacity: 0;
+		transition: opacity 0.3s ease;
+	}
+	.righello:hover .righello__scala,
+	.righello a:focus-visible .righello__scala,
+	.righello a.attivo .righello__scala {
+		opacity: 1;
+	}
+	.righello__nome {
+		max-width: 0;
+		overflow: hidden;
+		white-space: nowrap;
+		opacity: 0;
+		transition:
+			max-width 0.4s ease,
+			opacity 0.3s ease;
+	}
+	.righello:hover .righello__nome,
+	.righello a:focus-visible .righello__nome {
+		max-width: 10rem;
+		opacity: 1;
+	}
+	.righello a.attivo::after {
+		width: 30px;
+		background: var(--metro);
+		height: 3px;
+	}
+	.righello a.attivo .righello__scala {
+		color: var(--tono-fg, var(--inchiostro));
+	}
+
+	@media (max-width: 1100px) {
+		.barra__nav ul {
+			gap: 1.1rem;
+		}
+	}
+	@media (max-width: 959px) {
+		.barra__nav,
+		.barra__cta,
+		.righello {
+			display: none;
+		}
+		.barra__menu {
+			display: inline-flex;
+		}
+		.avanzamento {
+			display: block;
+		}
+	}
+	@media (max-width: 380px) {
+		.barra__menu-t {
+			display: none;
+		}
+	}
+
+	/* Mazzetta: le voci sono lame di un campionario fissate a un perno che si aprono a ventaglio. */
+	.mazzetta {
+		position: fixed;
+		inset: 0 0 auto 0;
+		height: 100lvh;
+		z-index: 300;
+		background:
+			radial-gradient(120% 70% at 0% 100%, oklch(0.24 0.01 200), transparent 70%),
+			var(--basalto);
+		color: var(--nebbia);
+		overflow: hidden;
+	}
+	.mazzetta[hidden] {
+		display: none;
+	}
+	.mazzetta__testa {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		height: var(--nav-h);
+		padding: 0 var(--gutter);
+		font-size: 0.95rem;
+	}
+	.mazzetta__chiudi {
+		width: 44px;
+		height: 44px;
+		display: grid;
+		place-items: center;
+		background: none;
+		border: 1px solid color-mix(in oklch, currentColor 40%, transparent);
+		cursor: pointer;
+	}
+	.mazzetta__chiudi span,
+	.mazzetta__chiudi span::after {
+		display: block;
+		width: 20px;
+		height: 1.5px;
+		background: currentColor;
+		rotate: 45deg;
+	}
+	.mazzetta__chiudi span::after {
+		content: '';
+		rotate: 90deg;
+	}
+	.mazzetta__lame {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	.mazzetta__lame li {
+		position: absolute;
+		left: 28px;
+		bottom: 64px;
+		width: min(92vw, 520px);
+		height: 62px;
+		transform-origin: 22px 50%;
+		/* chiuse: tutte dritte, una sull'altra; aperte: a ventaglio da -58° a -8° */
+		rotate: -90deg;
+		transition: rotate 0.75s cubic-bezier(0.2, 0.9, 0.25, 1.05);
+		transition-delay: calc((var(--n) - var(--i)) * 45ms);
+	}
+	.mazzetta.aperta .mazzetta__lame li {
+		rotate: calc(-8deg - (var(--n) - 1 - var(--i)) * 10deg);
+	}
+	.lama {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 0.9rem;
+		height: 100%;
+		padding: 0 1.1rem 0 3.2rem;
+		text-decoration: none;
+		color: var(--fg, #fff);
+		border-radius: 4px 10px 10px 4px;
+		box-shadow:
+			0 -1px 0 oklch(1 0 0 / 0.12) inset,
+			0 10px 24px -10px oklch(0 0 0 / 0.7);
+		background: var(--sfondo);
+	}
+	.lama__nome {
+		font-family: var(--titoli);
+		font-size: 1.45rem;
+		font-weight: 400;
+	}
+	.lama__scala {
+		font-size: 0.68rem;
+		font-weight: 650;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		opacity: 0.85;
+	}
+	.lama:focus-visible {
+		outline-offset: -4px;
+	}
+	.lama--travertino {
+		--sfondo: linear-gradient(170deg, #b8c0c4, #8d979d 40%, #a9b1b5 55%, #7d878d);
+		--fg: #142024;
+	}
+	.lama--terrazzo {
+		--sfondo: radial-gradient(circle at 20% 30%, #3e7d6a 0 2px, transparent 3px) 0 0 / 23px 19px, radial-gradient(circle at 70% 60%, #c9cfc9 0 1.5px, transparent 2.5px) 0 0 / 17px 21px, #1d2a3a;
+	}
+	.lama--noce {
+		--sfondo: repeating-linear-gradient(178deg, #5c2c1a 0 3px, #6b3622 3px 7px, #7a4129 7px 9px), #6b3622;
+	}
+	.lama--onice {
+		--sfondo: linear-gradient(160deg, #cfc4c8, #b2a5ad 30%, #d8cfd2 45%, #a5979f 70%, #c6bcc0);
+		--fg: #2a1f26;
+	}
+	.lama--bronzo {
+		--sfondo: repeating-linear-gradient(90deg, oklch(1 0 0 / 0.05) 0 1px, transparent 1px 3px), linear-gradient(100deg, #6e5230, #a58252 45%, #7a5c36);
+	}
+	.lama--lacca {
+		--sfondo: linear-gradient(175deg, #6a1422, #3e0912 55%, #571019);
+	}
+	.mazzetta__perno {
+		position: absolute;
+		left: 39px;
+		bottom: 84px;
+		width: 22px;
+		height: 22px;
+		border-radius: 50%;
+		background: radial-gradient(circle at 35% 35%, #fff6c8, var(--metro) 45%, #8a7000);
+		box-shadow: 0 2px 6px oklch(0 0 0 / 0.6);
+		z-index: 2;
+	}
+	.mazzetta__piede {
+		position: absolute;
+		left: var(--gutter);
+		bottom: 18px;
+		margin: 0;
+		color: var(--nebbia-2);
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.mazzetta__lame li {
+			transition: none;
+		}
+	}
+	@media (max-height: 560px) {
+		.mazzetta__lame li {
+			height: 48px;
+		}
+	}
+</style>
+
+<script>
+	// Tono della barra e del righello: quello della sezione che le sta sotto.
+	const radice = document.documentElement;
+	const barra = document.querySelector<HTMLElement>('[data-barra]')!;
+	const righello = [...document.querySelectorAll<HTMLAnchorElement>('[data-righello] a')];
+	const bersagli = righello.map((a) => document.querySelector<HTMLElement>(a.hash));
+	let attesa = false;
+	const aggiorna = () => {
+		attesa = false;
+		const y = barra.getBoundingClientRect().bottom + 2;
+		let tono = 'chiaro';
+		for (const s of document.querySelectorAll<HTMLElement>('[data-tono]')) {
+			const r = s.getBoundingClientRect();
+			if (r.top <= y && r.bottom > y) tono = s.dataset.tono!;
+		}
+		if (radice.dataset.tono !== tono) radice.dataset.tono = tono;
+		// Tacca attiva: l'ultima sezione il cui inizio è sopra la metà dello schermo.
+		let att = -1;
+		bersagli.forEach((b, i) => { if (b && b.getBoundingClientRect().top < innerHeight * 0.5) att = i; });
+		righello.forEach((a, i) => { a.classList.toggle('attivo', i === att); if (i === att) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current'); });
+		const max = document.documentElement.scrollHeight - innerHeight;
+		barra.style.setProperty('--avanza', String(max > 0 ? scrollY / max : 0));
+	};
+	addEventListener('scroll', () => { if (!attesa) { attesa = true; requestAnimationFrame(aggiorna); } }, { passive: true });
+	addEventListener('resize', aggiorna);
+	addEventListener('scalavera:tono', aggiorna);
+	aggiorna();
+
+	// Mazzetta.
+	const apri = document.querySelector<HTMLButtonElement>('[data-apri]')!;
+	const maz = document.querySelector<HTMLElement>('[data-mazzetta]')!;
+	const chiudiBtn = maz.querySelector<HTMLButtonElement>('[data-chiudi]')!;
+	const chiudi = (rimetti = true) => {
+		maz.classList.remove('aperta');
+		apri.setAttribute('aria-expanded', 'false');
+		document.body.style.overflow = '';
+		const lento = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+		setTimeout(() => { if (!maz.classList.contains('aperta')) maz.hidden = true; }, lento ? 500 : 0);
+		if (rimetti) apri.focus();
+	};
+	apri.addEventListener('click', () => {
+		maz.hidden = false;
+		apri.setAttribute('aria-expanded', 'true');
+		document.body.style.overflow = 'hidden';
+		requestAnimationFrame(() => requestAnimationFrame(() => maz.classList.add('aperta')));
+		chiudiBtn.focus();
+	});
+	chiudiBtn.addEventListener('click', () => chiudi());
+	maz.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape') chiudi();
+		if (e.key === 'Tab') {
+			const f = [...maz.querySelectorAll<HTMLElement>('a, button')];
+			const i = f.indexOf(document.activeElement as HTMLElement);
+			if (e.shiftKey && i <= 0) { e.preventDefault(); f[f.length - 1].focus(); }
+			else if (!e.shiftKey && i === f.length - 1) { e.preventDefault(); f[0].focus(); }
+		}
+	});
+	maz.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => chiudi(false)));
+	matchMedia('(min-width: 960px)').addEventListener('change', (m) => { if (m.matches && !maz.hidden) chiudi(false); });
+</script>

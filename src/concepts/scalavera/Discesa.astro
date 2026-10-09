@@ -1,0 +1,357 @@
+---
+/* Il metodo, scala dopo scala: la tavola resta ferma con la tela WebGL (acquerello che si
+   asciuga nel render, tagli allineati sul tavolo in travertino, zoom fino alla pietra) e le
+   fasi del lavoro scorrono accanto. La sezione scurisce con la scala: dalla carta al basalto.
+   Senza WebGL2 o con reduced-motion restano i render fermi, uno per fase. */
+import { Image, getImage } from 'astro:assets';
+import a1 from '../../assets/scalavera/foto/a1-soglia.jpg';
+import a2 from '../../assets/scalavera/foto/a2-parete.jpg';
+import a6 from '../../assets/scalavera/foto/a6-tavolo.jpg';
+import { tappe } from './motore/scena';
+
+const sorgenti = [a1, a2, a6];
+const tex = await Promise.all(sorgenti.map((src, i) => getImage({ src, width: i === 2 ? 2000 : 1500, format: 'webp', quality: i === 2 ? 68 : 74 })));
+const urls = JSON.stringify(tex.map((t) => t.src));
+const alt = [
+	'Render di un soggiorno grigio tortora visto dalla porta: camino, mensola in pietra, divano tondo e tavolo in travertino',
+	'Render della parete del soggiorno: camino in intonaco, mensole in acciaio, mensola in pietra spaccata, tavolo tondo in travertino',
+	'Render ravvicinato del tavolo tondo in travertino con un vassoio, davanti alla mensola in pietra',
+];
+
+const passi = [
+	{ f: '01', t: 'Ascolto e rilievo', p: 'Il primo incontro è a casa tua: misuriamo, fotografiamo, ascoltiamo come vivi le stanze. Il primo disegno è ad acqua: luce, ombra e pesi, prima ancora dei mobili.' },
+	{ f: '02', t: 'Il concept', p: 'Dalle macchie nasce la stanza: una palette, tre materiali, un’idea di luce. La presentiamo su una tavola, non in una cartella di foto raccolte in giro.' },
+	{ f: '—', t: 'Il pezzo che regge la stanza', p: 'Ogni progetto ha un centro. Qui è un disco di travertino da 120 centimetri: tutto il soggiorno gli gira attorno.' },
+	{ f: '03', t: 'Il render', p: 'Vedi la stanza prima del cantiere, con la luce delle tue finestre: intonaco a calce, mensola di pietra spaccata, tre lame d’acciaio brunito.' },
+	{ f: '04', t: 'Il progetto esecutivo', p: 'Piante, prospetti, sezioni, impianti e abaco dei materiali: le tavole con cui le imprese fanno un preventivo vero, senza sorprese a metà lavori.' },
+	{ f: '05', t: 'Dettagli e artigiani', p: 'A questa scala si disegna il raccordo tra pietra e acciaio, il bordo stondato a mano, il giunto da due millimetri. Li seguiamo in laboratorio.' },
+	{ f: '06', t: 'La materia e il cantiere', p: 'Qui non si disegna più: si tocca. Ogni materiale lo scegli dal vero, poi dirigiamo i lavori fino all’ultima maniglia.' },
+];
+---
+
+<section class="discesa" id="metodo" data-tono="chiaro" aria-labelledby="metodo-titolo" style="--buio:0">
+	<div class="tavola" data-tavola>
+		<div class="foglio">
+			{sorgenti.map((src, i) => (
+				<Image src={src} alt={alt[i]} widths={[600, 900, 1200]} sizes="(min-width: 900px) 46vw, 100vw" class="poster" data-poster={i} loading={i === 0 ? 'eager' : 'lazy'} />
+			))}
+			<canvas aria-hidden="true" data-urls={urls}></canvas>
+			<p class="quota" aria-hidden="true"><span class="quota-1">1:</span><span class="quota-n">{tappe[0].scala}</span></p>
+		</div>
+	</div>
+	<div class="passi">
+		<header class="passi__testa">
+			<p class="etichetta">Il metodo</p>
+			<h2 id="metodo-titolo">Scendiamo di scala <em>insieme a te</em>.</h2>
+			<p>Sei fasi, dallo schizzo alla maniglia. Scorri: il progetto si avvicina.</p>
+		</header>
+		<ol>
+			{passi.map((x, i) => (
+				<li class="passo">
+					<p class="etichetta passo__fase">{x.f === '—' ? 'Il centro' : `Fase ${x.f}`} · 1:{tappe[i].scala}</p>
+					<h3>{x.t}</h3>
+					<p>{x.p}</p>
+					{i === passi.length - 1 && <a href="#materia" class="collegamento passo__link">Apri la materioteca <span aria-hidden="true">↓</span></a>}
+				</li>
+			))}
+		</ol>
+	</div>
+</section>
+
+<style>
+	.discesa {
+		position: relative;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+		gap: clamp(1rem, 4vw, 4rem);
+		padding-inline: var(--gutter);
+		background: color-mix(in oklch, var(--basalto) calc(var(--buio) * 100%), var(--fondo));
+		color: var(--inchiostro);
+		transition:
+			--buio 0.35s ease,
+			color 0.35s ease;
+	}
+	@property --buio {
+		syntax: '<number>';
+		inherits: true;
+		initial-value: 0;
+	}
+	.discesa[data-tono='scuro'] {
+		color: var(--nebbia);
+	}
+	.tavola {
+		grid-column: 2;
+		grid-row: 1;
+		position: sticky;
+		top: 0;
+		height: 100svh;
+		display: grid;
+		place-items: center;
+		padding-top: calc(var(--nav-h) * 0.6);
+	}
+	.foglio {
+		position: relative;
+		aspect-ratio: 4 / 5;
+		height: min(80svh, 44vw * 1.25);
+		background: var(--carta);
+		box-shadow:
+			0 1px 0 oklch(0 0 0 / 0.06),
+			0 30px 70px -30px oklch(0.15 0.02 200 / 0.55);
+	}
+	.poster,
+	canvas {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.poster {
+		opacity: 0;
+		transition: opacity 0.6s ease;
+	}
+	.poster.attivo {
+		opacity: 1;
+	}
+	canvas {
+		opacity: 0;
+		transition: opacity 0.8s ease;
+	}
+	.pronta canvas {
+		opacity: 1;
+	}
+	.quota {
+		position: absolute;
+		right: calc(100% + 1.2rem);
+		bottom: -0.1em;
+		margin: 0;
+		font-family: var(--titoli);
+		font-size: clamp(3rem, 7vw, 6.5rem);
+		font-weight: 300;
+		line-height: 1;
+		font-variation-settings: 'opsz' var(--opsz, 12);
+		font-variant-numeric: tabular-nums lining-nums;
+		white-space: nowrap;
+	}
+	/* Il giallo come testo solo sul buio; sulla carta resta un filo giallo sotto la quota. */
+	.quota-1 {
+		color: currentColor;
+		transition: color 0.6s ease;
+	}
+	.discesa[data-tono='scuro'] .quota-1 {
+		color: var(--metro);
+	}
+	.quota::after {
+		content: '';
+		display: block;
+		height: 4px;
+		margin-top: 0.12em;
+		background: var(--metro);
+	}
+	.passi {
+		grid-column: 1;
+		grid-row: 1;
+	}
+	.passi__testa {
+		min-height: 70svh;
+		display: grid;
+		align-content: end;
+		padding-bottom: 10svh;
+		max-width: 32rem;
+	}
+	.passi__testa h2 {
+		font-size: clamp(2.2rem, 4.4vw, 4rem);
+		margin: 0.8rem 0 1rem;
+	}
+	.passi__testa h2 em {
+		font-style: italic;
+		font-weight: 300;
+	}
+	.passi__testa > p:last-child {
+		margin: 0;
+		color: var(--inchiostro-2);
+	}
+	.discesa[data-tono='scuro'] .passi__testa > p:last-child {
+		color: var(--nebbia-2);
+	}
+	.passi ol {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	.passo {
+		min-height: 100svh;
+		display: grid;
+		align-content: center;
+		max-width: 30rem;
+	}
+	.passo__fase {
+		margin: 0 0 1rem;
+		color: color-mix(in oklch, currentColor 70%, transparent);
+	}
+	.passo h3 {
+		font-size: clamp(2rem, 3.6vw, 3.2rem);
+		margin: 0 0 1.1rem;
+	}
+	.passo p:last-of-type {
+		margin: 0;
+		font-size: 1.08rem;
+		line-height: 1.65;
+		max-width: 27rem;
+	}
+	.passo__link {
+		justify-self: start;
+		margin-top: 1.6rem;
+		font-weight: 650;
+	}
+
+	@media (max-width: 899px) {
+		.discesa {
+			grid-template-columns: minmax(0, 1fr);
+			padding: 0;
+		}
+		.tavola {
+			grid-column: 1;
+			padding-top: 0;
+		}
+		.foglio {
+			height: 100svh;
+			width: 100%;
+			aspect-ratio: auto;
+			box-shadow: none;
+		}
+		.quota {
+			right: auto;
+			left: 1rem;
+			top: calc(var(--nav-h) + 1rem);
+			bottom: auto;
+			font-size: 3rem;
+			color: #fff;
+			text-shadow: 0 1px 12px oklch(0 0 0 / 0.45);
+		}
+		.passi {
+			grid-column: 1;
+			position: relative;
+		}
+		.passi__testa,
+		.passo {
+			padding: 0 1rem 10svh;
+			align-content: end;
+		}
+		.passi__testa {
+			min-height: 100svh;
+		}
+		.passi__testa,
+		.passo {
+			max-width: none;
+		}
+		.passi__testa > *,
+		.passo > * {
+			background: color-mix(in oklch, var(--carta) 90%, transparent);
+			color: var(--inchiostro);
+			backdrop-filter: blur(8px);
+			-webkit-backdrop-filter: blur(8px);
+			padding: 0.5rem 0.9rem;
+			margin: 0;
+		}
+		.passi__testa > p:last-child,
+		.discesa[data-tono='scuro'] .passi__testa > p:last-child {
+			color: var(--inchiostro);
+		}
+		.passo h3,
+		.passi__testa h2 {
+			font-size: 2rem;
+			padding-top: 0.2rem;
+		}
+		.passo__fase {
+			color: var(--inchiostro-2);
+			padding-top: 0.8rem !important;
+		}
+		.passo p:last-of-type {
+			padding-bottom: 1rem;
+			font-size: 1rem;
+		}
+		.passo__link {
+			margin: 0 !important;
+			padding-bottom: 1rem !important;
+		}
+	}
+</style>
+
+<script>
+	import { avvia } from './motore/gl';
+	import { stato } from './motore/scena';
+
+	const sez = document.querySelector<HTMLElement>('.discesa')!;
+	const canvas = sez.querySelector('canvas')!;
+	const passi = [...sez.querySelectorAll<HTMLElement>('.passo')];
+	const quota = sez.querySelector<HTMLElement>('.quota-n')!;
+	const tavola = sez.querySelector<HTMLElement>('[data-tavola]')!;
+	const poster = [...sez.querySelectorAll<HTMLElement>('[data-poster]')];
+	const debug = new URLSearchParams(location.search).has('debug');
+	let motore: Awaited<ReturnType<typeof avvia>> = null;
+
+	// Posizione frazionaria: quale fase ha il centro alla metà dello schermo.
+	const posizione = () => {
+		const m = innerHeight / 2;
+		const c = passi.map((p) => { const r = p.getBoundingClientRect(); return r.top + r.height / 2; });
+		if (m <= c[0]) return 0;
+		for (let i = 0; i < c.length - 1; i++) if (m < c[i + 1]) return i + (m - c[i]) / (c[i + 1] - c[i]);
+		return c.length - 1;
+	};
+
+	const scala = (n: number) => {
+		quota.textContent = String(n);
+		// Il carattere cambia scala con il disegno: opsz piccolo a 1:50, enorme a 1:1.
+		const k = 1 - Math.log(n) / Math.log(50);
+		quota.style.setProperty('--opsz', String(Math.round(12 + k * k * 600)));
+	};
+
+	let attesa = false;
+	const muovi = () => {
+		attesa = false;
+		const s = posizione();
+		// La sezione scurisce dalla quarta fase in poi: dalla carta al basalto.
+		// A gradini, uno per fase, con una transizione CSS: mai un grigio medio sotto il testo.
+		const buio = [0, 0, 0, 0, 0.82, 1, 1][Math.min(Math.round(s), 6)];
+		sez.style.setProperty('--buio', buio.toFixed(3));
+		const tono = buio > 0.5 ? 'scuro' : 'chiaro';
+		if (sez.dataset.tono !== tono) { sez.dataset.tono = tono; dispatchEvent(new Event('scalavera:tono')); }
+		if (motore) motore.vai(s);
+		else {
+			const st = stato(s);
+			poster.forEach((p, i) => p.classList.toggle('attivo', i === (st.taglio > 0.5 ? st.b : st.a)));
+			scala(Math.round(st.scala));
+		}
+	};
+	addEventListener('scroll', () => { if (!attesa) { attesa = true; requestAnimationFrame(muovi); } }, { passive: true });
+	addEventListener('resize', muovi);
+	muovi();
+
+	const parti = async () => {
+		const urls: string[] = JSON.parse(canvas.dataset.urls!);
+		const t = await avvia(canvas, urls, {
+			carta: [0.95, 0.955, 0.94],
+			suScala: (n, s) => { scala(n); if (debug) quota.title = s.toFixed(3); },
+		});
+		if (!t) return; // niente WebGL2: restano i render fermi
+		motore = t;
+		tavola.classList.add('pronta');
+		if (debug) (window as any).__tavola = t;
+		muovi();
+	};
+
+	if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		// Il motore parte quando la discesa si avvicina (mai durante il caricamento della pagina);
+		// su telefono serve anche un primo gesto, perché la tela pesa.
+		const touch = matchMedia('(pointer: coarse)').matches;
+		let vicino = false, gesto = !touch, partito = false;
+		const prova = () => { if (vicino && gesto && !partito) { partito = true; parti(); } };
+		new IntersectionObserver(([e]) => { if (e.isIntersecting) { vicino = true; prova(); } }, { rootMargin: '0px 0px -15% 0px' }).observe(sez);
+		if (touch) {
+			const via = () => { gesto = true; prova(); };
+			addEventListener('touchstart', via, { passive: true, once: true });
+			addEventListener('scroll', via, { passive: true, once: true });
+		}
+	}
+</script>

@@ -1,0 +1,479 @@
+---
+/* Riarreda la foto: la parete del soggiorno con tre superfici da cambiare (intonaco, mensola in
+   pietra, tavolini). Si sceglie la superficie (anche toccando la foto), poi la finitura; i campioni
+   si possono trascinare sulla foto. Le ombre restano quelle del render. Senza WebGL2 resta il render. */
+import { Image, getImage } from 'astro:assets';
+import a2 from '../../assets/scalavera/foto/a2-parete.jpg';
+import maschere from '../../assets/scalavera/foto/a2-maschere.png';
+import atlante from '../../assets/scalavera/materia/atlante.jpg';
+
+const [foto, masc, atl] = await Promise.all([
+	getImage({ src: a2, width: 1500, format: 'webp', quality: 80 }),
+	getImage({ src: maschere, width: 1200, format: 'png' }),
+	getImage({ src: atlante, width: 2048, format: 'webp', quality: 82 }),
+]);
+const sorgenti = JSON.stringify({ foto: foto.src, maschere: masc.src, atlante: atl.src });
+
+const superfici = [
+	{ nome: 'Parete', d: 'Intonaco a calce', centro: [0.3, 0.35] },
+	{ nome: 'Mensola', d: 'Pietra spaccata', centro: [0.45, 0.79] },
+	{ nome: 'Tavolini', d: 'Travertino', centro: [0.52, 0.87] },
+];
+const finiture = [
+	{ id: 'com-e', nome: 'Com’è', gruppo: 'Calce', f: { tipo: 0 }, css: 'linear-gradient(135deg, #8d8678, #6f695e)' },
+	{ id: 'salvia', nome: 'Salvia', gruppo: 'Calce', f: { tipo: 1, col: [0.47, 0.55, 0.47] }, css: '#7a8c78' },
+	{ id: 'terracotta', nome: 'Terracotta', gruppo: 'Calce', f: { tipo: 1, col: [0.72, 0.4, 0.28] }, css: '#b86647' },
+	{ id: 'blu-fumo', nome: 'Blu fumo', gruppo: 'Calce', f: { tipo: 1, col: [0.36, 0.43, 0.53] }, css: '#5c6e87' },
+	{ id: 'ocra', nome: 'Ocra', gruppo: 'Calce', f: { tipo: 1, col: [0.76, 0.58, 0.3] }, css: '#c2944c' },
+	{ id: 'bianco', nome: 'Bianco calce', gruppo: 'Calce', f: { tipo: 1, col: [0.93, 0.92, 0.88] }, css: '#e9e6dd' },
+	{ id: 'travertino', nome: 'Travertino argento', gruppo: 'Materia', f: { tipo: 2, tex: 0 }, css: '#9aa3a8' },
+	{ id: 'terrazzo', nome: 'Terrazzo notte', gruppo: 'Materia', f: { tipo: 2, tex: 1 }, css: '#1d2a3a' },
+	{ id: 'onice', nome: 'Onice lilla', gruppo: 'Materia', f: { tipo: 2, tex: 2 }, css: '#b9aeb3' },
+	{ id: 'noce', nome: 'Noce canaletto', gruppo: 'Materia', f: { tipo: 2, tex: 3 }, css: '#6b3622' },
+];
+const colori = import.meta.glob<{ default: ImageMetadata }>('../../assets/scalavera/materia/*-colore.jpg', { eager: true });
+const mini = await Promise.all(
+	['travertino', 'terrazzo', 'onice', 'noce'].map(async (n) => {
+		const src = Object.entries(colori).find(([k]) => k.endsWith(`/${n}-colore.jpg`))![1].default;
+		return [n, (await getImage({ src, width: 120, format: 'webp', quality: 70 })).src] as const;
+	}),
+);
+const miniature = Object.fromEntries(mini);
+---
+
+<section class="riarreda" id="riarreda" data-tono="chiaro" aria-labelledby="riarreda-titolo">
+	<div class="riarreda__in">
+		<header class="riarreda__testa">
+			<p class="etichetta">Prova prima del cantiere</p>
+			<h2 id="riarreda-titolo">Riarreda la stanza. <em>Le ombre restano vere.</em></h2>
+			<p>Scegli una superficie, poi la finitura: la luce del render resta la stessa, cambia solo la materia. Puoi anche trascinare un campione sulla foto.</p>
+		</header>
+
+		<div class="banco-r">
+			<figure class="foto-r" data-foto-r>
+				<Image src={a2} alt="Render della parete del soggiorno: camino in intonaco, mensole in acciaio, mensola in pietra spaccata, tavolino e tavolo tondo in travertino" widths={[600, 900, 1200]} sizes="(min-width: 900px) 46vw, 100vw" class="foto-r__img" loading="lazy" />
+				<canvas aria-hidden="true" data-sorgenti={sorgenti}></canvas>
+				<button type="button" class="foto-r__orig" data-originale aria-pressed="false">Tieni premuto: com’era</button>
+			</figure>
+
+			<div class="pannello-r">
+				<fieldset class="sup">
+					<legend class="etichetta">Superficie</legend>
+					{superfici.map((s, i) => (
+						<label class="sup__voce">
+							<input type="radio" name="superficie" value={i} checked={i === 0} data-centro={JSON.stringify(s.centro)} />
+							<span class="sup__n">0{i + 1}</span>
+							<span class="sup__nome">{s.nome}</span>
+							<span class="sup__d" data-sup-stato={i}>{s.d}</span>
+						</label>
+					))}
+				</fieldset>
+
+				<fieldset class="fin">
+					<legend class="etichetta">Finitura</legend>
+					<div class="fin__nastro">
+					{['Calce', 'Materia'].map((g) => (
+						<div class="fin__gruppo">
+							<p class="fin__titolo">{g === 'Calce' ? 'Colori a calce' : 'Dalla materioteca'}</p>
+							<div class="fin__elenco">
+								{finiture.filter((f) => f.gruppo === g).map((f) => (
+									<label class="fin__voce" data-trascina={f.id}>
+										<input type="radio" name="finitura" value={f.id} checked={f.id === 'com-e'} data-f={JSON.stringify(f.f)} />
+										<span class="fin__colore" style={miniature[f.id] ? `background-image:url(${miniature[f.id]})` : `background:${f.css}`} aria-hidden="true"></span>
+										<span class="fin__nome">{f.nome}</span>
+									</label>
+								))}
+							</div>
+						</div>
+					))}
+					</div>
+				</fieldset>
+				<p class="riarreda__esito" aria-live="polite" data-esito>Parete: com’è.</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.riarreda {
+		padding: clamp(5rem, 10vw, 9rem) var(--gutter);
+		background: linear-gradient(180deg, var(--cemento), var(--fondo));
+	}
+	.riarreda__in {
+		max-width: var(--max);
+		margin-inline: auto;
+	}
+	.riarreda__testa {
+		max-width: 44rem;
+		margin-bottom: clamp(2.5rem, 5vw, 4rem);
+	}
+	.riarreda__testa h2 {
+		font-size: clamp(2.3rem, 5vw, 4.6rem);
+		margin: 1rem 0 1.2rem;
+	}
+	.riarreda__testa em {
+		font-style: italic;
+		font-weight: 300;
+	}
+	.riarreda__testa p:last-child {
+		margin: 0;
+		font-size: 1.06rem;
+		max-width: 36rem;
+	}
+	.banco-r {
+		display: grid;
+		grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+		gap: clamp(1.5rem, 4vw, 4rem);
+		align-items: start;
+	}
+	.foto-r {
+		position: relative;
+		margin: 0;
+		aspect-ratio: 4 / 5;
+		background: var(--grafite);
+		box-shadow: 0 30px 60px -34px oklch(0.2 0.02 160 / 0.5);
+		cursor: pointer;
+		touch-action: manipulation;
+	}
+	.foto-r__img,
+	.foto-r canvas {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.foto-r canvas {
+		opacity: 0;
+		transition: opacity 0.6s ease;
+	}
+	.foto-r.pronta canvas {
+		opacity: 1;
+	}
+	.foto-r.sopra {
+		outline: 3px solid var(--metro);
+		outline-offset: 4px;
+	}
+	.foto-r__orig {
+		position: absolute;
+		left: 1rem;
+		bottom: 1rem;
+		min-height: 44px;
+		padding: 0 1rem;
+		border: 0;
+		background: oklch(0.15 0.01 200 / 0.78);
+		color: #f1f3f1;
+		font-weight: 650;
+		font-size: 0.85rem;
+		backdrop-filter: blur(6px);
+		-webkit-backdrop-filter: blur(6px);
+		cursor: pointer;
+		user-select: none;
+		-webkit-user-select: none;
+		touch-action: none;
+	}
+	.foto-r:not(.pronta) .foto-r__orig {
+		display: none;
+	}
+	fieldset {
+		border: 0;
+		margin: 0 0 2rem;
+		padding: 0;
+		min-width: 0;
+	}
+	legend {
+		padding: 0;
+		margin-bottom: 0.9rem;
+		color: var(--inchiostro-2);
+	}
+	.sup {
+		display: grid;
+		border-top: 1px solid color-mix(in oklch, var(--inchiostro) 25%, transparent);
+	}
+	.sup__voce {
+		display: grid;
+		grid-template-columns: 2.4rem 1fr auto;
+		align-items: baseline;
+		gap: 0.6rem;
+		padding: 0.85rem 0.4rem;
+		border-bottom: 1px solid color-mix(in oklch, var(--inchiostro) 25%, transparent);
+		cursor: pointer;
+		position: relative;
+	}
+	.sup__voce:has(input:checked) {
+		background: linear-gradient(90deg, color-mix(in oklch, var(--metro) 40%, transparent) 0 4px, transparent 4px);
+	}
+	.sup__voce:has(input:focus-visible) {
+		outline: 2px solid var(--inchiostro);
+		outline-offset: 2px;
+	}
+	.sup__voce input,
+	.fin__voce input {
+		position: absolute;
+		opacity: 0;
+		pointer-events: none;
+	}
+	.sup__n {
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		color: var(--inchiostro-2);
+	}
+	.sup__nome {
+		font-family: var(--titoli);
+		font-size: 1.5rem;
+	}
+	.sup__d {
+		font-size: 0.86rem;
+		color: var(--inchiostro-2);
+		text-align: right;
+	}
+	.fin__gruppo + .fin__gruppo {
+		margin-top: 1.2rem;
+	}
+	.fin__titolo {
+		margin: 0 0 0.6rem;
+		font-size: 0.86rem;
+		font-weight: 600;
+	}
+	.fin__elenco {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+	.fin__voce {
+		position: relative; /* l'input nascosto resta dentro la striscia che scorre */
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		min-height: 48px;
+		padding: 0.3rem 0.8rem 0.3rem 0.3rem;
+		border: 1px solid color-mix(in oklch, var(--inchiostro) 22%, transparent);
+		background: color-mix(in oklch, var(--carta) 60%, transparent);
+		cursor: grab;
+		font-size: 0.88rem;
+		font-weight: 600;
+		touch-action: pan-y;
+		user-select: none;
+		-webkit-user-select: none;
+	}
+	.fin__voce:has(input:checked) {
+		border-color: var(--inchiostro);
+		box-shadow: inset 0 -3px 0 var(--metro);
+	}
+	.fin__voce:has(input:focus-visible) {
+		outline: 2px solid var(--inchiostro);
+		outline-offset: 2px;
+	}
+	.fin__colore {
+		width: 38px;
+		height: 38px;
+		flex: none;
+		background-size: cover;
+		box-shadow: inset 0 0 0 1px oklch(0 0 0 / 0.12);
+	}
+	.riarreda__esito {
+		margin: 0;
+		font-family: var(--titoli);
+		font-style: italic;
+		font-size: 1.15rem;
+	}
+	@media (max-width: 899px) {
+		.banco-r {
+			grid-template-columns: minmax(0, 1fr);
+			gap: 1rem;
+		}
+		.foto-r {
+			margin-inline: calc(var(--gutter) * -1);
+		}
+		/* Sul telefono le finiture stanno subito sotto la foto, in una striscia da scorrere. */
+		.pannello-r {
+			display: flex;
+			flex-direction: column;
+		}
+		.pannello-r > * {
+			min-width: 0;
+		}
+		.fin {
+			order: -1;
+			margin-bottom: 1.2rem;
+		}
+		.fin__nastro {
+			display: flex;
+			gap: 1rem;
+			overflow-x: auto;
+			scroll-snap-type: x proximity;
+			margin-inline: calc(var(--gutter) * -1);
+			padding: 0 var(--gutter) 0.6rem;
+		}
+		.fin__gruppo + .fin__gruppo {
+			margin-top: 0;
+		}
+		.fin__elenco {
+			flex-wrap: nowrap;
+		}
+		.fin__voce {
+			white-space: nowrap;
+			scroll-snap-align: start;
+		}
+		.sup {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			gap: 0.4rem;
+			border-top: 0;
+		}
+		.sup__voce {
+			grid-template-columns: minmax(0, 1fr);
+			text-align: center;
+			gap: 0.1rem;
+			padding: 0.6rem 0.3rem;
+			border: 1px solid color-mix(in oklch, var(--inchiostro) 25%, transparent);
+		}
+		.sup__voce:has(input:checked) {
+			background: none;
+			border-color: var(--inchiostro);
+			box-shadow: inset 0 -3px 0 var(--metro);
+		}
+		.sup__n {
+			display: none;
+		}
+		.sup__nome {
+			font-size: 1.2rem;
+		}
+		.sup__d {
+			text-align: center;
+			font-size: 0.74rem;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+	}
+</style>
+
+<style is:global>
+	/* Il campione che segue il dito durante il trascinamento (creato via JS). */
+	.sv-fantasma {
+		position: fixed;
+		z-index: 260;
+		width: 56px;
+		height: 56px;
+		margin: -28px 0 0 -28px;
+		background-size: cover;
+		box-shadow:
+			0 0 0 2px #fff,
+			0 12px 24px -8px oklch(0 0 0 / 0.6);
+		pointer-events: none;
+		rotate: -6deg;
+	}
+</style>
+
+<script>
+	import { avviaRiarredo, type Finitura, type Riarredo } from './motore/riarreda';
+
+	const sez = document.querySelector<HTMLElement>('#riarreda')!;
+	const fig = sez.querySelector<HTMLElement>('[data-foto-r]')!;
+	const canvas = fig.querySelector('canvas')!;
+	const sup = [...sez.querySelectorAll<HTMLInputElement>('input[name="superficie"]')];
+	const fin = [...sez.querySelectorAll<HTMLInputElement>('input[name="finitura"]')];
+	const esito = sez.querySelector<HTMLElement>('[data-esito]')!;
+	const orig = sez.querySelector<HTMLButtonElement>('[data-originale]')!;
+	const scelte = ['com-e', 'com-e', 'com-e'];
+	let r: Riarredo | null = null;
+
+	const attiva = () => Number(sup.find((s) => s.checked)!.value);
+	const nomeSup = (i: number) => sup[i].closest('label')!.querySelector('.sup__nome')!.textContent!;
+	const nomeFin = (id: string) => fin.find((f) => f.value === id)!.closest('label')!.querySelector('.fin__nome')!.textContent!;
+
+	const posa = (s: number, id: string, centro?: [number, number]) => {
+		scelte[s] = id;
+		const input = fin.find((f) => f.value === id)!;
+		r?.posa(s, JSON.parse(input.dataset.f!) as Finitura, centro ?? JSON.parse(sup[s].dataset.centro!));
+		sez.querySelector<HTMLElement>(`[data-sup-stato="${s}"]`)!.textContent = id === 'com-e' ? sup[s].closest('label')!.querySelector('.sup__d')!.getAttribute('data-orig') ?? '' : nomeFin(id);
+		esito.textContent = `${nomeSup(s)}: ${nomeFin(id).toLowerCase()}.`;
+	};
+	sez.querySelectorAll<HTMLElement>('[data-sup-stato]').forEach((e) => e.setAttribute('data-orig', e.textContent!));
+
+	// Scegliere la superficie mostra la sua finitura attuale.
+	sup.forEach((s) => s.addEventListener('change', () => {
+		const i = attiva();
+		fin.forEach((f) => (f.checked = f.value === scelte[i]));
+		esito.textContent = `${nomeSup(i)}: ${nomeFin(scelte[i]).toLowerCase()}.`;
+	}));
+	fin.forEach((f) => f.addEventListener('change', () => { if (f.checked) posa(attiva(), f.value); }));
+
+	// Toccare la foto sceglie la superficie (e la stesura parte da lì alla prossima finitura).
+	const uv = (e: { clientX: number; clientY: number }) => {
+		const b = canvas.getBoundingClientRect();
+		return [(e.clientX - b.left) / b.width, (e.clientY - b.top) / b.height] as [number, number];
+	};
+	fig.addEventListener('click', (e) => {
+		if (!r || (e.target as HTMLElement).closest('[data-originale]')) return;
+		const p = uv(e);
+		const s = r.superficieIn(...p);
+		if (s < 0) return;
+		sup[s].checked = true;
+		sup[s].dispatchEvent(new Event('change'));
+		sup[s].dataset.centro = JSON.stringify(p);
+	});
+
+	// Tieni premuto per vedere com'era.
+	const tieni = (on: boolean) => { r?.originale(on); orig.setAttribute('aria-pressed', String(on)); };
+	orig.addEventListener('pointerdown', (e) => { e.preventDefault(); tieni(true); });
+	['pointerup', 'pointerleave', 'pointercancel'].forEach((t) => orig.addEventListener(t, () => tieni(false)));
+	orig.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); tieni(true); } });
+	orig.addEventListener('keyup', () => tieni(false));
+
+	// Trascinare un campione sulla foto: la superficie sotto il punto di rilascio prende la finitura.
+	sez.querySelectorAll<HTMLElement>('[data-trascina]').forEach((v) => {
+		v.addEventListener('pointerdown', (e) => {
+			if (!r || e.button !== 0) return;
+			const id = v.dataset.trascina!;
+			const x0 = e.clientX, y0 = e.clientY;
+			let fantasma: HTMLElement | null = null;
+			const muovi = (m: PointerEvent) => {
+				if (!fantasma && Math.hypot(m.clientX - x0, m.clientY - y0) > 8) {
+					fantasma = document.createElement('div');
+					fantasma.className = 'sv-fantasma';
+					const c = v.querySelector<HTMLElement>('.fin__colore')!;
+					fantasma.style.background = getComputedStyle(c).background;
+					document.body.append(fantasma);
+				}
+				if (fantasma) {
+					fantasma.style.left = `${m.clientX}px`;
+					fantasma.style.top = `${m.clientY}px`;
+					const b = canvas.getBoundingClientRect();
+					fig.classList.toggle('sopra', m.clientX > b.left && m.clientX < b.right && m.clientY > b.top && m.clientY < b.bottom);
+				}
+			};
+			const fine = (m: PointerEvent) => {
+				removeEventListener('pointermove', muovi);
+				removeEventListener('pointerup', fine);
+				removeEventListener('pointercancel', fine);
+				fig.classList.remove('sopra');
+				if (!fantasma) return; // era un clic: ci pensa il radio
+				fantasma.remove();
+				const p = uv(m);
+				if (p[0] < 0 || p[0] > 1 || p[1] < 0 || p[1] > 1) return;
+				const s = r!.superficieIn(...p);
+				if (s < 0) return;
+				sup[s].checked = true;
+				fin.forEach((f) => (f.checked = f.value === id));
+				posa(s, id, p);
+			};
+			addEventListener('pointermove', muovi);
+			addEventListener('pointerup', fine);
+			addEventListener('pointercancel', fine);
+		});
+	});
+
+	const parti = async () => {
+		r = await avviaRiarredo(canvas, JSON.parse(canvas.dataset.sorgenti!), [0.351, 0.638, 0.389], sup.map((s) => JSON.parse(s.dataset.centro!)));
+		if (!r) {
+			sez.querySelectorAll<HTMLInputElement>('input').forEach((i) => (i.disabled = true));
+			esito.textContent = 'Il tuo browser non supporta WebGL2: qui vedi il render com’è.';
+			return;
+		}
+		fig.classList.add('pronta');
+	};
+	const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { io.disconnect(); parti(); } }, { rootMargin: '500px' });
+	io.observe(fig);
+</script>

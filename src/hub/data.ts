@@ -22,6 +22,8 @@ import cardSifone from '../assets/hub/card-sifone.jpg';
 import shotSifone from '../assets/hub/shot-sifone.jpg';
 import cardObrafina from '../assets/hub/card-obrafina.jpg';
 import shotObrafina from '../assets/hub/shot-obrafina.jpg';
+import cardScalavera from '../assets/hub/card-scalavera.jpg';
+import shotScalavera from '../assets/hub/shot-scalavera.jpg';
 
 export const SITE = 'https://theloopstudio.org/';
 export const CONTACT = 'https://theloopstudio.org/contatti';
@@ -690,6 +692,68 @@ export const concepts: Concept[] = [
 		palette: ['#d9e3f1', '#b9482a', '#241a14', '#2b49c8', '#d9a441', '#59582b'],
 		metriche: [
 			{ label: 'Performance', valore: '94' },
+			{ label: 'Accessibilità', valore: '100' },
+			{ label: 'Buone pratiche', valore: '100' },
+		],
+	},
+	{
+		slug: 'scalavera',
+		macro: 'casa',
+		nome: 'Scala Vera',
+		categoria: 'Abitare',
+		archetipo: 'Lo studio di interni',
+		claim: 'Ogni casa ha la sua scala giusta. Un progetto raccontato scendendo di scala: dalla pianta a inchiostro all’acquerello, dal render alla pietra toccata con la luce radente.',
+		path: '/casa/interior/',
+		infoPath: '/casa/interior/info/',
+		titoloSeo: 'Sito web per studio di interni: homepage concept con discesa di scala in WebGL e materioteca',
+		descrizioneSeo:
+			'Come potrebbe essere la homepage di uno studio di interior design: una pianta che si disegna, un progetto che scende da 1:100 a 1:1 passando dall’acquerello al render, una materioteca con luce radente e la prenotazione della consulenza. Concept dimostrativo di Loop Studio.',
+		intro: [
+			'Uno studio di interni vende qualcosa che il cliente non riesce ancora a vedere: la sua casa finita. Questa homepage glielo fa vedere nell’ordine in cui lo vede l’architetto. Si parte da una pianta a inchiostro che si traccia da sola, poi si scende di scala scorrendo: lo schizzo ad acquerello si asciuga e diventa il render, l’inquadratura si stringe sul tavolo in travertino, e alla fine la pietra si tocca, a grandezza naturale, con una torcia che la illumina di taglio.',
+			'È il livello Esperienza della categoria Abitare e una vetrina dimostrativa: lo studio, i progetti, i prezzi e i contatti sono di fantasia, e le immagini sono render d’archivio. Serve a mostrare che il sito di uno studio può essere esso stesso un pezzo di progetto: un motore WebGL scritto apposta, senza librerie, una palette che scurisce dalla carta da lucido al basalto e un solo accento, il giallo del metro.',
+		],
+		perChi:
+			'Studi di interior design e architettura d’interni, progettisti di arredi su misura, showroom di materiali e superfici. Adatta a chi lavora su progetti di fascia medio-alta e vuole che il primo contatto racconti il metodo, non solo il portfolio, e arrivare alla consulenza con un cliente che ha già scelto i suoi materiali.',
+		sezioni: [
+			{
+				t: 'Una pianta che si disegna da sola',
+				d: 'L’apertura è una tavola 1:100 in SVG: muri, porte, arredi e quote si tracciano con il pennino all’arrivo, e scorrendo la tavola entra nel soggiorno del progetto.',
+			},
+			{
+				t: 'La discesa di scala in WebGL',
+				d: 'Un motore WebGL2 scritto apposta, senza librerie: il render passato in un filtro ad acquerello che si asciuga a chiazze, tagli di montaggio allineati sul tavolo in travertino con la tavola successiva che si posa sopra, zoom fino alla pietra. La quota scende da 1:50 a 1:1 e il carattere cambia optical size con lei.',
+			},
+			{
+				t: 'La materioteca con la luce radente',
+				d: 'Sette campioni a grandezza naturale: cinque scansioni di materiali veri con mappe di rilievo (il velluto con il suo riflesso di pelo) e due finiture calcolate nello shader, il bronzo spazzolato con il riflesso anisotropo e la lacca. Il cursore, o il dito, è una torcia che li illumina di taglio.',
+			},
+			{
+				t: 'Riarreda la foto',
+				d: 'La parete del render con tre superfici mascherate: intonaco, mensola in pietra e tavolini. Si sceglie un colore a calce o un materiale della materioteca, anche trascinandolo sulla foto, e la nuova finitura si stende come una passata di rullo; luce e ombre restano quelle del render. Tenendo premuto si torna a com’era.',
+			},
+			{
+				t: 'Progetti come tavole di presentazione',
+				d: 'Tre case impaginate come fogli di progetto, con cartiglio e dati, ognuna con un’impaginazione diversa. Nella seconda la stessa stanza in tre proposte colore che si stendono come una mano di pittura.',
+			},
+			{
+				t: 'Il brief e la tavola materiali',
+				d: 'Da che scala parti (un pezzo, una stanza, tutta la casa), i campioni scelti nella materioteca che compongono la tavola materiali, i contatti e una ricevuta impaginata come un cartiglio. Il menù mobile è una mazzetta di campioni che si apre a ventaglio.',
+			},
+		],
+		awning: ['#f2c500', '#1d2a3a'],
+		glow: 'rgba(242, 197, 0, 0.45)',
+		livello: 3,
+		lingua: 'IT',
+		card: cardScalavera,
+		shot: shotScalavera,
+		shotAlt: '',
+		crop: '45% 45%',
+		cardAlt: 'Scala Vera su desktop e su telefono: una tavola su carta verde-grigia con un soggiorno ad acquerello che si asciuga nel render, la quota 1:50 in giallo e un righello a destra; sul telefono il menù come una mazzetta di campioni aperta a ventaglio.',
+		mood: 'Lo studio che scende di scala: carta da lucido verde-grigia che scurisce fino al basalto, inchiostro, render grigio tortora e un solo accento, il giallo del metro. Pietra, legno, bronzo e lacca portano i colori.',
+		caratteri: 'Playfair (optical size variabile) e Manrope',
+		palette: ['#e2e9e2', '#1f2a27', '#2b3134', '#14181b', '#f2c500', '#9aa3a8'],
+		metriche: [
+			{ label: 'Performance', valore: '88' },
 			{ label: 'Accessibilità', valore: '100' },
 			{ label: 'Buone pratiche', valore: '100' },
 		],

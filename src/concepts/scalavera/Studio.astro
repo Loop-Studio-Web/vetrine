@@ -1,0 +1,167 @@
+---
+/* Lo studio: chi siamo, senza volti. Tipografico, con il simbolo a tacche come righello gigante. */
+import { TACCHE, ZERO } from './dati';
+const principi = [
+	{ t: 'Prima si misura', d: 'Niente render prima del rilievo: le stanze vere hanno muri fuori squadra, e il progetto parte da lì.' },
+	{ t: 'Il preventivo lo leggiamo noi', d: 'Chiediamo tre offerte alle imprese e le confrontiamo voce per voce con il computo del progetto.' },
+	{ t: 'Ogni materiale dal vero', d: 'Nessuna scelta su uno schermo: campioni in studio, lastre in cava, prove di colore sul tuo muro.' },
+];
+const numeri = [
+	{ n: '112', d: 'case progettate dal 2009' },
+	{ n: '6', d: 'settimane in media dal rilievo all’esecutivo' },
+	{ n: '1', d: 'interlocutore dal primo incontro all’ultima maniglia' },
+];
+---
+
+<section class="studio" id="studio" data-tono="chiaro" aria-labelledby="studio-titolo">
+	<svg class="studio__righello" viewBox="208.7 228.8 386.8 572.9" aria-hidden="true" focusable="false">
+		{TACCHE.map(([x, y, w], i) => <rect x={x} y={y} width={w} height="17.7" class={i === ZERO ? 'zero' : undefined} />)}
+	</svg>
+	<div class="studio__in">
+		<header>
+			<p class="etichetta">Lo studio</p>
+			<h2 id="studio-titolo">Quattro architetti, <em>un tavolo lungo</em> e un metro giallo.</h2>
+		</header>
+		<p class="studio__racconto">
+			Scala Vera nasce a Torino nel 2009, in un ex laboratorio di cornici. Lavoriamo su case abitate, non su case da rivista: famiglie che crescono, stanze che cambiano uso, mobili ereditati da salvare. Disegniamo tutto noi, dalla pianta al dettaglio, e seguiamo il cantiere fino alla fine. Studio e persone sono di fantasia.
+		</p>
+		<ul class="studio__numeri">
+			{numeri.map((x, i) => (
+				<li data-rev style={`--rit:${i * 0.12}s`}>
+					<span class="numero-g">{x.n}</span>
+					<span>{x.d}</span>
+				</li>
+			))}
+		</ul>
+		<ol class="studio__principi">
+			{principi.map((p, i) => (
+				<li data-rev style={`--rit:${i * 0.12}s`}>
+					<h3>{p.t}</h3>
+					<p>{p.d}</p>
+				</li>
+			))}
+		</ol>
+	</div>
+</section>
+
+<style>
+	.studio {
+		position: relative;
+		overflow: hidden;
+		padding: clamp(5rem, 10vw, 9rem) var(--gutter);
+		background: linear-gradient(180deg, var(--fondo), var(--cemento));
+	}
+	.studio__righello {
+		position: absolute;
+		right: -4vw;
+		top: 50%;
+		translate: 0 -50%;
+		height: 120%;
+		width: auto;
+		fill: none;
+		stroke: color-mix(in oklch, var(--inchiostro) 22%, transparent);
+		stroke-width: 1;
+		vector-effect: non-scaling-stroke;
+		pointer-events: none;
+	}
+	.studio__righello .zero {
+		stroke: var(--metro);
+		stroke-width: 2;
+	}
+	.studio__in {
+		position: relative;
+		max-width: var(--max);
+		margin-inline: auto;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		gap: clamp(2rem, 5vw, 4rem) clamp(2rem, 6vw, 6rem);
+	}
+	h2 {
+		font-size: clamp(2.2rem, 4.6vw, 4.2rem);
+		margin-top: 1rem;
+	}
+	h2 em {
+		font-style: italic;
+		font-weight: 300;
+	}
+	.studio__racconto {
+		align-self: end;
+		font-size: 1.12rem;
+		line-height: 1.7;
+		margin: 0;
+		max-width: 34rem;
+	}
+	.studio__numeri {
+		grid-column: 1 / -1;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		border-top: 1px solid color-mix(in oklch, var(--inchiostro) 30%, transparent);
+	}
+	.studio__numeri li {
+		display: grid;
+		gap: 0.4rem;
+		padding: 1.4rem 1.4rem 0 0;
+		max-width: 18rem;
+	}
+	.numero-g {
+		font-family: var(--titoli);
+		font-weight: 300;
+		font-size: clamp(3.4rem, 7vw, 6rem);
+		line-height: 1;
+		font-variant-numeric: lining-nums;
+	}
+	.studio__principi {
+		grid-column: 1 / -1;
+		list-style: none;
+		counter-reset: p;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 2rem;
+	}
+	.studio__principi li {
+		counter-increment: p;
+	}
+	.studio__principi h3 {
+		font-size: 1.5rem;
+		display: flex;
+		gap: 0.6rem;
+		align-items: baseline;
+		margin-bottom: 0.6rem;
+	}
+	.studio__principi h3::before {
+		content: counter(p, decimal-leading-zero);
+		font-family: var(--testo);
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		padding: 0.15rem 0.35rem;
+		background: var(--metro);
+		color: var(--basalto);
+	}
+	.studio__principi p {
+		margin: 0;
+		color: var(--inchiostro-2);
+	}
+	@media (max-width: 899px) {
+		.studio__in,
+		.studio__numeri,
+		.studio__principi {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.studio__numeri li {
+			grid-template-columns: 5.5rem 1fr;
+			align-items: center;
+			max-width: none;
+			padding: 1rem 0;
+			border-bottom: 1px solid color-mix(in oklch, var(--inchiostro) 15%, transparent);
+		}
+		.numero-g {
+			font-size: 3.2rem;
+		}
+	}
+</style>

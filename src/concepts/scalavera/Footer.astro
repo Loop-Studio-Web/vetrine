@@ -1,0 +1,108 @@
+---
+import Marchio from './Marchio.astro';
+import loop from '../../assets/hub/loop-logo-on-dark.svg';
+import { STUDIO } from './dati';
+---
+
+<footer class="piede scuro" data-tono="scuro">
+	<div class="piede__in">
+		<div class="piede__marca">
+			<Marchio />
+			<p>Studio di interni. Dalla pianta alla materia.</p>
+		</div>
+		<nav class="piede__nav" aria-label="Piè di pagina">
+			<a href="#metodo">Il metodo</a>
+			<a href="#materia">La materioteca</a>
+			<a href="#progetti">Progetti</a>
+			<a href="#studio">Lo studio</a>
+			<a href="#brief">Il tuo brief</a>
+		</nav>
+		<address class="piede__contatti">
+			<span>{STUDIO.indirizzo}</span>
+			<a href={`tel:${STUDIO.tel}`}>{STUDIO.telVisibile}</a>
+			<a href={`mailto:${STUDIO.email}`}>{STUDIO.email}</a>
+			<span>Su appuntamento, dal lunedì al venerdì</span>
+		</address>
+		<p class="piede__copy">
+			© 2026 Scala Vera. Studio di fantasia: concept dimostrativo. Lo studio, le persone, i progetti, i prezzi, l’indirizzo e i contatti non esistono; le immagini sono render d’archivio usati come esempio. Note legali, privacy e cookie: in un sito vero starebbero qui.
+		</p>
+		<a class="piede__credito" href="https://theloopstudio.org/" target="_blank" rel="noopener">
+			<span>Sito ideato da</span>
+			<img src={loop.src} width="84" height="44" alt="Loop Studio" />
+			<span class="sr-only">(si apre in una nuova scheda)</span>
+		</a>
+	</div>
+</footer>
+
+<style>
+	.piede {
+		padding: 4rem var(--gutter) 3rem;
+		border-top: 1px solid oklch(1 0 0 / 0.08);
+	}
+	.piede__in {
+		max-width: var(--max);
+		margin-inline: auto;
+		display: grid;
+		grid-template-columns: 1.2fr 1fr 1.2fr;
+		gap: 2.5rem 3rem;
+	}
+	.piede__marca {
+		font-size: 1.05rem;
+		color: #f1f3f1;
+	}
+	.piede__marca p {
+		color: var(--nebbia-2);
+		font-size: 0.92rem;
+		margin: 1rem 0 0;
+	}
+	.piede__nav {
+		display: grid;
+		gap: 0.5rem;
+		align-content: start;
+	}
+	.piede__nav a,
+	.piede__contatti a {
+		text-decoration: none;
+		width: fit-content;
+		padding: 0.25rem 0;
+		border-bottom: 1px solid transparent;
+	}
+	.piede__nav a:hover,
+	.piede__contatti a:hover {
+		border-bottom-color: var(--metro);
+	}
+	.piede__contatti {
+		display: grid;
+		gap: 0.5rem;
+		font-style: normal;
+		align-content: start;
+	}
+	.piede__copy {
+		grid-column: 1 / 3;
+		margin: 0;
+		font-size: 0.82rem;
+		color: var(--nebbia-2);
+		max-width: 70ch;
+	}
+	.piede__credito {
+		justify-self: end;
+		align-self: end;
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		font-size: 0.82rem;
+		text-decoration: none;
+		color: var(--nebbia-2);
+	}
+	@media (max-width: 860px) {
+		.piede__in {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.piede__copy {
+			grid-column: auto;
+		}
+		.piede__credito {
+			justify-self: start;
+		}
+	}
+</style>

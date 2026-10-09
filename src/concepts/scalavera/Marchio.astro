@@ -1,0 +1,43 @@
+---
+/* Il marchio: simbolo a tacche (SVG esatto, la tacca "zero" in giallo) e il nome come testo. */
+import { TACCHE, ZERO } from './dati';
+interface Props {
+	nome?: boolean;
+	class?: string;
+}
+const { nome = true, class: cls } = Astro.props;
+---
+
+<span class:list={['marchio', cls]}>
+	<svg class="marchio__simbolo" viewBox="208.7 228.8 386.8 572.9" aria-hidden="true" focusable="false">
+		{TACCHE.map(([x, y, w], i) => <rect x={x} y={y} width={w} height="17.7" class={i === ZERO ? 'zero' : undefined} />)}
+	</svg>
+	{nome && <span class="marchio__nome">Scala Vera</span>}
+</span>
+
+<style>
+	.marchio {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.7em;
+		line-height: 1;
+	}
+	.marchio__simbolo {
+		height: 1.9em;
+		width: auto;
+		fill: currentColor;
+		overflow: visible;
+	}
+	.marchio__simbolo .zero {
+		fill: var(--metro);
+	}
+	.marchio__nome {
+		font-family: var(--titoli);
+		font-weight: 450;
+		font-variation-settings: 'opsz' 40;
+		letter-spacing: 0.24em;
+		text-transform: uppercase;
+		font-size: 0.95em;
+		white-space: nowrap;
+	}
+</style>

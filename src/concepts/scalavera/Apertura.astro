@@ -1,0 +1,406 @@
+---
+/* 1:100 — L'apertura: la pianta dell'appartamento a inchiostro, che si traccia all'arrivo.
+   È la pianta del soggiorno che si vede poi nella discesa (camino e mensola in pietra a ovest,
+   tavolo tondo al centro, divano tondo, poltrona, tappeto a spirale). Scorrendo, la tavola
+   entra nel soggiorno (scroll-driven dove c'è, ferma altrove). */
+---
+
+<section class="apertura" id="pianta" data-tono="chiaro" aria-labelledby="titolo">
+	<div class="apertura__testo">
+		<p class="etichetta apertura__sopra">Studio di interni · Torino</p>
+		<h1 id="titolo">Ogni casa ha la sua <em>scala giusta</em>.</h1>
+		<p class="apertura__intro">
+			Progettiamo interni dalla pianta alla materia: rilievo, disegno, render, dettagli costruttivi e cantiere, con un solo studio dall'inizio alla fine.
+		</p>
+		<div class="apertura__azioni">
+			<a href="#brief" class="bottone pieno">Prenota la consulenza</a>
+			<a href="#metodo" class="collegamento">Scendi di scala <span aria-hidden="true">↓</span></a>
+		</div>
+	</div>
+
+	<figure class="apertura__tavola">
+		<div class="foglio">
+			<svg class="pianta" viewBox="0 0 600 760" role="img" aria-labelledby="pianta-t">
+				<title id="pianta-t">Pianta di un appartamento in scala 1:100: soggiorno con camino, cucina, ingresso, due camere e bagno</title>
+				<defs>
+					<pattern id="tratteggio" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+						<line x1="0" y1="0" x2="0" y2="6" class="tr-linea" />
+					</pattern>
+				</defs>
+
+				<!-- Soggiorno evidenziato -->
+				<rect x="45" y="385" width="300" height="310" class="evidenza" />
+
+				<!-- Muri perimetrali -->
+				<g class="muri" style="--r:0">
+					<path pathLength="1" d="M40 60 H560 V700 H40 Z" />
+				</g>
+				<!-- Finestre: il muro si interrompe, due fili sottili -->
+				<g class="finestre">
+					<rect x="110" y="695" width="80" height="10" /><rect x="230" y="695" width="70" height="10" />
+					<rect x="35" y="150" width="10" height="100" /><rect x="460" y="55" width="70" height="10" />
+					<rect x="555" y="420" width="10" height="80" /><rect x="340" y="55" width="50" height="10" />
+					<rect x="35" y="560" width="10" height="70" />
+				</g>
+				<g class="vetri" style="--r:1">
+					<path pathLength="1" d="M110 698 H190 M110 702 H190 M230 698 H300 M230 702 H300 M38 150 V250 M42 150 V250 M460 58 H530 M460 62 H530 M558 420 V500 M562 420 V500 M340 58 H390 M340 62 H390 M38 560 V630 M42 560 V630" />
+				</g>
+
+				<!-- Tramezzi -->
+				<g class="tramezzi" style="--r:1">
+					<path pathLength="1" d="M40 380 H300 M300 380 H310 M345 380 H560" />
+					<path pathLength="1" d="M300 60 V290 M300 335 V380" />
+					<path pathLength="1" d="M430 60 V290 M430 335 V380" />
+					<path pathLength="1" d="M300 250 H340 M380 250 H430" />
+					<path pathLength="1" d="M350 380 V400 M350 520 V590 M350 640 V700" />
+					<path pathLength="1" d="M350 560 H430 M470 560 H560" />
+				</g>
+
+				<!-- Porte: anta e arco di apertura -->
+				<g class="porte" style="--r:2">
+					<path pathLength="1" d="M300 290 L258 290 M258 290 A45 45 0 0 0 300 335" />
+					<path pathLength="1" d="M430 290 L472 290 M472 290 A45 45 0 0 1 430 335" />
+					<path pathLength="1" d="M340 250 L340 212 M340 212 A40 40 0 0 1 380 250" />
+					<path pathLength="1" d="M350 590 L305 590 M305 590 A50 50 0 0 0 350 640" />
+					<path pathLength="1" d="M430 560 L430 600 M430 600 A40 40 0 0 0 470 560" />
+					<path pathLength="1" d="M560 610 L512 610 M512 610 A50 50 0 0 0 560 660" />
+				</g>
+
+				<!-- Arredi -->
+				<g class="arredi" style="--r:3">
+					<!-- soggiorno: mensola in pietra lungo il muro ovest, nicchia del camino -->
+					<rect pathLength="1" x="45" y="430" width="26" height="230" class="pietra" />
+					<rect pathLength="1" x="45" y="472" width="16" height="52" class="camino" />
+					<!-- tappeto a spirale -->
+					<circle pathLength="1" cx="175" cy="545" r="78" class="tappeto" />
+					<circle pathLength="1" cx="175" cy="545" r="66" class="tappeto" />
+					<circle pathLength="1" cx="175" cy="545" r="54" class="tappeto" />
+					<!-- tavolo tondo in travertino -->
+					<circle pathLength="1" cx="175" cy="545" r="25" class="tavolo" />
+					<!-- tavolino e poltrona -->
+					<circle pathLength="1" cx="98" cy="612" r="10" />
+					<path pathLength="1" d="M118 636 q-4 30 22 40 q30 6 38 -20 q4 -14 -10 -18 q-12 20 -30 8 q-10 -8 -6 -14 q-8 -3 -14 4 Z" />
+					<!-- divano tondo -->
+					<circle pathLength="1" cx="238" cy="482" r="40" />
+					<path pathLength="1" d="M207 457 A40 40 0 0 1 269 457 A28 28 0 0 0 207 457 Z" />
+					<!-- lampada a sospensione (proiezione) -->
+					<circle cx="175" cy="545" r="12" class="proiezione" />
+
+					<!-- camera -->
+					<rect pathLength="1" x="80" y="150" width="150" height="170" />
+					<path pathLength="1" d="M80 182 H230 M95 160 h50 v16 h-50 Z M165 160 h50 v16 h-50 Z" />
+					<rect pathLength="1" x="240" y="70" width="52" height="150" />
+					<!-- bagno -->
+					<rect pathLength="1" x="310" y="70" width="110" height="45" rx="18" />
+					<rect pathLength="1" x="390" y="160" width="32" height="40" rx="8" />
+					<!-- studio -->
+					<rect pathLength="1" x="440" y="70" width="110" height="40" />
+					<circle pathLength="1" cx="495" cy="135" r="15" />
+					<rect pathLength="1" x="440" y="300" width="110" height="70" />
+					<!-- cucina: piano a L e isola -->
+					<path pathLength="1" d="M555 395 V545 M520 395 V545 M520 395 H555 M555 545 H520" />
+					<rect pathLength="1" x="400" y="430" width="70" height="90" />
+				</g>
+
+				<!-- Etichette -->
+				<g class="etichette">
+					<text x="195" y="420" class="t-stanza t-forte">Soggiorno</text>
+					<text x="195" y="436" class="t-mq">58,1 m²</text>
+					<text x="150" y="350" class="t-stanza">Camera</text>
+					<text x="150" y="364" class="t-mq">29,6 m²</text>
+					<text x="365" y="168" class="t-stanza">Bagno</text>
+					<text x="365" y="182" class="t-mq">7,4 m²</text>
+					<text x="495" y="225" class="t-stanza">Studio</text>
+					<text x="495" y="239" class="t-mq">16,2 m²</text>
+					<text x="455" y="400" class="t-stanza">Cucina</text>
+					<text x="455" y="414" class="t-mq">14,7 m²</text>
+					<text x="455" y="640" class="t-stanza">Ingresso</text>
+					<text x="455" y="654" class="t-mq">11,9 m²</text>
+				</g>
+
+				<!-- Quote del soggiorno -->
+				<g class="quote" style="--r:4">
+					<path pathLength="1" d="M45 728 H345" class="q-linea" />
+					<path d="M41 732 L49 724 M341 732 L349 724" class="q-tacca" />
+					<path pathLength="1" d="M18 385 V695" class="q-linea" />
+					<path d="M14 389 L22 381 M14 699 L22 691" class="q-tacca" />
+				</g>
+				<text x="195" y="748" class="t-quota">7,50</text>
+				<text x="12" y="540" class="t-quota" transform="rotate(-90 12 540)">7,75</text>
+
+				<!-- Nord e scala grafica -->
+				<g class="nord" transform="translate(540 22)">
+					<path d="M0 -12 L6 8 L0 4 L-6 8 Z" />
+					<text x="12" y="6" class="t-mq">N</text>
+				</g>
+				<g class="scala-grafica" transform="translate(420 735)">
+					<path d="M0 0 H40 M40 0 H80 M80 0 H120" />
+					<rect x="0" y="-3" width="40" height="6" class="sg-pieno" />
+					<rect x="80" y="-3" width="40" height="6" class="sg-pieno" />
+					<text x="0" y="16" class="t-mq">0</text>
+					<text x="40" y="16" class="t-mq">1</text>
+					<text x="80" y="16" class="t-mq">2</text>
+					<text x="120" y="16" class="t-mq">3 m</text>
+				</g>
+			</svg>
+		</div>
+		<figcaption class="cartiglio">
+			<span><b>Progetto</b> Casa Ghiaia, soggiorno</span>
+			<span><b>Tavola</b> 01</span>
+			<span><b>Scala</b> 1:100</span>
+			<span><b>Disegno</b> di esempio</span>
+		</figcaption>
+	</figure>
+</section>
+
+<style>
+	.apertura {
+		position: relative;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+		align-items: center;
+		gap: clamp(1.5rem, 4vw, 4rem);
+		min-height: 100svh;
+		padding: calc(var(--fascia-h) + var(--nav-h) + 3rem) var(--gutter) 4rem;
+		max-width: var(--max);
+		margin-inline: auto;
+	}
+	.apertura__sopra {
+		margin: 0 0 1.6rem;
+		display: flex;
+		align-items: center;
+		gap: 0.8rem;
+	}
+	.apertura__sopra::before {
+		content: '';
+		width: 28px;
+		height: 3px;
+		background: var(--metro);
+	}
+	h1 {
+		font-size: clamp(2.8rem, 6.4vw, 6rem);
+		font-weight: 330;
+		line-height: 0.98;
+		letter-spacing: -0.02em;
+	}
+	h1 em {
+		font-style: italic;
+		font-weight: 300;
+	}
+	.apertura__intro {
+		max-width: 31rem;
+		font-size: 1.1rem;
+		color: var(--inchiostro-2);
+		margin: 1.6rem 0 2.2rem;
+	}
+	.apertura__azioni {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 1rem 2rem;
+		font-weight: 600;
+	}
+	.apertura__tavola {
+		margin: 0;
+		view-timeline: --tavola block;
+	}
+	.foglio {
+		background: var(--carta);
+		aspect-ratio: 600 / 760;
+		max-height: 74svh;
+		margin-inline: auto;
+		overflow: hidden;
+		box-shadow:
+			0 1px 0 oklch(0 0 0 / 0.05),
+			0 30px 60px -34px oklch(0.3 0.03 160 / 0.4);
+	}
+	.pianta {
+		width: 100%;
+		height: 100%;
+		transform-origin: 32.5% 71.7%;
+		color: var(--inchiostro);
+	}
+	.pianta path,
+	.pianta rect,
+	.pianta circle {
+		fill: none;
+		stroke: currentColor;
+		vector-effect: non-scaling-stroke;
+	}
+	.muri path {
+		stroke-width: 7;
+		stroke-linejoin: miter;
+	}
+	.tramezzi path {
+		stroke-width: 3.5;
+	}
+	.porte path,
+	.vetri path,
+	.arredi > * {
+		stroke-width: 1;
+	}
+	.finestre rect {
+		fill: var(--carta);
+		stroke: none;
+	}
+	.arredi .tappeto {
+		stroke-dasharray: 0.004 0.006;
+		opacity: 0.6;
+	}
+	.arredi .tavolo {
+		stroke-width: 1.6;
+		fill: color-mix(in oklch, var(--metro) 22%, transparent);
+	}
+	.arredi .pietra {
+		fill: url(#tratteggio);
+	}
+	.tr-linea {
+		stroke: currentColor;
+		stroke-width: 0.8;
+		opacity: 0.6;
+	}
+	.arredi .camino {
+		fill: currentColor;
+	}
+	.arredi .proiezione {
+		stroke-dasharray: 1 2.5;
+	}
+	.evidenza {
+		fill: color-mix(in oklch, var(--fondo) 70%, transparent);
+		stroke: none !important;
+	}
+	.etichette text,
+	.t-quota,
+	.t-mq {
+		font-family: var(--testo);
+		fill: currentColor;
+		text-anchor: middle;
+	}
+	.t-stanza {
+		font-size: 10px;
+		font-weight: 650;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+	}
+	.t-forte {
+		font-size: 12px;
+	}
+	.t-mq {
+		font-size: 9px;
+		font-variant-numeric: tabular-nums;
+	}
+	.nord .t-mq,
+	.scala-grafica .t-mq {
+		text-anchor: start;
+	}
+	.t-quota {
+		font-size: 11px;
+		font-weight: 650;
+		font-variant-numeric: tabular-nums;
+	}
+	.q-linea {
+		stroke-width: 1 !important;
+	}
+	.q-tacca {
+		stroke: var(--metro) !important;
+		stroke-width: 2.5 !important;
+	}
+	.nord path {
+		fill: currentColor !important;
+	}
+	.scala-grafica path {
+		stroke-width: 1;
+	}
+	.scala-grafica .sg-pieno {
+		fill: currentColor;
+	}
+	.cartiglio {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.4rem 1.6rem;
+		margin-top: 1rem;
+		font-size: 0.74rem;
+		letter-spacing: 0.06em;
+		color: var(--inchiostro-2);
+	}
+	.cartiglio b {
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.16em;
+		font-size: 0.66rem;
+		margin-right: 0.4em;
+		color: var(--inchiostro);
+	}
+
+	/* Il tratto: ogni linea si disegna con il pennino all'arrivo. */
+	@media (prefers-reduced-motion: no-preference) {
+		.pianta [pathLength] {
+			stroke-dasharray: 1 1;
+			stroke-dashoffset: 1;
+			animation: traccia 1.6s cubic-bezier(0.55, 0.1, 0.3, 1) forwards;
+			animation-delay: calc(0.15s + var(--r, 0) * 0.35s);
+		}
+		.pianta .tappeto[pathLength] {
+			animation-name: traccia-tappeto;
+		}
+		.etichette,
+		.t-quota,
+		.q-tacca,
+		.nord,
+		.scala-grafica,
+		.evidenza,
+		.finestre {
+			opacity: 0;
+			animation: compare 0.8s ease forwards 1.6s;
+		}
+		.finestre {
+			animation-delay: 0.3s;
+		}
+		@keyframes traccia {
+			to {
+				stroke-dashoffset: 0;
+			}
+		}
+		@keyframes traccia-tappeto {
+			from {
+				stroke-dasharray: 0.004 0.006;
+				stroke-dashoffset: 1;
+			}
+			to {
+				stroke-dasharray: 0.004 0.006;
+				stroke-dashoffset: 0;
+			}
+		}
+		@keyframes compare {
+			to {
+				opacity: 1;
+			}
+		}
+		/* Scorrendo, la tavola entra nel soggiorno: la discesa comincia da qui. */
+		@supports (animation-timeline: view()) {
+			.pianta {
+				animation: entra linear both;
+				animation-timeline: --tavola;
+				animation-range: exit 0% exit 90%;
+			}
+			@keyframes entra {
+				to {
+					scale: 2.3;
+					opacity: 0.25;
+				}
+			}
+		}
+	}
+
+	@media (max-width: 899px) {
+		.apertura {
+			grid-template-columns: minmax(0, 1fr);
+			min-height: 0;
+			padding-top: calc(var(--fascia-h) + var(--nav-h) + 2.4rem);
+		}
+		.foglio {
+			max-height: none;
+		}
+	}
+</style>

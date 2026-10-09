@@ -1,0 +1,337 @@
+---
+/* Progetti: due tavole impaginate come fogli di presentazione, non schede uguali.
+   1. Casa Ghiaia — il soggiorno della discesa, con le altre inquadrature.
+   2. Casa dell'Arco — la stessa stanza in tre proposte colore, da confrontare. */
+import { Image } from 'astro:assets';
+import a3 from '../../assets/scalavera/foto/a3-angolo.jpg';
+import a4 from '../../assets/scalavera/foto/a4-poltrona.jpg';
+import a5 from '../../assets/scalavera/foto/a5-lampade.jpg';
+import b1 from '../../assets/scalavera/foto/b1-arco.jpg';
+import b2 from '../../assets/scalavera/foto/b2-arco.jpg';
+import b3 from '../../assets/scalavera/foto/b3-arco.jpg';
+import c1 from '../../assets/scalavera/foto/c1-cucina.jpg';
+import c2 from '../../assets/scalavera/foto/c2-pranzo.jpg';
+
+const proposte = [
+	{ id: 'ardesia', nome: 'Ardesia', nota: 'Calce grigia, la terracotta dell’arco accende la stanza.', img: b1, colore: '#5b5e62' },
+	{ id: 'salvia', nome: 'Salvia', nota: 'Verde scuro, più caldo con la luce della sera.', img: b2, colore: '#3f5650' },
+	{ id: 'notte', nome: 'Notte', nota: 'Blu fumo: la scelta della committenza.', img: b3, colore: '#4a5a70' },
+];
+const altArco = 'Render di un salotto con pareti a calce, arco in terracotta, divano in velluto ruggine, finestra ad arco e tavolino in marmo';
+---
+
+<section class="progetti" id="progetti" data-tono="chiaro" aria-labelledby="progetti-titolo">
+	<div class="progetti__in">
+		<header class="progetti__testa">
+			<p class="etichetta">Progetti · tavole di esempio</p>
+			<h2 id="progetti-titolo">Tre case, <em>viste da vicino</em>.</h2>
+			<p>Render di progetto, come li presentiamo ai committenti prima del cantiere. Nomi, luoghi e dati sono di fantasia.</p>
+		</header>
+
+		<article class="tavola-p ghiaia" aria-labelledby="ghiaia-t">
+			<div class="ghiaia__foto">
+				<Image src={a3} alt="Render del soggiorno: mensole in acciaio, mensola in pietra spaccata, tavolo tondo in travertino e poltrona in pelle" widths={[500, 800, 1100]} sizes="(min-width: 900px) 40vw, 92vw" class="g-grande" data-rev />
+				<Image src={a4} alt="Render ravvicinato della poltrona in tessuto e pelle accanto al tavolino in travertino" widths={[400, 600]} sizes="(min-width: 900px) 20vw, 45vw" class="g-piccola" data-rev style="--rit:0.1s" />
+				<Image src={a5} alt="Render di due lampade da tavolo accese sulla mensola in pietra" widths={[400, 600]} sizes="(min-width: 900px) 20vw, 45vw" class="g-piccola" data-rev style="--rit:0.2s" />
+			</div>
+			<div class="tavola-p__testo">
+				<p class="etichetta numero">Tav. 01</p>
+				<h3 id="ghiaia-t">Casa Ghiaia, Torino</h3>
+				<p>Un soggiorno di 58 metri quadri in un palazzo degli anni Trenta. Abbiamo tolto un controsoffitto, rifatto il camino in intonaco a calce e appoggiato al muro una lastra di pietra spaccata lunga quasi sei metri.</p>
+				<dl class="cartiglio-p">
+					<div><dt>Superficie</dt><dd>58 m²</dd></div>
+					<div><dt>Durata</dt><dd>14 settimane</dd></div>
+					<div><dt>Materiali</dt><dd>Travertino, pietra spaccata, calce, acciaio brunito</dd></div>
+				</dl>
+			</div>
+		</article>
+
+		<article class="tavola-p arco" aria-labelledby="arco-t">
+			<div class="tavola-p__testo">
+				<p class="etichetta numero">Tav. 02</p>
+				<h3 id="arco-t">Casa dell’Arco, Genova</h3>
+				<p>Un salotto con un arco in terracotta che nessuno voleva toccare. Abbiamo lavorato solo sul colore delle pareti: tre proposte, la stessa stanza. Provale.</p>
+				<fieldset class="proposte">
+					<legend class="etichetta">Proposte colore</legend>
+					{proposte.map((p, i) => (
+						<label class="proposta">
+							<input type="radio" name="proposta" value={p.id} checked={i === 2} data-nota={p.nota} />
+							<span class="proposta__colore" style={`background:${p.colore}`} aria-hidden="true"></span>
+							<span class="proposta__nome">{p.nome}</span>
+						</label>
+					))}
+				</fieldset>
+				<p class="proposte__nota" aria-live="polite" data-nota-testo>{proposte[2].nota}</p>
+				<dl class="cartiglio-p">
+					<div><dt>Superficie</dt><dd>34 m²</dd></div>
+					<div><dt>Durata</dt><dd>6 settimane</dd></div>
+					<div><dt>Materiali</dt><dd>Calce colorata, velluto ruggine, rovere a spina</dd></div>
+				</dl>
+			</div>
+			<div class="arco__foto" data-arco>
+				{proposte.map((p, i) => (
+					<Image src={p.img} alt={`${altArco}. Proposta ${p.nome}.`} widths={[500, 800, 1100]} sizes="(min-width: 900px) 42vw, 92vw" data-proposta={p.id} class:list={[{ attiva: i === 2 }]} loading="lazy" />
+				))}
+			</div>
+		</article>
+
+		<article class="tavola-p salvia" aria-labelledby="salvia-t">
+			<div class="salvia__foto">
+				<Image src={c1} alt="Render di una cucina con basi color salvia, piano in terrazzo, mensola e pensile in noce, pavimento in rovere a spina di pesce" widths={[500, 800, 1000]} sizes="(min-width: 900px) 30vw, 92vw" class="s-a" data-rev />
+				<Image src={c2} alt="Render della zona pranzo: colonne bianche con forni, tavolo tondo nero, sedie in legno e in plexiglas ambra, lampada in carta" widths={[500, 800, 1000]} sizes="(min-width: 900px) 30vw, 92vw" class="s-b" data-rev style="--rit:0.15s" />
+			</div>
+			<div class="tavola-p__testo">
+				<p class="etichetta numero">Tav. 03</p>
+				<h3 id="salvia-t">Casa Salvia, Bologna</h3>
+				<p>Un bilocale di 52 metri quadri dove la cucina doveva sparire e non sparire. Le colonne sono bianche come il muro, le basi hanno il colore della salvia del balcone, e il noce lega la mensola al pensile.</p>
+				<dl class="cartiglio-p">
+					<div><dt>Superficie</dt><dd>26 m²</dd></div>
+					<div><dt>Durata</dt><dd>9 settimane</dd></div>
+					<div><dt>Materiali</dt><dd>Laccato salvia, terrazzo, noce, rovere a spina</dd></div>
+				</dl>
+			</div>
+		</article>
+	</div>
+</section>
+
+<style>
+	.progetti {
+		padding: clamp(5rem, 10vw, 9rem) var(--gutter);
+		background: var(--fondo);
+	}
+	.progetti__in {
+		max-width: var(--max);
+		margin-inline: auto;
+		display: grid;
+		gap: clamp(4rem, 9vw, 8rem);
+	}
+	.progetti__testa {
+		max-width: 44rem;
+	}
+	.progetti__testa h2 {
+		font-size: clamp(2.4rem, 5.4vw, 5rem);
+		margin: 1rem 0 1.2rem;
+	}
+	.progetti__testa em,
+	h3 em {
+		font-style: italic;
+		font-weight: 300;
+	}
+	.progetti__testa p:last-child {
+		margin: 0;
+		color: var(--inchiostro-2);
+		max-width: 34rem;
+	}
+	.tavola-p {
+		display: grid;
+		grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+		gap: clamp(1.5rem, 5vw, 5rem);
+		align-items: center;
+	}
+	.arco {
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+	}
+	.numero {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.7rem;
+		margin: 0 0 1rem;
+	}
+	.numero::before {
+		content: '';
+		width: 22px;
+		height: 3px;
+		background: var(--metro);
+	}
+	.tavola-p h3 {
+		font-size: clamp(2rem, 3.6vw, 3.2rem);
+		margin: 0 0 1.2rem;
+	}
+	.tavola-p__testo > p:not(.etichetta) {
+		font-size: 1.05rem;
+		line-height: 1.65;
+		max-width: 30rem;
+	}
+	.ghiaia__foto {
+		display: grid;
+		grid-template-columns: 1.6fr 1fr;
+		grid-template-rows: auto auto;
+		gap: 0.8rem;
+	}
+	.ghiaia__foto img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.g-grande {
+		grid-row: span 2;
+		aspect-ratio: 4 / 5;
+	}
+	.g-piccola {
+		aspect-ratio: 1;
+	}
+	.cartiglio-p {
+		display: grid;
+		grid-template-columns: auto auto minmax(0, 1fr);
+		gap: 0;
+		margin: 2rem 0 0;
+		border-top: 1px solid color-mix(in oklch, var(--inchiostro) 25%, transparent);
+	}
+	.cartiglio-p div {
+		padding: 0.8rem 1.2rem 0 0;
+	}
+	.cartiglio-p div + div {
+		padding-left: 1.2rem;
+		border-left: 1px solid color-mix(in oklch, var(--inchiostro) 18%, transparent);
+	}
+	.cartiglio-p dt {
+		font-size: 0.64rem;
+		font-weight: 650;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--inchiostro-2);
+	}
+	.cartiglio-p dd {
+		margin: 0.25rem 0 0;
+		font-weight: 600;
+		font-size: 0.92rem;
+	}
+	.proposte {
+		border: 0;
+		padding: 0;
+		margin: 1.6rem 0 0;
+		min-width: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+	.proposte legend {
+		padding: 0;
+		margin-bottom: 0.8rem;
+		color: var(--inchiostro-2);
+	}
+	.proposta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		min-height: 48px;
+		padding: 0 1rem 0 0.4rem;
+		border: 1px solid color-mix(in oklch, var(--inchiostro) 25%, transparent);
+		cursor: pointer;
+		font-weight: 600;
+		font-size: 0.92rem;
+	}
+	.proposta:has(input:checked) {
+		border-color: var(--inchiostro);
+		box-shadow: inset 0 -3px 0 var(--metro);
+	}
+	.proposta:has(input:focus-visible) {
+		outline: 2px solid var(--inchiostro);
+		outline-offset: 2px;
+	}
+	.proposta input {
+		position: absolute;
+		opacity: 0;
+		pointer-events: none;
+	}
+	.proposta__colore {
+		width: 36px;
+		height: 36px;
+		box-shadow: inset 0 0 0 1px oklch(0 0 0 / 0.15);
+	}
+	.proposte__nota {
+		min-height: 1.6em;
+		margin: 1rem 0 0;
+		font-family: var(--titoli);
+		font-style: italic;
+		font-size: 1.15rem;
+	}
+	.arco__foto {
+		display: grid;
+		aspect-ratio: 4 / 5;
+		overflow: hidden;
+	}
+	.arco__foto img {
+		grid-area: 1 / 1;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		opacity: 0;
+		clip-path: inset(0 100% 0 0);
+		transition:
+			clip-path 0.9s cubic-bezier(0.6, 0, 0.2, 1),
+			opacity 0s linear 0.9s;
+	}
+	/* La nuova proposta si stende come una mano di colore, da sinistra a destra. */
+	.arco__foto img.attiva {
+		opacity: 1;
+		clip-path: inset(0 0 0 0);
+		z-index: 1;
+		transition:
+			clip-path 0.9s cubic-bezier(0.6, 0, 0.2, 1),
+			opacity 0s;
+	}
+	.arco__foto img.uscente {
+		opacity: 1;
+		clip-path: inset(0 0 0 0);
+		transition: none;
+	}
+	/* Tav. 03: due fogli sfalsati, il secondo più in basso, come appoggiati sul tavolo. */
+	.salvia {
+		grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+	}
+	.salvia__foto {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.9rem;
+		align-items: start;
+	}
+	.salvia__foto img {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 4 / 5;
+		object-fit: cover;
+	}
+	.s-b {
+		margin-top: 18%;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.arco__foto img,
+		.arco__foto img.attiva {
+			transition: none;
+		}
+	}
+	@media (max-width: 899px) {
+		.tavola-p,
+		.arco {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.arco .tavola-p__testo {
+			order: 2;
+		}
+		.cartiglio-p {
+			grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		}
+		.cartiglio-p div:last-child {
+			grid-column: 1 / -1;
+			border-left: 0;
+			padding-left: 0;
+			border-top: 1px solid color-mix(in oklch, var(--inchiostro) 18%, transparent);
+			margin-top: 0.8rem;
+		}
+	}
+</style>
+
+<script>
+	const arco = document.querySelector<HTMLElement>('[data-arco]')!;
+	const nota = document.querySelector<HTMLElement>('[data-nota-testo]')!;
+	document.querySelectorAll<HTMLInputElement>('input[name="proposta"]').forEach((r) =>
+		r.addEventListener('change', () => {
+			const prima = arco.querySelector('img.attiva');
+			arco.querySelectorAll('img').forEach((i) => i.classList.remove('uscente'));
+			prima?.classList.replace('attiva', 'uscente');
+			arco.querySelector(`[data-proposta="${r.value}"]`)!.classList.add('attiva');
+			nota.textContent = r.dataset.nota!;
+		}),
+	);
+</script>

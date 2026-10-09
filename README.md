@@ -5,14 +5,14 @@
   <img src="docs/img/loop-logo-on-light.svg" alt="Loop Studio" height="64">
 </picture>
 
-<img src="docs/img/header.svg" alt="A street of shop fronts: Trattoria, Ossidiana, Luppolo & Watt, Bottega Tre Rasoi, Atelier Lumen, Aeterna, FIXLAB, Hot Swap, Ordito, Sifone and Obra Fina are lit and open, one more window is dark and coming soon." width="100%">
+<img src="docs/img/header.svg" alt="A street of shop fronts: Trattoria, Ossidiana, Luppolo & Watt, Bottega Tre Rasoi, Atelier Lumen, Aeterna, FIXLAB, Hot Swap, Ordito, Sifone, Obra Fina and Scala Vera are lit and open, one more window is dark and coming soon." width="100%">
 
 **Full-page homepage concepts for local businesses.<br>Each one designed as if it were the only one on the street.**
 
 [![Live](https://img.shields.io/badge/demo-live-fe3b30?style=flat-square&labelColor=0b0b0c)](https://vetrine.theloopstudio.org/)
 [![Deploy](https://github.com/Loop-Studio-Web/vetrine/actions/workflows/deploy.yml/badge.svg)](https://github.com/Loop-Studio-Web/vetrine/actions/workflows/deploy.yml)
 [![Astro](https://img.shields.io/badge/Astro-7-fe3b30?style=flat-square&logo=astro&logoColor=white&labelColor=0b0b0c)](https://astro.build)
-[![Lighthouse](https://img.shields.io/badge/Lighthouse-90%E2%80%93100-fe3b30?style=flat-square&logo=lighthouse&logoColor=white&labelColor=0b0b0c)](#the-checklist-every-window-passes)
+[![Lighthouse](https://img.shields.io/badge/Lighthouse-86%E2%80%93100-fe3b30?style=flat-square&logo=lighthouse&logoColor=white&labelColor=0b0b0c)](#the-checklist-every-window-passes)
 [![Accessibility](https://img.shields.io/badge/axe--core-0%20violations-fe3b30?style=flat-square&labelColor=0b0b0c)](#the-checklist-every-window-passes)
 
 [**Walk the street →**](https://vetrine.theloopstudio.org/)
@@ -245,6 +245,25 @@
 
 <br>
 
+### 12 · Scala Vera
+
+<a href="https://vetrine.theloopstudio.org/casa/interior/"><img src="docs/img/card-scalavera.jpg" alt="Scala Vera on desktop and mobile: a sheet on green-grey tracing paper where a watercolour living room dries into the render, the scale 1:50 with a yellow tick and a ruler on the right; on the phone the menu is a fan deck of material samples." width="100%"></a>
+
+*Ogni casa ha la sua scala giusta.* Every home has its right scale. A project told by scrolling down the scales, from 1:100 to 1:1.
+
+| | |
+|---|---|
+| **Archetype** | The interior design studio: the **experience** tier of the Home window, where the homepage shows the method before the portfolio |
+| **Mood** | Green-grey tracing paper that darkens, scale after scale, into graphite and basalt. Ink, grey-taupe renders and a single accent, the yellow of a folding rule, never used as text on light backgrounds. Stone, wood, bronze, lacquer and velvet bring the colour |
+| **Type** | Playfair (the variable version with an optical-size axis from 5 to 1200, not Playfair Display) for headlines: the big scale number changes optical size together with the drawing, sturdy at 1:50, hairline at 1:1. Manrope for text, labels and dimensions |
+| **Palette** | <img src="docs/img/palette-scalavera.svg" alt="Green-grey tracing paper, ink, graphite, basalt, folding-rule yellow and silver travertine" height="22"> |
+| **Signature moves** | **No libraries**: two WebGL2 engines written for this page. A **floor plan in SVG that draws itself** with the pen, then zooms into the living room. **The descent of scales**: a sticky sheet where the render passes through a hand-made **watercolour filter** (Kuwahara with a noise-rotated kernel, pigment as absorption, wet edges, paper granulation) that **dries in patches** leaving a tide line, then **match cuts aligned on the travertine table**, the next sheet landing on top with a deckled edge and a shadow, down to the stone. Native scroll, never hijacked: the scene follows it with a critically damped spring. A **materials library with raking light** (normal + roughness maps of CC0 scans, a sheen term for velvet, procedural brushed bronze with anisotropic highlights and lacquer with a clear coat) lit by a torch that follows the cursor or the finger. **Restyle the photo**: wall, stone shelf and side tables masked on the render, lime-wash colours or library materials that keep the render's own light and shadows, spread like a roller pass from where you drop them (drag a sample onto the photo, hold to see the original). Three projects laid out as presentation sheets, one with three colour proposals for the same room. A brief that builds your **materials board** from the library and ends with a title-block receipt. The mobile menu is a **fan deck of material samples** on a brass pin |
+| **Lighthouse** | 86–88 performance on mobile (text LCP held back by the variable serif), 100 on desktop, 100 on accessibility and best practices, no layout shift. The WebGL engines start only when their section comes into view. Images are free Unsplash renders declared as project renders, textures are CC0 from ambientCG and Poly Haven |
+
+[**Open Scala Vera →**](https://vetrine.theloopstudio.org/casa/interior/)
+
+<br>
+
 ### Next on the street
 
 | Category | Archetype | Status |
@@ -277,6 +296,7 @@ flowchart TB
     infra --> D["<b>Ordito</b><br/>own markup · CSS · JS · fonts"]
     infra --> S["<b>Sifone</b><br/>own markup · CSS · JS · fonts"]
     infra --> P["<b>Obra Fina</b><br/>own markup · CSS · JS · fonts"]
+    infra --> V["<b>Scala Vera</b><br/>own markup · CSS · JS · fonts"]
     infra --> N["<b>next concept…</b>"]
     T -.-|nothing shared| O
     O -.-|nothing shared| B
@@ -291,15 +311,15 @@ A piece of code is reused between two concepts only when it is the *exact same t
 
 Before a concept goes on the street, it has to clear the same gate:
 
-| Gate | What it means | Trattoria | Ossidiana | Luppolo & Watt | Tre Rasoi | Lumen | Aeterna | FIXLAB | Hot Swap | Ordito | Sifone | Obra Fina |
-|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| **Builds** | `astro build` is clean | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Accessible** | `axe-core`: zero violations | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Menu on phones** | A real menu with its own open/close effect, keyboard and Escape friendly (a curtain for Ossidiana, an unrolling card for the Trattoria, a pour of beer for Luppolo & Watt, a hot towel for Tre Rasoi, curtains for Lumen, a laser scan for Aeterna, a screwed-on back panel for FIXLAB, a tray with an LED for Hot Swap, a dark room whose lights come on one by one for Ordito, a rolling shutter for Sifone, three trowel passes for Obra Fina) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Gate | What it means | Trattoria | Ossidiana | Luppolo & Watt | Tre Rasoi | Lumen | Aeterna | FIXLAB | Hot Swap | Ordito | Sifone | Obra Fina | Scala Vera |
+|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| **Builds** | `astro build` is clean | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Accessible** | `axe-core`: zero violations | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Menu on phones** | A real menu with its own open/close effect, keyboard and Escape friendly (a curtain for Ossidiana, an unrolling card for the Trattoria, a pour of beer for Luppolo & Watt, a hot towel for Tre Rasoi, curtains for Lumen, a laser scan for Aeterna, a screwed-on back panel for FIXLAB, a tray with an LED for Hot Swap, a dark room whose lights come on one by one for Ordito, a rolling shutter for Sifone, three trowel passes for Obra Fina, a fan deck of material samples for Scala Vera) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ```text
  LIGHTHOUSE · mobile            Trattoria                Ossidiana

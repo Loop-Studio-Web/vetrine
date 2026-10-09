@@ -1,0 +1,200 @@
+/* Scala Vera — token, reset e tipografia.
+   La pagina scurisce con la scala: carta da lucido (1:100) → cemento → grafite → basalto (1:1).
+   Un solo accento, il giallo del metro, sottile e raro. */
+:root {
+	--fondo: oklch(0.925 0.014 150); /* carta da lucido verde-grigia */
+	--carta: oklch(0.965 0.006 140);
+	--cemento: oklch(0.8 0.008 160);
+	--inchiostro: oklch(0.24 0.02 170);
+	--inchiostro-2: oklch(0.42 0.02 170);
+	--grafite: oklch(0.29 0.01 200);
+	--basalto: oklch(0.155 0.006 220);
+	--nebbia: oklch(0.86 0.008 170); /* testo su scuro */
+	--nebbia-2: oklch(0.72 0.01 170);
+	--metro: #f2c500;
+	--titoli: 'Playfair Variable', 'Georgia', serif;
+	--testo: 'Manrope Variable', system-ui, sans-serif;
+	--gutter: clamp(1rem, 4vw, 4rem);
+	--max: 1320px;
+	--fascia-h: 40px;
+	--nav-h: 64px;
+	color-scheme: light;
+}
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+html {
+	-webkit-text-size-adjust: 100%;
+	scroll-padding-top: calc(var(--nav-h) + 12px);
+}
+body {
+	margin: 0;
+	background: var(--fondo);
+	color: var(--inchiostro);
+	font-family: var(--testo);
+	font-size: 1rem;
+	line-height: 1.55;
+	overflow-x: clip;
+}
+img,
+canvas,
+svg {
+	display: block;
+	max-width: 100%;
+}
+a {
+	color: inherit;
+}
+button,
+input,
+select,
+textarea {
+	font: inherit;
+	color: inherit;
+}
+h1,
+h2,
+h3 {
+	font-family: var(--titoli);
+	font-weight: 350;
+	line-height: 1.04;
+	letter-spacing: -0.01em;
+	margin: 0;
+	text-wrap: balance;
+}
+p {
+	text-wrap: pretty;
+}
+:focus-visible {
+	outline: 2px solid var(--metro);
+	outline-offset: 3px;
+}
+::selection {
+	background: var(--metro);
+	color: var(--basalto);
+}
+
+/* Etichette da tavola: maiuscolo spaziato, cifre tabulari. */
+.etichetta {
+	font-family: var(--testo);
+	font-size: 0.72rem;
+	font-weight: 650;
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
+	font-variant-numeric: tabular-nums;
+}
+
+/* Bottone: una quota. Filo sotto che si allunga, tacca gialla in testa. */
+.bottone {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.7em;
+	min-height: 48px;
+	padding: 0 1.4em;
+	border: 1px solid currentColor;
+	background: transparent;
+	text-decoration: none;
+	font-weight: 650;
+	font-size: 0.95rem;
+	letter-spacing: 0.02em;
+	cursor: pointer;
+	position: relative;
+	transition:
+		background-color 0.25s ease,
+		color 0.25s ease;
+}
+.bottone::before {
+	content: '';
+	width: 3px;
+	align-self: stretch;
+	margin: 10px 0;
+	background: var(--metro);
+}
+.bottone:hover {
+	background: var(--inchiostro);
+	color: var(--carta);
+}
+.scuro .bottone:hover,
+.bottone.su-scuro:hover {
+	background: var(--carta);
+	color: var(--basalto);
+}
+.bottone.pieno {
+	background: var(--inchiostro);
+	color: var(--carta);
+	border-color: var(--inchiostro);
+}
+.bottone.pieno:hover {
+	background: transparent;
+	color: var(--inchiostro);
+}
+.collegamento {
+	text-decoration: none;
+	border-bottom: 1px solid color-mix(in oklch, currentColor 40%, transparent);
+	padding-bottom: 2px;
+	transition: border-color 0.2s ease;
+}
+.collegamento:hover {
+	border-bottom-color: var(--metro);
+}
+
+.scuro {
+	background: var(--basalto);
+	color: var(--nebbia);
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+.skip-link {
+	position: absolute;
+	left: 1rem;
+	top: -100px;
+	z-index: 400;
+	background: var(--metro);
+	color: var(--basalto);
+	padding: 0.6rem 1rem;
+	font-weight: 700;
+}
+.skip-link:focus {
+	top: 1rem;
+}
+
+/* Grana della carta su tutta la pagina: leggerissima, fissa. */
+body::after {
+	content: '';
+	position: fixed;
+	inset: 0;
+	z-index: 500;
+	pointer-events: none;
+	opacity: 0.05;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
+/* Comparsa all'ingresso in vista (solo con JS e senza reduced-motion). */
+.js [data-rev] {
+	opacity: 0;
+	translate: 0 18px;
+	transition:
+		opacity 0.9s ease,
+		translate 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+	transition-delay: var(--rit, 0s);
+}
+.js [data-rev].visto {
+	opacity: 1;
+	translate: 0 0;
+}
+@media (prefers-reduced-motion: reduce) {
+	.js [data-rev] {
+		opacity: 1;
+		translate: 0 0;
+		transition: none;
+	}
+}
