@@ -23,12 +23,21 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 					<span class="tip-dark">Modalità scura</span>
 					<span class="tip-light">Modalità chiara</span>
 				</span>
-				<svg class="ico ico--sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"
-					><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg
-				>
-				<svg class="ico ico--moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
-					><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path></svg
-				>
+					<span class="trk" aria-hidden="true">
+						<span class="thumb">
+							<span class="st st1"></span><span class="st st2"></span><span class="st st3"></span><span class="st st4"></span>
+							<span class="cl cl1"></span><span class="cl cl2"></span>
+						</span>
+						<svg class="ic ic--sun" viewBox="0 0 24 24" fill="currentColor">
+							<circle cx="12" cy="12" r="4.6"></circle>
+							<g class="raggi" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+								<path d="M12 1.6v2.8M12 19.6v2.8M1.6 12h2.8M19.6 12h2.8M4.65 4.65l2 2M17.35 17.35l2 2M4.65 19.35l2-2M17.35 6.65l2-2"></path>
+							</g>
+						</svg>
+						<svg class="ic ic--moon" viewBox="0 0 24 24" fill="currentColor">
+							<path d="M20.6 14.6A9 9 0 0 1 9.4 3.4a9 9 0 1 0 11.2 11.2Z"></path>
+						</svg>
+					</span>
 			</button>
 			<a class="btn btn--sm hdr__cta" href={CONTACT}>Parliamone</a>
 			<button type="button" class="hdr__burger" aria-expanded="false" aria-controls="hub-menu" aria-label="Apri il menu" data-burger>
@@ -138,29 +147,316 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 		align-items: center;
 		gap: 12px;
 	}
+	/* Interruttore tema "liquid glass": una pillola di vetro con sole e luna sempre visibili e un selettore di vetro
+	   che scorre da uno all'altra (si allunga mentre lo premi). Nessun colore di fondo: il vetro prende la pagina.
+	   Dentro il selettore, di notte brillano le stelle, di giorno girano i pianeti. */
 	.hdr__theme {
+		--w: 98px;
+		--h: 40px;
+		--pad: 4px;
+		--tw: 46px;
+		--corsa: calc(var(--w) - var(--tw) - 2 * var(--pad));
+		--molla: cubic-bezier(0.3, 1.35, 0.5, 1);
+		--muto: color-mix(in srgb, var(--text) 40%, transparent);
+		--sole: var(--accent);
+		--luna: #fff;
+		--vetro: rgba(255, 255, 255, 0.07);
+		--bordo-alto: rgba(255, 255, 255, 0.55);
+		--bordo-basso: rgba(255, 255, 255, 0.14);
 		position: relative;
-		display: grid;
-		place-items: center;
-		width: 40px;
-		height: 40px;
-		border-radius: 50%;
-		border: 1px solid var(--border);
+		width: var(--w);
+		height: var(--h);
+		padding: 0;
+		border: 0;
+		border-radius: 999px;
 		background: transparent;
 		color: var(--text);
 		cursor: pointer;
-		transition: border-color 0.2s ease, color 0.2s ease;
+		-webkit-tap-highlight-color: transparent;
 	}
-	.hdr__theme:hover {
-		color: var(--accent);
-		border-color: var(--accent);
+	:global(:root[data-theme='light']) .hdr__theme {
+		--vetro: rgba(0, 0, 0, 0.035);
+		--bordo-alto: rgba(255, 255, 255, 0.95);
+		--bordo-basso: rgba(0, 0, 0, 0.12);
 	}
-	.hdr__theme .ico {
-		grid-area: 1 / 1;
-		transition: transform 0.2s ease;
+	.hdr__theme:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 3px;
 	}
-	.hdr__theme:hover .ico {
-		transform: rotate(20deg);
+	.trk {
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		background: linear-gradient(160deg, var(--vetro), transparent 70%);
+		-webkit-backdrop-filter: blur(10px) saturate(1.5);
+		backdrop-filter: blur(10px) saturate(1.5);
+		box-shadow:
+			inset 1.5px 1.5px 1px -0.5px var(--bordo-alto),
+			inset -1.5px -1.5px 1px -0.5px var(--bordo-basso),
+			inset 0 0 0 1px var(--border),
+			0 6px 16px rgba(0, 0, 0, 0.22);
+		transition: box-shadow 0.3s ease;
+	}
+	.hdr__theme:hover .trk {
+		box-shadow:
+			inset 1.5px 1.5px 1px -0.5px var(--bordo-alto),
+			inset -1.5px -1.5px 1px -0.5px var(--bordo-basso),
+			inset 0 0 0 1px var(--accent),
+			0 6px 16px rgba(0, 0, 0, 0.22);
+	}
+	/* selettore di vetro */
+	.thumb {
+		position: absolute;
+		top: var(--pad);
+		left: var(--pad);
+		width: var(--tw);
+		height: calc(var(--h) - 2 * var(--pad));
+		overflow: hidden;
+		border-radius: 999px;
+		background: linear-gradient(155deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.08) 55%, rgba(255, 255, 255, 0.18));
+		-webkit-backdrop-filter: blur(3px) brightness(1.18) saturate(1.5);
+		backdrop-filter: blur(3px) brightness(1.18) saturate(1.5);
+		box-shadow:
+			inset 0 1.5px 1px rgba(255, 255, 255, 0.85),
+			inset 0 -2px 4px rgba(255, 255, 255, 0.2),
+			inset 0 0 0 1px rgba(255, 255, 255, 0.3),
+			0 3px 10px rgba(0, 0, 0, 0.3);
+		translate: var(--corsa) 0;
+		transition: translate 0.65s var(--molla), width 0.3s var(--molla);
+	}
+	:global(:root[data-theme='light']) .thumb {
+		translate: 0 0;
+		background: linear-gradient(155deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.55) 55%, rgba(255, 255, 255, 0.8));
+		box-shadow:
+			inset 0 1.5px 1px #fff,
+			inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+			inset 0 0 0 1px rgba(0, 0, 0, 0.1),
+			0 3px 10px rgba(0, 0, 0, 0.16);
+	}
+	/* premuto: il selettore si allunga verso il lato opposto */
+	.hdr__theme:active .thumb {
+		transition: translate 0.25s var(--molla), width 0.25s var(--molla);
+		width: calc(var(--tw) + 12px);
+		translate: calc(var(--corsa) - 12px) 0;
+	}
+	:global(:root[data-theme='light']) .hdr__theme:active .thumb {
+		translate: 0 0;
+	}
+	/* sole e luna: stanno sul vetro, sopra il selettore; quella scelta si accende */
+	.ic {
+		position: absolute;
+		top: 11px;
+		width: 18px;
+		height: 18px;
+		overflow: visible;
+		pointer-events: none;
+		color: var(--muto);
+		transition: color 0.4s ease, transform 0.6s var(--molla);
+	}
+	.ic--sun {
+		left: calc(var(--pad) + var(--tw) / 2 - 9px);
+	}
+	.ic--moon {
+		right: calc(var(--pad) + var(--tw) / 2 - 9px);
+	}
+	.ic--moon {
+		color: var(--luna);
+		transform: rotate(0deg) scale(1.08);
+	}
+	.raggi {
+		transform-origin: 12px 12px;
+		transition: transform 0.7s var(--molla);
+		transform: rotate(45deg);
+	}
+	:global(:root[data-theme='light']) .ic--sun {
+		color: var(--sole);
+		transform: scale(1.08);
+	}
+	:global(:root[data-theme='light']) .ic--sun .raggi {
+		transform: rotate(0deg);
+	}
+	:global(:root[data-theme='light']) .ic--moon {
+		color: var(--muto);
+		transform: rotate(-25deg) scale(1);
+	}
+	:global(:root:not([data-theme='light'])) .ic--sun {
+		transform: scale(1);
+	}
+	/* dentro il selettore: stelle di notte, pianeti di giorno */
+	.st,
+	.cl {
+		position: absolute;
+		display: block;
+		transition: transform 0.5s var(--molla), opacity 0.35s ease;
+		transition-delay: var(--d, 0s);
+	}
+	.st {
+		background: #fff;
+		border-radius: 50%;
+		box-shadow: 0 0 5px rgba(255, 255, 255, 0.9);
+		animation: twinkle 2.6s ease-in-out infinite;
+		animation-delay: var(--t, 0s);
+	}
+	.st1 {
+		left: 6px;
+		top: 6px;
+		width: 6px;
+		height: 6px;
+		border-radius: 0;
+		clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+		--d: 0.15s;
+	}
+	.st2 {
+		left: 9px;
+		top: 21px;
+		width: 2px;
+		height: 2px;
+		--d: 0.22s;
+		--t: 0.8s;
+	}
+	.st3 {
+		right: 7px;
+		top: 6px;
+		width: 3px;
+		height: 3px;
+		--d: 0.3s;
+		--t: 1.4s;
+	}
+	.st4 {
+		right: 6px;
+		top: 20px;
+		width: 5px;
+		height: 5px;
+		border-radius: 0;
+		clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+		background: var(--accent);
+		box-shadow: none;
+		--d: 0.26s;
+		--t: 0.4s;
+	}
+	:global(:root[data-theme='light']) .st {
+		opacity: 0;
+		transform: scale(0.2);
+		transition-delay: 0s;
+		animation: none;
+	}
+	/* nuvolette (grigio chiaro sul chiaro): sbucano da dietro il sole (l'icona sta sopra il selettore), solo di giorno */
+	.cl {
+		height: 6px;
+		border-radius: 999px;
+		background: #d3d6dc;
+		opacity: 0;
+		transform: translateX(-10px) scale(0.5);
+	}
+	.cl::before {
+		content: '';
+		position: absolute;
+		left: 28%;
+		top: -3px;
+		width: 42%;
+		height: 6px;
+		border-radius: 50%;
+		background: #d3d6dc;
+	}
+	.cl1 {
+		left: 7px;
+		top: 19px;
+		width: 16px;
+		--d: 0.2s;
+	}
+	.cl2 {
+		left: 25px;
+		top: 8px;
+		width: 14px;
+		--d: 0.32s;
+	}
+	:global(:root[data-theme='light']) .cl {
+		opacity: 1;
+		transform: none;
+		animation: fluttua 6s ease-in-out infinite;
+	}
+	:global(:root[data-theme='light']) .cl2 {
+		animation-delay: -3s;
+	}
+	/* selettore chiaro: carta, con nuvole grigie */
+	:global(:root[data-theme='light']) .thumb {
+		background: linear-gradient(155deg, rgba(255, 255, 255, 0.98), rgba(236, 236, 238, 0.9) 85%);
+	}
+	@keyframes twinkle {
+		0%,
+		100% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0.3;
+		}
+	}
+	@keyframes fluttua {
+		0%,
+		100% {
+			translate: 0 0;
+		}
+		50% {
+			translate: 2px 0;
+		}
+	}
+	/* animazione dell'icona scelta, solo al clic (classe .anim messa dallo script) */
+	.hdr__theme.anim .ic--moon {
+		animation: luna-click 0.9s var(--molla) 0.12s both;
+	}
+	:global(:root[data-theme='light']) .hdr__theme.anim .ic--sun .raggi {
+		animation: sole-click 1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.1s both;
+	}
+	:global(:root[data-theme='light']) .hdr__theme.anim .ic--sun {
+		animation: sole-pulsa 0.8s var(--molla) 0.1s both;
+	}
+	:global(:root[data-theme='light']) .hdr__theme.anim .ic--moon {
+		animation: none;
+	}
+	@keyframes luna-click {
+		from {
+			rotate: -70deg;
+			scale: 0.5;
+		}
+		to {
+			rotate: 0deg;
+			scale: 1;
+		}
+	}
+	@keyframes sole-click {
+		from {
+			rotate: -120deg;
+		}
+		to {
+			rotate: 0deg;
+		}
+	}
+	@keyframes sole-pulsa {
+		from {
+			scale: 0.6;
+		}
+		to {
+			scale: 1;
+		}
+	}
+	@media (hover: hover) and (pointer: fine) {
+		.hdr__theme:hover .thumb {
+			translate: calc(var(--corsa) - 3px) 0;
+		}
+		:global(:root[data-theme='light']) .hdr__theme:hover .thumb {
+			translate: 3px 0;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.st,
+		.cl,
+		.thumb,
+		.ic,
+		.raggi {
+			transition-duration: 0.01s;
+			transition-delay: 0s;
+			animation: none !important;
+		}
 	}
 	/* l'etichetta dice dove porta il clic: nel tema scuro "Modalità chiara", nel chiaro "Modalità scura" */
 	.hdr__tip {
@@ -205,15 +501,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 		opacity: 0;
 		transform: translateY(-4px);
 		transition: none;
-	}
-	.ico--moon {
-		display: none;
-	}
-	:global(:root[data-theme='light']) .ico--sun {
-		display: none;
-	}
-	:global(:root[data-theme='light']) .ico--moon {
-		display: block;
 	}
 	/* Menu su telefono: il pannello si apre a cerchio dal pulsante, le voci salgono una dopo l'altra */
 	.hdr__burger {
@@ -406,6 +693,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 		btn.addEventListener('blur', pulisci);
 		btn.addEventListener('click', (event) => {
 			btn.classList.add('is-clicked');
+			// animazione di sole/luna solo al clic: riparte a ogni clic
+			btn.classList.remove('anim');
+			void btn.offsetWidth;
+			btn.classList.add('anim');
+			setTimeout(() => btn.classList.remove('anim'), 1300);
 			const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
 			const apply = () => {
 				root.setAttribute('data-theme', next);
