@@ -753,7 +753,7 @@ export const concepts: Concept[] = [
 		caratteri: 'Playfair (optical size variabile) e Manrope',
 		palette: ['#e2e9e2', '#1f2a27', '#2b3134', '#14181b', '#f2c500', '#9aa3a8'],
 		metriche: [
-			{ label: 'Performance', valore: '88' },
+			{ label: 'Performance', valore: '94' },
 			{ label: 'Accessibilità', valore: '100' },
 			{ label: 'Buone pratiche', valore: '100' },
 		],

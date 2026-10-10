@@ -6,7 +6,8 @@
   "scripts": {
     "shot": "node shot.mjs",
     "axe": "node axe.mjs",
-    "lh": "node lh.mjs"
+    "lh": "node lh.mjs",
+    "psi": "node psi.mjs"
   },
   "dependencies": {
     "axe-core": "^4.10.0",
