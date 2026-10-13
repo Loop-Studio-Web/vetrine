@@ -1,0 +1,152 @@
+---
+import { HORARIO, TALLER } from './datos';
+---
+
+<section class="vis" id="visita" aria-labelledby="vis-titulo">
+	<div class="wrap vis__in">
+		<div class="vis__texto">
+			<h2 id="vis-titulo" class="h2">Pasa por el taller.</h2>
+			<p class="lead">Huele a flor recién cortada y siempre hay café. Los ramos del día están en los botes de la entrada.</p>
+			<address class="vis__dir">
+				{TALLER.direccion}<br />{TALLER.ciudad}<br />
+				<a href={`tel:${TALLER.telefono.replace(/\s/g, '')}`}>{TALLER.telefono}</a>
+			</address>
+			<table class="vis__horario">
+				<caption class="sr-only">Horario del taller</caption>
+				<tbody>
+					{
+						HORARIO.map((h) => (
+							<tr>
+								<th scope="row">{h.nombre}</th>
+								<td>
+									{h.abre} a {h.cierra} h
+								</td>
+							</tr>
+						))
+					}
+				</tbody>
+			</table>
+			<p class="vis__estado rotulo" data-estado-visita aria-live="polite"></p>
+			<a class="btn btn--tinta" href={TALLER.whatsapp} target="_blank" rel="noopener">Escríbenos por WhatsApp<span class="sr-only"> (se abre en una pestaña nueva)</span></a>
+		</div>
+		<div class="vis__mapa">
+			<svg viewBox="0 0 480 420" role="img" aria-label="Mapa ilustrado: el taller está en la esquina de la calle Marsella con la avenida Chapultepec, frente a un parque">
+				<rect width="480" height="420" fill="#fff0f6"></rect>
+				<g fill="#bfe8d0">
+					<rect x="296" y="40" width="150" height="90" rx="14"></rect>
+					<rect x="30" y="300" width="110" height="90" rx="14"></rect>
+				</g>
+				<g fill="#ffd1e3">
+					<rect x="30" y="40" width="110" height="90" rx="4"></rect>
+					<rect x="168" y="40" width="100" height="90" rx="4"></rect>
+					<rect x="30" y="158" width="110" height="110" rx="4"></rect>
+					<rect x="296" y="158" width="150" height="110" rx="4"></rect>
+					<rect x="168" y="300" width="100" height="90" rx="4"></rect>
+					<rect x="296" y="300" width="150" height="90" rx="4"></rect>
+				</g>
+				<g stroke="#2b0a1e" stroke-width="3" fill="none" stroke-linecap="round" opacity=".85">
+					<path d="M0 144h480M0 284h480"></path>
+					<path d="M154 0v420M282 0v420"></path>
+				</g>
+				<g font-family="Familjen Grotesk Variable, sans-serif" font-weight="700" font-size="14" fill="#2b0a1e">
+					<text x="320" y="138">Av. Chapultepec</text>
+					<text x="140" y="398" transform="rotate(-90 140 398)">Calle Marsella</text>
+					<text x="340" y="90" font-size="13" opacity=".7">Parque</text>
+				</g>
+				<g transform="translate(154 144)">
+					<circle r="36" fill="#d10d69" opacity=".16"></circle>
+					<g transform="translate(-22 -50) scale(.7)">
+						<path d="M32 61C30 47 34.5 37 32 23" stroke="#1f7a4d" stroke-width="4.2" fill="none" stroke-linecap="round"></path>
+						<g fill="#d10d69">
+							<circle cx="32" cy="7.5" r="6.6"></circle>
+							<circle cx="40.4" cy="13.6" r="6.6"></circle>
+							<circle cx="37.2" cy="23" r="6.6"></circle>
+							<circle cx="26.8" cy="23" r="6.6"></circle>
+							<circle cx="23.6" cy="13.6" r="6.6"></circle>
+						</g>
+						<circle cx="32" cy="16.5" r="5.2" fill="#ffc83d"></circle>
+					</g>
+				</g>
+			</svg>
+			<p class="vis__nota">Dirección y mapa de fantasía.</p>
+		</div>
+	</div>
+</section>
+
+<style>
+	.vis {
+		background: var(--turquesa);
+		color: var(--tinta);
+		padding-block: clamp(56px, 8vw, 108px);
+	}
+	.vis__in {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+		gap: clamp(28px, 5vw, 72px);
+		align-items: center;
+	}
+	.vis__dir {
+		font-style: normal;
+		font-weight: 700;
+		margin-top: 22px;
+		line-height: 1.5;
+	}
+	.vis__dir a {
+		display: inline-block;
+		padding-block: 10px;
+		text-underline-offset: 3px;
+	}
+	.vis__horario {
+		margin-top: 18px;
+		border-collapse: collapse;
+		min-width: min(100%, 360px);
+	}
+	.vis__horario th,
+	.vis__horario td {
+		text-align: left;
+		padding: 8px 0;
+		border-bottom: 2px dotted rgb(43 10 30 / 0.45);
+		font-weight: 600;
+	}
+	.vis__horario td {
+		text-align: right;
+		font-variant-numeric: tabular-nums;
+	}
+	.vis__estado {
+		margin: 18px 0;
+		font-size: 1.2rem;
+	}
+	.vis__mapa svg {
+		width: 100%;
+		height: auto;
+		border-radius: 24px 24px 24px 6px;
+		rotate: 1.5deg;
+	}
+	.vis__nota {
+		margin-top: 12px;
+		font-size: 0.9rem;
+	}
+	@media (max-width: 820px) {
+		.vis__in {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>
+
+<script>
+	import { HORARIO, TALLER } from './datos';
+	const el = document.querySelector<HTMLElement>('[data-estado-visita]');
+	if (el) {
+		const p = new Intl.DateTimeFormat('en-US', { timeZone: TALLER.zona, weekday: 'short', hour: 'numeric', minute: 'numeric', hour12: false }).formatToParts(new Date());
+		const g = (t: string) => p.find((x) => x.type === t)!.value;
+		const dia = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(g('weekday'));
+		const h = (parseInt(g('hour')) % 24) + parseInt(g('minute')) / 60;
+		const hoy = HORARIO.find((x) => x.dias.includes(dia))!;
+		el.textContent =
+			h >= hoy.abre && h < hoy.cierra
+				? `Abierto ahora, hasta las ${hoy.cierra} h.`
+				: h < hoy.abre
+					? `Cerrado ahora. Hoy abrimos a las ${hoy.abre} h.`
+					: 'Cerrado ahora. Abrimos mañana temprano.';
+	}
+</script>

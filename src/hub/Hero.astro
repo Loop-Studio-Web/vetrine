@@ -83,7 +83,7 @@ function skyline(seed: number, id: string, o: { h: number; min: number; max: num
 	return `<svg viewBox="0 0 ${W} ${o.h}" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false"><defs>${win}</defs><g class="sk-b">${body}</g>${o.details ? `<g class="sk-w" fill="url(#${id})">${body.replace(/<polygon[^>]*>/g, '').replace(/<rect x="[^"]*" y="[^"]*" width="(?:[0-9]|1[0-9]|2)"[^>]*>/g, '')}</g><g class="sk-l">${lit}</g>` : ''}</svg>`;
 }
 // Ogni categoria ha la sua ora del giorno: la via cambia luce passando da una all'altra
-const atmoDi = (slug: string) => ({ ristorazione: 'sera', benessere: 'alba', tech: 'notte', casa: 'tramonto', studi: 'giorno', commercio: 'giorno' } as Record<string, string>)[slug] ?? 'giorno';
+const atmoDi = (slug: string) => ({ ristorazione: 'sera', benessere: 'alba', tech: 'notte', casa: 'tramonto', eventi: 'orablu', studi: 'giorno', commercio: 'giorno' } as Record<string, string>)[slug] ?? 'giorno';
 const gru = `<svg viewBox="0 0 120 160" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M52 160V28M64 160V28M52 140l12-14M52 118l12-14M52 96l12-14M52 74l12-14M52 52l12-14M64 140L52 126M64 118L52 104M64 96L52 82M64 74L52 60M64 52L52 38"/><path d="M6 28h108M6 28l52-22 52 22M58 6V28"/><path d="M22 28v14M96 28v36M96 64l-5 7h10z"/></g><rect x="10" y="38" width="22" height="10" fill="currentColor"/></svg>`;
 const stelle = (() => {
 	const r = rng(7);
@@ -973,6 +973,24 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 	[data-atmo='tramonto'] .sc :global(.sk-l) {
 		opacity: 0.6;
 	}
+	/* Ora blu (eventi e creativi): il cielo prima del buio, blu profondo con una fascia di luce, le feste che cominciano */
+	[data-atmo='orablu'] .scene {
+		--sky-mid: #06142e;
+		--sky-hz: #2a5cb5;
+		--sk-far: #12284d;
+		--sk-near: #060b17;
+	}
+	[data-atmo='orablu'] .sc--stars {
+		opacity: 0.5;
+	}
+	[data-atmo='orablu'] .sc--moon {
+		right: 30%;
+		top: 20px;
+	}
+	[data-atmo='orablu'] .sc--fill::after,
+	[data-atmo='orablu'] .sc :global(.sk-l) {
+		opacity: 0.75;
+	}
 	/* Alba: viola e rosa, ultime stelle, poche luci accese */
 	[data-atmo='alba'] .scene {
 		--sky-mid: #14122b;
@@ -1075,6 +1093,19 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 		top: 10px;
 		background: radial-gradient(circle, #fffef4 0 45%, #ffe9a6 75%);
 		box-shadow: 0 0 40px 12px rgba(255, 232, 150, 0.5);
+	}
+	:global(:root[data-theme='light']) [data-atmo='orablu'] .scene {
+		--sky-mid: #cfe0fb;
+		--sky-hz: #eaf2ff;
+		--sk-far: #b3c8ea;
+		--sk-near: #aab8d0;
+	}
+	:global(:root[data-theme='light']) [data-atmo='orablu'] .sc--sun {
+		display: none;
+	}
+	:global(:root[data-theme='light']) [data-atmo='orablu'] .sc--moon {
+		display: block;
+		box-shadow: inset -9px -3px 0 0 #7d95c9, 0 0 22px 2px rgba(125, 149, 201, 0.3);
 	}
 	/* Tema chiaro: la notte diventa un cielo lilla pallido con la luna ancora alta */
 	:global(:root[data-theme='light']) [data-atmo='notte'] .scene {

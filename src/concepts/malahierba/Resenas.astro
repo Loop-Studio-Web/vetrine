@@ -1,0 +1,94 @@
+---
+import { RESENAS } from './datos';
+import Simbolo from './Simbolo.astro';
+const [grande, ...cortas] = RESENAS;
+---
+
+<section class="res" aria-labelledby="res-titulo">
+	<div class="wrap">
+		<h2 id="res-titulo" class="h2">Lo que dicen quienes ya pidieron.</h2>
+		<p class="res__nota">Reseñas de ejemplo, escritas para esta vetrina.</p>
+		<figure class="res__grande">
+			<blockquote>{grande.texto}</blockquote>
+			<figcaption>
+				<Simbolo tam={38} class="res__s" flor="#ffb347" hoja="#8fd4a4" />
+				<span>
+					<b>{grande.quien}</b>
+					<br />
+					{grande.dato}
+				</span>
+			</figcaption>
+		</figure>
+		<div class="res__cortas">
+			{
+				cortas.map((r) => (
+					<figure>
+						<blockquote>{r.texto}</blockquote>
+						<figcaption>
+							<b>{r.quien}</b>, {r.dato.toLowerCase()}
+						</figcaption>
+					</figure>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<style>
+	.res {
+		background: var(--bosque-2);
+		color: var(--blanco);
+		padding-block: clamp(56px, 8vw, 104px);
+	}
+	.res__nota {
+		margin-top: 10px;
+		color: #bfe3cb;
+		font-size: 0.95rem;
+	}
+	.res__grande {
+		margin-top: 36px;
+		max-width: 780px;
+	}
+	.res__grande blockquote {
+		font-family: var(--titulos);
+		font-size: clamp(1.45rem, 2.9vw, 2.15rem);
+		line-height: 1.22;
+	}
+	.res__grande figcaption {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		margin-top: 18px;
+		font-size: 0.95rem;
+		line-height: 1.35;
+		color: #dff3e5;
+	}
+	.res__s {
+		flex: none;
+	}
+	b {
+		color: var(--blanco);
+	}
+	.res__cortas {
+		margin-top: clamp(36px, 5vw, 60px);
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 28px clamp(24px, 5vw, 64px);
+		max-width: 900px;
+		margin-left: auto;
+	}
+	.res__cortas blockquote {
+		font-size: 1.08rem;
+		line-height: 1.45;
+	}
+	.res__cortas figcaption {
+		margin-top: 8px;
+		font-size: 0.92rem;
+		color: #bfe3cb;
+	}
+	@media (max-width: 760px) {
+		.res__cortas {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

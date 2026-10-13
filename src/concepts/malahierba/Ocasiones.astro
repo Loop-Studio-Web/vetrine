@@ -1,0 +1,131 @@
+---
+import { Image } from 'astro:assets';
+import { OCASIONES, pesos } from './ramo';
+import rosas from '../../assets/malahierba/foto/rosas.jpg';
+---
+
+<section class="oca" id="ocasiones" aria-labelledby="oca-titulo">
+	<div class="wrap oca__in">
+		<div class="oca__cabeza">
+			<h2 id="oca-titulo" class="h2">¿Para qué fecha es?</h2>
+			<p class="lead">Toca una y el ramo se arma con lo que mejor le va. Después lo cambias a tu gusto.</p>
+		</div>
+		<ul class="oca__lista" role="list">
+			{
+				OCASIONES.map((o) => (
+					<li>
+						<button class="oca__fila" type="button" data-ocasion={o.id}>
+							<span class="oca__nombre">{o.nombre}</span>
+							<span class="oca__frase">{o.frase}</span>
+							<span class="oca__desde rotulo">desde {pesos(o.desde)}</span>
+						</button>
+					</li>
+				))
+			}
+		</ul>
+		<figure class="oca__foto">
+			<Image src={rosas} alt="Rosas, peonías y flores de estación apiladas en el puesto" widths={[320, 480, 640]} sizes="(min-width: 900px) 300px, 70vw" class="oca__img" />
+		</figure>
+	</div>
+</section>
+
+<style>
+	.oca {
+		background: var(--rosa);
+		color: var(--tinta);
+		padding-block: clamp(56px, 8vw, 108px);
+	}
+	.oca__in {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) 300px;
+		grid-template-areas:
+			'cabeza foto'
+			'lista foto';
+		gap: 26px clamp(32px, 6vw, 88px);
+		align-items: start;
+	}
+	.oca__cabeza {
+		grid-area: cabeza;
+	}
+	.oca__lista {
+		grid-area: lista;
+	}
+	.oca__foto {
+		grid-area: foto;
+		position: sticky;
+		top: calc(var(--nav-h) + 28px);
+		rotate: -2deg;
+	}
+	.oca__img {
+		width: 100%;
+		aspect-ratio: 3 / 4;
+		object-fit: cover;
+		clip-path: polygon(0 4%, 6% 0, 100% 2%, 100% 100%, 8% 98%, 0 100%);
+	}
+	.oca__fila {
+		width: 100%;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		grid-template-areas:
+			'nombre desde'
+			'frase desde';
+		gap: 2px 20px;
+		align-items: baseline;
+		text-align: left;
+		padding: 18px 4px;
+		background: transparent;
+		border: 0;
+		border-bottom: 2px solid rgb(43 10 30 / 0.22);
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+	}
+	.oca__nombre {
+		grid-area: nombre;
+		font-family: var(--titulos);
+		font-size: clamp(1.7rem, 3.6vw, 2.6rem);
+		line-height: 1.05;
+		transition:
+			translate 220ms var(--ease),
+			color 220ms var(--ease);
+	}
+	.oca__frase {
+		grid-area: frase;
+		color: var(--tinta-2);
+		font-size: 0.98rem;
+	}
+	.oca__desde {
+		grid-area: desde;
+		color: var(--fucsia-osc);
+		font-size: 1.15rem;
+		white-space: nowrap;
+	}
+	@media (hover: hover) {
+		.oca__fila:hover .oca__nombre {
+			translate: 12px 0;
+			color: var(--fucsia);
+		}
+	}
+	.oca__fila:active .oca__nombre {
+		translate: 6px 0;
+	}
+	@media (max-width: 860px) {
+		.oca__in {
+			grid-template-columns: 1fr;
+			grid-template-areas:
+				'cabeza'
+				'lista'
+				'foto';
+		}
+		.oca__foto {
+			position: static;
+			width: min(70%, 300px);
+		}
+		.oca__fila {
+			grid-template-columns: 1fr;
+			grid-template-areas:
+				'nombre'
+				'frase'
+				'desde';
+		}
+	}
+</style>

@@ -1,0 +1,874 @@
+---
+import { papelPicado } from './papel';
+import { OCASIONES, TAMANOS, FLORES, PALETAS, ENVOLTURAS, ramoSVG, precioRamo, pesos, ENVIO, type Eleccion } from './ramo';
+import { CORTE_MISMO_DIA, TALLER } from './datos';
+import { getImage } from 'astro:assets';
+import logo3d from '../../assets/malahierba/brand/logo-3d.png';
+const logoRecibo = await getImage({ src: logo3d, width: 280 });
+
+const inicial: Eleccion = { flor: 'gerbera', paleta: 'atardecer', tamano: 'mediano', envoltura: 'kraft', semilla: 3 };
+const ramo = ramoSVG(inicial, { id: 'mh-ini' });
+const papel = papelPicado(7, 21, ['#ff2d95', '#ff9a1f', '#ffffff', '#ffc83d', '#7a2e8e', '#ffc7dc']);
+const total0 = precioRamo(inicial);
+const datos = JSON.stringify({ OCASIONES, TAMANOS, FLORES, PALETAS, ENVOLTURAS, ENVIO, CORTE: CORTE_MISMO_DIA });
+---
+
+<section class="arma" id="arma" aria-labelledby="arma-titulo">
+	<div class="wrap">
+		<div class="arma__cabeza">
+			<h2 id="arma-titulo" class="h2">Arma tu ramo y mira cómo queda.</h2>
+			<p class="lead">Cambia lo que quieras: el dibujo, el precio y la tarjeta se actualizan al momento. Cuando te guste, lo pides.</p>
+		</div>
+
+		<div class="arma__mesa" data-arma data-datos={datos}>
+			<form class="arma__form" novalidate>
+				<fieldset class="campo">
+					<legend>1. ¿Para qué ocasión?</legend>
+					<div class="chips">
+						{
+							OCASIONES.map((o) => (
+								<label class="chip">
+									<input type="radio" name="ocasion" value={o.id} />
+									<span>{o.nombre}</span>
+								</label>
+							))
+						}
+					</div>
+				</fieldset>
+
+				<fieldset class="campo">
+					<legend>2. ¿De qué tamaño?</legend>
+					<div class="tamanos">
+						{
+							TAMANOS.map((t) => (
+								<label class="tamano">
+									<input type="radio" name="tamano" value={t.id} checked={t.id === inicial.tamano} />
+									<span class="tamano__n">{t.nombre}</span>
+									<span class="tamano__d">{t.tallos} tallos · {t.para}</span>
+									<span class="tamano__p rotulo">{pesos(t.precio)}</span>
+								</label>
+							))
+						}
+					</div>
+				</fieldset>
+
+				<fieldset class="campo">
+					<legend>3. La flor principal</legend>
+					<div class="chips">
+						{
+							FLORES.map((f) => (
+								<label class="chip chip--flor">
+									<input type="radio" name="flor" value={f.id} checked={f.id === inicial.flor} />
+									<span>{f.nombre}{f.extra > 0 && <small> +${f.extra}</small>}</span>
+								</label>
+							))
+						}
+					</div>
+				</fieldset>
+
+				<fieldset class="campo">
+					<legend>4. Los colores</legend>
+					<div class="paletas">
+						{
+							PALETAS.map((p) => (
+								<label class="paleta">
+									<input type="radio" name="paleta" value={p.id} checked={p.id === inicial.paleta} />
+									<span class="paleta__puntos" aria-hidden="true">
+										{p.colores.map((c) => <i style={`background:${c}`} />)}
+									</span>
+									<span class="paleta__n">{p.nombre}</span>
+								</label>
+							))
+						}
+					</div>
+				</fieldset>
+
+				<fieldset class="campo">
+					<legend>5. La envoltura</legend>
+					<div class="chips">
+						{
+							ENVOLTURAS.map((w) => (
+								<label class="chip">
+									<input type="radio" name="envoltura" value={w.id} checked={w.id === inicial.envoltura} />
+									<span>{w.nombre}{w.extra > 0 && <small> +${w.extra}</small>}</span>
+								</label>
+							))
+						}
+					</div>
+				</fieldset>
+
+				<div class="campo">
+					<label for="dedicatoria" class="campo__titulo">6. ¿Qué dice la tarjeta?</label>
+					<input id="dedicatoria" name="dedicatoria" type="text" maxlength="70" autocomplete="off" placeholder="Escríbela como se la dirías" />
+					<p class="ayuda">Hasta 70 letras. La escribimos a mano.</p>
+				</div>
+
+				<fieldset class="campo">
+					<legend>7. ¿Cómo lo recibes?</legend>
+					<div class="chips">
+						<label class="chip"><input type="radio" name="entrega" value="domicilio" checked /><span>A domicilio</span></label>
+						<label class="chip"><input type="radio" name="entrega" value="taller" /><span>Lo recojo en el taller</span></label>
+					</div>
+					<div class="dos">
+						<div>
+							<label for="dia">Día</label>
+							<select id="dia" name="dia" data-dia></select>
+						</div>
+						<div>
+							<label for="franja">Hora</label>
+							<select id="franja" name="franja" data-franja></select>
+						</div>
+					</div>
+					<div class="campo__una" data-direccion>
+						<label for="direccion">Dirección de entrega</label>
+						<input id="direccion" name="direccion" type="text" autocomplete="street-address" placeholder="Calle, número, colonia" aria-describedby="err-direccion" />
+						<p class="error" id="err-direccion" data-error="direccion" hidden></p>
+					</div>
+				</fieldset>
+
+				<fieldset class="campo">
+					<legend>8. ¿A nombre de quién?</legend>
+					<div class="dos">
+						<div>
+							<label for="nombre">Tu nombre</label>
+							<input id="nombre" name="nombre" type="text" autocomplete="name" aria-describedby="err-nombre" />
+							<p class="error" id="err-nombre" data-error="nombre" hidden></p>
+						</div>
+						<div>
+							<label for="tel">Tu WhatsApp</label>
+							<input id="tel" name="tel" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="10 dígitos" aria-describedby="err-tel" />
+							<p class="error" id="err-tel" data-error="tel" hidden></p>
+						</div>
+					</div>
+				</fieldset>
+
+				<div class="arma__envio">
+					<button class="btn btn--fucsia" type="submit">Pedir este ramo</button>
+					<p class="ayuda">No pagas nada ahora: te confirmamos por WhatsApp y ahí te pasamos la forma de pago.</p>
+				</div>
+			</form>
+
+			<aside class="arma__vista" aria-label="Vista previa y precio">
+				<div class="arma__papel" set:html={papel} aria-hidden="true"></div>
+				<div class="arma__lienzo" data-lienzo set:html={ramo}></div>
+				<p class="arma__tarjeta rotulo" data-tarjeta>
+					<span class="sr-only">Tarjeta: </span><span data-tarjeta-texto>Para ti, con cariño.</span>
+				</p>
+				<button class="arma__otro" type="button" data-otro>Otro acomodo</button>
+				<p class="arma__sobrio" data-sobrio-nota>
+					Para coronas y arreglos de velatorio, llámanos: los llevamos a la capilla o a la casa, con discreción.
+					<a href={`tel:${TALLER.telefono.replace(/\s/g, '')}`}>{TALLER.telefono}</a>
+				</p>
+				<dl class="arma__cuenta" data-cuenta aria-live="polite">
+					<div><dt data-l-ramo>Ramo mediano · 24 tallos</dt><dd data-v-ramo>{pesos(total0)}</dd></div>
+					<div><dt>Envío</dt><dd data-v-envio>{pesos(ENVIO.domicilio)}</dd></div>
+					<div class="arma__total"><dt>Total, IVA incluido</dt><dd data-v-total>{pesos(total0 + ENVIO.domicilio)}</dd></div>
+				</dl>
+			</aside>
+		</div>
+
+		<div class="recibo" data-recibo data-logo={logoRecibo.src} hidden tabindex="-1" aria-labelledby="recibo-t"></div>
+	</div>
+</section>
+
+<style>
+	.arma {
+		background: var(--papel);
+		padding-block: clamp(56px, 8vw, 108px);
+	}
+	.arma__cabeza {
+		margin-bottom: clamp(24px, 4vw, 44px);
+	}
+	.arma__mesa {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+		gap: clamp(28px, 5vw, 72px);
+		align-items: start;
+	}
+	.arma__form {
+		display: grid;
+		gap: 30px;
+	}
+	.campo {
+		border: 0;
+		min-width: 0;
+	}
+	.campo legend,
+	.campo__titulo {
+		display: block;
+		font-weight: 800;
+		font-size: 1.12rem;
+		margin-bottom: 12px;
+		padding: 0;
+	}
+	.campo label:not(.chip):not(.tamano):not(.paleta):not(.campo__titulo) {
+		display: block;
+		font-weight: 700;
+		font-size: 0.92rem;
+		margin-bottom: 6px;
+	}
+	.campo input[type='text'],
+	.campo input[type='tel'],
+	.campo select {
+		width: 100%;
+		min-height: 52px;
+		padding: 0 14px;
+		border: 2px solid var(--tinta);
+		border-radius: 10px;
+		background: var(--blanco);
+		font-size: 1rem;
+	}
+	.campo input[aria-invalid='true'] {
+		border-color: var(--error);
+		background: #fff5f7;
+	}
+	.dos {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 14px;
+		margin-top: 14px;
+	}
+	.campo__una {
+		margin-top: 14px;
+	}
+	.ayuda {
+		font-size: 0.9rem;
+		color: var(--tinta-2);
+		margin-top: 8px;
+	}
+	.error {
+		margin-top: 6px;
+		color: var(--error);
+		font-weight: 700;
+		font-size: 0.9rem;
+	}
+
+	/* Opciones: botones de radio que parecen etiquetas */
+	.chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+	.chip,
+	.tamano,
+	.paleta {
+		position: relative;
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+	}
+	.chip input,
+	.tamano input,
+	.paleta input {
+		position: absolute;
+		inset: 0;
+		opacity: 0;
+		cursor: pointer;
+		margin: 0;
+	}
+	.chip span {
+		display: inline-flex;
+		align-items: center;
+		min-height: 48px;
+		padding: 0 18px;
+		border: 2px solid var(--tinta);
+		border-radius: 999px;
+		background: var(--blanco);
+		font-weight: 700;
+		transition:
+			background-color 140ms var(--ease),
+			color 140ms var(--ease),
+			transform 140ms var(--ease);
+	}
+	.chip small {
+		font-weight: 500;
+		font-size: 0.9rem;
+		margin-left: 6px;
+	}
+	.chip:active span,
+	.tamano:active,
+	.paleta:active {
+		transform: scale(0.97);
+	}
+	.chip:has(input:checked) span {
+		background: var(--fucsia);
+		border-color: var(--fucsia);
+		color: var(--blanco);
+	}
+	.chip:has(input:focus-visible) span,
+	.tamano:has(input:focus-visible),
+	.paleta:has(input:focus-visible) {
+		outline: 3px solid var(--turquesa);
+		outline-offset: 3px;
+	}
+	@media (hover: hover) {
+		.chip:hover span {
+			background: var(--rosa);
+		}
+		.chip:has(input:checked):hover span {
+			background: var(--fucsia);
+		}
+	}
+
+	.tamanos {
+		display: grid;
+		gap: 8px;
+	}
+	.tamano {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		grid-template-areas:
+			'n p'
+			'd p';
+		align-items: center;
+		gap: 0 14px;
+		padding: 12px 16px;
+		border: 2px solid var(--tinta);
+		border-radius: 14px;
+		background: var(--blanco);
+		transition:
+			background-color 140ms var(--ease),
+			transform 140ms var(--ease);
+	}
+	.tamano__n {
+		grid-area: n;
+		font-weight: 800;
+	}
+	.tamano__d {
+		grid-area: d;
+		font-size: 0.88rem;
+		color: var(--tinta-2);
+	}
+	.tamano__p {
+		grid-area: p;
+		font-size: 1.15rem;
+		color: var(--fucsia-osc);
+	}
+	.tamano:has(input:checked) {
+		background: var(--rosa);
+		border-color: var(--fucsia);
+	}
+
+	.paletas {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+		gap: 10px;
+	}
+	.paleta {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		padding: 10px 12px;
+		border: 2px solid var(--tinta);
+		border-radius: 14px;
+		background: var(--blanco);
+		font-weight: 700;
+		font-size: 0.92rem;
+		line-height: 1.2;
+	}
+	.paleta__puntos {
+		display: grid;
+		grid-template-columns: repeat(2, 14px);
+		gap: 3px;
+		flex: none;
+	}
+	.paleta__puntos :global(i) {
+		width: 14px;
+		height: 14px;
+		border-radius: 50%;
+		border: 1px solid rgb(43 10 30 / 0.3);
+	}
+	.paleta:has(input:checked) {
+		background: var(--rosa);
+		border-color: var(--fucsia);
+	}
+
+	/* Vista previa */
+	.arma__vista {
+		position: sticky;
+		top: calc(var(--nav-h) + var(--fascia, 0px) + 16px);
+		background: var(--turquesa);
+		color: var(--tinta);
+		border-radius: 28px 28px 28px 6px;
+		padding: 0 0 22px;
+		overflow: clip;
+	}
+	.arma__papel {
+		margin-top: 6px;
+	}
+	.arma__lienzo {
+		padding: 10px 24px 0;
+		min-height: 300px;
+	}
+	.arma__tarjeta {
+		position: absolute;
+		right: 16px;
+		top: 112px;
+		max-width: 170px;
+		rotate: 4deg;
+		background: var(--blanco);
+		padding: 12px 14px;
+		font-size: 0.98rem;
+		line-height: 1.25;
+		overflow-wrap: anywhere;
+	}
+	.arma__tarjeta::before {
+		content: '';
+		position: absolute;
+		left: 50%;
+		top: -9px;
+		width: 52px;
+		height: 18px;
+		translate: -50% 0;
+		background: rgb(255 200 61 / 0.85);
+		rotate: -4deg;
+	}
+	.arma__otro {
+		display: block;
+		margin: 10px auto 0;
+		min-height: 44px;
+		padding: 0 20px;
+		border: 2px solid var(--tinta);
+		border-radius: 999px;
+		background: transparent;
+		font-weight: 800;
+		cursor: pointer;
+		transition: transform 160ms var(--ease);
+	}
+	.arma__otro:active {
+		transform: scale(0.97);
+	}
+	.arma__cuenta {
+		margin: 16px 22px 0;
+		display: grid;
+		gap: 4px;
+		font-weight: 600;
+	}
+	.arma__cuenta div {
+		display: flex;
+		justify-content: space-between;
+		gap: 12px;
+	}
+	.arma__cuenta dd {
+		font-variant-numeric: tabular-nums;
+		white-space: nowrap;
+	}
+	.arma__total {
+		margin-top: 6px;
+		padding-top: 10px;
+		border-top: 2px dashed var(--tinta);
+		font-size: 1.25rem;
+		font-weight: 800;
+	}
+	/* Condolencias: sin banderines ni letra a mano, fondo de bosque */
+	.arma__sobrio {
+		display: none;
+		margin: 14px 22px 0;
+		font-size: 0.95rem;
+		font-weight: 600;
+	}
+	.arma__sobrio a {
+		display: flex;
+		align-items: center;
+		min-height: 44px;
+		font-weight: 800;
+	}
+	[data-sobrio] .arma__vista {
+		background: var(--bosque);
+		color: #f3fff6;
+	}
+	[data-sobrio] .arma__papel,
+	[data-sobrio] .arma__otro {
+		display: none;
+	}
+	[data-sobrio] .arma__sobrio {
+		display: block;
+	}
+	[data-sobrio] .arma__total {
+		border-top-color: #f3fff6;
+	}
+	[data-sobrio] .arma__tarjeta {
+		color: var(--tinta);
+		font-family: var(--texto);
+		font-weight: 600;
+		rotate: 0deg;
+	}
+	[data-sobrio] .arma__tarjeta::before {
+		display: none;
+	}
+	.arma__envio {
+		display: grid;
+		gap: 4px;
+		justify-items: start;
+	}
+
+	@media (max-width: 900px) {
+		.arma__mesa {
+			grid-template-columns: 1fr;
+		}
+		.arma__vista {
+			order: -1;
+			top: calc(var(--nav-h) + var(--fascia, 0px) + 6px);
+			z-index: 5;
+			border-radius: 20px;
+			padding-bottom: 12px;
+		}
+		.arma__papel {
+			display: none;
+		}
+		.arma__lienzo {
+			padding: 6px 12px 0;
+			min-height: 0;
+			height: min(24svh, 190px);
+		}
+		[data-escribiendo] .arma__lienzo,
+		[data-escribiendo] .arma__tarjeta {
+			display: none;
+		}
+		.arma__sobrio {
+			margin: 8px 16px 0;
+			font-size: 0.9rem;
+		}
+		.arma__lienzo :global(svg) {
+			height: 100%;
+			width: auto;
+			margin-inline: auto;
+		}
+		.arma__tarjeta {
+			top: 10px;
+			right: 10px;
+			max-width: 140px;
+			font-size: 0.9rem;
+			padding: 8px 10px;
+		}
+		.arma__otro {
+			display: none;
+		}
+		.arma__cuenta {
+			margin: 8px 16px 0;
+			font-size: 0.9rem;
+		}
+		.arma__cuenta div:not(.arma__total) {
+			display: none;
+		}
+		.arma__total {
+			margin-top: 0;
+			padding-top: 6px;
+			font-size: 1.1rem;
+		}
+	}
+	@media (max-width: 480px) {
+		.dos {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>
+
+<style is:global>
+	/* El dibujo del ramo se escribe con JavaScript: sus estilos no reciben el alcance de Astro */
+	.mh-ramo {
+		width: 100%;
+		max-width: 400px;
+		height: auto;
+		margin-inline: auto;
+		overflow: visible;
+	}
+	.mh-pop {
+		transform-box: fill-box;
+		transform-origin: 50% 60%;
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.mh-pop {
+			animation: mh-pop 240ms var(--ease) both;
+			animation-delay: calc(min(var(--i), 30) * 5ms);
+		}
+		@keyframes mh-pop {
+			from {
+				scale: 0.55;
+				opacity: 0;
+			}
+		}
+		.recibo:not([hidden]) {
+			animation: recibo-in 260ms var(--ease) both;
+		}
+		@keyframes recibo-in {
+			from {
+				opacity: 0;
+				translate: 0 14px;
+			}
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.recibo:not([hidden]) {
+			animation: recibo-fade 160ms ease both;
+		}
+		@keyframes recibo-fade {
+			from {
+				opacity: 0;
+			}
+		}
+	}
+
+	/* Recibo: sale después de pedir. Es un tíquete de papel con el borde picado. */
+	.recibo {
+		margin: clamp(32px, 5vw, 56px) auto 0;
+		max-width: 560px;
+		background: var(--blanco);
+		color: var(--tinta);
+		padding: 32px clamp(22px, 5vw, 40px) 40px;
+		border: 2px solid var(--tinta);
+		border-radius: 4px;
+		position: relative;
+		rotate: -1deg;
+	}
+	.recibo:focus-visible {
+		outline: 3px solid var(--turquesa);
+		outline-offset: 6px;
+	}
+	.recibo__logo {
+		float: right;
+		width: 150px;
+		height: auto;
+		margin: -14px -8px 8px 12px;
+		rotate: 4deg;
+	}
+	.recibo h3 {
+		font-size: clamp(1.7rem, 4vw, 2.3rem);
+		color: var(--fucsia);
+	}
+	.recibo__folio {
+		font-family: var(--rotulo);
+		font-size: 1.3rem;
+		margin-top: 6px;
+	}
+	.recibo dl {
+		margin-top: 20px;
+		display: grid;
+		gap: 8px;
+	}
+	.recibo dl div {
+		display: flex;
+		justify-content: space-between;
+		gap: 12px;
+		border-bottom: 2px dotted rgb(43 10 30 / 0.3);
+		padding-bottom: 6px;
+	}
+	.recibo dd {
+		text-align: right;
+		font-weight: 700;
+	}
+	.recibo__tarjeta {
+		margin-top: 20px;
+		font-family: var(--rotulo);
+		font-size: 1.25rem;
+		background: var(--rosa);
+		padding: 14px 18px;
+		rotate: 1deg;
+	}
+	.recibo__nota {
+		margin-top: 18px;
+		font-size: 0.95rem;
+		color: var(--tinta-2);
+	}
+	.recibo .btn {
+		margin-top: 22px;
+	}
+</style>
+
+<script>
+	import { ramoSVG, precioRamo, pesos } from './ramo';
+	import type { Eleccion, OcasionId } from './ramo';
+	import { FRANJAS, HORARIO, TALLER, folio, h24 } from './datos';
+
+	const raiz = document.querySelector<HTMLElement>('[data-arma]');
+	if (raiz) {
+		const D = JSON.parse(raiz.dataset.datos!);
+		const forma = raiz.querySelector<HTMLFormElement>('.arma__form')!;
+		const lienzo = raiz.querySelector<HTMLElement>('[data-lienzo]')!;
+		const texto = raiz.querySelector<HTMLElement>('[data-tarjeta-texto]')!;
+		const $ = (s: string) => raiz.querySelector<HTMLElement>(s)!;
+		const recibo = document.querySelector<HTMLElement>('[data-recibo]')!;
+		const val = (n: string) => (forma.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+		const marca = (n: string, v: string) => {
+			forma.querySelectorAll<HTMLInputElement>(`input[name="${n}"]`).forEach((i) => (i.checked = i.value === v));
+		};
+
+		let semilla = 3;
+		let ocasion: OcasionId | '' = '';
+		const eleccion = (): Eleccion => ({ flor: val('flor'), paleta: val('paleta'), tamano: val('tamano'), envoltura: val('envoltura'), semilla }) as Eleccion;
+
+		const dibuja = (animar: boolean) => {
+			lienzo.innerHTML = ramoSVG(eleccion(), { id: 'mh', animar });
+		};
+		const cuenta = () => {
+			const e = eleccion();
+			const t = D.TAMANOS.find((x: { id: string }) => x.id === e.tamano);
+			const sub = precioRamo(e);
+			const dom = val('entrega') === 'domicilio';
+			const envio = dom ? (sub >= D.ENVIO.gratisDesde ? 0 : D.ENVIO.domicilio) : 0;
+			$('[data-l-ramo]').textContent = `Ramo ${t.nombre.toLowerCase()} · ${t.tallos} tallos`;
+			$('[data-v-ramo]').textContent = pesos(sub);
+			$('[data-v-envio]').textContent = dom ? (envio === 0 ? 'Gratis' : pesos(envio)) : 'Lo recoges';
+			$('[data-v-total]').textContent = pesos(sub + envio);
+			return { sub, envio, total: sub + envio, t };
+		};
+		const tarjeta = () => {
+			const v = (forma.elements.namedItem('dedicatoria') as HTMLInputElement).value.trim();
+			texto.textContent = v || 'Para ti, con cariño.';
+		};
+
+		const todo = (animar = true) => {
+			dibuja(animar);
+			cuenta();
+			tarjeta();
+		};
+
+		// Ocasión: llena todo con lo que mejor le va; después se cambia a gusto
+		const elige = (id: OcasionId) => {
+			const o = D.OCASIONES.find((x: { id: string }) => x.id === id);
+			if (!o) return;
+			ocasion = id;
+			raiz.toggleAttribute('data-sobrio', id === 'condolencias');
+			marca('ocasion', id);
+			marca('flor', o.flor);
+			marca('paleta', o.paleta);
+			marca('tamano', o.tamano);
+			(forma.elements.namedItem('dedicatoria') as HTMLInputElement).value = o.dedicatoria;
+			semilla = (semilla % 97) + 11;
+			todo();
+		};
+
+		forma.addEventListener('change', (e) => {
+			const n = (e.target as HTMLInputElement).name;
+			if (n === 'ocasion') return elige((e.target as HTMLInputElement).value as OcasionId);
+			if (n === 'entrega') {
+				$('[data-direccion]').hidden = val('entrega') !== 'domicilio';
+				cuenta();
+				return;
+			}
+			if (n === 'dia') return franjas();
+			// forma nueva del ramo (flor, tamaño): las flores brotan. Colores y envoltura: cambio directo, sin repetir la animación.
+			if (n === 'flor' || n === 'tamano') todo(true);
+			else if (n === 'paleta' || n === 'envoltura') todo(false);
+		});
+		forma.addEventListener('input', (e) => {
+			if ((e.target as HTMLInputElement).name === 'dedicatoria') tarjeta();
+		});
+		$('[data-otro]').addEventListener('click', () => {
+			semilla = (semilla * 7 + 5) % 997;
+			todo();
+		});
+
+		// Botones de ocasión de las otras secciones
+		document.addEventListener('click', (e) => {
+			const b = (e.target as HTMLElement).closest<HTMLElement>('[data-ocasion]');
+			if (!b) return;
+			elige(b.dataset.ocasion as OcasionId);
+			raiz.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+		});
+
+		// Días y horas de entrega, con la hora de México
+		const mx = () => {
+			const p = new Intl.DateTimeFormat('en-US', { timeZone: TALLER.zona, year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false }).formatToParts(new Date());
+			const g = (t: string) => parseInt(p.find((x) => x.type === t)!.value);
+			return { y: g('year'), m: g('month'), d: g('day'), h: g('hour') % 24 };
+		};
+		const nombreDia = new Intl.DateTimeFormat('es-MX', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
+		const dias: { valor: string; etiqueta: string; dow: number; hoy: boolean }[] = [];
+		const llenaDias = () => {
+			const n = mx();
+			const base = Date.UTC(n.y, n.m - 1, n.d);
+			const selDia = $('[data-dia]') as HTMLSelectElement;
+			for (let i = 0; i < 10 && dias.length < 8; i++) {
+				const f = new Date(base + i * 86400000);
+				const dow = f.getUTCDay();
+				const hoy = i === 0;
+				if (hoy && n.h >= D.CORTE) continue; // ya pasó la hora de corte
+				const etiqueta = hoy ? 'Hoy' : i === 1 ? 'Mañana' : nombreDia.format(f).replace(/^./, (c) => c.toUpperCase());
+				dias.push({ valor: String(i), etiqueta, dow, hoy });
+			}
+			selDia.innerHTML = dias.map((x) => `<option value="${x.valor}">${x.etiqueta}</option>`).join('');
+			franjas();
+		};
+		const franjas = () => {
+			const sel = $('[data-dia]') as HTMLSelectElement;
+			const f = dias.find((x) => x.valor === sel.value) ?? dias[0];
+			const horario = HORARIO.find((x) => x.dias.includes(f.dow))!;
+			const n = mx();
+			const ok = FRANJAS.filter(({ ini, fin }) => fin <= horario.cierra && ini >= horario.abre && !(f.hoy && ini < n.h + 2));
+			const texto = ok.map(({ ini, fin }) => `${ini} a ${h24(fin)}`);
+			$('[data-franja]').innerHTML = (texto.length ? texto : ['Sin horario hoy, elige otro día']).map((r) => `<option>${r}</option>`).join('');
+		};
+		llenaDias();
+
+		// Pedir
+		const muestraError = (campo: string, msg: string) => {
+			const e = raiz.querySelector<HTMLElement>(`[data-error="${campo}"]`)!;
+			const i = forma.elements.namedItem(campo) as HTMLInputElement;
+			e.hidden = !msg;
+			e.textContent = msg;
+			i.setAttribute('aria-invalid', msg ? 'true' : 'false');
+		};
+		forma.addEventListener('submit', (ev) => {
+			ev.preventDefault();
+			const dom = val('entrega') === 'domicilio';
+			const nombre = val('nombre').trim();
+			const tel = val('tel').replace(/\D/g, '');
+			const dir = val('direccion').trim();
+			const errores: [string, string][] = [
+				['nombre', nombre.length < 2 ? 'Escribe tu nombre para saber a quién escribirle.' : ''],
+				['tel', tel.length !== 10 ? 'Tu WhatsApp tiene 10 dígitos, sin el +52. Ahora tiene ' + tel.length + '.' : ''],
+				['direccion', dom && dir.length < 6 ? 'Escribe calle, número y colonia, o elige recoger en el taller.' : ''],
+			];
+			errores.forEach(([c, m]) => muestraError(c, m));
+			const primero = errores.find(([, m]) => m);
+			if (primero) {
+				(forma.elements.namedItem(primero[0]) as HTMLInputElement).focus();
+				return;
+			}
+			const e = eleccion();
+			const { total, envio, t } = cuenta();
+			const flor = D.FLORES.find((x: { id: string }) => x.id === e.flor).nombre;
+			const pal = D.PALETAS.find((x: { id: string }) => x.id === e.paleta).nombre;
+			const env = D.ENVOLTURAS.find((x: { id: string }) => x.id === e.envoltura).nombre;
+			const dia = (($('[data-dia]') as HTMLSelectElement).selectedOptions[0]?.textContent ?? '').toLowerCase();
+			const hora = ($('[data-franja]') as HTMLSelectElement).value;
+			const n = folio(nombre + tel);
+			const filas: [string, string][] = [
+				['Ramo', `${t.nombre} de ${flor.toLowerCase()}, ${t.tallos} tallos`],
+				['Colores', pal],
+				['Envoltura', env],
+				['Cuándo', `${dia}, de ${hora}`],
+				['Cómo', dom ? `A domicilio: ${dir}` : 'Lo recoges en el taller'],
+				['Envío', dom ? (envio === 0 ? 'Gratis' : pesos(envio)) : 'No aplica'],
+				['Total, IVA incluido', pesos(total)],
+			];
+			const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+			recibo.innerHTML =
+				`<img class="recibo__logo" src="${recibo.dataset.logo}" alt="" width="140" />` +
+				`<h3 id="recibo-t">Listo, ${esc(nombre.split(' ')[0])}. Ya tenemos tu pedido.</h3>` +
+				`<p class="recibo__folio">Folio ${n}</p>` +
+				`<dl>${filas.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>` +
+				`<p class="recibo__tarjeta">${esc(val('dedicatoria').trim() || 'Para ti, con cariño.')}</p>` +
+				`<p class="recibo__nota">En el taller de verdad, te escribiríamos al ${esc(tel.replace(/(\d{2})(\d{4})(\d{4})/, '$1 $2 $3'))} en menos de una hora para confirmar y pasarte la forma de pago. Esto es una vetrina: no se envió nada.</p>` +
+				`<button class="btn btn--linea" type="button" data-otro-pedido>Armar otro ramo</button>`;
+			recibo.hidden = false;
+			recibo.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
+			recibo.focus({ preventScroll: true });
+			recibo.querySelector('[data-otro-pedido]')!.addEventListener('click', () => {
+				recibo.hidden = true;
+				raiz.scrollIntoView({ block: 'start' });
+			});
+		});
+
+		// En el teléfono, mientras se escribe, la vista previa se reduce a la barra del total
+		forma.addEventListener('focusin', (e) => {
+			if ((e.target as HTMLElement).matches('input[type=text], input[type=tel], select')) raiz.setAttribute('data-escribiendo', '');
+		});
+		forma.addEventListener('focusout', () => raiz.removeAttribute('data-escribiendo'));
+
+		// Estado inicial
+		void ocasion;
+		(forma.elements.namedItem('dedicatoria') as HTMLInputElement).value = '';
+		tarjeta();
+	}
+</script>

@@ -1,0 +1,158 @@
+---
+import { Image } from 'astro:assets';
+import { MONTAJES, TALLER } from './datos';
+import { arcoSVG, centroSVG, pesos } from './ramo';
+import tapete from '../../assets/malahierba/foto/tapete.jpg';
+
+const arco = arcoSVG('blanco', 'rosa', 5);
+const centro = centroSVG('rosa', 'gerbera', 4);
+const [m1, m2, m3] = MONTAJES;
+---
+
+<section class="mon" id="montajes" aria-labelledby="mon-titulo">
+	<div class="wrap">
+		<h2 id="mon-titulo" class="h2">Montajes para la ceremonia y la fiesta.</h2>
+		<p class="lead">Si tu evento es más que un ramo, vamos al lugar con el taller en la camioneta y armamos ahí.</p>
+
+		<div class="mon__fila">
+			<div class="mon__arte mon__arte--arco" set:html={arco}></div>
+			<div class="mon__texto">
+				<h3>{m1.titulo}</h3>
+				<p>{m1.texto}</p>
+				<p class="mon__precio rotulo">{m1.unidad} {pesos(m1.desde)}</p>
+			</div>
+		</div>
+
+		<div class="mon__fila mon__fila--rev">
+			<div class="mon__arte mon__arte--centro" set:html={centro}></div>
+			<div class="mon__texto">
+				<h3>{m2.titulo}</h3>
+				<p>{m2.texto}</p>
+				<div class="mon__calc" data-calc>
+					<label for="mesas">¿Cuántas mesas? <b data-mesas>12</b></label>
+					<input id="mesas" type="range" min="8" max="40" value="12" step="1" />
+					<p class="rotulo mon__total" aria-live="polite" data-calc-total></p>
+				</div>
+			</div>
+		</div>
+
+		<div class="mon__fila">
+			<Image src={tapete} alt="Tapete de flores de cempasúchil con una cruz al centro, visto de cerca" widths={[360, 560, 760]} sizes="(min-width: 900px) 380px, 80vw" class="mon__foto" />
+			<div class="mon__texto">
+				<h3>{m3.titulo}</h3>
+				<p>{m3.texto}</p>
+				<p class="mon__precio rotulo">{m3.unidad} {pesos(m3.desde)}</p>
+				<a class="btn btn--tinta" href={TALLER.whatsapp} target="_blank" rel="noopener">Cuéntanos tu evento<span class="sr-only"> (se abre en una pestaña nueva)</span></a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.mon {
+		background: var(--cempa);
+		color: var(--tinta);
+		padding-block: clamp(56px, 8vw, 108px);
+	}
+	.mon__fila {
+		display: grid;
+		grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+		gap: clamp(24px, 5vw, 72px);
+		align-items: center;
+		margin-top: clamp(40px, 6vw, 72px);
+	}
+	.mon__fila--rev {
+		grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+	}
+	.mon__fila--rev .mon__arte {
+		order: 2;
+	}
+	.mon__arte {
+		background: var(--fucsia);
+		border-radius: 999px 999px 24px 24px;
+		padding: 28px 24px 8px;
+	}
+	.mon__arte--centro {
+		background: var(--papel);
+		border-radius: 24px 120px 24px 120px;
+		padding: 24px;
+	}
+	.mon__arte :global(svg) {
+		width: 100%;
+		height: auto;
+		max-height: 340px;
+		margin-inline: auto;
+	}
+	.mon__foto {
+		width: 100%;
+		max-width: 380px;
+		aspect-ratio: 1;
+		object-fit: cover;
+		border-radius: 24px;
+		rotate: -2deg;
+	}
+	h3 {
+		font-family: var(--titulos);
+		font-weight: 400;
+		font-size: clamp(1.7rem, 3.4vw, 2.5rem);
+		line-height: 1.05;
+	}
+	.mon__texto p {
+		margin-top: 12px;
+		max-width: 46ch;
+	}
+	.mon__precio {
+		font-size: 1.35rem;
+		color: var(--tinta);
+	}
+	.mon__texto .btn {
+		margin-top: 20px;
+	}
+	.mon__calc {
+		margin-top: 18px;
+		max-width: 420px;
+	}
+	.mon__calc label {
+		font-weight: 700;
+		display: block;
+		margin-bottom: 6px;
+	}
+	.mon__calc input {
+		width: 100%;
+		accent-color: var(--fucsia);
+		block-size: 44px;
+	}
+	.mon__total {
+		font-size: 1.35rem;
+		color: var(--tinta);
+	}
+	@media (max-width: 800px) {
+		.mon__fila,
+		.mon__fila--rev {
+			grid-template-columns: 1fr;
+		}
+		.mon__fila--rev .mon__arte {
+			order: 0;
+		}
+		.mon__arte {
+			max-width: 420px;
+		}
+	}
+</style>
+
+<script>
+	const calc = document.querySelector<HTMLElement>('[data-calc]');
+	if (calc) {
+		const r = calc.querySelector<HTMLInputElement>('input')!;
+		const n = calc.querySelector<HTMLElement>('[data-mesas]')!;
+		const t = calc.querySelector<HTMLElement>('[data-calc-total]')!;
+		const pinta = () => {
+			const mesas = Number(r.value);
+			const unit = mesas >= 20 ? 320 : 350;
+			n.textContent = String(mesas);
+			t.textContent = `${mesas} centros a $${unit} c/u = $${(mesas * unit).toLocaleString('es-MX')} MXN` + (mesas >= 20 ? ' (precio de 20 en adelante)' : '');
+		};
+		r.addEventListener('input', pinta);
+		pinta();
+	}
+</script>

@@ -1,0 +1,96 @@
+---
+import { Image } from 'astro:assets';
+import logo3d from '../../assets/malahierba/brand/logo-3d.png';
+import logo from '../../assets/hub/loop-logo-on-dark.svg';
+import { TALLER } from './datos';
+---
+
+<footer class="pie">
+	<div class="pie__in">
+		<p class="pie__nombre">
+			<Image src={logo3d} alt="Mala Hierba Flores" width={300} class="pie__logo" />
+		</p>
+		<nav class="pie__nav" aria-label="Pie de página">
+			<a href="#ocasiones">Ocasiones</a>
+			<a href="#arma">Arma tu ramo</a>
+			<a href="#montajes">Montajes</a>
+			<a href="#visita">Contacto</a>
+			<a href={TALLER.whatsapp} target="_blank" rel="noopener">WhatsApp<span class="sr-only"> (se abre en una pestaña nueva)</span></a>
+		</nav>
+		<p class="pie__copia">
+			© 2026 Mala Hierba Flores. Florería de fantasía: concept dimostrativo. El taller, los precios, las reseñas, el teléfono y la dirección no
+			existen. Las fotografías son de archivo. En una florería real, aquí irían el aviso de privacidad y los términos del servicio.
+		</p>
+		<a class="pie__credito" href="https://theloopstudio.org/" target="_blank" rel="noopener">
+			<span>Sitio ideado por</span>
+			<img src={logo.src} width="84" height="44" alt="Loop Studio" />
+			<span class="sr-only">(se abre en una pestaña nueva)</span>
+		</a>
+	</div>
+</footer>
+
+<style>
+	.pie {
+		background: var(--tinta);
+		color: #f6e6ee;
+		padding: 48px 0 96px;
+		border-top: 6px solid var(--fucsia-vivo);
+	}
+	.pie__in {
+		max-width: var(--max);
+		margin-inline: auto;
+		padding-inline: var(--gutter);
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		align-items: center;
+		gap: 20px 36px;
+	}
+	.pie__nombre {
+		line-height: 0;
+	}
+	.pie__logo {
+		width: clamp(190px, 22vw, 260px);
+		height: auto;
+	}
+	.pie__nav {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px 24px;
+		font-weight: 700;
+	}
+	.pie__nav a {
+		display: inline-flex;
+		align-items: center;
+		min-height: 44px;
+		text-decoration: none;
+		border-bottom: 2px solid transparent;
+	}
+	.pie__nav a:hover {
+		border-bottom-color: var(--cempa);
+	}
+	.pie__copia {
+		grid-column: 1 / 3;
+		font-size: 0.9rem;
+		color: #d8bccb;
+		max-width: 65ch;
+	}
+	.pie__credito {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		font-size: 0.875rem;
+		text-decoration: none;
+		justify-self: end;
+	}
+	@media (max-width: 760px) {
+		.pie__in {
+			grid-template-columns: 1fr;
+		}
+		.pie__copia {
+			grid-column: auto;
+		}
+		.pie__credito {
+			justify-self: start;
+		}
+	}
+</style>

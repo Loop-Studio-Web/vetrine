@@ -1,0 +1,238 @@
+/* Mala Hierba — token, reset y piezas mínimas. Fucsia mexicano, follaje, cempasúchil; papel picado. */
+:root {
+	--fucsia: #c20b60; /* fondo y botones: texto blanco encima (contraste 5,3) */
+	--fucsia-vivo: #ff2d95; /* solo decoración y texto grande sobre oscuro */
+	--fucsia-osc: #8f0a49;
+	--rosa: #ffc7dc;
+	--bosque: #0e3b2b;
+	--bosque-2: #0a2a1f;
+	--follaje: #1f7a4d;
+	--cempa: #ff9a1f;
+	--cempa-texto: #a84a00; /* sobre claro, contraste 5,2 */
+	--turquesa: #12b5ad;
+	--tinta: #2b0a1e;
+	--tinta-2: #5a2b45; /* texto secundario sobre claro, 7:1 */
+	--papel: #fff0f6;
+	--blanco: #ffffff;
+	--error: #b3123c;
+
+	--titulos: 'Caprasimo', 'Georgia', serif;
+	--texto: 'Familjen Grotesk Variable', system-ui, sans-serif;
+	--rotulo: 'Permanent Marker', 'Comic Sans MS', cursive;
+
+	--ease: cubic-bezier(0.23, 1, 0.32, 1);
+	--gutter: clamp(18px, 5vw, 56px);
+	--max: 1180px;
+	--nav-h: 72px;
+	--fascia-h: 34px;
+	color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	scroll-padding-top: calc(var(--nav-h) + 12px);
+	-webkit-text-size-adjust: 100%;
+	scrollbar-color: var(--fucsia) var(--papel);
+}
+
+body {
+	background: var(--papel);
+	color: var(--tinta);
+	font-family: var(--texto);
+	font-size: 1.05rem;
+	line-height: 1.55;
+	overflow-x: clip;
+}
+body.menu-abierto {
+	overflow: hidden;
+}
+
+/* Barra de scroll: un tallo verde con el cursor fucsia */
+@supports selector(::-webkit-scrollbar) {
+	html {
+		scrollbar-color: auto;
+	}
+	::-webkit-scrollbar {
+		width: 14px;
+		height: 14px;
+	}
+	::-webkit-scrollbar-track {
+		background: var(--papel) linear-gradient(to right, transparent 6px, var(--follaje) 6px 8px, transparent 8px);
+	}
+	::-webkit-scrollbar-thumb {
+		background: var(--fucsia);
+		border: 3px solid var(--papel);
+		border-radius: 8px;
+	}
+}
+
+::selection {
+	background: var(--fucsia);
+	color: var(--blanco);
+}
+
+img,
+svg {
+	display: block;
+	max-width: 100%;
+}
+img {
+	height: auto; /* astro:assets pone width/height como atributos: sin esto el height del atributo gana */
+}
+button,
+input,
+select,
+textarea {
+	font: inherit;
+	color: inherit;
+}
+a {
+	color: inherit;
+}
+ul,
+ol {
+	list-style: none;
+}
+
+h1,
+h2,
+h3 {
+	font-family: var(--titulos);
+	font-weight: 400; /* Caprasimo trae un solo peso */
+	line-height: 1.02;
+	letter-spacing: -0.005em;
+	text-wrap: balance;
+}
+
+:focus-visible {
+	outline: 3px solid var(--turquesa);
+	outline-offset: 3px;
+	border-radius: 4px;
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+.skip-link {
+	position: absolute;
+	left: 12px;
+	top: -60px;
+	z-index: 400;
+	background: var(--tinta);
+	color: var(--blanco);
+	padding: 10px 16px;
+	border-radius: 999px;
+	font-weight: 700;
+	text-decoration: none;
+}
+.skip-link:focus {
+	top: 12px;
+}
+
+.wrap {
+	max-width: var(--max);
+	margin-inline: auto;
+	padding-inline: var(--gutter);
+}
+
+/* Rótulo a mano, como el que se pone en el cartón del precio */
+.rotulo {
+	font-family: var(--rotulo);
+	font-size: 1.05rem;
+	line-height: 1.2;
+	letter-spacing: 0.01em;
+}
+
+.h2 {
+	font-size: clamp(2.1rem, 5vw, 3.6rem);
+}
+.lead {
+	font-size: 1.14rem;
+	max-width: 52ch;
+	margin-top: 16px;
+}
+
+/* Botones: pastillas, se hunden un poco al apretar */
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	min-height: 52px;
+	padding: 0 26px;
+	border: 2px solid var(--tinta);
+	border-radius: 999px;
+	background: var(--cempa);
+	color: var(--tinta);
+	font-family: var(--texto);
+	font-weight: 800;
+	font-size: 1rem;
+	text-decoration: none;
+	cursor: pointer;
+	transition:
+		transform 160ms var(--ease),
+		background-color 160ms var(--ease),
+		color 160ms var(--ease);
+	-webkit-tap-highlight-color: transparent;
+}
+.btn:active {
+	transform: scale(0.97);
+}
+.btn--fucsia {
+	background: var(--fucsia);
+	border-color: var(--fucsia);
+	color: var(--blanco);
+}
+.btn--tinta {
+	background: var(--tinta);
+	border-color: var(--tinta);
+	color: var(--blanco);
+}
+.btn--linea {
+	background: transparent;
+}
+@media (hover: hover) {
+	.btn:hover {
+		background: var(--tinta);
+		color: var(--blanco);
+	}
+	.btn--linea:hover {
+		background: var(--blanco);
+		color: var(--tinta);
+	}
+}
+
+/* Banderas de papel picado que se mecen (solo si no se pidió menos movimiento) */
+.papel {
+	width: 100%;
+	height: auto;
+}
+.pp {
+	transform-box: fill-box;
+	transform-origin: 50% 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+	.pp {
+		animation: mecer 5.5s ease-in-out var(--lag, 0s) infinite alternate;
+	}
+	@keyframes mecer {
+		from {
+			transform: rotate(calc(var(--inc, 1deg) * -2.2));
+		}
+		to {
+			transform: rotate(calc(var(--inc, 1deg) * 2.2));
+		}
+	}
+}

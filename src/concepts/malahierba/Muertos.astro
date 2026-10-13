@@ -1,0 +1,161 @@
+---
+import { Image } from 'astro:assets';
+import { TEMPORADA, TALLER } from './datos';
+import { pesos } from './ramo';
+import ofrenda from '../../assets/malahierba/foto/ofrenda.jpg';
+import cempa from '../../assets/malahierba/foto/cempasuchil.jpg';
+
+// Días que faltan para el 2 de noviembre, calculados al compilar y recalculados en el navegador.
+const hoy = new Date();
+const objetivo = new Date(hoy.getFullYear(), TEMPORADA.mes, TEMPORADA.dia);
+if (objetivo.getTime() < hoy.getTime() - 86400000) objetivo.setFullYear(hoy.getFullYear() + 1);
+const dias = Math.max(0, Math.ceil((objetivo.getTime() - hoy.getTime()) / 86400000));
+---
+
+<section class="muertos" id="muertos" aria-labelledby="muertos-titulo">
+	<div class="wrap muertos__in">
+		<div class="muertos__fotos">
+			<Image src={ofrenda} alt="Una ofrenda con arcos y tapetes de cempasúchil, velas y cresta de gallo" widths={[360, 540, 760]} sizes="(min-width: 900px) 420px, 80vw" class="muertos__ofrenda" />
+			<Image src={cempa} alt="Cempasúchil de cerca, con las hojas verdes detrás" widths={[240, 360]} sizes="190px" class="muertos__cempa" />
+		</div>
+		<div class="muertos__texto">
+			<p class="rotulo muertos__cuenta" data-cuenta data-dia={TEMPORADA.dia} data-mes={TEMPORADA.mes}>
+				{dias === 0 ? 'Es hoy: ya puedes pasar por tus flores.' : `Faltan ${dias} ${dias === 1 ? 'día' : 'días'} para el 2 de noviembre.`}
+			</p>
+			<h2 id="muertos-titulo" class="h2">Cempasúchil para tu ofrenda, del campo a tu puerta.</h2>
+			<p class="lead">
+				Llega cortado de Atlixco cada mañana, con tallo largo y hojas. Armamos el arco a la medida de tu altar y te lo dejamos listo para
+				colgar. Para el 1 y 2 de noviembre recomendamos pedir antes del {TEMPORADA.pedirAntes} de octubre.
+			</p>
+			<ul class="muertos__lista" role="list">
+				{
+					TEMPORADA.lista.map((p) => (
+						<li>
+							<span class="muertos__nombre">
+								{p.nombre}
+								<small>{p.nota}</small>
+							</span>
+							<span class="muertos__puntos" aria-hidden="true"></span>
+							<span class="muertos__precio rotulo">{pesos(p.precio)}</span>
+						</li>
+					))
+				}
+			</ul>
+			<div class="muertos__acciones">
+				<button class="btn" type="button" data-ocasion="muertos">Arma tu ramo de temporada</button>
+				<a class="btn btn--linea muertos__wa" href={TALLER.whatsapp} target="_blank" rel="noopener">Pregunta por tu arco<span class="sr-only"> (se abre en una pestaña nueva)</span></a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.muertos {
+		background: var(--bosque);
+		color: #f3fff6;
+		padding-block: clamp(56px, 9vw, 120px);
+	}
+	.muertos__in {
+		display: grid;
+		grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+		gap: clamp(32px, 6vw, 88px);
+		align-items: center;
+	}
+	.muertos__fotos {
+		position: relative;
+		padding-bottom: 60px;
+	}
+	.muertos__ofrenda {
+		width: min(100%, 440px);
+		aspect-ratio: 3 / 4;
+		object-fit: cover;
+		border-radius: 220px 220px 12px 12px;
+	}
+	.muertos__cempa {
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		width: clamp(130px, 18vw, 190px);
+		aspect-ratio: 1;
+		object-fit: cover;
+		border-radius: 50%;
+		border: 6px solid var(--bosque);
+	}
+	.muertos__cuenta {
+		color: var(--cempa);
+		font-size: 1.3rem;
+		margin-bottom: 14px;
+	}
+	.lead {
+		color: #dff3e5;
+	}
+	.muertos__lista {
+		margin-top: 28px;
+		display: grid;
+		gap: 12px;
+		max-width: 560px;
+	}
+	.muertos__lista li {
+		display: flex;
+		align-items: baseline;
+		gap: 10px;
+	}
+	.muertos__nombre {
+		font-weight: 700;
+		display: grid;
+		line-height: 1.25;
+	}
+	.muertos__nombre small {
+		font-weight: 400;
+		font-size: 0.9rem;
+		color: #bfe3cb;
+	}
+	.muertos__puntos {
+		flex: 1;
+		min-width: 16px;
+		border-bottom: 3px dotted rgb(255 154 31 / 0.55);
+		translate: 0 -6px;
+	}
+	.muertos__precio {
+		color: var(--cempa);
+		font-size: 1.25rem;
+		white-space: nowrap;
+	}
+	.muertos__acciones {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 14px;
+		margin-top: 32px;
+	}
+	.muertos__wa {
+		border-color: #f3fff6;
+		color: #f3fff6;
+	}
+	@media (hover: hover) {
+		.muertos__wa:hover {
+			background: #f3fff6;
+			color: var(--bosque);
+		}
+	}
+	@media (max-width: 820px) {
+		.muertos__in {
+			grid-template-columns: 1fr;
+		}
+		.muertos__fotos {
+			max-width: 420px;
+		}
+	}
+</style>
+
+<script>
+	const el = document.querySelector<HTMLElement>('[data-cuenta]');
+	if (el) {
+		const hoy = new Date();
+		const mes = Number(el.dataset.mes);
+		const dia = Number(el.dataset.dia);
+		const obj = new Date(hoy.getFullYear(), mes, dia);
+		if (obj.getTime() < hoy.getTime() - 86400000) obj.setFullYear(hoy.getFullYear() + 1);
+		const n = Math.max(0, Math.ceil((obj.getTime() - hoy.getTime()) / 86400000));
+		el.textContent = n === 0 ? 'Es hoy: ya puedes pasar por tus flores.' : `Faltan ${n} ${n === 1 ? 'día' : 'días'} para el 2 de noviembre.`;
+	}
+</script>

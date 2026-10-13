@@ -1,0 +1,43 @@
+---
+import { TALLER } from './datos';
+---
+
+<div class="barra" role="region" aria-label="Acciones rápidas">
+	<a class="btn btn--fucsia" href="#arma">Arma tu ramo</a>
+	<a class="btn" href={TALLER.whatsapp} target="_blank" rel="noopener">WhatsApp<span class="sr-only"> (se abre en una pestaña nueva)</span></a>
+</div>
+
+<style>
+	.barra {
+		display: none;
+	}
+	@media (max-width: 760px) {
+		.barra {
+			position: fixed;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			z-index: 110;
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 10px;
+			padding: 10px var(--gutter) calc(10px + env(safe-area-inset-bottom));
+			background: var(--papel);
+			border-top: 2px solid var(--tinta);
+		}
+		.barra .btn {
+			min-height: 48px;
+			padding: 0 12px;
+		}
+	}
+	:global(body.en-arma) .barra {
+		display: none;
+	}
+</style>
+
+<script>
+	const arma = document.getElementById('arma');
+	if (arma) {
+		new IntersectionObserver(([e]) => document.body.classList.toggle('en-arma', e.isIntersecting), { rootMargin: '-20% 0px -20% 0px' }).observe(arma);
+	}
+</script>

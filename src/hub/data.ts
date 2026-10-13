@@ -24,6 +24,8 @@ import cardObrafina from '../assets/hub/card-obrafina.jpg';
 import shotObrafina from '../assets/hub/shot-obrafina.jpg';
 import cardScalavera from '../assets/hub/card-scalavera.jpg';
 import shotScalavera from '../assets/hub/shot-scalavera.jpg';
+import cardMalahierba from '../assets/hub/card-malahierba.jpg';
+import shotMalahierba from '../assets/hub/shot-malahierba.jpg';
 
 export const SITE = 'https://theloopstudio.org/';
 export const CONTACT = 'https://theloopstudio.org/contatti';
@@ -37,6 +39,7 @@ export const macros = [
 	{ slug: 'benessere', nome: 'Benessere' },
 	{ slug: 'tech', nome: 'Tech' },
 	{ slug: 'casa', nome: 'Abitare' },
+	{ slug: 'eventi', nome: 'Eventi e creativi' },
 	{ slug: 'commercio', nome: 'Commercio' },
 ] as const;
 export type MacroSlug = (typeof macros)[number]['slug'];
@@ -754,6 +757,60 @@ export const concepts: Concept[] = [
 		palette: ['#e2e9e2', '#1f2a27', '#2b3134', '#14181b', '#f2c500', '#9aa3a8'],
 		metriche: [
 			{ label: 'Performance', valore: '94' },
+			{ label: 'Accessibilità', valore: '100' },
+			{ label: 'Buone pratiche', valore: '100' },
+		],
+	},
+	{
+		slug: 'malahierba',
+		macro: 'eventi',
+		nome: 'Mala Hierba Flores',
+		categoria: 'Eventi e creativi',
+		archetipo: 'La florería per cerimonie e ricorrenze',
+		claim: 'Flores con carácter para las fechas que importan. Un ramo che si compone mentre scegli: ocasión, tamaño, flor, colores e tarjeta, con il prezzo in diretta.',
+		path: '/eventi/fiorista/',
+		infoPath: '/eventi/fiorista/info/',
+		titoloSeo: 'Sito web per fiorista e allestimenti per cerimonie: homepage concept con composizione del ramo',
+		descrizioneSeo:
+			'Come potrebbe essere la homepage di una florería che lavora per matrimoni, XV anni, bautizos e Día de Muertos: un ramo da comporre con prezzo e tarjeta in diretta, montajes, prenotazione della consegna. In spagnolo messicano. Concept dimostrativo di Loop Studio.',
+		intro: [
+			'Chi ordina fiori per una cerimonia ha poco tempo e molte domande: quanto costa, arriva in tempo, come sarà. Questa homepage lascia che sia il cliente a comporre il ramo, scegliendo ocasión, tamaño, flor, colori e confezione, e vedendo subito il disegno, il prezzo e la tarjeta scritta a mano, prima ancora di scrivere su WhatsApp.',
+			'È il livello Essenziale della categoria Eventi e creativi e una vetrina dimostrativa, scritta in spagnolo messicano per il mercato del Messico: la florería, i prezzi in pesos, le recensioni, il telefono e l’indirizzo sono di fantasia, e le fotografie sono d’archivio. Il filo del sito è il papel picado, le banderine di carta calata che in Messico decorano ogni festa.',
+		],
+		perChi:
+			'Fioristi e studi di allestimento per cerimonie (matrimoni, quince, battesimi, funerali e ricorrenze), botteghe di quartiere con consegna in giornata e chi lavora su ordinazione via WhatsApp. Adatta a chi vuole far capire in pochi secondi cosa può avere, quanto costa e entro quando.',
+		sezioni: [
+			{
+				t: 'Un ramo che si compone mentre scegli',
+				d: 'Ocasión, tamaño, flor, colori e confezione: il ramo si ridisegna a ogni scelta con tallo, foglie e fiocco, e il totale si aggiorna con la spedizione. Un tasto lo rimescola per vederne un altro acomodo.',
+			},
+			{
+				t: 'Una stagione che si vede: Día de Muertos',
+				d: 'Una sezione di temporada con il conto alla rovescia al 2 novembre e un listino di mercato con i puntini: cempasúchil, cresta de gallo, kit e arco di ofrenda.',
+			},
+			{
+				t: 'Consegna con giorni e fasce vere',
+				d: 'Il pedido sceglie giorno e fascia tra quelli possibili: la consegna in giornata si chiude alle 14 h (ora di Città del Messico), e la domenica ha meno fasce. Errori chiari e una ricevuta con folio.',
+			},
+			{
+				t: 'Montajes e un tono che si adatta',
+				d: 'Arco, centros de mesa con calcolatrice e tapetes di fiori. Se si sceglie Condolencias la scena diventa sobria, senza banderine e con il telefono per coronas e velatorio.',
+			},
+		],
+		awning: ['#c20b60', '#ffc7dc'],
+		glow: 'rgba(194, 11, 96, 0.55)',
+		livello: 1,
+		lingua: 'ES',
+		card: cardMalahierba,
+		shot: shotMalahierba,
+		shotAlt: '',
+		crop: '70% 35%',
+		cardAlt: 'Mala Hierba Flores su desktop e su telefono: titolo grande su fondo fucsia con una fila di banderine di papel picado, una foto di ramos in carta kraft con un cartellino a pennarello, il menù mobile come cortina.',
+		mood: 'Un taller de papel picado: fucsia pieno, verde bosco, cempasúchil e turchese, lettering morbido e cartellini scritti a pennarello, con foto vere di mercato e un ramo disegnato che si ricompone.',
+		caratteri: 'Caprasimo, Familjen Grotesk e Permanent Marker',
+		palette: ['#c20b60', '#0e3b2b', '#ff9a1f', '#12b5ad', '#ffc7dc', '#fff0f6'],
+		metriche: [
+			{ label: 'Performance', valore: '90' },
 			{ label: 'Accessibilità', valore: '100' },
 			{ label: 'Buone pratiche', valore: '100' },
 		],
