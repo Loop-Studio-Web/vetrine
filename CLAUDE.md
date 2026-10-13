@@ -58,6 +58,17 @@ il proprio menù su mobile (hub: pannello a cerchio; Trattoria: cartoncino che s
 
 - **Livelli (2026-10-07):** ogni concept ha `livello` 1/2/3 e `lingua` in `data.ts`: Essenziale · Evoluto · Esperienza, **relativi alla macrocategoria** (giudicati dal frontend percepito, non dallo stack: Ristorazione = Trattoria 1, Luppolo & Watt 2, Ossidiana 3). Cartellino a tre lampadine (`src/hub/Livello.astro`) su card della via, card delle vetrine e pagina `info`; legenda nella scena di benvenuto e sezione `Livelli.astro` ("Come scegliere", con la frase "Parti da una vetrina, non da zero"). Regole commerciali: ogni concept si vende UNA volta e poi esce dall'hub (va sostituito con uno nuovo); lo sconto NON è pubblico (varia per cliente, si dà nel preventivo); niente fasce di prezzo per livello sull'hub. Lingua come codice testuale (IT/EN/ES), mai bandiere; il prossimo progetto sarà in spagnolo (decidere il mercato). Non usare più "Low key/Medium/High" nei testi pubblici.
 
+## Skill di design (installate il 2026-10-13)
+
+Dettagli e installazione sicura in `studio-kit/docs/skill-design.md`. Divisione dei compiti, per non farle litigare:
+
+- **Movimento** (curve, durate, interruzioni, reduced-motion): Emil Kowalski (`animate`, `review-animations`, livello utente).
+- **Struttura, gerarchia, qualità tecnica, contrasto**: Impeccable (`detect`, `critique`, `audit`, `polish`), in `.claude/skills/impeccable/`.
+- **Direzione estetica prima del codice**: `frontend-design`. Il brief vince: se il concept vuole molto movimento, scriverlo nel brief.
+- Impeccable: installato `--no-hooks`, telemetria spenta in `.claude/settings.json`, motore nativo fuori da git. Non lanciare `live`
+  (apre un helper su localhost) e `overdrive` solo con una direzione scelta dall'utente. Non installarlo a livello utente.
+- Il rilevatore non vede il contrasto del testo sopra un canvas: misurarlo con `studio-kit/scripts/canvas-shot.mjs` + `canvas-contrast.py`.
+
 ## Convenzioni di un concept
 
 - **Niente aspetto "da AI"** (regola dell'utente, 2026-10-07): ogni concept, anche Low key, deve avere carattere visivo vero. Prima di disegnare cercare riferimenti reali, preferire fotografia/texture vere e tipografia con personalità, imperfezioni volute e dettagli artigianali; evitare griglie di schede uguali, palette "da brief", bordi netti + ombre piene, icone SVG troppo pulite, copy da template. Confrontare sempre con i concept esistenti: palette e font non devono ripetersi.

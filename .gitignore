@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# motore nativo di Impeccable (19 MB, si reinstalla con npx impeccable@4.5.2 install)
+.claude/skills/impeccable/scripts/bin/
