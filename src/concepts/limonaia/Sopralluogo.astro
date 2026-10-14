@@ -4,15 +4,25 @@
 <section class="sezione sopralluogo" id="sopralluogo" aria-labelledby="t-sopr">
 	<div class="wrap sopr__in">
 		<div class="sopr__testo">
-			<p class="cartellino">N° 06 · Il sopralluogo</p>
-			<h2 id="t-sopr">Vieni a vedere la sala <span class="evid">con la tua pianta in mano</span>.</h2>
+			<h2 id="t-sopr">Vieni a vedere la sala <em>con la tua pianta in mano.</em></h2>
 			<p class="sezione__intro">
-				Un’ora, un caffè, il giardino al tramonto se capita. Portiamo la scheda che hai composto: la ritrovi qui accanto.
+				Un’ora, un caffè, il giardino al tramonto se capita. Portiamo la scheda che hai composto: la ritrovi qui sotto.
 			</p>
 			<div class="riepilogo" aria-label="La tua scheda">
-				<p class="riepilogo__t">La tua scheda</p>
-				<p class="riepilogo__c" data-riepilogo>—</p>
-				<p class="riepilogo__p" data-riepilogo-prezzo>—</p>
+				<div class="riepilogo__mini" data-mini aria-hidden="true"></div>
+				<div class="riepilogo__testo">
+					<p class="riepilogo__t">La tua scheda</p>
+					<p class="riepilogo__c" data-riepilogo>—</p>
+					<p class="riepilogo__p" data-riepilogo-prezzo>—</p>
+				</div>
+			</div>
+			<div class="arrivo">
+				<h3>Come si arriva</h3>
+				<ul>
+					<li>Via dei Limoni 12, a due chilometri dal paese (indirizzo di fantasia).</li>
+					<li>Parcheggio nel prato: 60 posti, con una zona per i pullman.</li>
+					<li data-aziendale>Per le cene aziendali: proiettore e schermo nella limonaia, presa e prolunghe sul palco.</li>
+				</ul>
 			</div>
 		</div>
 
@@ -47,16 +57,17 @@
 					<label for="s-note">Qualcosa da sapere <small>(facoltativo)</small></label>
 					<textarea id="s-note" name="note" rows="3"></textarea>
 				</div>
-				<button type="submit" class="btn btn--inchiostro">Prenota il sopralluogo</button>
+				<button type="submit" class="btn">Prenota il sopralluogo</button>
 				<p class="modulo__nota">Vetrina dimostrativa: non viene inviato nulla e nessun dato è conservato.</p>
 			</form>
 
-			<div class="ricevuta" data-ricevuta hidden tabindex="-1">
-				<p class="ricevuta__t">Posto riservato</p>
-				<p class="ricevuta__n" data-r-num></p>
-				<p class="ricevuta__c" data-r-corpo></p>
-				<p class="ricevuta__nota">Questa è una prova: nessuna richiesta è partita davvero.</p>
-				<button type="button" class="btn btn--vuoto" data-r-nuova>Compila di nuovo</button>
+			<div class="invito" data-invito hidden tabindex="-1" role="status">
+				<p class="invito__t">Ti aspettiamo</p>
+				<p class="invito__g" data-i-giorno></p>
+				<div class="invito__mini" data-i-mini aria-hidden="true"></div>
+				<p class="invito__c" data-i-corpo></p>
+				<p class="invito__nota">Questa è una prova: nessuna richiesta è partita davvero.</p>
+				<button type="button" class="btn btn--vuoto" data-i-nuova>Compila di nuovo</button>
 			</div>
 		</div>
 	</div>
@@ -64,7 +75,7 @@
 
 <style>
 	.sopralluogo {
-		background: var(--vetro);
+		background: var(--fondo);
 	}
 	.sopr__in {
 		display: grid;
@@ -73,42 +84,76 @@
 		align-items: start;
 	}
 	.riepilogo {
+		display: grid;
+		grid-template-columns: minmax(0, 150px) minmax(0, 1fr);
+		gap: 18px;
+		align-items: center;
 		margin-top: 30px;
-		padding: 18px 22px;
-		background: var(--bianco);
-		border-left: 8px solid var(--inchiostro);
-		border-radius: 4px 14px 14px 4px;
+		padding: 16px;
+		background: var(--carta);
+		border: 2px solid var(--testo);
+		border-radius: 28px 28px 10px 10px;
+		padding-top: 22px;
+	}
+	.riepilogo__mini :global(svg) {
+		width: 100%;
+		min-width: 0;
 	}
 	.riepilogo__t {
-		font-size: 0.78rem;
-		font-weight: 800;
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
-		color: var(--terra-testo);
+		font-family: var(--serif);
+		font-style: italic;
+		font-size: 1.15rem;
+		color: var(--cotto);
+	}
+	:root[data-fase='sera'] .riepilogo__t,
+	:root[data-fase='notte'] .riepilogo__t {
+		color: var(--limone);
 	}
 	.riepilogo__c {
-		margin-top: 4px;
+		margin-top: 2px;
 		font-weight: 700;
 	}
 	.riepilogo__p {
 		margin-top: 4px;
 		color: var(--testo-2);
 	}
+	.arrivo {
+		margin-top: 28px;
+	}
+	.arrivo h3 {
+		font-size: 1.5rem;
+		margin-bottom: 8px;
+	}
+	.arrivo li {
+		position: relative;
+		padding-left: 22px;
+		margin-top: 6px;
+		max-width: 52ch;
+	}
+	.arrivo li::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0.6em;
+		width: 9px;
+		height: 9px;
+		border-radius: 50%;
+		background: var(--foglia-2);
+	}
 	.sopr__scheda {
 		min-width: 0;
 	}
 	.modulo,
-	.ricevuta {
+	.invito {
 		display: grid;
 		gap: 18px;
 		padding: clamp(20px, 3vw, 36px);
-		background: var(--bianco);
-		border: 3px solid var(--inchiostro);
-		border-radius: 20px 20px 6px 6px;
-		box-shadow: 8px 8px 0 -2px var(--limone);
+		background: var(--carta);
+		border: 2px solid var(--testo);
+		border-radius: 28px 28px 8px 8px;
 	}
 	.modulo[hidden],
-	.ricevuta[hidden] {
+	.invito[hidden] {
 		display: none;
 	}
 	.campo {
@@ -126,29 +171,8 @@
 		font-weight: 400;
 		color: var(--testo-2);
 	}
-	.campo input[type='text'],
-	.campo input[type='email'],
-	.campo select,
-	.campo textarea {
-		width: 100%;
-		min-height: 48px;
-		padding: 10px 14px;
-		border: 2px solid var(--inchiostro);
-		border-radius: 10px;
-		background: var(--vetro-chiaro);
-		font-size: 1rem;
-	}
 	.campo textarea {
 		resize: vertical;
-	}
-	.campo [aria-invalid='true'] {
-		border-color: var(--errore);
-		background: #fdecea;
-	}
-	.errore {
-		color: var(--errore);
-		font-weight: 700;
-		font-size: 0.9rem;
 	}
 	.orari {
 		display: flex;
@@ -165,14 +189,15 @@
 		align-items: center;
 		min-height: 44px;
 		padding: 0 16px;
-		border: 2px solid var(--inchiostro);
+		border: 2px solid var(--testo);
 		border-radius: 999px;
 		font-weight: 700;
 		cursor: pointer;
 	}
 	.orario input:checked + span {
-		background: var(--inchiostro);
-		color: var(--limone);
+		background: var(--foglia);
+		border-color: var(--foglia);
+		color: var(--bianco);
 	}
 	.orario input:focus-visible + span {
 		outline: 3px solid var(--terracotta);
@@ -182,47 +207,68 @@
 		justify-self: start;
 	}
 	.modulo__nota,
-	.ricevuta__nota {
-		font-size: 0.88rem;
+	.invito__nota {
+		font-size: 0.9rem;
 		color: var(--testo-2);
 	}
-	.ricevuta {
-		background: var(--limone);
-		justify-items: start;
+	.invito {
+		justify-items: center;
+		text-align: center;
+		background: var(--foglia);
+		color: var(--bianco);
+		border-color: var(--foglia);
 	}
-	.ricevuta__t {
-		font-size: 0.78rem;
-		font-weight: 800;
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
+	.invito__t {
+		font-family: var(--serif);
+		font-style: italic;
+		font-size: 1.3rem;
 	}
-	.ricevuta__n {
+	.invito__g {
+		font-family: var(--serif);
+		font-weight: 600;
 		font-size: clamp(1.8rem, 4vw, 2.6rem);
-		font-weight: 800;
-		letter-spacing: -0.03em;
-		line-height: 1.05;
+		line-height: 1.1;
+	}
+	.invito__mini {
+		width: min(100%, 360px);
+	}
+	.invito__nota {
+		color: color-mix(in oklab, var(--bianco) 88%, transparent);
+	}
+	.invito .btn--vuoto {
+		color: var(--bianco);
+		border-color: var(--bianco);
 	}
 	@media (max-width: 860px) {
 		.sopr__in {
 			grid-template-columns: minmax(0, 1fr);
 		}
-		.modulo,
-		.ricevuta {
-			box-shadow: none;
+	}
+	@media (max-width: 440px) {
+		.riepilogo {
+			grid-template-columns: minmax(0, 1fr);
+			border-radius: 24px;
+		}
+		.riepilogo__mini {
+			max-width: 200px;
 		}
 	}
 </style>
 
 <script>
-	import { preventivo, oraTesto } from './evento';
+	import { migliaia, eur, oraTesto, preventivo } from './evento';
+	import { dispone } from './pianta';
+	import { svgPianta } from './pianta-svg';
 	import { ascolta, leggi } from './stato';
 	import { formato, spazio, tipo } from './dati';
 
 	const radice = document.getElementById('sopralluogo')!;
 	const modulo = radice.querySelector<HTMLFormElement>('[data-modulo]')!;
-	const ricevuta = radice.querySelector<HTMLElement>('[data-ricevuta]')!;
+	const invito = radice.querySelector<HTMLElement>('[data-invito]')!;
 	const sel = radice.querySelector<HTMLSelectElement>('[data-giorni]')!;
-	const eur = (n: number) => `${n.toLocaleString('it-IT')} €`;
+	const mini = radice.querySelector<HTMLElement>('[data-mini]')!;
+	const miniInvito = radice.querySelector<HTMLElement>('[data-i-mini]')!;
+	const aziendale = radice.querySelector<HTMLElement>('[data-aziendale]')!;
 	const dataFmt = new Intl.DateTimeFormat('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
 	const giornoFmt = new Intl.DateTimeFormat('it-IT', { weekday: 'long', day: 'numeric', month: 'long' });
 
@@ -246,8 +292,12 @@
 		const p = preventivo(ev);
 		const data = ev.data ? dataFmt.format(new Date(`${ev.data}T12:00:00`)) : 'data ancora da scegliere';
 		radice.querySelector('[data-riepilogo]')!.textContent =
-			`${tipo(ev.tipo).nome}, ${ev.ospiti} ospiti ${spazio(ev.spazio).dove}, ${formato(ev.formato).nome.toLowerCase()}, ${data}, dalle ${oraTesto(ev.ora)}.`;
-		radice.querySelector('[data-riepilogo-prezzo]')!.textContent = `Forchetta indicativa: ${eur(p.da)} – ${eur(p.a)}.`;
+			`${tipo(ev.tipo).nome}, ${migliaia(ev.ospiti)} ospiti ${spazio(ev.spazio).dove}, ${formato(ev.formato).nome.toLowerCase()}, ${data}. Pianta vista alle ${oraTesto(ev.ora)}.`;
+		radice.querySelector('[data-riepilogo-prezzo]')!.textContent = `Forchetta indicativa: da ${eur(p.da)} a ${eur(p.a)}.`;
+		aziendale.hidden = ev.tipo !== 'aziendale';
+		const pianta = dispone(ev.spazio, ev.formato, ev.ospiti, ev.palco);
+		mini.innerHTML = svgPianta(pianta);
+		mini.querySelector('svg')?.classList.add('ps-sola');
 	}
 
 	const campi = ['nome', 'email', 'giorno'] as const;
@@ -276,14 +326,15 @@
 			return;
 		}
 		const ev = leggi();
-		const num = `LA-${new Date().getFullYear()}-${String(Math.floor(1000 + Math.random() * 9000))}`;
-		radice.querySelector('[data-r-num]')!.textContent = num;
-		radice.querySelector('[data-r-corpo]')!.textContent =
-			`${dati.get('nome')}, ti aspettiamo ${String(dati.get('giorno'))}, ${String(dati.get('fascia')) === 'tramonto' ? 'al tramonto' : `di ${dati.get('fascia')}`}. ` +
-			`Scheda: ${tipo(ev.tipo).nome.toLowerCase()}, ${ev.ospiti} ospiti ${spazio(ev.spazio).dove}.`;
+		const fascia = String(dati.get('fascia'));
+		radice.querySelector('[data-i-giorno]')!.textContent = `${String(dati.get('giorno'))}, ${fascia === 'tramonto' ? 'al tramonto' : `di ${fascia}`}`;
+		radice.querySelector('[data-i-corpo]')!.textContent =
+			`${dati.get('nome')}, ti mostriamo la sala con questa pianta: ${tipo(ev.tipo).nome.toLowerCase()}, ${migliaia(ev.ospiti)} ospiti ${spazio(ev.spazio).dove}.`;
+		miniInvito.innerHTML = svgPianta(dispone(ev.spazio, ev.formato, ev.ospiti, ev.palco));
+		miniInvito.querySelector('svg')?.classList.add('ps-sola');
 		modulo.hidden = true;
-		ricevuta.hidden = false;
-		ricevuta.focus();
+		invito.hidden = false;
+		invito.focus();
 	});
 	modulo.addEventListener('input', (e) => {
 		const t = e.target as HTMLElement;
@@ -293,8 +344,8 @@
 			if (err) err.hidden = true;
 		}
 	});
-	radice.querySelector('[data-r-nuova]')!.addEventListener('click', () => {
-		ricevuta.hidden = true;
+	radice.querySelector('[data-i-nuova]')!.addEventListener('click', () => {
+		invito.hidden = true;
 		modulo.hidden = false;
 		modulo.reset();
 		modulo.querySelector<HTMLElement>('input')?.focus();

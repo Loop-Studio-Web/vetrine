@@ -1,16 +1,19 @@
 ---
 import { Image } from 'astro:assets';
-import serra from '../../assets/limonaia/foto/apertura-serra.jpg';
+import tramonto from '../../assets/limonaia/foto/tramonto.jpg';
 import { TIPI } from './dati';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+// sette lampadine sul filo, accese una dopo l'altra dal cielo che scende verso sera
+const lampadine = Array.from({ length: 9 }, (_, i) => i);
 ---
 
-<section class="apertura scuro" id="top" aria-labelledby="t-apertura">
-	<div class="apertura__in wrap">
+<section class="apertura" id="top" aria-labelledby="t-apertura">
+	<div class="apertura__in">
 		<div class="apertura__testo">
-			<p class="cartellino">Limonaia · giardino · cantina</p>
-			<h1 id="t-apertura">Disegna la tua festa <span class="evid">tavolo per tavolo</span>.</h1>
+			<h1 id="t-apertura">La festa è sotto i vetri. <em>Dal pomeriggio alle lampadine.</em></h1>
 			<p class="apertura__sotto">
-				Una limonaia dell’Ottocento, un giardino di agrumi e una cantina a volta. Dì che festa è: la pianta, la giornata e il
+				Una limonaia dell’Ottocento, un giardino di agrumi e una cantina a volta. Dì che festa è: la pianta dei tavoli, la giornata e il
 				preventivo si compongono da soli.
 			</p>
 			<fieldset class="apertura__tipi">
@@ -28,61 +31,106 @@ import { TIPI } from './dati';
 			</fieldset>
 			<p class="apertura__nota">Spazi, prezzi e date sono di fantasia: è una vetrina dimostrativa.</p>
 		</div>
-		<figure class="apertura__finestra">
-			<Image
-				src={serra}
-				alt="Tavolata apparecchiata sotto le vetrate di una serra, tra piante e fiori bianchi"
-				widths={[480, 760, 1000]}
-				sizes="(max-width: 900px) 90vw, 520px"
-				loading="eager"
-				fetchpriority="high"
-				quality={72}
-			/>
+
+		<figure class="vetrata" aria-label="La vetrata della limonaia, dal pomeriggio alla sera">
+			<div class="vetrata__cielo" aria-hidden="true">
+				<Image src={tramonto} alt="" widths={[420, 640, 900]} sizes="(max-width: 900px) 92vw, 560px" loading="eager" fetchpriority="high" quality={66} />
+				<video data-src={`${base}/video/limonaia/tramonto.mp4`} muted loop playsinline preload="none" tabindex="-1"></video>
+			</div>
+			<svg class="vetrata__ferro" viewBox="0 0 600 700" aria-hidden="true" focusable="false">
+				<path
+					fill-rule="evenodd"
+					d="M0 0H600V700H0Z M40 640V170A80 80 0 0 1 200 170V640Z M220 640V120A80 80 0 0 1 380 120V640Z M400 640V170A80 80 0 0 1 560 170V640Z"
+				></path>
+				<g class="vetrata__telai">
+					<rect x="30" y="330" width="180" height="8"></rect>
+					<rect x="210" y="410" width="180" height="8"></rect>
+					<rect x="390" y="330" width="180" height="8"></rect>
+					<path d="M220 240L300 150L380 240M220 330L300 220L380 330" fill="none" stroke-width="6"></path>
+					<rect x="116" y="170" width="8" height="470"></rect>
+					<rect x="296" y="120" width="8" height="520"></rect>
+					<rect x="476" y="170" width="8" height="470"></rect>
+				</g>
+			</svg>
+			<ol class="vetrata__luci" aria-hidden="true">
+				{lampadine.map((i) => <li style={`--i:${i}`}></li>)}
+			</ol>
 			<figcaption>Foto di archivio, illustrativa</figcaption>
 		</figure>
 	</div>
 </section>
 
 <style>
+	@property --t {
+		syntax: '<number>';
+		inherits: true;
+		initial-value: 0;
+	}
 	.apertura {
+		--t: 0;
 		position: relative;
-		padding-top: calc(var(--fascia-h) + var(--nav-h) + clamp(28px, 5vw, 64px));
-		padding-bottom: clamp(48px, 7vw, 96px);
+		padding-top: calc(var(--fascia-h) + var(--nav-h) + clamp(24px, 4vw, 56px));
+		padding-bottom: clamp(40px, 6vw, 88px);
+		background: var(--inchiostro-2);
+		color: var(--bianco);
 		overflow: clip;
-		background:
-			radial-gradient(60% 70% at 85% 30%, color-mix(in oklab, var(--limone) 22%, transparent), transparent 70%),
-			var(--inchiostro);
+	}
+	/* finché nessuno tocca l'orologio il cielo scorre da solo; poi segue l'ora scelta nel dock */
+	@media (prefers-reduced-motion: no-preference) {
+		.apertura:not([data-guidata]) {
+			animation: ora 30s ease-in-out infinite alternate;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.apertura {
+			--t: 0.7;
+		}
+	}
+	@keyframes ora {
+		from {
+			--t: 0;
+		}
+		to {
+			--t: 1;
+		}
 	}
 	.apertura__in {
+		max-width: var(--max);
+		margin-inline: auto;
+		padding-inline: var(--gutter);
 		display: grid;
-		grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-		gap: clamp(28px, 5vw, 72px);
+		grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+		gap: clamp(28px, 5vw, 80px);
 		align-items: center;
 	}
 	.apertura h1 {
-		font-size: clamp(2.5rem, 7vw, 5.2rem);
-		margin-top: 22px;
-		line-height: 0.98;
-		max-width: 12ch;
+		font-size: clamp(2.1rem, 4.2vw, 3.4rem);
+		line-height: 1.04;
+		/* il peso segue la luce: dalle prime ore del pomeriggio alle lampadine accese */
+		font-weight: calc(430 + var(--t) * 270);
+		min-height: 4.4em;
+		max-width: 16ch;
 		color: var(--bianco);
 	}
+	.apertura h1 em {
+		display: block;
+		color: color-mix(in oklab, var(--limone) calc(30% + var(--t) * 70%), var(--bianco));
+	}
 	.apertura__sotto {
-		margin-top: 22px;
+		margin-top: 20px;
 		max-width: 46ch;
 		font-size: 1.15rem;
-		color: var(--vetro);
+		color: #d4e0ec;
 	}
 	.apertura__tipi {
 		border: 0;
-		margin-top: 30px;
+		margin-top: 28px;
 		min-width: 0;
 	}
 	.apertura__tipi legend {
-		font-size: 0.8rem;
-		font-weight: 700;
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
-		color: var(--limone);
+		font-family: var(--serif);
+		font-style: italic;
+		font-size: 1.35rem;
 		margin-bottom: 12px;
 	}
 	.apertura__bottoni {
@@ -94,15 +142,16 @@ import { TIPI } from './dati';
 	.tipo {
 		display: flex;
 		flex-direction: column;
-		align-items: flex-start;
-		gap: 2px;
-		min-height: 64px;
-		padding: 10px 16px;
-		background: transparent;
-		border: 2px solid var(--vetro);
-		border-radius: 14px 14px 4px 4px;
+		align-items: center;
+		justify-content: center;
+		gap: 0;
+		min-height: 66px;
+		padding: 14px 26px 10px;
+		background: color-mix(in oklab, var(--bianco) 6%, transparent);
+		border: 2px solid color-mix(in oklab, var(--bianco) 70%, transparent);
+		border-radius: 28px 28px 10px 10px;
 		color: var(--bianco);
-		text-align: left;
+		text-align: center;
 		cursor: pointer;
 		transition:
 			background-color 160ms var(--ease),
@@ -113,12 +162,14 @@ import { TIPI } from './dati';
 		transform: scale(0.97);
 	}
 	.tipo__nome {
-		font-weight: 800;
-		font-size: 1.05rem;
+		font-family: var(--serif);
+		font-weight: 600;
+		font-size: 1.2rem;
+		line-height: 1.2;
 	}
 	.tipo__n {
 		font-size: 0.85rem;
-		color: var(--vetro);
+		color: #cfdbe8;
 	}
 	@media (hover: hover) {
 		.tipo:hover {
@@ -131,38 +182,102 @@ import { TIPI } from './dati';
 		}
 	}
 	.apertura__nota {
-		margin-top: 22px;
+		margin-top: 20px;
 		font-size: 0.9rem;
-		color: var(--vetro);
+		color: #cfdbe8;
 	}
-	.apertura__finestra {
+
+	/* La vetrata: il cielo sta dietro, il ferro è un solo disegno con tre aperture ad arco */
+	.vetrata {
 		position: relative;
 		margin: 0;
 		justify-self: end;
-		width: min(100%, 460px);
+		width: min(100%, 500px);
+		aspect-ratio: 6 / 7;
+		background: #0b1230;
 	}
-	.apertura__finestra :global(img) {
+	.vetrata__cielo {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(
+			to top,
+			color-mix(in oklab, #f2b45a calc(100% - var(--t) * 100%), #3b3f7a),
+			color-mix(in oklab, #8fc8e6 calc(100% - var(--t) * 100%), #0b1230)
+		);
+	}
+	.vetrata__cielo :global(img),
+	.vetrata__cielo video {
+		position: absolute;
+		inset: 0;
 		width: 100%;
-		aspect-ratio: 4 / 5.2;
+		height: 100%;
 		object-fit: cover;
-		border-radius: var(--arco);
-		border: 6px solid var(--limone);
-		outline: 2px solid var(--limone);
-		outline-offset: 8px;
+		opacity: calc(0.3 + var(--t) * 0.7);
 	}
-	.apertura__finestra figcaption {
-		margin-top: 18px;
-		font-size: 0.8rem;
-		color: var(--vetro);
+	.vetrata__cielo video {
+		z-index: 1;
+		opacity: 0;
+	}
+	.vetrata__cielo video.pronto {
+		opacity: calc(0.15 + var(--t) * 0.85);
+	}
+	.vetrata__ferro {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 2;
+		fill: var(--inchiostro-2);
+	}
+	.vetrata__telai {
+		fill: var(--inchiostro-2);
+		stroke: var(--inchiostro-2);
+	}
+	.vetrata__luci {
+		position: absolute;
+		z-index: 3;
+		left: 3%;
+		right: 3%;
+		top: 3%;
+		display: flex;
+		justify-content: space-between;
+		pointer-events: none;
+		border-top: 2px solid color-mix(in oklab, var(--bianco) 30%, transparent);
+		border-radius: 50% 50% 0 0 / 14px 14px 0 0;
+	}
+	.vetrata__luci li {
+		--soglia: calc(0.12 + var(--i) * 0.08);
+		position: relative;
+		top: 4px;
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		background: color-mix(in oklab, var(--limone) calc(var(--on) * 100%), #4a5378);
+		box-shadow: 0 0 calc(var(--on) * 16px) calc(var(--on) * 5px) color-mix(in oklab, var(--limone) 70%, transparent);
+		--on: clamp(0, (var(--t) - var(--soglia)) * 10, 1);
+	}
+	.vetrata figcaption {
+		position: absolute;
+		z-index: 4;
+		left: 0;
+		right: 0;
+		bottom: -28px;
 		text-align: right;
+		font-size: 0.78rem;
+		color: #cfdbe8;
 	}
 	@media (max-width: 900px) {
 		.apertura__in {
 			grid-template-columns: minmax(0, 1fr);
 		}
-		.apertura__finestra {
+		.apertura h1 {
+			min-height: 0;
+			max-width: 16ch;
+		}
+		.vetrata {
 			justify-self: center;
 			width: min(100%, 380px);
+			margin-bottom: 20px;
 		}
 	}
 	@media (prefers-reduced-motion: no-preference) {
@@ -175,34 +290,47 @@ import { TIPI } from './dati';
 		.apertura__testo > :nth-child(3) {
 			animation-delay: 160ms;
 		}
-		.apertura__testo > :nth-child(4) {
-			animation-delay: 240ms;
-		}
-		.apertura__finestra {
-			animation: finestra 900ms var(--ease) 120ms both;
-		}
 	}
 	@keyframes sale {
 		from {
 			opacity: 0;
-			transform: translateY(16px);
-		}
-	}
-	@keyframes finestra {
-		from {
-			opacity: 0;
-			clip-path: inset(40% 0 0 0 round 999px 999px 10px 10px);
+			transform: translateY(14px);
 		}
 	}
 </style>
 
 <script>
-	import { scegliTipo } from './stato';
+	import { ascolta, leggi, scegliTipo } from './stato';
 	import type { TipoEvento } from './dati';
+
+	const hero = document.querySelector<HTMLElement>('.apertura')!;
+	const ora0 = leggi().ora;
+	ascolta(() => {
+		const o = leggi().ora;
+		if (o === ora0 && !hero.hasAttribute('data-guidata')) return;
+		hero.setAttribute('data-guidata', '');
+		hero.style.setProperty('--t', String(Math.min(1, Math.max(0, (o - 16) / 7)).toFixed(3)));
+	});
+
+	const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
 	document.querySelectorAll<HTMLButtonElement>('[data-tipo]').forEach((b) => {
 		b.addEventListener('click', () => {
 			scegliTipo(b.dataset.tipo as TipoEvento);
-			document.getElementById('pianta')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+			document.getElementById('pianta')?.scrollIntoView({ behavior: ridotto ? 'auto' : 'smooth', block: 'start' });
 		});
 	});
+
+	// il video del tramonto arriva dopo il primo paint, mai con reduced-motion o risparmio dati
+	const v = document.querySelector<HTMLVideoElement>('.vetrata video[data-src]');
+	const risparmio = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
+	if (v && !ridotto && !risparmio) {
+		const parti = () => {
+			v.addEventListener('canplay', () => v.classList.add('pronto'), { once: true });
+			v.src = v.dataset.src!;
+			v.load();
+			v.play().catch(() => {});
+		};
+		if (document.readyState === 'complete') setTimeout(parti, 300);
+		else addEventListener('load', () => setTimeout(parti, 300), { once: true });
+	}
 </script>

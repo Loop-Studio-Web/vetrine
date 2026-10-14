@@ -1,10 +1,9 @@
 ---
 ---
 
-<section class="sezione preventivo scuro" id="preventivo" aria-labelledby="t-preventivo">
+<section class="sezione preventivo fascia-colore fascia-colore--cotto" id="preventivo" aria-labelledby="t-preventivo">
 	<div class="wrap">
-		<p class="cartellino">N° 05 · Il preventivo</p>
-		<h2 id="t-preventivo">Quanto costa, <span class="evid">voce per voce</span>.</h2>
+		<h2 id="t-preventivo">Quanto costa, <em>voce per voce.</em></h2>
 		<p class="sezione__intro">
 			Una forchetta, non una cifra a sorpresa: cambia sala, data o ospiti e le voci si ricalcolano. Tieni due versioni e
 			confrontale.
@@ -19,11 +18,11 @@
 					<span>Aggiungi il catering del nostro cuoco <small data-cat-nota></small></span>
 				</label>
 				<div class="conto__totale">
-					<span>Totale indicativo</span>
+					<span>Circa</span>
 					<strong data-totale>—</strong>
 				</div>
 				<p class="conto__forchetta">
-					Forchetta: <span data-forchetta>—</span> · <span data-testa>—</span> a persona
+					Forchetta da <span data-forchetta>—</span>, cioè <span data-testa>—</span> a persona
 				</p>
 				<p class="conto__nota">Cifre di fantasia, IVA inclusa. Il preventivo vero arriva dopo il sopralluogo.</p>
 			</div>
@@ -33,18 +32,18 @@
 				<p class="confronto__aiuto">Tieni la scheda com’è adesso, cambia qualcosa sopra, tienine un’altra.</p>
 				<div class="opz">
 					<article class="opz__c" data-slot="A">
-						<h4>Idea A</h4>
+						<h4>Prima idea</h4>
 						<div class="opz__corpo" data-corpo>Vuota</div>
 						<div class="opz__azioni">
-							<button type="button" class="btn btn--vuoto" data-tieni="A">Tieni questa</button>
+							<button type="button" class="btn btn--vuoto" data-tieni="A">Salva la scheda di ora</button>
 							<button type="button" class="opz__link" data-usa="A" hidden>Riapri</button>
 						</div>
 					</article>
 					<article class="opz__c" data-slot="B">
-						<h4>Idea B</h4>
+						<h4>Seconda idea</h4>
 						<div class="opz__corpo" data-corpo>Vuota</div>
 						<div class="opz__azioni">
-							<button type="button" class="btn btn--vuoto" data-tieni="B">Tieni questa</button>
+							<button type="button" class="btn btn--vuoto" data-tieni="B">Salva la scheda di ora</button>
 							<button type="button" class="opz__link" data-usa="B" hidden>Riapri</button>
 						</div>
 					</article>
@@ -65,6 +64,11 @@
 </section>
 
 <style>
+	.preventivo .wrap > h2,
+	.preventivo .wrap > .sezione__intro {
+		margin-inline: auto;
+		text-align: center;
+	}
 	.prev__griglia {
 		display: grid;
 		grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
@@ -73,8 +77,8 @@
 		align-items: start;
 	}
 	.conto {
-		background: var(--bianco);
-		color: var(--inchiostro);
+		background: var(--carta);
+		color: var(--testo);
 		padding: clamp(18px, 3vw, 32px);
 		border-radius: 6px 6px 0 0;
 		position: relative;
@@ -88,26 +92,26 @@
 		top: 100%;
 		height: 10px;
 		background:
-			linear-gradient(135deg, var(--bianco) 50%, transparent 50%) 0 0 / 20px 10px,
-			linear-gradient(225deg, var(--bianco) 50%, transparent 50%) 0 0 / 20px 10px;
+			linear-gradient(135deg, var(--carta) 50%, transparent 50%) 0 0 / 20px 10px,
+			linear-gradient(225deg, var(--carta) 50%, transparent 50%) 0 0 / 20px 10px;
 		background-repeat: repeat-x;
 	}
 	.conto__testata {
 		font-weight: 800;
 		font-size: 1.05rem;
 		padding-bottom: 14px;
-		border-bottom: 3px solid var(--inchiostro);
+		border-bottom: 3px solid var(--testo);
 	}
 	.conto__voci :global(li) {
 		display: flex;
 		justify-content: space-between;
 		gap: 16px;
 		padding: 12px 0;
-		border-bottom: 1px dashed color-mix(in oklab, var(--inchiostro) 35%, transparent);
+		border-bottom: 1px dashed color-mix(in oklab, var(--testo) 35%, transparent);
 	}
 	.conto__voci :global(small) {
 		display: block;
-		font-size: 0.82rem;
+		font-size: 0.85rem;
 		color: var(--testo-2);
 	}
 	.conto__voci :global(b) {
@@ -127,7 +131,7 @@
 		width: 24px;
 		height: 24px;
 		margin-top: 1px;
-		accent-color: var(--inchiostro);
+		accent-color: var(--foglia);
 	}
 	.conto__catering small {
 		display: block;
@@ -140,7 +144,8 @@
 		gap: 12px;
 		padding: 14px 16px;
 		background: var(--limone);
-		border-radius: 12px 12px 4px 4px;
+		color: var(--inchiostro);
+		border-radius: 28px 28px 10px 10px;
 		font-weight: 700;
 	}
 	.conto__totale strong {
@@ -164,7 +169,7 @@
 	}
 	.confronto__aiuto {
 		margin-top: 6px;
-		color: var(--vetro);
+		color: color-mix(in oklab, var(--bianco) 88%, transparent);
 	}
 	.opz {
 		display: grid;
@@ -176,24 +181,23 @@
 		display: flex;
 		flex-direction: column;
 		gap: 10px;
-		padding: 16px;
-		border: 2px solid var(--vetro);
-		border-radius: 14px 14px 4px 4px;
+		padding: 18px 16px 16px;
+		border: 2px solid color-mix(in oklab, var(--bianco) 55%, transparent);
+		border-radius: 28px 28px 10px 10px;
 	}
 	.opz__c[data-piena='true'] {
 		border-color: var(--limone);
 	}
 	.opz__c h4 {
-		font-size: 0.78rem;
-		font-weight: 800;
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
-		color: var(--limone);
+		font-family: var(--serif);
+		font-style: italic;
+		font-size: 1.15rem;
+		color: var(--bianco);
 	}
 	.opz__corpo {
 		flex: 1;
 		font-size: 0.93rem;
-		color: var(--vetro-chiaro);
+		color: var(--bianco);
 	}
 	.opz__corpo :global(b) {
 		display: block;
@@ -208,6 +212,8 @@
 		gap: 10px;
 	}
 	.opz__azioni .btn {
+		border-color: var(--bianco);
+		color: var(--bianco);
 		min-height: 44px;
 		padding: 0 16px;
 		font-size: 0.9rem;
@@ -233,11 +239,9 @@
 	}
 	.link label {
 		display: block;
-		font-size: 0.78rem;
-		font-weight: 800;
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
-		color: var(--limone);
+		font-size: 0.95rem;
+		font-weight: 700;
+		color: var(--bianco);
 		margin-bottom: 8px;
 	}
 	.link__riga {
@@ -249,16 +253,16 @@
 		min-width: 0;
 		min-height: 48px;
 		padding: 0 14px;
-		border: 2px solid var(--vetro);
+		border: 2px solid var(--bianco);
 		border-radius: 10px;
-		background: var(--inchiostro-2);
-		color: var(--vetro-chiaro);
+		background: var(--cotto-scuro);
+		color: var(--bianco);
 		font-size: 0.85rem;
 	}
 	.link__nota {
 		margin-top: 8px;
-		font-size: 0.88rem;
-		color: var(--vetro);
+		font-size: 0.9rem;
+		color: color-mix(in oklab, var(--bianco) 90%, transparent);
 	}
 	@media (max-width: 900px) {
 		.prev__griglia {
@@ -273,13 +277,12 @@
 </style>
 
 <script>
-	import { preventivo, verdetto, type Evento } from './evento';
+	import { eur, preventivo, verdetto, type Evento } from './evento';
 	import { formato, spazio, tipo } from './dati';
 	import { ascolta, imposta, leggi, linkScheda, scelte, tieni, usa } from './stato';
 
 	const radice = document.getElementById('preventivo')!;
 	const q = <T extends HTMLElement>(s: string) => radice.querySelector<T>(s)!;
-	const eur = (n: number) => `${n.toLocaleString('it-IT')} €`;
 	const dataFmt = new Intl.DateTimeFormat('it-IT', { day: 'numeric', month: 'long' });
 	const cat = q<HTMLInputElement>('[data-catering]');
 
@@ -291,12 +294,12 @@
 	function aggiorna() {
 		const ev = leggi();
 		const p = preventivo(ev);
-		q('[data-testata]').textContent = `${tipo(ev.tipo).nome} · ${descrivi(ev)}`;
+		q('[data-testata]').textContent = `${tipo(ev.tipo).nome}, ${descrivi(ev)}${verdetto(ev).giudizio === 'noncista' ? '. Attenzione: in questa sala non ci state tutti, il prezzo è solo indicativo.' : ''}`;
 		q('[data-voci]').innerHTML = p.voci
 			.map((v) => `<li><span>${v.nome}${v.nota ? `<small>${v.nota}</small>` : ''}</span><b>${eur(v.importo)}</b></li>`)
 			.join('');
-		q('[data-totale]').textContent = eur(p.totale);
-		q('[data-forchetta]').textContent = `${eur(p.da)} – ${eur(p.a)}`;
+		q('[data-totale]').textContent = eur(Math.round(p.totale / 50) * 50);
+		q('[data-forchetta]').textContent = `${eur(p.da)} a ${eur(p.a)}`;
 		q('[data-testa]').textContent = eur(p.allaTesta);
 		cat.checked = ev.catering;
 		q('[data-cat-nota]').textContent = `${tipo(ev.tipo).cateringTesta} € a persona`;
@@ -308,9 +311,10 @@
 			const o = s[k];
 			card.dataset.piena = String(!!o);
 			card.querySelector<HTMLElement>('[data-corpo]')!.innerHTML = o
-				? `<b>${eur(preventivo(o).totale)}</b>${descrivi(o)}${o.catering ? ' · con catering' : ''}`
+				? `<b>${eur(Math.round(preventivo(o).totale / 50) * 50)}</b>${descrivi(o)}${o.catering ? ' · con catering' : ''}`
 				: 'Vuota';
 			card.querySelector<HTMLElement>('[data-usa]')!.hidden = !o;
+			card.querySelector<HTMLElement>('[data-tieni]')!.textContent = o ? 'Sostituisci con la scheda di ora' : 'Salva la scheda di ora';
 		});
 		const diff = q('[data-diff]');
 		if (s.A && s.B) {
@@ -318,7 +322,7 @@
 			const va = verdetto(s.A).giudizio;
 			const vb = verdetto(s.B).giudizio;
 			const nota = va === 'noncista' || vb === 'noncista' ? ' Attenzione: in una delle due non ci state.' : '';
-			diff.textContent = d === 0 ? `Costano uguale.${nota}` : `B costa ${eur(Math.abs(d))} ${d > 0 ? 'in più' : 'in meno'} di A.${nota}`;
+			diff.textContent = d === 0 ? `Costano uguale.${nota}` : `La seconda costa circa ${eur(Math.round(Math.abs(d) / 50) * 50)} ${d > 0 ? 'in più' : 'in meno'} della prima.${nota}`;
 		} else diff.textContent = '';
 	}
 

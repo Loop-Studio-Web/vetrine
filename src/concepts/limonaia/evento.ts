@@ -1,7 +1,7 @@
 // Lo stato condiviso dell'evento: ogni sezione della pagina legge e scrive questo.
 // Modulo puro (nessun DOM): lo usano frontmatter e browser.
 import { FORMATI, SPAZI, TIPI, formato, spazio, tipo, type Formato, type SpazioId, type TipoEvento } from './dati';
-import { dispone, mqUtili } from './pianta';
+import { dispone } from './pianta';
 
 export interface Evento {
 	tipo: TipoEvento;
@@ -78,38 +78,58 @@ export function capienza(spazioId: SpazioId, formatoId: Formato, palco: boolean)
 	return Math.min(max, dispone(spazioId, formatoId, max, palco).posti);
 }
 
+/** Posti che restano quando nasce la pista (dopo le 22:30); la cerimonia non ha pista. */
+export function capienzaConPista(spazioId: SpazioId, formatoId: Formato, palco: boolean): number {
+	const max = spazio(spazioId).max;
+	return Math.min(max, dispone(spazioId, formatoId, max, palco, true).posti);
+}
+
+export const ORA_PISTA = 22.5;
+
+/** Numeri all'italiana con il punto anche sulle migliaia a quattro cifre (6.586, non 6586). */
+export const migliaia = (n: number) => n.toLocaleString('it-IT', { useGrouping: 'always' as never, maximumFractionDigits: 0 });
+export const eur = (n: number) => `${migliaia(n)} €`;
+
 export type Giudizio = 'ampio' | 'giusto' | 'stretto' | 'noncista';
 
 export interface Verdetto {
 	giudizio: Giudizio;
-	mqPersona: number;
 	capienza: number;
+	/** posti che restano con la pista, se sono meno degli ospiti (solo dalle 22:30) */
+	conPista: number | null;
 	testo: string;
 	alternativa: SpazioId | null;
 }
-
-const num = (n: number) => n.toLocaleString('it-IT', { maximumFractionDigits: 1 });
 
 export function verdetto(e: Evento): Verdetto {
 	const f = formato(e.formato);
 	const s = spazio(e.spazio);
 	const cap = capienza(e.spazio, e.formato, e.palco);
-	const mq = mqUtili(e.spazio, e.palco) / e.ospiti;
 	const pieno = e.ospiti / Math.max(1, cap);
 	let giudizio: Giudizio = 'giusto';
 	if (e.ospiti > cap) giudizio = 'noncista';
 	else if (pieno > 0.9) giudizio = 'stretto';
 	else if (pieno < 0.6) giudizio = 'ampio';
 
-	const alt = SPAZI.find((x) => x.id !== e.spazio && capienza(x.id, e.formato, e.palco) >= e.ospiti && x.max >= e.ospiti) ?? null;
+	const alt = SPAZI.find((x) => x.id !== e.spazio && capienza(x.id, e.formato, e.palco) >= e.ospiti) ?? null;
 	const dove = s.dove;
 	const nomeF = f.nome.toLowerCase();
+	const su = `${migliaia(e.ospiti)} su ${migliaia(cap)} posti`;
 	let testo = '';
-	if (giudizio === 'ampio') testo = `${e.ospiti} ospiti ${dove} con ${nomeF}: c’è aria, ${num(mq)} m² a persona.`;
-	else if (giudizio === 'giusto') testo = `Ci state comodi: ${num(mq)} m² a persona ${dove}, corridoi liberi.`;
-	else if (giudizio === 'stretto') testo = `Ci si sta, ma stretti: ${num(mq)} m² a persona. Il limite comodo è ${cap} ospiti.`;
-	else testo = `Non ci sta: ${dove} con ${nomeF} ci sono al massimo ${cap} posti.${alt ? ` Prova ${spazio(alt.id).dove}.` : ' Riduci gli ospiti o cambia formato.'}`;
-	return { giudizio, mqPersona: mq, capienza: cap, testo, alternativa: giudizio === 'noncista' ? alt?.id ?? null : null };
+	if (giudizio === 'ampio') testo = `${su} ${dove} con ${nomeF}: c’è aria, anche per ballare.`;
+	else if (giudizio === 'giusto') testo = `${su} ${dove} con ${nomeF}: ci state comodi, corridoi liberi.`;
+	else if (giudizio === 'stretto') testo = `${su} ${dove} con ${nomeF}: ci si sta, ma stretti.`;
+	else testo = `${su} ${dove} con ${nomeF}: non ci state.${alt ? ` Prova ${spazio(alt.id).dove}.` : ' Riduci gli ospiti o cambia formato.'}`;
+
+	let conPista: number | null = null;
+	if (e.ora >= ORA_PISTA && giudizio !== 'noncista' && e.formato !== 'cerimonia') {
+		const c = capienzaConPista(e.spazio, e.formato, e.palco);
+		if (e.ospiti > c) {
+			conPista = c;
+			testo += ` Dopo le 22:30 la pista toglie spazio: restano ${migliaia(c)} posti a sedere.`;
+		}
+	}
+	return { giudizio, capienza: cap, conPista, testo, alternativa: giudizio === 'noncista' ? alt?.id ?? null : null };
 }
 
 // ---------- calendario ----------
@@ -200,16 +220,18 @@ export type Fase = 'giorno' | 'tramonto' | 'sera' | 'notte';
 export interface Momento {
 	da: number;
 	nome: string;
+	/** etichetta corta per i pulsanti: una riga, così hanno tutti la stessa altezza */
+	breve: string;
 }
 
 export const MOMENTI: Momento[] = [
-	{ da: 16, nome: 'Accoglienza' },
-	{ da: 17.5, nome: 'Cerimonia e brindisi' },
-	{ da: 19, nome: 'Aperitivo nel giardino' },
-	{ da: 20.5, nome: 'Cena' },
-	{ da: 22.5, nome: 'Taglio della torta' },
-	{ da: 23, nome: 'Si balla' },
-	{ da: 25, nome: 'Ultima luce' },
+	{ da: 16, nome: 'Accoglienza', breve: 'Accoglienza' },
+	{ da: 17.5, nome: 'Cerimonia e brindisi', breve: 'Brindisi' },
+	{ da: 19, nome: 'Aperitivo nel giardino', breve: 'Aperitivo' },
+	{ da: 20.5, nome: 'Cena', breve: 'Cena' },
+	{ da: 22.5, nome: 'Taglio della torta', breve: 'La torta' },
+	{ da: 23, nome: 'Si balla', breve: 'Si balla' },
+	{ da: 25, nome: 'Ultima luce', breve: 'Ultima luce' },
 ];
 
 export function fase(ora: number): Fase {
@@ -232,7 +254,7 @@ export function momento(ora: number): Momento {
 
 /** 0 = tavoli al loro posto, 1 = tavoli ritirati e pista libera. */
 export function ritiro(ora: number): number {
-	return fra((ora - 22.5) / 0.6, 0, 1);
+	return fra((ora - ORA_PISTA) / 0.25, 0, 1);
 }
 
 /** Luce della sala da 0 (giorno pieno) a 1 (notte), per cielo e lampade. */

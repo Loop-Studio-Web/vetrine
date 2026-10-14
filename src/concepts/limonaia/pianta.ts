@@ -90,14 +90,57 @@ function griglia(
 	return { elementi, piazzati: totale };
 }
 
-export function dispone(spazioId: SpazioId, formatoId: Formato, ospiti: number, palco: boolean): Pianta {
+const GIOCO_PISTA = 20;
+
+/** Pista da ballo: il rettangolo centrale che si libera dopo la cena. */
+function pistaIn(area: Rettangolo): Rettangolo {
+	const w = Math.min(900, area.w * 0.4);
+	const h = Math.min(700, area.h * 0.8);
+	return { x: area.x + area.w / 2 - w / 2, y: area.y + area.h / 2 - h / 2, w, h };
+}
+
+/**
+ * Disposizione dei tavoli. Con `notte` la pista è un'area esclusa: i tavoli si dispongono nelle due fasce ai lati
+ * (e quelli lunghi si dimezzano), così non si sovrappongono mai. La cerimonia non ha pista.
+ */
+export function dispone(spazioId: SpazioId, formatoId: Formato, ospiti: number, palco: boolean, notte = false): Pianta {
 	const s = spazio(spazioId);
 	const area = areaUtile(spazioId, palco);
 	const pRect: Rettangolo | null = palco ? { x: MARGINE, y: MARGINE, w: PALCO - 40, h: s.d - 2 * MARGINE } : null;
 	let elementi: Elemento[] = [];
 	let posti = 0;
+	const conPista = notte && formatoId !== 'cerimonia';
+	const pr = pistaIn(area);
+	const fasciaW = Math.max(0, area.w / 2 - pr.w / 2 - GIOCO_PISTA);
+	const sx: Rettangolo = { x: area.x, y: area.y, w: fasciaW, h: area.h };
+	const dx: Rettangolo = { x: pr.x + pr.w + GIOCO_PISTA, y: area.y, w: fasciaW, h: area.h };
 
-	if (formatoId === 'tondi') {
+	if (conPista && (formatoId === 'tondi' || formatoId === 'cocktail')) {
+		const tondo = formatoId === 'tondi';
+		const n = Math.ceil(ospiti / (tondo ? 8 : 6));
+		const nSx = Math.ceil(n / 2);
+		const opt = tondo ? ([340, 300, 'tondo', DIAM_TONDO, 8] as const) : ([240, 200, 'alto', DIAM_ALTO, 6] as const);
+		const a = griglia(sx, nSx, opt[0], opt[1], opt[2], opt[3], opt[4]);
+		const b = griglia(dx, n - nSx, opt[0], opt[1], opt[2], opt[3], opt[4]);
+		elementi = [...a.elementi, ...b.elementi].map((e, i) => ({ ...e, id: `${opt[2]}-${i + 1}` }));
+		posti = Math.min(ospiti, (a.piazzati + b.piazzati) * opt[4]);
+	} else if (conPista && formatoId === 'imperiale') {
+		const postiMaxRiga = Math.max(2, 2 * Math.floor(fasciaW / 60)) * 2;
+		const righeMax = Math.max(1, Math.floor(area.h / 270));
+		const righe = Math.min(righeMax, Math.max(1, Math.ceil(ospiti / postiMaxRiga)));
+		const perMeta = Math.ceil(Math.min(ospiti, righe * postiMaxRiga) / righe / 2);
+		const lung = Math.max(120, Math.min(fasciaW, Math.ceil(perMeta / 2) * 60));
+		const passo = Math.min(320, area.h / righe);
+		const cy = area.y + area.h / 2;
+		for (let r = 0; r < righe; r++) {
+			const y = Math.round(cy + (r - (righe - 1) / 2) * passo);
+			const w = Math.floor(lung / 60) * 60;
+			for (const [lato, rect] of [['a', sx], ['b', dx]] as const) {
+				elementi.push({ id: `lungo-${r + 1}${lato}`, tipo: 'lungo', x: Math.round(rect.x + rect.w / 2), y, w, h: LARGH_LUNGO, posti: 2 * Math.floor(w / 60) });
+			}
+		}
+		posti = Math.min(ospiti, elementi.reduce((a, e) => a + e.posti, 0));
+	} else if (formatoId === 'tondi') {
 		const n = Math.ceil(ospiti / 8);
 		const g = griglia(area, n, 340, 300, 'tondo', DIAM_TONDO, 8);
 		elementi = g.elementi;
@@ -155,31 +198,7 @@ export function dispone(spazioId: SpazioId, formatoId: Formato, ospiti: number, 
 	return { w: s.w, d: s.d, area, palco: pRect, elementi, posti, fuori: Math.max(0, ospiti - posti) };
 }
 
-/** Pista da ballo: il rettangolo centrale che si libera dopo la cena. */
+/** La pista di una pianta, per disegnarla. */
 export function pista(p: Pianta): Rettangolo {
-	const w = Math.min(900, p.area.w * 0.45);
-	const h = Math.min(700, p.area.h * 0.8);
-	return { x: p.area.x + p.area.w / 2 - w / 2, y: p.area.y + p.area.h / 2 - h / 2, w, h };
-}
-
-/** Posizione di un elemento mentre i tavoli si ritirano (t da 0 a 1) per fare posto alla pista. */
-export function ritirato(e: Elemento, p: Pianta, t: number): { x: number; y: number } {
-	if (t <= 0) return { x: e.x, y: e.y };
-	const r = pista(p);
-	const cx = r.x + r.w / 2;
-	const cy = r.y + r.h / 2;
-	const dx = e.x - cx;
-	const dy = e.y - cy;
-	// se è dentro la pista, va al bordo più vicino; fuori resta dov'è
-	const dentroX = Math.abs(dx) < r.w / 2 + e.w / 2;
-	const dentroY = Math.abs(dy) < r.h / 2 + e.h / 2;
-	if (!(dentroX && dentroY)) return { x: e.x, y: e.y };
-	const spX = (r.w / 2 + e.w / 2 + 40) * Math.sign(dx || 1);
-	const spY = (r.h / 2 + e.h / 2 + 40) * Math.sign(dy || 1);
-	const vaX = Math.abs(spX) - Math.abs(dx) < Math.abs(spY) - Math.abs(dy);
-	const tx = vaX ? cx + spX : e.x;
-	const ty = vaX ? e.y : cy + spY;
-	const x = Math.min(p.w - e.w / 2 - 20, Math.max(e.w / 2 + 20, tx));
-	const y = Math.min(p.d - e.h / 2 - 20, Math.max(e.h / 2 + 20, ty));
-	return { x: e.x + (x - e.x) * t, y: e.y + (y - e.y) * t };
+	return pistaIn(p.area);
 }

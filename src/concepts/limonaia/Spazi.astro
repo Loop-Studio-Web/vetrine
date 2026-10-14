@@ -4,7 +4,8 @@ import limonaia from '../../assets/limonaia/foto/spazio-limonaia.jpg';
 import giardino from '../../assets/limonaia/foto/spazio-giardino.jpg';
 import cantina from '../../assets/limonaia/foto/spazio-cantina.jpg';
 import castel from '../../assets/limonaia/foto/storia-castel.jpg';
-import { SPAZI } from './dati';
+import { FORMATI, SPAZI } from './dati';
+import { capienza, migliaia } from './evento';
 
 const foto = { limonaia, giardino, cantina };
 const alt = {
@@ -15,12 +16,14 @@ const alt = {
 const mesiNome = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'];
 const aperto = (m: number[]) => (m.length === 12 ? 'Aperta tutto l’anno' : `Da ${mesiNome[m[0]]} a ${mesiNome[m[m.length - 1]]}`);
 const metri = (cm: number) => (cm / 100).toLocaleString('it-IT');
+// capienza per formato, calcolata sulla disposizione vera dei tavoli (senza palco)
+const corto: Record<string, string> = { tondi: 'Tondi', imperiale: 'Imperiale', cocktail: 'Cocktail', cerimonia: 'Cerimonia' };
+const cap = Object.fromEntries(SPAZI.map((s) => [s.id, FORMATI.map((f) => ({ nome: corto[f.id], n: capienza(s.id, f.id, false) }))]));
 ---
 
-<section class="sezione spazi" id="spazi" aria-labelledby="t-spazi">
+<section class="sezione spazi fascia-colore fascia-colore--foglia" id="spazi" aria-labelledby="t-spazi">
 	<div class="wrap">
-		<p class="cartellino">N° 03 · Gli spazi</p>
-		<h2 id="t-spazi">Tre sale, <span class="evid">tre feste diverse</span>.</h2>
+		<h2 id="t-spazi">Tre sale, <em>tre feste diverse.</em></h2>
 		<p class="sezione__intro">Scegli una sala e la pianta sopra si rimette a posto con le sue misure vere.</p>
 
 		<ul class="spazi__lista">
@@ -38,11 +41,18 @@ const metri = (cm: number) => (cm / 100).toLocaleString('it-IT');
 						<div class="sp__corpo">
 							<h3>{s.nome}</h3>
 							<p class="sp__misure">
-								{metri(s.w)} × {metri(s.d)} m · fino a {s.max} ospiti
+								{metri(s.w)} × {metri(s.d)} m, {aperto(s.mesi).toLowerCase()}
 							</p>
 							<p>{s.testo}</p>
-							<p class="sp__mesi">{aperto(s.mesi)}</p>
-							<p class="sp__cap" data-cap aria-live="polite" />
+							<dl class="sp__cap">
+								{cap[s.id].map((c) => (
+									<div>
+										<dt>{c.nome}</dt>
+										<dd>{migliaia(c.n)}</dd>
+									</div>
+								))}
+							</dl>
+							<p class="sp__esito" data-esito aria-live="polite" />
 							<button type="button" class="btn btn--vuoto sp__btn" data-scegli={s.id}>
 								Scegli {s.nome.toLowerCase()}
 							</button>
@@ -65,7 +75,6 @@ const metri = (cm: number) => (cm / 100).toLocaleString('it-IT');
 				<figcaption>Foto di archivio, illustrativa</figcaption>
 			</figure>
 			<div>
-				<p class="cartellino">La storia</p>
 				<h3>Nata per far svernare i limoni.</h3>
 				<p>
 					Nel 1824 una famiglia di fantasia costruì la limonaia per riparare gli agrumi dal freddo: pietra a nord, vetri a sud, una stufa
@@ -78,8 +87,9 @@ const metri = (cm: number) => (cm / 100).toLocaleString('it-IT');
 </section>
 
 <style>
-	.spazi {
-		background: var(--bianco);
+	.spazi h2,
+	.spazi h3 {
+		color: var(--bianco);
 	}
 	.spazi__lista {
 		display: grid;
@@ -97,48 +107,57 @@ const metri = (cm: number) => (cm / 100).toLocaleString('it-IT');
 		aspect-ratio: 4 / 5;
 		object-fit: cover;
 		border-radius: var(--arco);
-		border: 4px solid var(--inchiostro);
+		border: 4px solid color-mix(in oklab, var(--bianco) 70%, transparent);
 		transition:
 			transform 500ms var(--ease),
 			border-color 200ms var(--ease);
 	}
 	.sp[data-attiva='true'] :global(img) {
 		border-color: var(--limone);
-		outline: 3px solid var(--inchiostro);
 	}
 	.sp h3 {
-		font-size: 1.7rem;
+		font-size: 1.9rem;
+		font-style: italic;
 	}
 	.sp__corpo {
 		display: grid;
-		gap: 8px;
+		gap: 10px;
 		align-content: start;
 		flex: 1;
 	}
 	.sp__misure {
 		font-weight: 700;
-		font-variant-numeric: tabular-nums;
-	}
-	.sp__mesi {
-		font-size: 0.9rem;
-		color: var(--testo-2);
 	}
 	.sp__cap {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 4px 18px;
+		padding: 10px 0;
+		border-block: 1px solid color-mix(in oklab, var(--bianco) 35%, transparent);
+	}
+	.sp__cap div {
+		display: flex;
+		justify-content: space-between;
+		gap: 8px;
+		font-size: 0.93rem;
+	}
+	.sp__cap dd {
+		font-weight: 800;
+		font-variant-numeric: tabular-nums;
+	}
+	.sp__esito {
 		min-height: 1.4em;
 		font-size: 0.93rem;
 		font-weight: 700;
-		color: var(--foglia);
-	}
-	.sp__cap[data-no='true'] {
-		color: var(--errore);
 	}
 	.sp__btn {
 		justify-self: start;
 		margin-top: 6px;
 	}
 	.sp[data-attiva='true'] .sp__btn {
-		background: var(--inchiostro);
-		color: var(--limone);
+		background: var(--limone);
+		border-color: var(--limone);
+		color: var(--inchiostro);
 	}
 	@media (hover: hover) {
 		.sp:hover :global(img) {
@@ -147,12 +166,12 @@ const metri = (cm: number) => (cm / 100).toLocaleString('it-IT');
 	}
 	.storia {
 		display: grid;
-		grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+		grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
 		gap: clamp(24px, 5vw, 64px);
 		align-items: center;
 		margin-top: clamp(56px, 8vw, 104px);
 		padding-top: clamp(36px, 5vw, 56px);
-		border-top: 3px solid var(--inchiostro);
+		border-top: 2px solid color-mix(in oklab, var(--bianco) 40%, transparent);
 	}
 	.storia__foto {
 		margin: 0;
@@ -165,20 +184,20 @@ const metri = (cm: number) => (cm / 100).toLocaleString('it-IT');
 	}
 	.storia figcaption {
 		margin-top: 8px;
-		font-size: 0.78rem;
-		color: var(--testo-2);
+		font-size: 0.8rem;
+		color: color-mix(in oklab, var(--bianco) 85%, transparent);
 	}
 	.storia h3 {
-		font-size: clamp(1.7rem, 3.6vw, 2.5rem);
-		margin: 16px 0 12px;
+		font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+		margin-bottom: 12px;
 	}
-	.storia p:not(.cartellino) {
+	.storia p {
 		max-width: 56ch;
 	}
 	.storia__nota {
 		margin-top: 12px;
 		font-size: 0.9rem;
-		color: var(--testo-2);
+		color: color-mix(in oklab, var(--bianco) 85%, transparent);
 	}
 	@media (max-width: 860px) {
 		.spazi__lista {
@@ -214,12 +233,8 @@ const metri = (cm: number) => (cm / 100).toLocaleString('it-IT');
 			const id = c.dataset.spazio as SpazioId;
 			c.dataset.attiva = String(id === ev.spazio);
 			const cap = capienza(id, ev.formato, ev.palco);
-			const el = c.querySelector<HTMLElement>('[data-cap]')!;
 			const entra = ev.ospiti <= cap;
-			el.dataset.no = String(!entra);
-			el.textContent = entra
-				? `Con ${f.nome.toLowerCase()}: ${cap} posti. Voi siete ${ev.ospiti}, ci state.`
-				: `Con ${f.nome.toLowerCase()}: ${cap} posti. Voi siete ${ev.ospiti}, non ci state.`;
+			c.querySelector<HTMLElement>('[data-esito]')!.textContent = `Con ${f.nome.toLowerCase()} voi siete ${ev.ospiti} su ${cap} posti: ${entra ? 'ci state' : 'non ci state'}.`;
 			c.querySelector<HTMLButtonElement>('[data-scegli]')!.setAttribute('aria-pressed', String(id === ev.spazio));
 		}
 	}

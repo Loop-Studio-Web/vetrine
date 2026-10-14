@@ -33,7 +33,7 @@ import Simbolo from './Simbolo.astro';
 <style>
 	.footer {
 		background: var(--inchiostro-2);
-		color: var(--vetro-chiaro);
+		color: #dbe6ef;
 		padding: 56px 0 48px;
 		border-top: 6px solid var(--limone);
 	}
@@ -47,9 +47,10 @@ import Simbolo from './Simbolo.astro';
 		display: inline-flex;
 		align-items: center;
 		gap: 12px;
-		font-weight: 800;
-		font-size: 1.3rem;
-		letter-spacing: -0.02em;
+		font-family: var(--serif);
+		font-style: italic;
+		font-weight: 600;
+		font-size: 1.5rem;
 		color: var(--bianco);
 	}
 	.footer__nav {
@@ -70,7 +71,7 @@ import Simbolo from './Simbolo.astro';
 	.footer__copia {
 		grid-column: 1 / -1;
 		font-size: 0.85rem;
-		color: var(--vetro);
+		color: #c3d1de;
 		max-width: 78ch;
 	}
 	.footer__credito {
@@ -79,7 +80,7 @@ import Simbolo from './Simbolo.astro';
 		gap: 10px;
 		font-size: 0.8rem;
 		text-decoration: none;
-		color: var(--vetro);
+		color: #c3d1de;
 	}
 	@media (max-width: 860px) {
 		.footer__in {

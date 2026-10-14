@@ -842,7 +842,7 @@ export const concepts: Concept[] = [
 			},
 			{
 				t: 'La giornata, dalle 16 all’una',
-				d: 'Un cursore d’orario cambia la luce, il momento della festa e la sala: dopo la cena i tavoli si ritirano e nasce la pista.',
+				d: 'Un orologio fisso in basso cambia la luce di tutta la pagina, dal pomeriggio alla notte: dopo le 22:30 i tavoli si ritirano ai lati e nasce la pista.',
 			},
 			{
 				t: 'Calendario e preventivo che si parlano',
@@ -862,9 +862,9 @@ export const concepts: Concept[] = [
 		shotAlt: '',
 		crop: '70% 40%',
 		cardAlt: 'Limonaia Aurelia su desktop e su telefono: titolo bianco e limone su fondo blu inchiostro, una finestra ad arco con una serra apparecchiata, il menù mobile a tovaglia con i segnaposto.',
-		mood: 'Una serra al calar della sera: limone, blu inchiostro e vetro, finestre ad arco, cartellini da vaso e una pianta che si compone con i tavoli veri.',
-		caratteri: 'Epilogue',
-		palette: ['#efd84a', '#16224a', '#bcd7e6', '#c8532b', '#2e5b45', '#eaf3f8'],
+		mood: 'Una serra che cambia luce con l’ora della festa: vetrata ad arco, limone e blu inchiostro, terracotta e verde foglia, lampadine che si accendono e una pianta che si compone con i tavoli veri.',
+		caratteri: 'Brygada 1918 e Epilogue',
+		palette: ['#efd84a', '#16224a', '#bcd7e6', '#a8421f', '#2e5b45', '#ece0f1'],
 		metriche: [
 			{ label: 'Performance', valore: '96' },
 			{ label: 'Accessibilità', valore: '100' },

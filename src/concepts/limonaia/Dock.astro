@@ -1,0 +1,235 @@
+---
+// Il dock fisso: l'orologio della festa (cambia la luce di tutta la pagina) e la scheda sempre a portata.
+---
+
+<aside class="dock" aria-label="La tua festa e l’ora" data-dock>
+	<div class="dock__ora">
+		<label for="ora" class="etichetta">Che ora è alla festa</label>
+		<div class="dock__riga">
+			<output class="dock__valore" for="ora" data-ora-testo>19:00</output>
+			<div class="dock__asta">
+				<input type="range" id="ora" min="16" max="25" step="0.25" value="19" aria-describedby="dock-scala" />
+				<div class="dock__scala" id="dock-scala" aria-hidden="true"><span>16:00</span><span>20:30</span><span>01:00</span></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="dock__scheda">
+		<p class="dock__t" data-scheda-t>—</p>
+		<p class="dock__s" data-scheda-s>—</p>
+	</div>
+
+	<div class="dock__azioni">
+		<button type="button" class="btn btn--vuoto" data-tieni>Tieni come A</button>
+		<a class="btn btn--limone" href="#preventivo">Vedi il preventivo</a>
+	</div>
+</aside>
+
+<style>
+	.dock {
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 110;
+		display: grid;
+		grid-template-columns: minmax(260px, 1.1fr) minmax(0, 1fr) auto;
+		gap: 12px clamp(16px, 3vw, 40px);
+		align-items: center;
+		padding: 10px var(--gutter) calc(10px + env(safe-area-inset-bottom, 0px));
+		background: color-mix(in oklab, var(--carta) 94%, transparent);
+		backdrop-filter: blur(12px);
+		border-top: 3px solid var(--testo);
+		color: var(--testo);
+	}
+	.dock__riga {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+	}
+	.dock__valore {
+		font-family: var(--serif);
+		font-weight: 600;
+		font-size: 2.1rem;
+		line-height: 1;
+		font-variant-numeric: tabular-nums;
+		min-width: 4.2ch;
+	}
+	.dock__asta {
+		flex: 1;
+		min-width: 0;
+	}
+	.dock__scala {
+		display: flex;
+		justify-content: space-between;
+		font-size: 0.85rem;
+		color: var(--testo-2);
+		margin-top: -4px;
+	}
+	.dock[data-noncista='true'] .dock__s {
+		color: var(--cotto);
+		font-weight: 700;
+	}
+	:root[data-fase='sera'] .dock[data-noncista='true'] .dock__s,
+	:root[data-fase='notte'] .dock[data-noncista='true'] .dock__s {
+		color: var(--errore-sera);
+	}
+	/* L'asta dell'orario è il cielo della festa: pomeriggio, tramonto, notte */
+	input[type='range'] {
+		appearance: none;
+		-webkit-appearance: none;
+		display: block;
+		width: 100%;
+		height: 36px;
+		background: transparent;
+		cursor: pointer;
+	}
+	input[type='range']::-webkit-slider-runnable-track {
+		height: 12px;
+		border-radius: 8px;
+		background: linear-gradient(90deg, #f7ea8c 0%, #f2b45a 30%, #c8532b 45%, #3b3f7a 65%, #0b1230 100%);
+		border: 2px solid var(--testo);
+	}
+	input[type='range']::-moz-range-track {
+		height: 8px;
+		border-radius: 8px;
+		background: linear-gradient(90deg, #f7ea8c 0%, #f2b45a 30%, #c8532b 45%, #3b3f7a 65%, #0b1230 100%);
+		border: 2px solid var(--testo);
+	}
+	input[type='range']::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		width: 26px;
+		height: 34px;
+		margin-top: -12px;
+		border-radius: 13px 13px 4px 4px;
+		background: var(--limone);
+		border: 3px solid var(--inchiostro);
+	}
+	input[type='range']::-moz-range-thumb {
+		width: 20px;
+		height: 30px;
+		border-radius: 13px 13px 4px 4px;
+		background: var(--limone);
+		border: 3px solid var(--inchiostro);
+	}
+	.dock__scheda {
+		min-width: 0;
+	}
+	.dock__t {
+		font-family: var(--serif);
+		font-weight: 600;
+		font-size: 1.2rem;
+		line-height: 1.2;
+	}
+	.dock__s {
+		font-size: 0.93rem;
+		color: var(--testo-2);
+	}
+	.dock__azioni {
+		display: flex;
+		gap: 10px;
+	}
+	.dock__azioni .btn {
+		min-height: 46px;
+		padding: 0 18px;
+		font-size: 0.93rem;
+		white-space: nowrap;
+	}
+	@media (max-width: 1000px) {
+		.dock {
+			grid-template-columns: minmax(0, 1fr) auto;
+		}
+		.dock__ora {
+			grid-column: 1 / -1;
+		}
+		.dock__etichetta {
+			display: none;
+		}
+	}
+	@media (max-width: 560px) {
+		.dock {
+			grid-template-columns: minmax(0, 1fr);
+			gap: 6px;
+			padding-top: 8px;
+		}
+		.dock__ora .etichetta {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			overflow: hidden;
+			clip-path: inset(50%);
+		}
+		.dock__valore {
+			font-size: 1.7rem;
+		}
+		.dock__t {
+			font-size: 1.05rem;
+		}
+		.dock__scheda {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: baseline;
+			gap: 0 10px;
+		}
+		.dock__azioni .btn {
+			flex: 1;
+			padding-inline: 10px;
+		}
+		.dock__scala {
+			display: none;
+		}
+		.dock[data-noncista='false'] .dock__s {
+			display: none;
+		}
+	}
+</style>
+
+<script>
+	import { aHash, eur, fase, oraTesto, predefinito, preventivo, verdetto } from './evento';
+	import { formato, spazio, tipo } from './dati';
+	import { ascolta, imposta, leggi, scelte, tieni } from './stato';
+
+	const dock = document.querySelector<HTMLElement>('[data-dock]')!;
+	const rng = dock.querySelector<HTMLInputElement>('#ora')!;
+	const valore = dock.querySelector<HTMLElement>('[data-ora-testo]')!;
+	const t = dock.querySelector<HTMLElement>('[data-scheda-t]')!;
+	const s = dock.querySelector<HTMLElement>('[data-scheda-s]')!;
+	const bTieni = dock.querySelector<HTMLButtonElement>('[data-tieni]')!;
+	const dataFmt = new Intl.DateTimeFormat('it-IT', { day: 'numeric', month: 'long' });
+	const radice = document.documentElement;
+
+	function aggiorna() {
+		const ev = leggi();
+		radice.dataset.fase = fase(ev.ora);
+		if (document.activeElement !== rng) rng.value = String(ev.ora);
+		valore.textContent = oraTesto(ev.ora);
+		rng.setAttribute('aria-valuetext', `le ${oraTesto(ev.ora)}`);
+		const p = preventivo(ev);
+		const v = verdetto(ev);
+		dock.dataset.noncista = String(v.giudizio === 'noncista');
+		t.textContent = `${tipo(ev.tipo).nome}, ${ev.ospiti} ospiti ${spazio(ev.spazio).dove}`;
+		const data = ev.data ? dataFmt.format(new Date(`${ev.data}T12:00:00`)) : 'data da scegliere';
+		s.textContent =
+			v.giudizio === 'noncista'
+				? `Non ci stanno: ${v.capienza} posti su ${ev.ospiti}. ${v.alternativa ? `Prova ${spazio(v.alternativa).dove}.` : 'Riduci gli ospiti o cambia formato.'}`
+				: `${formato(ev.formato).nome}, ${data}, da ${eur(p.da)} a ${eur(p.a)}`;
+		const o = scelte();
+		// il salvataggio compare dopo la prima modifica: prima non c'è niente da salvare
+		bTieni.hidden = aHash(ev) === aHash(predefinito());
+		bTieni.textContent = !o.A ? 'Salva questa versione' : !o.B ? 'Salva come seconda' : 'Sostituisci la prima';
+	}
+
+	rng.addEventListener('input', () => imposta({ ora: Number(rng.value) }));
+	bTieni.addEventListener('click', () => {
+		const o = scelte();
+		tieni(!o.A ? 'A' : !o.B ? 'B' : 'A');
+	});
+
+	// l'altezza reale del dock serve a tutta la pagina (padding in fondo, ancore)
+	const misura = () => radice.style.setProperty('--dock-h', `${dock.offsetHeight}px`);
+	new ResizeObserver(misura).observe(dock);
+	misura();
+
+	ascolta(aggiorna);
+	aggiorna();
+</script>

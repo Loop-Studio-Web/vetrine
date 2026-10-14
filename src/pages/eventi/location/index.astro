@@ -1,7 +1,11 @@
 ---
 import '@fontsource-variable/epilogue';
+import '@fontsource-variable/brygada-1918/wght.css';
+import '@fontsource-variable/brygada-1918/wght-italic.css';
 import '../../../concepts/limonaia/base.css';
 import epiUrl from '@fontsource-variable/epilogue/files/epilogue-latin-wght-normal.woff2?url';
+import brygUrl from '@fontsource-variable/brygada-1918/files/brygada-1918-latin-wght-normal.woff2?url';
+import brygItUrl from '@fontsource-variable/brygada-1918/files/brygada-1918-latin-wght-italic.woff2?url';
 import Fascia from '../../../concepts/limonaia/Fascia.astro';
 import Navbar from '../../../concepts/limonaia/Navbar.astro';
 import Apertura from '../../../concepts/limonaia/Apertura.astro';
@@ -11,6 +15,7 @@ import Spazi from '../../../concepts/limonaia/Spazi.astro';
 import Calendario from '../../../concepts/limonaia/Calendario.astro';
 import Preventivo from '../../../concepts/limonaia/Preventivo.astro';
 import Sopralluogo from '../../../concepts/limonaia/Sopralluogo.astro';
+import Dock from '../../../concepts/limonaia/Dock.astro';
 import Footer from '../../../concepts/limonaia/Footer.astro';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -26,6 +31,8 @@ const pageUrl = new URL(`${base}/eventi/location/`, Astro.site).href;
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href={`${base}/images/limonaia/favicon.svg`} />
 		<link rel="preload" as="font" type="font/woff2" href={epiUrl} crossorigin />
+		<link rel="preload" as="font" type="font/woff2" href={brygUrl} crossorigin />
+		<link rel="preload" as="font" type="font/woff2" href={brygItUrl} crossorigin />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
@@ -48,6 +55,7 @@ const pageUrl = new URL(`${base}/eventi/location/`, Astro.site).href;
 		<Navbar />
 		<main id="main">
 			<Apertura />
+			<div class="ghirlanda" aria-hidden="true"></div>
 			<Pianta />
 			<Giornata />
 			<Spazi />
@@ -56,6 +64,7 @@ const pageUrl = new URL(`${base}/eventi/location/`, Astro.site).href;
 			<Sopralluogo />
 		</main>
 		<Footer />
+		<Dock />
 		<script>
 			// Le ancore interne si muovono via script (lo scroll nativo su Safari può atterrare storto) e non toccano l'hash:
 			// l'hash porta la scheda dell'evento.

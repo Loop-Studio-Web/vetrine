@@ -18,7 +18,7 @@ const voci = [
 		<nav class="nav__links" aria-label="Principale">
 			{voci.map((v) => <a href={v.href}>{v.t}</a>)}
 		</nav>
-		<a class="btn btn--inchiostro nav__cta" href="#sopralluogo">Prenota un sopralluogo</a>
+		<a class="btn nav__cta" href="#sopralluogo">Prenota un sopralluogo</a>
 		<button class="nav__burger" type="button" aria-expanded="false" aria-controls="menu" data-apri>
 			<span class="sr-only">Apri il menù</span>
 			<span class="nav__barre" aria-hidden="true"><i></i><i></i></span>
@@ -58,9 +58,10 @@ const voci = [
 		right: 0;
 		z-index: 120;
 		height: var(--nav-h);
-		background: color-mix(in oklab, var(--vetro-chiaro) 92%, transparent);
+		background: color-mix(in oklab, var(--fondo) 92%, transparent);
+		color: var(--testo);
 		backdrop-filter: blur(10px);
-		border-bottom: 1px solid color-mix(in oklab, var(--inchiostro) 18%, transparent);
+		border-bottom: 1px solid color-mix(in oklab, var(--testo) 22%, transparent);
 	}
 	.nav__in {
 		max-width: var(--max);
@@ -80,9 +81,11 @@ const voci = [
 		min-height: 44px;
 	}
 	.nav__nome {
-		font-weight: 800;
-		font-size: 1.1rem;
-		letter-spacing: -0.02em;
+		font-family: var(--serif);
+		font-weight: 600;
+		font-style: italic;
+		font-size: 1.3rem;
+		letter-spacing: -0.01em;
 		white-space: nowrap;
 	}
 	.nav__links {
@@ -98,7 +101,7 @@ const voci = [
 		transition: border-color 160ms var(--ease);
 	}
 	.nav__links a:hover {
-		border-bottom-color: var(--limone);
+		border-bottom-color: var(--terracotta);
 	}
 	.nav__cta {
 		min-height: 44px;
@@ -151,9 +154,9 @@ const voci = [
 		display: flex;
 		flex-direction: column;
 		background:
-			repeating-linear-gradient(90deg, transparent 0 46px, color-mix(in oklab, var(--vetro) 55%, transparent) 46px 48px),
-			var(--bianco);
-		color: var(--inchiostro);
+			repeating-linear-gradient(90deg, transparent 0 46px, color-mix(in oklab, var(--testo) 12%, transparent) 46px 48px),
+			var(--carta);
+		color: var(--testo);
 		clip-path: inset(0 0 100% 0);
 		visibility: hidden;
 		transition:
@@ -172,14 +175,16 @@ const voci = [
 		height: var(--nav-h);
 		padding-inline: var(--gutter);
 		border-bottom: 3px solid var(--limone);
-		background: var(--bianco);
+		background: var(--carta);
 	}
 	.menu__nome {
 		display: inline-flex;
 		align-items: center;
 		gap: 10px;
-		font-weight: 800;
-		font-size: 1.05rem;
+		font-family: var(--serif);
+		font-style: italic;
+		font-weight: 600;
+		font-size: 1.2rem;
 	}
 	.menu__x {
 		width: 48px;
@@ -189,6 +194,7 @@ const voci = [
 		border: 2px solid var(--inchiostro);
 		border-radius: 50%;
 		background: var(--limone);
+		color: var(--inchiostro);
 		cursor: pointer;
 	}
 	.menu__voci {
@@ -205,11 +211,12 @@ const voci = [
 		align-self: flex-start;
 		min-width: min(78vw, 320px);
 		padding: 12px 22px 14px;
-		background: var(--inchiostro);
+		background: var(--foglia);
 		color: var(--bianco);
-		border-radius: 4px;
-		font-weight: 800;
-		font-size: clamp(1.4rem, 6vw, 2rem);
+		border-radius: 16px 16px 6px 6px;
+		font-family: var(--serif);
+		font-weight: 600;
+		font-size: clamp(1.5rem, 6vw, 2.1rem);
 		letter-spacing: -0.02em;
 		line-height: 1.1;
 		text-decoration: none;
@@ -223,10 +230,9 @@ const voci = [
 	}
 	.menu__voci a small {
 		display: block;
-		font-size: 0.7rem;
+		font-family: var(--font);
+		font-size: 0.8rem;
 		font-weight: 700;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
 		color: var(--limone);
 		margin-bottom: 2px;
 	}

@@ -4,8 +4,7 @@ const giorni = ['L', 'M', 'M', 'G', 'V', 'S', 'D'];
 
 <section class="sezione calendario" id="calendario" aria-labelledby="t-calendario">
 	<div class="wrap">
-		<p class="cartellino">N° 04 · Il calendario</p>
-		<h2 id="t-calendario">Quando la <span class="evid">sala è libera</span>.</h2>
+		<h2 id="t-calendario">Quando la sala è libera, <em>per voi.</em></h2>
 		<p class="sezione__intro">
 			Le date dipendono dalla sala e dal numero di ospiti che hai scelto sopra. Il sabato di maggio è il primo a finire.
 		</p>
@@ -37,7 +36,7 @@ const giorni = ['L', 'M', 'M', 'G', 'V', 'S', 'D'];
 				<p class="cal__etichetta">La tua data</p>
 				<p class="cal__scelta" data-scelta>Nessuna data scelta</p>
 				<p class="cal__nota" data-nota>Tocca un giorno libero.</p>
-				<button type="button" class="btn btn--inchiostro" data-prossimo>Trova il prossimo sabato libero</button>
+				<button type="button" class="btn" data-prossimo>Trova il prossimo sabato libero</button>
 				<button type="button" class="cal__togli" data-togli hidden>Togli la data</button>
 			</aside>
 		</div>
@@ -46,17 +45,12 @@ const giorni = ['L', 'M', 'M', 'G', 'V', 'S', 'D'];
 
 <style>
 	.calendario {
-		background: var(--limone);
+		background: var(--vetro);
 	}
-	.calendario .sezione__intro {
-		color: var(--inchiostro);
-	}
-	.calendario .cartellino {
-		background: var(--inchiostro);
-		color: var(--limone);
-	}
-	.calendario .evid {
-		background: linear-gradient(transparent 58%, var(--bianco) 58% 92%, transparent 92%);
+	.calendario .wrap > h2,
+	.calendario .wrap > .sezione__intro {
+		margin-left: auto;
+		text-align: right;
 	}
 	.cal {
 		display: grid;
@@ -66,9 +60,9 @@ const giorni = ['L', 'M', 'M', 'G', 'V', 'S', 'D'];
 		align-items: start;
 	}
 	.cal__mese {
-		background: var(--bianco);
-		border: 3px solid var(--inchiostro);
-		border-radius: 20px 20px 6px 6px;
+		background: var(--carta);
+		border: 2px solid var(--testo);
+		border-radius: 24px 24px 6px 6px;
 		padding: clamp(12px, 2.2vw, 24px);
 	}
 	.cal__testa {
@@ -79,7 +73,8 @@ const giorni = ['L', 'M', 'M', 'G', 'V', 'S', 'D'];
 		margin-bottom: 14px;
 	}
 	.cal__testa h3 {
-		font-size: clamp(1.3rem, 3vw, 1.8rem);
+		font-size: clamp(1.4rem, 3vw, 2rem);
+		font-style: italic;
 		text-transform: capitalize;
 	}
 	.cal__nav {
@@ -87,7 +82,7 @@ const giorni = ['L', 'M', 'M', 'G', 'V', 'S', 'D'];
 		height: 48px;
 		display: grid;
 		place-items: center;
-		border: 2px solid var(--inchiostro);
+		border: 2px solid var(--testo);
 		border-radius: 50%;
 		background: transparent;
 		cursor: pointer;
@@ -108,21 +103,20 @@ const giorni = ['L', 'M', 'M', 'G', 'V', 'S', 'D'];
 	}
 	.cal__giorni span {
 		text-align: center;
-		font-size: 0.78rem;
+		font-size: 0.82rem;
 		font-weight: 800;
-		letter-spacing: 0.06em;
 		color: var(--testo-2);
 		padding-bottom: 6px;
 	}
 	.cal__griglia :global(.g) {
-		aspect-ratio: 1;
+		aspect-ratio: 1.2;
 		min-height: 44px;
 		display: grid;
 		place-items: center;
 		border: 2px solid transparent;
-		border-radius: 12px 12px 4px 4px;
-		background: var(--vetro-chiaro);
-		font-weight: 800;
+		border-radius: 16px 16px 6px 6px;
+		background: transparent;
+		font-weight: 700;
 		font-size: 1rem;
 		font-variant-numeric: tabular-nums;
 		cursor: pointer;
@@ -136,38 +130,43 @@ const giorni = ['L', 'M', 'M', 'G', 'V', 'S', 'D'];
 	.cal__griglia :global(.g--vuoto) {
 		visibility: hidden;
 	}
+	/* gerarchia: il libero è pieno e deciso, l'occupato è un ricordo */
 	.cal__griglia :global(.g[data-s='libero']) {
-		background: var(--limone-2);
-		border-color: var(--inchiostro);
+		background: var(--foglia);
+		color: var(--bianco);
+		font-weight: 800;
 	}
 	.cal__griglia :global(.g[data-s='opzionato']) {
-		background: repeating-linear-gradient(135deg, var(--limone-2) 0 6px, var(--bianco) 6px 12px);
-		border: 2px dashed var(--inchiostro);
+		background: transparent;
+		border: 2px dashed var(--cotto);
+		color: var(--testo);
+		font-weight: 800;
 	}
 	.cal__griglia :global(.g[data-s='occupato']) {
-		background: var(--inchiostro);
-		color: var(--vetro);
+		color: color-mix(in oklab, var(--testo-2) 75%, transparent);
+		background: repeating-linear-gradient(135deg, transparent 0 5px, color-mix(in oklab, var(--testo-2) 22%, transparent) 5px 6px);
 		cursor: default;
 	}
 	.cal__griglia :global(.g[data-s='chiuso']),
 	.cal__griglia :global(.g[data-s='passato']),
 	.cal__griglia :global(.g[data-s='incompatibile']) {
-		background: transparent;
-		color: color-mix(in oklab, var(--testo-2) 70%, transparent);
+		color: color-mix(in oklab, var(--testo-2) 60%, transparent);
 		cursor: default;
 		text-decoration: line-through;
 		text-decoration-thickness: 1px;
 	}
 	.cal__griglia :global(.g[aria-pressed='true']) {
-		background: var(--inchiostro);
-		color: var(--limone);
+		background: var(--limone);
+		color: var(--inchiostro);
 		border-color: var(--inchiostro);
-		box-shadow: 0 0 0 3px var(--limone), 0 0 0 5px var(--inchiostro);
+		box-shadow: 0 0 0 3px var(--carta), 0 0 0 5px var(--inchiostro);
 	}
 	@media (hover: hover) {
-		.cal__griglia :global(.g[data-s='libero']:hover),
+		.cal__griglia :global(.g[data-s='libero']:hover) {
+			background: var(--terracotta);
+		}
 		.cal__griglia :global(.g[data-s='opzionato']:hover) {
-			background: var(--limone);
+			background: color-mix(in oklab, var(--cotto) 14%, transparent);
 		}
 	}
 	.cal__legenda {
@@ -175,7 +174,7 @@ const giorni = ['L', 'M', 'M', 'G', 'V', 'S', 'D'];
 		flex-wrap: wrap;
 		gap: 8px 18px;
 		margin-top: 16px;
-		font-size: 0.85rem;
+		font-size: 0.88rem;
 		color: var(--testo-2);
 	}
 	.cal__legenda li {
@@ -187,52 +186,48 @@ const giorni = ['L', 'M', 'M', 'G', 'V', 'S', 'D'];
 		display: inline-block;
 		width: 16px;
 		height: 16px;
-		border-radius: 5px 5px 2px 2px;
-		border: 2px solid var(--inchiostro);
+		border-radius: 8px 8px 3px 3px;
+		border: 2px solid transparent;
 	}
 	.l--libero {
-		background: var(--limone-2);
+		background: var(--foglia);
 	}
 	.l--opzionato {
-		background: repeating-linear-gradient(135deg, var(--limone-2) 0 3px, var(--bianco) 3px 6px);
-		border-style: dashed;
+		border: 2px dashed var(--cotto);
 	}
 	.l--occupato {
-		background: var(--inchiostro);
+		background: repeating-linear-gradient(135deg, transparent 0 3px, color-mix(in oklab, var(--testo-2) 45%, transparent) 3px 4px);
+		border-color: color-mix(in oklab, var(--testo-2) 40%, transparent);
 	}
 	.l--chiuso {
-		border-color: color-mix(in oklab, var(--testo-2) 60%, transparent);
+		border-color: color-mix(in oklab, var(--testo-2) 50%, transparent);
 	}
 	.cal__lato {
 		display: grid;
 		gap: 12px;
 		justify-items: start;
-		padding: clamp(16px, 2.4vw, 28px);
-		background: var(--inchiostro);
-		color: var(--vetro-chiaro);
-		border-radius: 20px 20px 6px 6px;
+		padding: clamp(18px, 2.6vw, 30px);
+		background: var(--cotto);
+		color: var(--bianco);
+		border-radius: 24px 24px 6px 6px;
 	}
 	.cal__etichetta {
-		font-size: 0.78rem;
-		font-weight: 800;
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
-		color: var(--limone);
-	}
-	.cal__scelta {
-		font-size: clamp(1.4rem, 3vw, 1.9rem);
-		font-weight: 800;
-		letter-spacing: -0.02em;
-		line-height: 1.1;
-		color: var(--bianco);
-	}
-	.cal__nota {
-		color: var(--vetro);
+		font-weight: 700;
 		font-size: 0.95rem;
 	}
+	.cal__scelta {
+		font-family: var(--serif);
+		font-size: clamp(1.5rem, 3vw, 2.1rem);
+		font-weight: 600;
+		line-height: 1.1;
+	}
+	.cal__nota {
+		font-size: 0.95rem;
+		color: color-mix(in oklab, var(--bianco) 90%, transparent);
+	}
 	.cal__lato .btn {
-		border-color: var(--limone);
 		background: var(--limone);
+		border-color: var(--limone);
 		color: var(--inchiostro);
 		margin-top: 8px;
 		font-size: 0.95rem;
@@ -241,7 +236,7 @@ const giorni = ['L', 'M', 'M', 'G', 'V', 'S', 'D'];
 	.cal__togli {
 		background: none;
 		border: 0;
-		color: var(--vetro-chiaro);
+		color: var(--bianco);
 		text-decoration: underline;
 		text-underline-offset: 3px;
 		min-height: 44px;
@@ -261,7 +256,7 @@ const giorni = ['L', 'M', 'M', 'G', 'V', 'S', 'D'];
 </style>
 
 <script>
-	import { iso, preventivo, stagione, statoGiorno, type StatoGiorno } from './evento';
+	import { eur, iso, preventivo, stagione, statoGiorno, type StatoGiorno } from './evento';
 	import { ascolta, imposta, leggi } from './stato';
 
 	const radice = document.getElementById('calendario')!;
@@ -324,7 +319,7 @@ const giorni = ['L', 'M', 'M', 'G', 'V', 'S', 'D'];
 		const s = statoGiorno(d, ev, oggi);
 		const stag = stagione(d);
 		const p = preventivo(ev);
-		const base = `Stagione ${stag}. Sala e allestimento da ${p.da.toLocaleString('it-IT')} a ${p.a.toLocaleString('it-IT')} €.`;
+		const base = `Stagione ${stag}. Sala e allestimento da ${eur(p.da)} a ${eur(p.a)}.`;
 		nota.textContent =
 			s === 'opzionato' ? `Qualcun altro l’ha opzionato: puoi metterti in lista, ti avvisiamo se cade. ${base}` : s === 'libero' ? base : 'Questa data non è più disponibile con la sala scelta: scegline un’altra.';
 	}

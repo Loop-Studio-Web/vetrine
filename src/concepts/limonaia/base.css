@@ -1,18 +1,60 @@
-/* Limonaia Aurelia — token, reset e pezzi comuni. Limone, inchiostro blu, vetro; cartellini da vaso e finestre ad arco. */
+/* Limonaia Aurelia v2 — la pagina cambia luce con l'ora della festa.
+   Quattro stati di luce (giorno, tramonto, sera, notte) ridefiniscono fondo, carte e testo; foglia e cotto sono fasce strutturali fisse. */
+@property --fondo {
+	syntax: '<color>';
+	inherits: true;
+	initial-value: #edf3ee;
+}
+@property --carta {
+	syntax: '<color>';
+	inherits: true;
+	initial-value: #ffffff;
+}
+@property --testo {
+	syntax: '<color>';
+	inherits: true;
+	initial-value: #16224a;
+}
+@property --testo-2 {
+	syntax: '<color>';
+	inherits: true;
+	initial-value: #3b4670;
+}
+@property --vetro {
+	syntax: '<color>';
+	inherits: true;
+	initial-value: #cfe3e6;
+}
+@property --lampada {
+	syntax: '<number>';
+	inherits: true;
+	initial-value: 0;
+}
+
 :root {
+	/* luce: valori del giorno, cambiano con [data-fase] */
+	--fondo: #edf3ee;
+	--carta: #ffffff;
+	--testo: #16224a;
+	--testo-2: #3b4670;
+	--vetro: #cfe3e6;
+	--lampada: 0;
+
+	/* materia: colori che non cambiano con l'ora */
 	--limone: #efd84a;
 	--limone-2: #f7ea8c;
 	--inchiostro: #16224a;
 	--inchiostro-2: #0e1733;
-	--vetro: #bcd7e6;
-	--vetro-chiaro: #eaf3f8;
 	--terracotta: #c8532b;
-	--terra-testo: #a8421f; /* su chiaro, contrasto 5,4+ */
+	--cotto: #a8421f; /* fasce e tavoli: bianco sopra 5,4:1 */
+	--cotto-scuro: #7e2f14;
 	--foglia: #2e5b45;
+	--foglia-2: #3d7459;
 	--bianco: #ffffff;
-	--testo-2: #3b4670; /* secondario su chiaro, 7:1 */
 	--errore: #b3261e;
+	--errore-sera: #ff9a85;
 
+	--serif: 'Brygada 1918 Variable', Georgia, 'Times New Roman', serif;
 	--font: 'Epilogue Variable', 'Helvetica Neue', Arial, sans-serif;
 
 	--ease: cubic-bezier(0.23, 1, 0.32, 1);
@@ -20,8 +62,43 @@
 	--max: 1240px;
 	--nav-h: 68px;
 	--fascia-h: 34px;
+	--dock-h: 96px;
 	--arco: 999px 999px 10px 10px;
 	color-scheme: light;
+
+	transition:
+		--fondo 800ms ease,
+		--carta 800ms ease,
+		--testo 800ms ease,
+		--testo-2 800ms ease,
+		--vetro 800ms ease,
+		--lampada 900ms ease;
+}
+:root[data-fase='tramonto'] {
+	--fondo: #ece0f1;
+	--carta: #fbf5fc;
+	--testo: #2b1830;
+	--testo-2: #5d3f55;
+	--vetro: #d6c1e2;
+	--lampada: 0.6;
+}
+:root[data-fase='sera'] {
+	--fondo: #1b2347;
+	--carta: #252f5c;
+	--testo: #f6f1e2;
+	--testo-2: #c6cdea;
+	--vetro: #3a4a82;
+	--lampada: 1;
+	color-scheme: dark;
+}
+:root[data-fase='notte'] {
+	--fondo: #0d1430;
+	--carta: #161f44;
+	--testo: #f6f1e2;
+	--testo-2: #b8c0e0;
+	--vetro: #26335f;
+	--lampada: 1;
+	color-scheme: dark;
 }
 
 *,
@@ -35,17 +112,18 @@
 html {
 	scroll-padding-top: calc(var(--nav-h) + 12px);
 	-webkit-text-size-adjust: 100%;
-	scrollbar-color: var(--inchiostro) var(--vetro-chiaro);
+	background: var(--fondo);
 }
 
 body {
-	background: var(--vetro-chiaro);
-	color: var(--inchiostro);
+	background: var(--fondo);
+	color: var(--testo);
 	font-family: var(--font);
 	font-weight: 400;
 	font-size: 1.05rem;
-	line-height: 1.55;
+	line-height: 1.6;
 	overflow-x: clip;
+	padding-bottom: var(--dock-h);
 }
 body.menu-aperto {
 	overflow: hidden;
@@ -53,15 +131,12 @@ body.menu-aperto {
 
 /* Barra di scorrimento: un'asta di ferro con il limone come cursore */
 @supports selector(::-webkit-scrollbar) {
-	html {
-		scrollbar-color: auto;
-	}
 	::-webkit-scrollbar {
 		width: 14px;
 		height: 14px;
 	}
 	::-webkit-scrollbar-track {
-		background: var(--vetro-chiaro) linear-gradient(to right, transparent 6px, var(--inchiostro) 6px 8px, transparent 8px);
+		background: var(--fondo) linear-gradient(to right, transparent 6px, var(--testo-2) 6px 8px, transparent 8px);
 	}
 	::-webkit-scrollbar-thumb {
 		background: var(--limone);
@@ -104,11 +179,16 @@ ol {
 
 h1,
 h2,
-h3 {
-	font-weight: 800;
-	line-height: 1.02;
-	letter-spacing: -0.025em;
+h3,
+h4 {
+	font-family: var(--serif);
+	font-weight: 600;
+	line-height: 1.06;
+	letter-spacing: -0.012em;
 	text-wrap: balance;
+}
+em {
+	font-style: italic;
 }
 
 :focus-visible {
@@ -116,7 +196,9 @@ h3 {
 	outline-offset: 3px;
 	border-radius: 4px;
 }
-.scuro :focus-visible,
+:root[data-fase='sera'] :focus-visible,
+:root[data-fase='notte'] :focus-visible,
+.fascia-colore :focus-visible,
 .footer :focus-visible {
 	outline-color: var(--limone);
 }
@@ -153,70 +235,42 @@ h3 {
 	padding-inline: var(--gutter);
 }
 
-/* Cartellino da vaso: il numero d'ordine di ogni sezione */
-.cartellino {
-	display: inline-flex;
-	align-items: center;
-	gap: 10px;
-	position: relative;
-	padding: 6px 14px 6px 30px;
-	background: var(--limone);
-	color: var(--inchiostro);
-	font-size: 0.8rem;
-	font-weight: 700;
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
-	clip-path: polygon(14px 0, 100% 0, 100% 100%, 14px 100%, 0 50%);
-	transform: rotate(-1.2deg);
-}
-.cartellino::before {
-	content: '';
-	position: absolute;
-	left: 12px;
-	top: 50%;
-	width: 7px;
-	height: 7px;
-	margin-top: -3.5px;
-	border-radius: 50%;
-	background: var(--vetro-chiaro);
-	box-shadow: inset 0 1px 1px rgb(22 34 74 / 0.5);
-}
-.scuro .cartellino::before {
-	background: var(--inchiostro);
-}
-
 .sezione {
 	padding-block: clamp(64px, 9vw, 120px);
 }
-.sezione h2 {
-	font-size: clamp(2rem, 5.2vw, 3.6rem);
-	margin-top: 18px;
-	max-width: 18ch;
+.sezione h2,
+.pianta h2,
+.giornata h2 {
+	font-size: clamp(2.1rem, 5.4vw, 3.8rem);
+	max-width: 17ch;
 }
 .sezione__intro {
 	margin-top: 16px;
-	max-width: 56ch;
+	max-width: 58ch;
 	color: var(--testo-2);
 	font-size: 1.1rem;
 }
-.scuro {
-	background: var(--inchiostro);
-	color: var(--vetro-chiaro);
+
+/* Fasce di materia: foglia e cotto non cambiano con l'ora */
+.fascia-colore {
+	color: var(--bianco);
 }
-.scuro .sezione__intro {
-	color: var(--vetro);
+.fascia-colore--foglia {
+	background: var(--foglia);
+}
+.fascia-colore--cotto {
+	background: var(--cotto);
+}
+.fascia-colore .sezione__intro {
+	color: color-mix(in oklab, var(--bianco) 88%, transparent);
 }
 
-/* Evidenziatore: il limone passato sotto la parola */
-.evid {
-	background: linear-gradient(transparent 58%, var(--limone) 58% 92%, transparent 92%);
-	padding-inline: 0.06em;
-	-webkit-box-decoration-break: clone;
-	box-decoration-break: clone;
-}
-.scuro .evid {
-	background: none;
-	color: var(--limone);
+/* Etichetta: testo normale, non maiuscoletto */
+.etichetta {
+	font-weight: 700;
+	font-size: 0.92rem;
+	letter-spacing: 0.01em;
+	color: var(--testo-2);
 }
 
 /* Bottoni */
@@ -227,10 +281,10 @@ h3 {
 	gap: 10px;
 	min-height: 48px;
 	padding: 0 24px;
-	border: 2px solid var(--inchiostro);
+	border: 2px solid var(--testo);
 	border-radius: 999px;
-	background: var(--limone);
-	color: var(--inchiostro);
+	background: var(--testo);
+	color: var(--fondo);
 	font-weight: 700;
 	font-size: 1rem;
 	text-decoration: none;
@@ -243,35 +297,44 @@ h3 {
 .btn:active {
 	transform: scale(0.97);
 }
-.btn--inchiostro {
-	background: var(--inchiostro);
-	color: var(--limone);
+.btn--limone {
+	background: var(--limone);
+	border-color: var(--limone);
+	color: var(--inchiostro);
 }
 .btn--vuoto {
 	background: transparent;
+	color: var(--testo);
 }
-.scuro .btn {
-	border-color: var(--limone);
-}
-.scuro .btn--vuoto {
-	color: var(--vetro-chiaro);
+.fascia-colore .btn--vuoto {
+	color: var(--bianco);
+	border-color: var(--bianco);
 }
 @media (hover: hover) {
 	.btn:hover {
-		background: var(--inchiostro);
-		color: var(--limone);
+		background: var(--cotto);
+		border-color: var(--cotto);
+		color: var(--bianco);
 	}
-	.btn--inchiostro:hover {
-		background: var(--limone);
-		color: var(--inchiostro);
-	}
-	.scuro .btn:hover {
-		background: var(--limone);
+	.btn--limone:hover {
+		background: var(--bianco);
+		border-color: var(--bianco);
 		color: var(--inchiostro);
 	}
 }
 
-/* Pianta SVG (usata da Pianta e Giornata; generata via JS, per questo qui) */
+/* Ghirlanda: filo e lampadine che si accendono con la luce (--lampada) */
+.ghirlanda {
+	height: 40px;
+	background:
+		radial-gradient(circle at 50% 24px, color-mix(in oklab, var(--limone) calc(var(--lampada) * 100%), #8d98ad) 0 6px, transparent 6.5px) 0 0 / 64px 40px repeat-x,
+		radial-gradient(circle at 50% 24px, color-mix(in oklab, var(--limone) calc(var(--lampada) * 50%), transparent) 0 17px, transparent 18px) 0 0 / 64px 40px repeat-x,
+		linear-gradient(var(--testo-2), var(--testo-2)) 0 6px / 100% 2px no-repeat,
+		linear-gradient(var(--testo-2), var(--testo-2)) 0 6px / 2px 12px repeat-x;
+	pointer-events: none;
+}
+
+/* Pianta SVG (usata da Pianta, Giornata e Sopralluogo; generata via JS, per questo qui) */
 .ps {
 	display: block;
 	width: 100%;
@@ -279,13 +342,14 @@ h3 {
 	touch-action: pan-y;
 }
 .ps-sala {
-	fill: color-mix(in oklab, var(--bianco) calc(100% - var(--buio, 0) * 55%), var(--inchiostro));
-	stroke: var(--inchiostro);
-	stroke-width: 14;
+	fill: var(--carta);
+	stroke: var(--testo);
+	stroke-width: 12;
 }
 .ps-area {
 	fill: none;
-	stroke: var(--vetro);
+	stroke: var(--testo-2);
+	stroke-opacity: 0.45;
 	stroke-width: 4;
 	stroke-dasharray: 22 18;
 }
@@ -301,7 +365,7 @@ h3 {
 }
 .ps-pista rect {
 	fill: var(--limone);
-	opacity: 0.9;
+	opacity: 0.92;
 	stroke: var(--inchiostro);
 	stroke-width: 6;
 	stroke-dasharray: 18 12;
@@ -310,58 +374,86 @@ h3 {
 	fill: var(--inchiostro);
 }
 .ps-tav {
-	fill: var(--bianco);
-	stroke: var(--inchiostro);
+	fill: var(--cotto);
+	stroke: var(--cotto-scuro);
 	stroke-width: 8;
 }
 .ps-sed {
-	fill: var(--limone);
-	stroke: var(--inchiostro);
+	fill: var(--foglia);
+	stroke: var(--carta);
 	stroke-width: 5;
 }
 .ps-sed--vuota {
 	fill: transparent;
+	stroke: var(--foglia-2);
 	stroke-dasharray: 8 6;
-	opacity: 0.55;
+	opacity: 0.7;
 }
 .ps-num {
-	fill: var(--inchiostro);
-	font: 800 56px var(--font);
+	fill: var(--bianco);
+	font: 700 60px var(--serif);
 	text-anchor: middle;
 	dominant-baseline: central;
 	pointer-events: none;
-}
-.ps-quota {
-	fill: var(--testo-2);
-	font: 700 46px var(--font);
-	text-anchor: middle;
 }
 .ps-el {
 	cursor: grab;
 	outline: none;
 }
 .ps-el:focus-visible .ps-tav {
-	stroke: var(--terracotta);
+	stroke: var(--limone);
 	stroke-width: 18;
 }
 .ps-el.trascinato {
 	cursor: grabbing;
 }
 .ps-el.trascinato .ps-tav {
-	fill: var(--limone-2);
-}
-.ps-el.scelto {
-	touch-action: none;
+	fill: var(--terracotta);
 }
 .ps-el.scelto .ps-tav {
-	stroke: var(--terracotta);
+	stroke: var(--limone);
 	stroke-width: 14;
 }
-.ps-sola .ps-el {
+.ps-sola .ps-el,
+.ps-ferma .ps-el {
 	cursor: default;
 }
 
+/* Campi del modulo: lo stesso stato d'errore per tutti */
+.campo input[type='text'],
+.campo input[type='email'],
+.campo select,
+.campo textarea {
+	width: 100%;
+	min-height: 48px;
+	padding: 10px 14px;
+	border: 2px solid var(--testo);
+	border-radius: 10px;
+	background: var(--carta);
+	font-size: 1rem;
+}
+.campo [aria-invalid='true'] {
+	border-color: var(--errore);
+	background: color-mix(in oklab, var(--errore) 10%, var(--carta));
+}
+.errore {
+	color: var(--errore);
+	font-weight: 700;
+	font-size: 0.9rem;
+}
+:root[data-fase='sera'] .errore,
+:root[data-fase='notte'] .errore {
+	color: var(--errore-sera);
+}
+:root[data-fase='sera'] .campo [aria-invalid='true'],
+:root[data-fase='notte'] .campo [aria-invalid='true'] {
+	border-color: var(--errore-sera);
+}
+
 @media (prefers-reduced-motion: reduce) {
+	:root {
+		transition: none;
+	}
 	* {
 		scroll-behavior: auto !important;
 	}

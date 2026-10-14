@@ -1,12 +1,13 @@
 // Disegna la pianta della sala come stringa SVG. Modulo puro: lo usano Pianta (trascinabile) e Giornata (sola lettura).
 import { MARGINE, PALCO } from './dati';
-import { pista, ritirato, type Elemento, type Pianta } from './pianta';
+import { pista, type Elemento, type Pianta } from './pianta';
 
 export interface OpzioniSvg {
-	ora?: number; // se presente, i tavoli si ritirano dopo la cena
-	ritiro?: number; // 0..1, calcolato da chi chiama
+	ritiro?: number; // 0..1: 0 = disposizione di cena, 1 = disposizione con la pista
+	notte?: Pianta | null; // la stessa sala con la pista come area esclusa
 	override?: Record<string, { x: number; y: number }>;
 	ospiti?: number;
+	verticale?: boolean; // sala ruotata di 90°: sul telefono sta in larghezza senza scorrimento orizzontale
 }
 
 export const PAD = 130; // spazio attorno alla sala per le quote
@@ -63,7 +64,7 @@ export function disegnaElemento(e: Elemento, pos: { x: number; y: number }, num:
 }
 
 export function svgPianta(p: Pianta, o: OpzioniSvg = {}): string {
-	const t = o.ritiro ?? 0;
+	const t = o.notte ? o.ritiro ?? 0 : 0;
 	const parti: string[] = [];
 	parti.push(`<rect class="ps-sala" x="0" y="0" width="${p.w}" height="${p.d}" rx="36"/>`);
 	parti.push(`<rect class="ps-area" x="${p.area.x}" y="${p.area.y}" width="${p.area.w}" height="${p.area.h}" rx="20"/>`);
@@ -75,20 +76,46 @@ export function svgPianta(p: Pianta, o: OpzioniSvg = {}): string {
 	}
 	if (t > 0) {
 		const r = pista(p);
-		parti.push(`<g class="ps-pista" style="opacity:${t}"><rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" rx="20"/><text x="${r.x + r.w / 2}" y="${r.y + r.h / 2 + 18}">PISTA</text></g>`);
+		parti.push(`<g class="ps-pista" style="opacity:${t.toFixed(2)}"><rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" rx="20"/><text x="${r.x + r.w / 2}" y="${r.y + r.h / 2 + 18}">PISTA</text></g>`);
 	}
+	const op = (v: number) => (v < 1 ? ` style="opacity:${Math.max(0, v).toFixed(2)}"` : '');
+	const mix = (a: number, b: number) => Math.round(a + (b - a) * t);
+	const notte = o.notte?.elementi ?? [];
 	let seduto = 0;
 	let num = 0;
-	for (const e of p.elementi) {
+	p.elementi.forEach((e, i) => {
 		const base = o.override?.[e.id] ?? { x: e.x, y: e.y };
-		const pos = t > 0 ? ritirato({ ...e, ...base }, p, t) : base;
-		if (e.tipo !== 'fila') num++;
-		parti.push(disegnaElemento(e, { x: Math.round(pos.x), y: Math.round(pos.y) }, num, seduto, p.posti, o.ospiti));
+		const n = e.tipo !== 'fila' ? ++num : num;
+		const gemello = t > 0 ? notte[i] : undefined;
+		const stessa = gemello && gemello.tipo === e.tipo && (e.tipo === 'tondo' || e.tipo === 'alto');
+		let pos = base;
+		let vis = 1;
+		if (t > 0 && o.notte) {
+			if (stessa) pos = { x: mix(base.x, gemello.x), y: mix(base.y, gemello.y) };
+			else vis = 1 - t;
+		}
+		const g = disegnaElemento(e, { x: Math.round(pos.x), y: Math.round(pos.y) }, n, seduto, p.posti, o.ospiti);
+		parti.push(vis < 1 ? g.replace('<g ', `<g${op(vis)} `) : g);
 		seduto += e.posti;
+	});
+	// gli elementi della disposizione con la pista che non hanno un gemello di cena entrano in dissolvenza
+	if (t > 0 && o.notte) {
+		let sn = 0;
+		notte.forEach((e, i) => {
+			const d = p.elementi[i];
+			const stessa = d && d.tipo === e.tipo && (e.tipo === 'tondo' || e.tipo === 'alto');
+			if (!stessa) parti.push(disegnaElemento(e, { x: e.x, y: e.y }, i + 1, sn, o.notte!.posti).replace('<g ', `<g${op(t)} `));
+			sn += e.posti;
+		});
 	}
-	// quote
-	parti.push(`<text class="ps-quota" x="${p.w / 2}" y="-44">${metri(p.w)}</text>`);
-	parti.push(`<text class="ps-quota" transform="translate(-44 ${p.d / 2}) rotate(-90)">${metri(p.d)}</text>`);
+	if (o.verticale) {
+		// x' = d - y, y' = x: la lunghezza della sala corre in verticale; i testi si contro-ruotano per restare leggibili
+		const dritto = parti
+			.join('')
+			.replaceAll('<text class="ps-num"', '<text class="ps-num" transform="rotate(-90)"')
+			.replace(/<text x="([\d.]+)" y="([\d.]+)">PISTA/g, '<text x="$1" y="$2" transform="rotate(-90 $1 $2)">PISTA');
+		return `<svg class="ps ps--verticale" viewBox="${-PAD} ${-PAD} ${p.d + PAD * 2} ${p.w + PAD * 2}" role="group" aria-label="Pianta della sala"><g transform="translate(${p.d} 0) rotate(90)">${dritto}</g></svg>`;
+	}
 	return `<svg class="ps" viewBox="${-PAD} ${-PAD} ${p.w + PAD * 2} ${p.d + PAD * 2}" role="group" aria-label="Pianta della sala">${parti.join('')}</svg>`;
 }
 

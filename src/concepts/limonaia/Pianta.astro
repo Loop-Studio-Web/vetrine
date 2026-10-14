@@ -1,106 +1,90 @@
 ---
 import { FORMATI, SPAZI, TIPI } from './dati';
-const mesiNome = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
-const aperti = (m: number[]) => (m.length === 12 ? 'tutto l’anno' : `${mesiNome[m[0]]}–${mesiNome[m[m.length - 1]]}`);
 ---
 
-<section class="sezione pianta" id="pianta" aria-labelledby="t-pianta">
-	<div class="wrap">
-		<p class="cartellino">N° 01 · La pianta</p>
-		<h2 id="t-pianta">Quanti siete? Guarda <span class="evid">dove vi mettiamo</span>.</h2>
+<section class="pianta" id="pianta" aria-labelledby="t-pianta">
+	<div class="wrap pianta__testata">
+		<h2 id="t-pianta">Quanti siete? <em>Guarda dove vi mettiamo.</em></h2>
 		<p class="sezione__intro">
-			Cambia ospiti, formato e sala: i tavoli si dispongono davvero, con i corridoi. Se non ci state, la pianta lo dice.
-			Trascina i tavoli per provare un’altra idea.
+			Cambia ospiti, formato e sala: i tavoli si dispongono davvero, con i corridoi. Muovi l’orario in basso e la stessa pianta
+			diventa quella delle undici di sera, con la pista.
 		</p>
+	</div>
 
-		<div class="pianta__griglia">
-			<form class="pianta__ctrl" onsubmit="return false" aria-label="Com’è la tua festa">
-				<fieldset>
-					<legend>Che festa è</legend>
-					<div class="chips">
-						{
-							TIPI.map((t) => (
-								<label class="chip">
-									<input type="radio" name="tipo" value={t.id} />
-									<span>{t.nome}</span>
-								</label>
-							))
-						}
-					</div>
-				</fieldset>
-
-				<div class="campo">
-					<label for="ospiti" class="campo__t">Ospiti <output id="ospiti-n" for="ospiti">90</output></label>
-					<input type="range" id="ospiti" name="ospiti" min="20" max="220" step="2" value="90" />
-					<div class="campo__scala" aria-hidden="true"><span>20</span><span>220</span></div>
+	<div class="tavolo">
+		<form class="barra" onsubmit="return false" aria-label="Com’è la tua festa">
+			<fieldset class="barra__gruppo barra__gruppo--tipo">
+				<legend>Che festa è</legend>
+				<div class="opzioni">
+					{
+						TIPI.map((t) => (
+							<label class="opz">
+								<input type="radio" name="tipo" value={t.id} />
+								<span>{t.nome}</span>
+							</label>
+						))
+					}
 				</div>
+			</fieldset>
 
-				<fieldset>
-					<legend>Come si siede</legend>
-					<div class="scelte">
-						{
-							FORMATI.map((f) => (
-								<label class="scelta">
-									<input type="radio" name="formato" value={f.id} />
-									<span class="scelta__n">{f.nome}</span>
-									<span class="scelta__d">{f.nota}</span>
-								</label>
-							))
-						}
-					</div>
-				</fieldset>
+			<div class="barra__gruppo barra__gruppo--ospiti">
+				<label for="ospiti" class="barra__t">Ospiti <output id="ospiti-n" for="ospiti">90</output></label>
+				<input type="range" id="ospiti" name="ospiti" min="20" max="220" step="2" value="90" />
+			</div>
 
-				<fieldset>
-					<legend>In quale sala</legend>
-					<div class="scelte">
-						{
-							SPAZI.map((s) => (
-								<label class="scelta">
-									<input type="radio" name="spazio" value={s.id} />
-									<span class="scelta__n">{s.nome}</span>
-									<span class="scelta__d">
-										fino a {s.max} · {aperti(s.mesi)}
-									</span>
-								</label>
-							))
-						}
-					</div>
-				</fieldset>
-
-				<label class="interr">
-					<input type="checkbox" name="palco" />
-					<span><strong>Palco per la band</strong><small>toglie 2,6 m alla sala</small></span>
-				</label>
-			</form>
-
-			<div class="pianta__vista">
-				<div class="pianta__tela" data-tela></div>
-				<div class="verdetto" data-verdetto data-g="giusto" role="status" aria-live="polite">
-					<p class="verdetto__testo" data-v-testo></p>
-					<button type="button" class="btn btn--inchiostro verdetto__alt" data-v-alt hidden></button>
+			<fieldset class="barra__gruppo">
+				<legend>Come si siede</legend>
+				<div class="opzioni">
+					{
+						FORMATI.map((f) => (
+							<label class="opz" title={f.nota}>
+								<input type="radio" name="formato" value={f.id} />
+								<span>{f.nome}</span>
+							</label>
+						))
+					}
 				</div>
-				<dl class="numeri">
-					<div>
-						<dt>Seduti</dt>
-						<dd data-n-posti>—</dd>
-					</div>
-					<div>
-						<dt>Capienza</dt>
-						<dd data-n-cap>—</dd>
-					</div>
-					<div>
-						<dt>m² a testa</dt>
-						<dd data-n-mq>—</dd>
-					</div>
-					<div>
-						<dt>Tavoli</dt>
-						<dd data-n-tav>—</dd>
-					</div>
-				</dl>
-				<div class="pianta__azioni">
-					<p class="pianta__aiuto" data-aiuto>Trascina un tavolo, oppure selezionalo e usa le frecce.</p>
-					<button type="button" class="btn btn--vuoto" data-riordina hidden>Rimetti in ordine</button>
+			</fieldset>
+
+			<fieldset class="barra__gruppo">
+				<legend>In quale sala</legend>
+				<div class="opzioni">
+					{
+						SPAZI.map((s) => (
+							<label class="opz opz--sala">
+								<input type="radio" name="spazio" value={s.id} />
+								<span>
+									<em>{s.nome}</em>
+									<small data-cap={s.id}>—</small>
+								</span>
+							</label>
+						))
+					}
 				</div>
+			</fieldset>
+
+			<label class="interr">
+				<input type="checkbox" name="palco" />
+				<span>Palco per la band</span>
+			</label>
+		</form>
+
+		<div class="foglio">
+			<p class="foglio__quote" data-quote aria-hidden="true"></p>
+			<div class="tela" data-tela tabindex="0" role="region" aria-label="Pianta della sala"></div>
+		</div>
+
+		<div class="verdetto" data-verdetto data-g="giusto" role="status" aria-live="polite">
+			<p class="verdetto__testo" data-v-testo></p>
+			<button type="button" class="btn btn--limone verdetto__alt" data-v-alt hidden></button>
+		</div>
+
+		<div class="wrap pianta__sotto">
+			<p class="pianta__riga" data-riga></p>
+			<p class="pianta__pioggia" data-pioggia hidden></p>
+			<div class="pianta__azioni">
+				<p class="pianta__aiuto" data-aiuto></p>
+				<button type="button" class="btn btn--vuoto" data-riordina hidden>Rimetti in ordine</button>
 			</div>
 		</div>
 	</div>
@@ -108,117 +92,108 @@ const aperti = (m: number[]) => (m.length === 12 ? 'tutto l’anno' : `${mesiNom
 
 <style>
 	.pianta {
-		background: var(--vetro-chiaro);
+		--riga: max(var(--gutter), calc((100% - var(--max)) / 2 + var(--gutter)));
+		padding-top: clamp(56px, 8vw, 104px);
 	}
-	.pianta__griglia {
-		display: grid;
-		grid-template-columns: minmax(280px, 380px) minmax(0, 1fr);
-		gap: clamp(24px, 4vw, 56px);
-		margin-top: 40px;
-		align-items: start;
+	.pianta__testata h2 {
+		max-width: 20ch;
 	}
-	.pianta__ctrl {
-		display: grid;
-		gap: 26px;
+	.tavolo {
+		margin-top: 36px;
 	}
-	fieldset {
+
+	/* La barra dei controlli sta attaccata al bordo alto del foglio da disegno, come una riga di squadra */
+	.barra {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		gap: 16px clamp(18px, 3vw, 40px);
+		padding: 16px var(--riga);
+		background: var(--testo);
+		color: var(--fondo);
+	}
+	.barra__gruppo {
 		border: 0;
 		min-width: 0;
 	}
-	legend,
-	.campo__t {
+	.barra legend,
+	.barra__t {
 		display: block;
-		font-size: 0.78rem;
-		font-weight: 800;
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
-		margin-bottom: 10px;
+		font-size: 0.9rem;
+		font-weight: 700;
+		margin-bottom: 6px;
+		opacity: 0.85;
 	}
-	.campo__t output {
-		float: right;
-		font-size: 1.1rem;
-		letter-spacing: 0;
+	.barra__t output {
+		margin-left: 8px;
 		padding: 0 10px;
 		background: var(--limone);
+		color: var(--inchiostro);
 		border-radius: 999px;
+		font-weight: 800;
 	}
-	.chips {
+	.opzioni {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 8px;
+		gap: 6px;
 	}
-	.chip input,
-	.scelta input,
+	.opz input,
 	.interr input {
 		position: absolute;
 		opacity: 0;
 		pointer-events: none;
 	}
-	.chip span {
+	.opz > span {
 		display: inline-flex;
-		align-items: center;
+		flex-direction: column;
+		justify-content: center;
 		min-height: 44px;
 		padding: 0 16px;
-		border: 2px solid var(--inchiostro);
+		border: 2px solid color-mix(in oklab, var(--fondo) 55%, transparent);
 		border-radius: 999px;
-		font-weight: 700;
+		font-weight: 600;
 		font-size: 0.95rem;
 		cursor: pointer;
 		transition:
 			background-color 140ms var(--ease),
 			transform 140ms var(--ease);
 	}
-	.chip span:active {
+	.opz--sala > span {
+		border-radius: 28px 28px 10px 10px;
+		line-height: 1.15;
+		padding: 6px 18px;
+		align-items: center;
+		text-align: center;
+	}
+	.opz--sala em {
+		font-family: var(--serif);
+		font-weight: 600;
+		font-size: 1.05rem;
+	}
+	.opz small {
+		font-size: 0.78rem;
+		opacity: 0.85;
+	}
+	.opz > span:active {
 		transform: scale(0.96);
 	}
-	.chip input:checked + span {
-		background: var(--inchiostro);
-		color: var(--limone);
-	}
-	.chip input:focus-visible + span,
-	.scelta:has(input:focus-visible),
-	.interr:has(input:focus-visible) {
-		outline: 3px solid var(--terracotta);
-		outline-offset: 3px;
-	}
-	.scelte {
-		display: grid;
-		gap: 8px;
-	}
-	.scelta {
-		display: grid;
-		gap: 1px;
-		padding: 10px 16px;
-		border: 2px solid color-mix(in oklab, var(--inchiostro) 30%, transparent);
-		border-radius: 14px 14px 4px 4px;
-		background: var(--bianco);
-		cursor: pointer;
-		transition:
-			border-color 140ms var(--ease),
-			background-color 140ms var(--ease);
-	}
-	.scelta:has(input:checked) {
-		border-color: var(--inchiostro);
+	.opz input:checked + span {
 		background: var(--limone);
-	}
-	.scelta__n {
-		font-weight: 800;
-	}
-	.scelta__d {
-		font-size: 0.85rem;
-		color: var(--testo-2);
-	}
-	.scelta:has(input:checked) .scelta__d {
+		border-color: var(--limone);
 		color: var(--inchiostro);
 	}
+	.opz input:focus-visible + span,
+	.interr:has(input:focus-visible) {
+		outline: 3px solid var(--limone);
+		outline-offset: 3px;
+	}
 	.interr {
-		display: flex;
-		gap: 14px;
+		display: inline-flex;
 		align-items: center;
-		padding: 12px 16px;
-		border: 2px solid var(--inchiostro);
-		border-radius: 14px;
-		background: var(--bianco);
+		gap: 10px;
+		min-height: 44px;
+		font-weight: 600;
+		font-size: 0.95rem;
 		cursor: pointer;
 	}
 	.interr::before {
@@ -226,98 +201,93 @@ const aperti = (m: number[]) => (m.length === 12 ? 'tutto l’anno' : `${mesiNom
 		flex: none;
 		width: 26px;
 		height: 26px;
-		border: 2px solid var(--inchiostro);
+		border: 2px solid color-mix(in oklab, var(--fondo) 70%, transparent);
 		border-radius: 8px;
-		background: var(--bianco);
-		transition: background-color 140ms var(--ease);
 	}
 	.interr:has(input:checked)::before {
 		background: var(--limone) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7' fill='none' stroke='%2316224a' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 18px no-repeat;
+		border-color: var(--limone);
 	}
-	.interr span {
-		display: grid;
-	}
-	.interr small {
-		font-size: 0.85rem;
-		color: var(--testo-2);
-	}
-
-	input[type='range'] {
-		width: 100%;
+	.barra input[type='range'] {
+		width: clamp(150px, 16vw, 220px);
 		height: 44px;
-		accent-color: var(--inchiostro);
+		accent-color: var(--limone);
 		cursor: pointer;
 	}
-	.campo__scala {
-		display: flex;
-		justify-content: space-between;
-		font-size: 0.8rem;
-		color: var(--testo-2);
-		margin-top: -6px;
+
+	/* Il foglio: carta millimetrata a tutta larghezza */
+	.foglio {
+		position: relative;
+		padding: clamp(14px, 2.4vw, 32px) var(--riga) clamp(18px, 2.4vw, 32px);
+		background:
+			linear-gradient(color-mix(in oklab, var(--testo) 7%, transparent) 1px, transparent 1px) 0 0 / 28px 28px,
+			linear-gradient(90deg, color-mix(in oklab, var(--testo) 7%, transparent) 1px, transparent 1px) 0 0 / 28px 28px,
+			var(--vetro);
+	}
+	.foglio__quote {
+		font-family: var(--serif);
+		font-style: italic;
+		font-size: 1.1rem;
+		margin-bottom: 8px;
+	}
+	.tela {
+		overflow-x: auto;
+		overscroll-behavior-x: contain;
+	}
+	.tela :global(.ps) {
+		max-height: 74svh;
+		margin-inline: auto;
+	}
+	.tela :global(.ps--verticale) {
+		max-height: none;
+	}
+	.tela :global(.ps-sala) {
+		filter: drop-shadow(0 10px 18px color-mix(in oklab, var(--inchiostro) 22%, transparent));
 	}
 
-	.pianta__vista {
-		position: sticky;
-		top: calc(var(--nav-h) + 16px);
-		display: grid;
-		gap: 16px;
-		min-width: 0;
-	}
-	.pianta__tela {
-		background: var(--bianco);
-		border: 3px solid var(--inchiostro);
-		border-radius: 20px 20px 6px 6px;
-		padding: clamp(6px, 1.4vw, 14px);
-		box-shadow: 8px 8px 0 -2px var(--limone);
-	}
 	.verdetto {
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
 		justify-content: space-between;
-		gap: 12px;
-		padding: 14px 18px;
-		border-left: 8px solid var(--foglia);
-		background: var(--bianco);
-		border-radius: 4px 14px 14px 4px;
-		font-weight: 600;
+		gap: 12px 24px;
+		padding: 18px var(--riga);
+		background: var(--foglia);
+		color: var(--bianco);
+		transition: background-color 300ms var(--ease);
 	}
 	.verdetto[data-g='stretto'] {
-		border-left-color: var(--limone);
+		background: var(--limone);
+		color: var(--inchiostro);
 	}
 	.verdetto[data-g='noncista'] {
-		border-left-color: var(--errore);
+		background: var(--cotto);
 	}
-	.verdetto[data-g='ampio'] {
-		border-left-color: var(--vetro);
+	.verdetto__testo {
+		font-family: var(--serif);
+		font-weight: 500;
+		font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+		line-height: 1.3;
+		max-width: 60ch;
 	}
 	.verdetto__alt {
-		min-height: 44px;
-		padding: 0 18px;
-		font-size: 0.93rem;
+		min-height: 46px;
+		padding: 0 20px;
+		font-size: 0.95rem;
 	}
-	.numeri {
+	.pianta__sotto {
 		display: grid;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
-		gap: 8px;
+		gap: 10px;
+		padding-top: 22px;
 	}
-	.numeri div {
-		padding: 8px 12px;
-		background: color-mix(in oklab, var(--vetro) 45%, transparent);
-		border-radius: 10px;
+	.pianta__riga {
+		font-weight: 600;
 	}
-	.numeri dt {
-		font-size: 0.72rem;
-		font-weight: 700;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		color: var(--testo-2);
-	}
-	.numeri dd {
-		font-size: 1.5rem;
-		font-weight: 800;
-		letter-spacing: -0.02em;
-		font-variant-numeric: tabular-nums;
+	.pianta__pioggia {
+		padding: 10px 16px;
+		border: 2px dashed var(--testo-2);
+		border-radius: 12px;
+		max-width: 70ch;
 	}
 	.pianta__azioni {
 		display: flex;
@@ -327,7 +297,8 @@ const aperti = (m: number[]) => (m.length === 12 ? 'tutto l’anno' : `${mesiNom
 		gap: 12px;
 	}
 	.pianta__aiuto {
-		font-size: 0.9rem;
+		font-size: 1rem;
+		font-weight: 600;
 		color: var(--testo-2);
 	}
 	.pianta__azioni .btn {
@@ -335,42 +306,18 @@ const aperti = (m: number[]) => (m.length === 12 ? 'tutto l’anno' : `${mesiNom
 		padding: 0 18px;
 		font-size: 0.93rem;
 	}
-
-	@media (max-width: 900px) {
-		.pianta__griglia {
-			grid-template-columns: minmax(0, 1fr);
-		}
-		.pianta__vista {
-			order: -1;
-			top: calc(var(--nav-h) + 8px);
-			z-index: 2;
-			padding-block: 8px;
-			background: var(--vetro-chiaro);
-			margin-inline: calc(var(--gutter) * -1);
-			padding-inline: var(--gutter);
-			gap: 10px;
-		}
-		.numeri,
-		.pianta__azioni {
-			display: none;
-		}
-		.pianta__tela {
-			box-shadow: none;
-		}
-	}
-	@media (max-width: 480px) {
-		.verdetto {
-			padding: 10px 14px;
-			font-size: 0.93rem;
+	@media (max-width: 700px) {
+		.barra__gruppo--ospiti input[type='range'] {
+			width: min(100%, 320px);
 		}
 	}
 </style>
 
 <script>
-	import { dispone, mqUtili, type Pianta } from './pianta';
-	import { capienza, verdetto, type Evento } from './evento';
+	import { dispone, type Pianta } from './pianta';
+	import { capienza, migliaia, ritiro as ritiroDi, verdetto, type Evento } from './evento';
 	import { svgPianta } from './pianta-svg';
-	import { spazio } from './dati';
+	import { SPAZI, formato, spazio } from './dati';
 	import { ascolta, imposta, leggi, riordina, scegliTipo, sposta, spostati } from './stato';
 
 	const radice = document.getElementById('pianta')!;
@@ -380,14 +327,21 @@ const aperti = (m: number[]) => (m.length === 12 ? 'tutto l’anno' : `${mesiNom
 	const vAlt = radice.querySelector<HTMLButtonElement>('[data-v-alt]')!;
 	const btnRiordina = radice.querySelector<HTMLButtonElement>('[data-riordina]')!;
 	const aiuto = radice.querySelector<HTMLElement>('[data-aiuto]')!;
+	const riga = radice.querySelector<HTMLElement>('[data-riga]')!;
+	const pioggia = radice.querySelector<HTMLElement>('[data-pioggia]')!;
+	const quote = radice.querySelector<HTMLElement>('[data-quote]')!;
 	const ospitiIn = radice.querySelector<HTMLInputElement>('#ospiti')!;
 	const ospitiOut = radice.querySelector<HTMLOutputElement>('#ospiti-n')!;
 	const palco = radice.querySelector<HTMLInputElement>('input[name="palco"]')!;
-	const num = (n: number) => n.toLocaleString('it-IT', { maximumFractionDigits: 1 });
-	const set = (sel: string, v: string) => (radice.querySelector(sel)!.textContent = v);
+	const tocco = matchMedia('(pointer: coarse)');
+	// sotto i 700 px la sala si disegna in verticale e i tavoli si scambiano con due tocchi, qualunque sia il puntatore
+	const stretto = matchMedia('(max-width: 700px)');
+	const aTocco = () => tocco.matches || stretto.matches;
+	const metri = (cm: number) => (cm / 100).toLocaleString('it-IT', { maximumFractionDigits: 1 });
 
 	let corrente: Pianta;
 	let scelto: string | null = null;
+	let fermo = false;
 
 	function radio(nome: string, valore: string) {
 		radice.querySelectorAll<HTMLInputElement>(`input[name="${nome}"]`).forEach((i) => (i.checked = i.value === valore));
@@ -397,9 +351,20 @@ const aperti = (m: number[]) => (m.length === 12 ? 'tutto l’anno' : `${mesiNom
 		const attivo = document.activeElement as HTMLElement | null;
 		const idAttivo = attivo && tela.contains(attivo) ? attivo.dataset.id : null;
 		corrente = dispone(ev.spazio, ev.formato, ev.ospiti, ev.palco);
-		tela.innerHTML = svgPianta(corrente, { override: spostati(), ospiti: ev.ospiti });
-		if (scelto) tela.querySelector(`[data-id="${scelto}"]`)?.classList.add('scelto');
+		const r = ritiroDi(ev.ora);
+		const notte = r > 0 && ev.formato !== 'cerimonia' ? dispone(ev.spazio, ev.formato, ev.ospiti, ev.palco, true) : null;
+		// di notte i tavoli sono ritirati: non si spostano; sul telefono la pianta si guarda soltanto
+		fermo = r > 0;
+		tela.classList.toggle('ps-ferma', fermo);
+		tela.innerHTML = svgPianta(corrente, { override: spostati(), ospiti: fermo ? undefined : ev.ospiti, ritiro: r, notte, verticale: stretto.matches });
+		if (scelto && !fermo) tela.querySelector(`[data-id="${scelto}"]`)?.classList.add('scelto');
 		if (idAttivo) tela.querySelector<HTMLElement>(`[data-id="${idAttivo}"]`)?.focus({ preventScroll: true });
+		aiuto.textContent =
+			r > 0
+				? 'Dopo le 22:30 i tavoli si ritirano ai lati per fare posto alla pista: prima di allora puoi spostarli.'
+				: aTocco()
+					? 'Tocca un tavolo e poi un altro: si scambiano di posto.'
+					: 'Trascina un tavolo, oppure selezionalo e usa le frecce.';
 	}
 
 	function aggiorna() {
@@ -411,6 +376,12 @@ const aperti = (m: number[]) => (m.length === 12 ? 'tutto l’anno' : `${mesiNom
 		if (document.activeElement !== ospitiIn) ospitiIn.value = String(ev.ospiti);
 		ospitiOut.textContent = String(ev.ospiti);
 		disegna(ev);
+		const s = spazio(ev.spazio);
+		quote.textContent = `${s.nome}, ${metri(s.w)} × ${metri(s.d)} m`;
+		for (const sp of SPAZI) {
+			const c = radice.querySelector<HTMLElement>(`[data-cap="${sp.id}"]`)!;
+			c.textContent = `fino a ${migliaia(capienza(sp.id, ev.formato, ev.palco))}`;
+		}
 		const v = verdetto(ev);
 		vBox.dataset.g = v.giudizio;
 		vTesto.textContent = v.testo;
@@ -419,11 +390,29 @@ const aperti = (m: number[]) => (m.length === 12 ? 'tutto l’anno' : `${mesiNom
 			vAlt.textContent = `Passa ${spazio(v.alternativa).dove}`;
 			vAlt.dataset.spazio = v.alternativa;
 		}
-		set('[data-n-posti]', String(corrente.posti));
-		set('[data-n-cap]', String(capienza(ev.spazio, ev.formato, ev.palco)));
-		set('[data-n-mq]', num(mqUtili(ev.spazio, ev.palco) / ev.ospiti));
-		set('[data-n-tav]', String(corrente.elementi.filter((e) => e.tipo !== 'fila').length || corrente.elementi.length));
-		btnRiordina.hidden = Object.keys(spostati()).length === 0;
+		const tavoli = corrente.elementi.filter((e) => e.tipo !== 'fila').length;
+		const lungo = ev.formato === 'imperiale';
+		const tipoElem =
+			ev.formato === 'cerimonia'
+				? `${corrente.elementi.length} ${corrente.elementi.length === 1 ? 'blocco' : 'blocchi'} di sedie`
+				: tavoli === 1
+					? lungo ? '1 tavolo lungo' : '1 tavolo'
+					: `${tavoli} ${lungo ? 'tavoli lunghi' : 'tavoli'}`;
+		riga.textContent =
+			corrente.posti < ev.ospiti
+				? `${tipoElem}, ${migliaia(corrente.posti)} posti a sedere: restano senza posto ${migliaia(ev.ospiti - corrente.posti)} ospiti su ${migliaia(ev.ospiti)}.`
+				: `${tipoElem}, ${migliaia(corrente.posti)} posti a sedere per ${migliaia(ev.ospiti)} ospiti.`;
+		// piano B per il giardino: se piove si sposta sotto vetro
+		const pb = ev.spazio === 'giardino';
+		pioggia.hidden = !pb;
+		if (pb) {
+			const lim = capienza('limonaia', ev.formato, ev.palco);
+			const tende = ev.ospiti <= lim;
+			pioggia.textContent = tende
+				? `Se piove: la festa passa nella limonaia, che con ${formato(ev.formato).nome.toLowerCase()} tiene ${migliaia(lim)} ospiti. Voi siete ${migliaia(ev.ospiti)}, ci state.`
+				: `Se piove: nella limonaia con ${formato(ev.formato).nome.toLowerCase()} ci stanno ${migliaia(lim)} ospiti, voi siete ${migliaia(ev.ospiti)}. Serve il tendone: lo montiamo noi, costa a parte.`;
+		}
+		btnRiordina.hidden = Object.keys(spostati()).length === 0 || fermo;
 	}
 
 	radice.querySelectorAll<HTMLInputElement>('input[name="tipo"]').forEach((i) => i.addEventListener('change', () => scegliTipo(i.value as never)));
@@ -434,7 +423,7 @@ const aperti = (m: number[]) => (m.length === 12 ? 'tutto l’anno' : `${mesiNom
 	vAlt.addEventListener('click', () => vAlt.dataset.spazio && imposta({ spazio: vAlt.dataset.spazio as never }));
 	btnRiordina.addEventListener('click', riordina);
 
-	// ---- trascinamento dei tavoli (mouse e penna subito; su touch prima si tocca per sceglierlo) ----
+	// ---- trascinamento dei tavoli (mouse e penna; non di notte e non su touch) ----
 	let drag: { el: SVGGElement; id: string; dx: number; dy: number; mosso: boolean; w: number; h: number } | null = null;
 
 	function puntoSvg(svg: SVGSVGElement, ev: PointerEvent) {
@@ -446,20 +435,32 @@ const aperti = (m: number[]) => (m.length === 12 ? 'tutto l’anno' : `${mesiNom
 	const fra = (n: number, a: number, b: number) => Math.min(b, Math.max(a, n));
 
 	tela.addEventListener('pointerdown', (ev) => {
+		if (fermo) return;
 		const el = (ev.target as Element).closest<SVGGElement>('.ps-el');
 		if (!el || !corrente) return;
 		const id = el.dataset.id!;
 		const info = corrente.elementi.find((e) => e.id === id);
 		if (!info) return;
-		const svg = el.ownerSVGElement!;
-		if (ev.pointerType === 'touch' && scelto !== id) {
-			// primo tocco: lo sceglie, il trascinamento parte dal tocco successivo
+		if (aTocco()) {
+			// su touch niente trascinamento: un tocco sceglie, il tocco su un altro tavolo li scambia
+			const dove = (e: { id: string; x: number; y: number }) => spostati()[e.id] ?? { x: e.x, y: e.y };
+			if (scelto && scelto !== id) {
+				const altro = corrente.elementi.find((e) => e.id === scelto);
+				if (altro && altro.tipo === info.tipo) {
+					const a = dove(altro);
+					const b = dove(info);
+					scelto = null;
+					sposta(altro.id, b);
+					sposta(info.id, a);
+					return;
+				}
+			}
 			scelto = id;
 			tela.querySelectorAll('.scelto').forEach((x) => x.classList.remove('scelto'));
 			el.classList.add('scelto');
-			aiuto.textContent = 'Tavolo scelto: ora trascinalo.';
 			return;
 		}
+		const svg = el.ownerSVGElement!;
 		const t = el.transform.baseVal.consolidate()?.matrix;
 		const p = puntoSvg(svg, ev);
 		drag = { el, id, dx: (t?.e ?? info.x) - p.x, dy: (t?.f ?? info.y) - p.y, mosso: false, w: info.w, h: info.h };
@@ -491,6 +492,7 @@ const aperti = (m: number[]) => (m.length === 12 ? 'tutto l’anno' : `${mesiNom
 	tela.addEventListener('pointercancel', fine);
 
 	tela.addEventListener('keydown', (ev) => {
+		if (fermo) return;
 		const el = (ev.target as Element).closest<SVGGElement>('.ps-el');
 		if (!el) return;
 		const passo = ev.shiftKey ? 100 : 20;
@@ -507,6 +509,7 @@ const aperti = (m: number[]) => (m.length === 12 ? 'tutto l’anno' : `${mesiNom
 		});
 	});
 
+	stretto.addEventListener('change', aggiorna);
 	ascolta(aggiorna);
 	aggiorna();
 </script>

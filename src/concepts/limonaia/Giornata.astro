@@ -29,95 +29,85 @@ const scene = [
 const momenti = MOMENTI.map((m, i) => ({ ...m, testo: scene[i], ora: oraTesto(m.da) }));
 ---
 
-<section class="sezione giornata scuro" id="giornata" aria-labelledby="t-giornata" data-giornata>
-	<div class="wrap">
-		<p class="cartellino">N° 02 · La giornata</p>
-		<h2 id="t-giornata">Dalle quattro all’<span class="evid">una di notte</span>.</h2>
+<section class="giornata" id="giornata" aria-labelledby="t-giornata" data-giornata>
+	<div class="wrap giornata__testata">
+		<h2 id="t-giornata">Dalle quattro all’una di notte, <em>nella stessa sala.</em></h2>
 		<p class="sezione__intro">
-			Scorri l’orario: la luce cambia, i tavoli si ritirano e nasce la pista. È la stessa pianta di prima, vista a quell’ora.
+			L’orologio in basso muove tutta la pagina. Qui trovi cosa succede a ogni ora: tocca un momento per andarci.
 		</p>
+	</div>
 
-		<div class="giornata__griglia">
-			<div class="giornata__foto" data-foto>
-				{
-					foto.map((f, i) => (
-						<Image
-							src={f.src}
-							alt={f.alt}
-							widths={[420, 640, 860]}
-							sizes="(max-width: 900px) 80vw, 420px"
-							loading="lazy"
-							quality={68}
-							class={i === 0 ? 'on' : ''}
-							data-tappa={i}
-						/>
-					))
-				}
-				{
-					video.map((v) => (
-						<video data-tappa={v.tappa} data-src={`${base}/video/limonaia/${v.file}.mp4`} muted loop playsinline preload="none" aria-hidden="true" tabindex="-1" />
-					))
-				}
-				<p class="giornata__didascalia">Foto di archivio, illustrative</p>
-			</div>
-
-			<div class="giornata__comandi">
-				<div class="ora">
-					<label for="ora" class="ora__label">Che ora è</label>
-					<output class="ora__valore" for="ora" data-ora-testo>19:00</output>
-				</div>
-				<input type="range" id="ora" min="16" max="25" step="0.25" value="19" aria-describedby="ora-scena" />
-				<div class="ora__scala" aria-hidden="true"><span>16:00</span><span>20:30</span><span>01:00</span></div>
-
-				<div class="scena" id="ora-scena" aria-live="polite">
-					<p class="scena__nome" data-scena-nome></p>
-					<p class="scena__testo" data-scena-testo></p>
-				</div>
-
-				<div class="giornata__pianta" data-pianta></div>
-
-				<ol class="tappe" aria-label="Salta a un momento">
-					{
-						momenti.map((m) => (
-							<li>
-								<button type="button" data-da={m.da} data-testo={m.testo}>
-									<span class="tappe__ora">{m.ora}</span>
-									<span class="tappe__nome">{m.nome}</span>
-								</button>
-							</li>
-						))
-					}
-				</ol>
-			</div>
+	<div class="giornata__scena" data-foto>
+		{
+			foto.map((f, i) => (
+				<Image
+					src={f.src}
+					alt={f.alt}
+					widths={[640, 1000, 1500]}
+					sizes="100vw"
+					loading="lazy"
+					quality={66}
+					class={i === 0 ? 'on' : ''}
+					data-tappa={i}
+				/>
+			))
+		}
+		{
+			video.map((v) => (
+				<video data-tappa={v.tappa} data-src={`${base}/video/limonaia/${v.file}.mp4`} muted loop playsinline preload="none" aria-hidden="true" tabindex="-1" />
+			))
+		}
+		<div class="scena" aria-live="polite">
+			<p class="scena__ora" data-scena-ora>19:00</p>
+			<p class="scena__nome" data-scena-nome></p>
+			<p class="scena__testo" data-scena-testo></p>
 		</div>
+		<p class="giornata__didascalia">Foto di archivio, illustrative</p>
+	</div>
+
+	<div class="wrap">
+		<div class="cielo" aria-hidden="true"><i data-segno></i></div>
+		<ol class="tappe" aria-label="Salta a un momento">
+			{
+				momenti.map((m) => (
+					<li>
+						<button type="button" data-da={m.da} data-testo={m.testo}>
+							<span class="tappe__ora">{m.ora}</span>
+							<span class="tappe__nome">{m.breve}</span>
+						</button>
+					</li>
+				))
+			}
+		</ol>
 	</div>
 </section>
 
 <style>
 	.giornata {
-		--buio: 0;
+		padding-block: clamp(56px, 8vw, 104px) clamp(48px, 7vw, 88px);
 	}
-	.giornata__griglia {
-		display: grid;
-		grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-		gap: clamp(28px, 5vw, 72px);
-		margin-top: 40px;
-		align-items: start;
+	.giornata__testata {
+		text-align: center;
 	}
-	.giornata__foto {
-		position: sticky;
-		top: calc(var(--nav-h) + 20px);
-		aspect-ratio: 4 / 5;
-		max-height: calc(100svh - var(--nav-h) - 48px);
-		border-radius: var(--arco);
-		border: 6px solid var(--limone);
-		outline: 2px solid var(--limone);
-		outline-offset: 8px;
+	.giornata__testata h2,
+	.giornata__testata .sezione__intro {
+		margin-inline: auto;
+	}
+	.giornata__testata h2 {
+		max-width: 22ch;
+	}
+	.giornata__scena {
+		position: relative;
+		margin-top: 36px;
+		width: 100%;
+		aspect-ratio: 21 / 8;
+		min-height: 320px;
 		overflow: hidden;
 		background: var(--inchiostro-2);
+		color: var(--bianco);
 	}
-	.giornata__foto :global(img),
-	.giornata__foto :global(video) {
+	.giornata__scena :global(img),
+	.giornata__scena :global(video) {
 		position: absolute;
 		inset: 0;
 		width: 100%;
@@ -126,140 +116,97 @@ const momenti = MOMENTI.map((m, i) => ({ ...m, testo: scene[i], ora: oraTesto(m.
 		opacity: 0;
 		transition: opacity 700ms var(--ease);
 	}
-	.giornata__foto :global(img.on) {
+	.giornata__scena :global(img.on) {
 		opacity: 1;
 	}
-	/* il video sta sopra la foto e compare solo quando ha davvero qualcosa da mostrare */
-	.giornata__foto :global(video) {
+	.giornata__scena :global(video) {
 		z-index: 1;
 	}
-	.giornata__foto :global(video.on.pronto) {
+	.giornata__scena :global(video.on.pronto) {
 		opacity: 1;
 	}
-	.giornata__didascalia {
+	.scena {
 		position: absolute;
+		z-index: 2;
 		left: 0;
 		right: 0;
 		bottom: 0;
-		padding: 18px 16px 12px;
-		text-align: center;
-		font-size: 0.78rem;
-		color: var(--bianco);
-		background: linear-gradient(transparent, rgb(14 23 51 / 0.8));
+		padding: 80px var(--gutter) clamp(18px, 3vw, 36px);
+		background: linear-gradient(transparent, rgb(8 14 34 / 0.86));
+		display: grid;
+		gap: 2px;
 	}
-	.ora {
-		display: flex;
-		align-items: baseline;
-		justify-content: space-between;
-		gap: 16px;
-	}
-	.ora__label {
-		font-size: 0.78rem;
-		font-weight: 800;
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
+	.scena__ora {
+		font-weight: 700;
+		font-size: 0.95rem;
+		font-variant-numeric: tabular-nums;
 		color: var(--limone);
 	}
-	.ora__valore {
-		font-size: clamp(3rem, 8vw, 5rem);
-		font-weight: 800;
-		letter-spacing: -0.04em;
-		line-height: 1;
-		font-variant-numeric: tabular-nums;
-		color: var(--bianco);
-	}
-
-	/* L'asta dell'orario è il cielo della giornata: giorno, tramonto, notte */
-	input[type='range'] {
-		appearance: none;
-		-webkit-appearance: none;
-		display: block;
-		width: 100%;
-		height: 44px;
-		margin-top: 8px;
-		background: transparent;
-		cursor: pointer;
-	}
-	input[type='range']::-webkit-slider-runnable-track {
-		height: 14px;
-		border-radius: 8px;
-		background: linear-gradient(90deg, #f7ea8c 0%, #f2b45a 30%, #c8532b 45%, #3b3f7a 65%, #0b1230 100%);
-		border: 2px solid var(--vetro);
-	}
-	input[type='range']::-moz-range-track {
-		height: 10px;
-		border-radius: 8px;
-		background: linear-gradient(90deg, #f7ea8c 0%, #f2b45a 30%, #c8532b 45%, #3b3f7a 65%, #0b1230 100%);
-		border: 2px solid var(--vetro);
-	}
-	input[type='range']::-webkit-slider-thumb {
-		-webkit-appearance: none;
-		width: 30px;
-		height: 38px;
-		margin-top: -14px;
-		border-radius: 15px 15px 4px 4px;
-		background: var(--limone);
-		border: 3px solid var(--inchiostro);
-		box-shadow: 0 0 0 2px var(--limone);
-	}
-	input[type='range']::-moz-range-thumb {
-		width: 24px;
-		height: 32px;
-		border-radius: 15px 15px 4px 4px;
-		background: var(--limone);
-		border: 3px solid var(--inchiostro);
-		box-shadow: 0 0 0 2px var(--limone);
-	}
-	.ora__scala {
-		display: flex;
-		justify-content: space-between;
-		font-size: 0.8rem;
-		color: var(--vetro);
-	}
-
-	.scena {
-		margin-top: 22px;
-		padding: 18px 22px;
-		border-left: 8px solid var(--limone);
-		background: color-mix(in oklab, var(--bianco) 8%, transparent);
-		border-radius: 4px 14px 14px 4px;
-		min-height: 118px;
-	}
 	.scena__nome {
-		font-size: 1.5rem;
-		font-weight: 800;
-		letter-spacing: -0.02em;
-		color: var(--bianco);
+		font-family: var(--serif);
+		font-style: italic;
+		font-weight: 600;
+		font-size: clamp(1.8rem, 4vw, 3rem);
+		line-height: 1.1;
 	}
 	.scena__testo {
-		margin-top: 4px;
-		color: var(--vetro);
+		max-width: 56ch;
+		color: #e3ebf3;
 	}
-	.giornata__pianta {
-		margin-top: 22px;
-		padding: clamp(6px, 1.4vw, 14px);
-		background: color-mix(in oklab, var(--bianco) calc(100% - var(--buio) * 85%), var(--inchiostro-2));
-		border: 3px solid var(--vetro);
-		border-radius: 20px 20px 6px 6px;
-		transition: background-color 400ms var(--ease);
+	.giornata__didascalia {
+		position: absolute;
+		z-index: 2;
+		right: var(--gutter);
+		top: 12px;
+		font-size: 0.78rem;
+		padding: 2px 8px;
+		border-radius: 999px;
+		background: rgb(8 14 34 / 0.6);
+		color: var(--bianco);
+	}
+	/* Il cielo della giornata: il segno scorre con l'ora */
+	.cielo {
+		position: relative;
+		height: 12px;
+		margin-top: 28px;
+		border-radius: 8px;
+		background: linear-gradient(90deg, #f7ea8c 0%, #f2b45a 30%, #c8532b 45%, #3b3f7a 65%, #0b1230 100%);
+		border: 2px solid var(--testo);
+	}
+	.cielo i {
+		position: absolute;
+		top: -9px;
+		left: var(--x, 0%);
+		width: 14px;
+		height: 28px;
+		margin-left: -7px;
+		border-radius: 7px 7px 3px 3px;
+		background: var(--limone);
+		border: 3px solid var(--inchiostro);
+		transition: left 200ms var(--ease);
 	}
 	.tappe {
 		margin-top: 22px;
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+		grid-template-columns: repeat(7, minmax(0, 1fr));
 		gap: 8px;
 	}
-	.tappe button {
+	.tappe li {
 		display: flex;
-		align-items: baseline;
-		gap: 10px;
+	}
+	.tappe button {
+		height: 100%;
+		display: grid;
+		align-content: center;
+		justify-items: center;
+		text-align: center;
+		gap: 2px;
 		width: 100%;
-		min-height: 48px;
-		padding: 8px 14px;
+		min-height: 74px;
+		padding: 10px 12px;
 		background: transparent;
-		border: 2px solid color-mix(in oklab, var(--vetro) 55%, transparent);
-		border-radius: 12px 12px 4px 4px;
-		color: var(--vetro-chiaro);
+		border: 2px solid color-mix(in oklab, var(--testo) 35%, transparent);
+		border-radius: 28px 28px 10px 10px;
 		text-align: left;
 		cursor: pointer;
 		transition:
@@ -267,81 +214,70 @@ const momenti = MOMENTI.map((m, i) => ({ ...m, testo: scene[i], ora: oraTesto(m.
 			color 140ms var(--ease);
 	}
 	.tappe button[aria-current='true'] {
-		background: var(--limone);
-		color: var(--inchiostro);
-		border-color: var(--limone);
+		background: var(--foglia);
+		color: var(--bianco);
+		border-color: var(--foglia);
 	}
 	.tappe__ora {
 		font-weight: 800;
 		font-variant-numeric: tabular-nums;
 	}
+	.tappe__ora,
 	.tappe__nome {
-		font-size: 0.93rem;
+		text-align: center;
+	}
+	.tappe__nome {
+		font-family: var(--serif);
+		font-weight: 600;
+		line-height: 1.15;
+		font-size: 0.98rem;
 	}
 	@media (hover: hover) {
 		.tappe button:hover {
-			border-color: var(--limone);
+			border-color: var(--testo);
 		}
 	}
-	@media (max-width: 900px) {
-		.giornata__griglia {
-			grid-template-columns: minmax(0, 1fr);
+	@media (max-width: 1000px) {
+		.tappe {
+			grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
 		}
-		.giornata__foto {
-			position: relative;
-			top: 0;
-			aspect-ratio: 16 / 10;
-			max-height: none;
-			border-radius: 120px 120px 10px 10px;
+		.giornata__scena {
+			aspect-ratio: auto;
+			height: 380px;
 		}
 	}
 	@media (prefers-reduced-motion: reduce) {
-		.giornata__foto :global(img),
-		.giornata__foto :global(video),
-		.giornata__pianta {
+		.giornata__scena :global(img),
+		.giornata__scena :global(video),
+		.cielo i {
 			transition: none;
 		}
 	}
 </style>
 
 <script>
-	import { dispone } from './pianta';
-	import { fase, momento, oraTesto, ritiro, tappa, buio, MOMENTI } from './evento';
-	import { svgPianta } from './pianta-svg';
-	import { ascolta, imposta, leggi, spostati } from './stato';
+	import { momento, oraTesto, tappa, MOMENTI } from './evento';
+	import { ascolta, imposta, leggi } from './stato';
 
 	const radice = document.getElementById('giornata')!;
-	const rng = radice.querySelector<HTMLInputElement>('#ora')!;
-	const testoOra = radice.querySelector<HTMLElement>('[data-ora-testo]')!;
+	const ora = radice.querySelector<HTMLElement>('[data-scena-ora]')!;
 	const nome = radice.querySelector<HTMLElement>('[data-scena-nome]')!;
 	const testo = radice.querySelector<HTMLElement>('[data-scena-testo]')!;
-	const hostPianta = radice.querySelector<HTMLElement>('[data-pianta]')!;
+	const segno = radice.querySelector<HTMLElement>('[data-segno]')!;
 	const foto = [...radice.querySelectorAll<HTMLElement>('[data-tappa]')];
 	const bottoni = [...radice.querySelectorAll<HTMLButtonElement>('[data-da]')];
 
-	let chiave = '';
 	function aggiorna() {
 		const ev = leggi();
-		const ora = ev.ora;
-		if (document.activeElement !== rng) rng.value = String(ora);
-		testoOra.textContent = oraTesto(ora);
-		const m = momento(ora);
+		const m = momento(ev.ora);
 		const idx = MOMENTI.indexOf(m);
+		ora.textContent = `Alle ${oraTesto(ev.ora)}`;
 		nome.textContent = m.nome;
 		testo.textContent = bottoni[idx]?.dataset.testo ?? '';
 		bottoni.forEach((b, i) => (i === idx ? b.setAttribute('aria-current', 'true') : b.removeAttribute('aria-current')));
-		const t = tappa(ora);
+		const t = tappa(ev.ora);
 		foto.forEach((f) => f.classList.toggle('on', Number(f.dataset.tappa) === t));
-		radice.style.setProperty('--buio', buio(ora).toFixed(3));
-		radice.dataset.fase = fase(ora);
-		// ridisegna la pianta solo se è cambiato qualcosa di visibile
-		const r = ritiro(ora);
-		const k = `${ev.spazio}|${ev.formato}|${ev.ospiti}|${ev.palco}|${r.toFixed(2)}|${Object.keys(spostati()).length}`;
-		if (k !== chiave) {
-			chiave = k;
-			const p = dispone(ev.spazio, ev.formato, ev.ospiti, ev.palco);
-			hostPianta.innerHTML = svgPianta(p, { ritiro: r, override: spostati() });
-		}
+		segno.style.setProperty('--x', `${((ev.ora - 16) / 9) * 100}%`);
 	}
 
 	// i video partono solo con la sezione in vista, mai con reduced-motion o risparmio dati
@@ -358,21 +294,23 @@ const momenti = MOMENTI.map((m, i) => ({ ...m, testo: scene[i], ora: oraTesto(m.
 		}
 	}
 	if (!ridotto && !risparmio && 'IntersectionObserver' in window) {
-		new IntersectionObserver((voci, o) => {
-			if (!voci.some((x) => x.isIntersecting) || caricati) return;
-			caricati = true;
-			o.disconnect();
-			for (const v of video) {
-				v.addEventListener('canplay', () => v.classList.add('pronto'), { once: true });
-				v.src = v.dataset.src!;
-				v.load();
-			}
-			sincronizza();
-		}, { rootMargin: '0px 0px -10% 0px' }).observe(radice);
+		new IntersectionObserver(
+			(voci, o) => {
+				if (!voci.some((x) => x.isIntersecting) || caricati) return;
+				caricati = true;
+				o.disconnect();
+				for (const v of video) {
+					v.addEventListener('canplay', () => v.classList.add('pronto'), { once: true });
+					v.src = v.dataset.src!;
+					v.load();
+				}
+				sincronizza();
+			},
+			{ rootMargin: '0px 0px -10% 0px' },
+		).observe(radice);
 	}
 	ascolta(sincronizza);
 
-	rng.addEventListener('input', () => imposta({ ora: Number(rng.value) }));
 	bottoni.forEach((b) => b.addEventListener('click', () => imposta({ ora: Number(b.dataset.da) })));
 	ascolta(aggiorna);
 	aggiorna();
