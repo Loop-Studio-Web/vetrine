@@ -866,7 +866,7 @@ export const concepts: Concept[] = [
 		caratteri: 'Brygada 1918 e Epilogue',
 		palette: ['#efd84a', '#16224a', '#bcd7e6', '#a8421f', '#2e5b45', '#ece0f1'],
 		metriche: [
-			{ label: 'Performance', valore: '96' },
+			{ label: 'Performance', valore: '97' },
 			{ label: 'Accessibilità', valore: '100' },
 			{ label: 'Buone pratiche', valore: '100' },
 		],
