@@ -1,0 +1,379 @@
+---
+import { Image } from 'astro:assets';
+import serra from '../../assets/limonaia/foto/apertura-serra.jpg';
+import tramonto from '../../assets/limonaia/foto/tramonto.jpg';
+import sera from '../../assets/limonaia/foto/sera.jpg';
+import notte from '../../assets/limonaia/foto/notte.jpg';
+import { MOMENTI, oraTesto } from './evento';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const video = [
+	{ tappa: 1, file: 'tramonto' },
+	{ tappa: 2, file: 'sera' },
+];
+const foto = [
+	{ src: serra, alt: 'La serra di giorno, tavolata apparecchiata tra le piante' },
+	{ src: tramonto, alt: 'Il giardino al tramonto, un gazebo con le luci a ghirlanda accese' },
+	{ src: sera, alt: 'La sala di sera, tavoli lunghi sotto i lampadari e le luci appese' },
+	{ src: notte, alt: 'La serra di notte, tutta illuminata dall’interno' },
+];
+const scene = [
+	'Gli ospiti arrivano sotto le vetrate: acqua e limone, musica bassa, il tempo di salutarsi.',
+	'Sedie in file lungo il corridoio centrale, poi il brindisi in piedi.',
+	'Si esce tra i vasi di agrumi, mentre in sala si apparecchia.',
+	'Tutti seduti: i tavoli sono quelli della pianta, ognuno col suo numero.',
+	'Luci basse, un brindisi, il taglio.',
+	'I tavoli si ritirano ai lati: al centro nasce la pista.',
+	'Si spengono le ghirlande e restano i vetri illuminati.',
+];
+const momenti = MOMENTI.map((m, i) => ({ ...m, testo: scene[i], ora: oraTesto(m.da) }));
+---
+
+<section class="sezione giornata scuro" id="giornata" aria-labelledby="t-giornata" data-giornata>
+	<div class="wrap">
+		<p class="cartellino">N° 02 · La giornata</p>
+		<h2 id="t-giornata">Dalle quattro all’<span class="evid">una di notte</span>.</h2>
+		<p class="sezione__intro">
+			Scorri l’orario: la luce cambia, i tavoli si ritirano e nasce la pista. È la stessa pianta di prima, vista a quell’ora.
+		</p>
+
+		<div class="giornata__griglia">
+			<div class="giornata__foto" data-foto>
+				{
+					foto.map((f, i) => (
+						<Image
+							src={f.src}
+							alt={f.alt}
+							widths={[420, 640, 860]}
+							sizes="(max-width: 900px) 80vw, 420px"
+							loading="lazy"
+							quality={68}
+							class={i === 0 ? 'on' : ''}
+							data-tappa={i}
+						/>
+					))
+				}
+				{
+					video.map((v) => (
+						<video data-tappa={v.tappa} data-src={`${base}/video/limonaia/${v.file}.mp4`} muted loop playsinline preload="none" aria-hidden="true" tabindex="-1" />
+					))
+				}
+				<p class="giornata__didascalia">Foto di archivio, illustrative</p>
+			</div>
+
+			<div class="giornata__comandi">
+				<div class="ora">
+					<label for="ora" class="ora__label">Che ora è</label>
+					<output class="ora__valore" for="ora" data-ora-testo>19:00</output>
+				</div>
+				<input type="range" id="ora" min="16" max="25" step="0.25" value="19" aria-describedby="ora-scena" />
+				<div class="ora__scala" aria-hidden="true"><span>16:00</span><span>20:30</span><span>01:00</span></div>
+
+				<div class="scena" id="ora-scena" aria-live="polite">
+					<p class="scena__nome" data-scena-nome></p>
+					<p class="scena__testo" data-scena-testo></p>
+				</div>
+
+				<div class="giornata__pianta" data-pianta></div>
+
+				<ol class="tappe" aria-label="Salta a un momento">
+					{
+						momenti.map((m) => (
+							<li>
+								<button type="button" data-da={m.da} data-testo={m.testo}>
+									<span class="tappe__ora">{m.ora}</span>
+									<span class="tappe__nome">{m.nome}</span>
+								</button>
+							</li>
+						))
+					}
+				</ol>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.giornata {
+		--buio: 0;
+	}
+	.giornata__griglia {
+		display: grid;
+		grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+		gap: clamp(28px, 5vw, 72px);
+		margin-top: 40px;
+		align-items: start;
+	}
+	.giornata__foto {
+		position: sticky;
+		top: calc(var(--nav-h) + 20px);
+		aspect-ratio: 4 / 5;
+		max-height: calc(100svh - var(--nav-h) - 48px);
+		border-radius: var(--arco);
+		border: 6px solid var(--limone);
+		outline: 2px solid var(--limone);
+		outline-offset: 8px;
+		overflow: hidden;
+		background: var(--inchiostro-2);
+	}
+	.giornata__foto :global(img),
+	.giornata__foto :global(video) {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		opacity: 0;
+		transition: opacity 700ms var(--ease);
+	}
+	.giornata__foto :global(img.on) {
+		opacity: 1;
+	}
+	/* il video sta sopra la foto e compare solo quando ha davvero qualcosa da mostrare */
+	.giornata__foto :global(video) {
+		z-index: 1;
+	}
+	.giornata__foto :global(video.on.pronto) {
+		opacity: 1;
+	}
+	.giornata__didascalia {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		padding: 18px 16px 12px;
+		text-align: center;
+		font-size: 0.78rem;
+		color: var(--bianco);
+		background: linear-gradient(transparent, rgb(14 23 51 / 0.8));
+	}
+	.ora {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 16px;
+	}
+	.ora__label {
+		font-size: 0.78rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--limone);
+	}
+	.ora__valore {
+		font-size: clamp(3rem, 8vw, 5rem);
+		font-weight: 800;
+		letter-spacing: -0.04em;
+		line-height: 1;
+		font-variant-numeric: tabular-nums;
+		color: var(--bianco);
+	}
+
+	/* L'asta dell'orario è il cielo della giornata: giorno, tramonto, notte */
+	input[type='range'] {
+		appearance: none;
+		-webkit-appearance: none;
+		display: block;
+		width: 100%;
+		height: 44px;
+		margin-top: 8px;
+		background: transparent;
+		cursor: pointer;
+	}
+	input[type='range']::-webkit-slider-runnable-track {
+		height: 14px;
+		border-radius: 8px;
+		background: linear-gradient(90deg, #f7ea8c 0%, #f2b45a 30%, #c8532b 45%, #3b3f7a 65%, #0b1230 100%);
+		border: 2px solid var(--vetro);
+	}
+	input[type='range']::-moz-range-track {
+		height: 10px;
+		border-radius: 8px;
+		background: linear-gradient(90deg, #f7ea8c 0%, #f2b45a 30%, #c8532b 45%, #3b3f7a 65%, #0b1230 100%);
+		border: 2px solid var(--vetro);
+	}
+	input[type='range']::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		width: 30px;
+		height: 38px;
+		margin-top: -14px;
+		border-radius: 15px 15px 4px 4px;
+		background: var(--limone);
+		border: 3px solid var(--inchiostro);
+		box-shadow: 0 0 0 2px var(--limone);
+	}
+	input[type='range']::-moz-range-thumb {
+		width: 24px;
+		height: 32px;
+		border-radius: 15px 15px 4px 4px;
+		background: var(--limone);
+		border: 3px solid var(--inchiostro);
+		box-shadow: 0 0 0 2px var(--limone);
+	}
+	.ora__scala {
+		display: flex;
+		justify-content: space-between;
+		font-size: 0.8rem;
+		color: var(--vetro);
+	}
+
+	.scena {
+		margin-top: 22px;
+		padding: 18px 22px;
+		border-left: 8px solid var(--limone);
+		background: color-mix(in oklab, var(--bianco) 8%, transparent);
+		border-radius: 4px 14px 14px 4px;
+		min-height: 118px;
+	}
+	.scena__nome {
+		font-size: 1.5rem;
+		font-weight: 800;
+		letter-spacing: -0.02em;
+		color: var(--bianco);
+	}
+	.scena__testo {
+		margin-top: 4px;
+		color: var(--vetro);
+	}
+	.giornata__pianta {
+		margin-top: 22px;
+		padding: clamp(6px, 1.4vw, 14px);
+		background: color-mix(in oklab, var(--bianco) calc(100% - var(--buio) * 85%), var(--inchiostro-2));
+		border: 3px solid var(--vetro);
+		border-radius: 20px 20px 6px 6px;
+		transition: background-color 400ms var(--ease);
+	}
+	.tappe {
+		margin-top: 22px;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+		gap: 8px;
+	}
+	.tappe button {
+		display: flex;
+		align-items: baseline;
+		gap: 10px;
+		width: 100%;
+		min-height: 48px;
+		padding: 8px 14px;
+		background: transparent;
+		border: 2px solid color-mix(in oklab, var(--vetro) 55%, transparent);
+		border-radius: 12px 12px 4px 4px;
+		color: var(--vetro-chiaro);
+		text-align: left;
+		cursor: pointer;
+		transition:
+			background-color 140ms var(--ease),
+			color 140ms var(--ease);
+	}
+	.tappe button[aria-current='true'] {
+		background: var(--limone);
+		color: var(--inchiostro);
+		border-color: var(--limone);
+	}
+	.tappe__ora {
+		font-weight: 800;
+		font-variant-numeric: tabular-nums;
+	}
+	.tappe__nome {
+		font-size: 0.93rem;
+	}
+	@media (hover: hover) {
+		.tappe button:hover {
+			border-color: var(--limone);
+		}
+	}
+	@media (max-width: 900px) {
+		.giornata__griglia {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.giornata__foto {
+			position: relative;
+			top: 0;
+			aspect-ratio: 16 / 10;
+			max-height: none;
+			border-radius: 120px 120px 10px 10px;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.giornata__foto :global(img),
+		.giornata__foto :global(video),
+		.giornata__pianta {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	import { dispone } from './pianta';
+	import { fase, momento, oraTesto, ritiro, tappa, buio, MOMENTI } from './evento';
+	import { svgPianta } from './pianta-svg';
+	import { ascolta, imposta, leggi, spostati } from './stato';
+
+	const radice = document.getElementById('giornata')!;
+	const rng = radice.querySelector<HTMLInputElement>('#ora')!;
+	const testoOra = radice.querySelector<HTMLElement>('[data-ora-testo]')!;
+	const nome = radice.querySelector<HTMLElement>('[data-scena-nome]')!;
+	const testo = radice.querySelector<HTMLElement>('[data-scena-testo]')!;
+	const hostPianta = radice.querySelector<HTMLElement>('[data-pianta]')!;
+	const foto = [...radice.querySelectorAll<HTMLElement>('[data-tappa]')];
+	const bottoni = [...radice.querySelectorAll<HTMLButtonElement>('[data-da]')];
+
+	let chiave = '';
+	function aggiorna() {
+		const ev = leggi();
+		const ora = ev.ora;
+		if (document.activeElement !== rng) rng.value = String(ora);
+		testoOra.textContent = oraTesto(ora);
+		const m = momento(ora);
+		const idx = MOMENTI.indexOf(m);
+		nome.textContent = m.nome;
+		testo.textContent = bottoni[idx]?.dataset.testo ?? '';
+		bottoni.forEach((b, i) => (i === idx ? b.setAttribute('aria-current', 'true') : b.removeAttribute('aria-current')));
+		const t = tappa(ora);
+		foto.forEach((f) => f.classList.toggle('on', Number(f.dataset.tappa) === t));
+		radice.style.setProperty('--buio', buio(ora).toFixed(3));
+		radice.dataset.fase = fase(ora);
+		// ridisegna la pianta solo se è cambiato qualcosa di visibile
+		const r = ritiro(ora);
+		const k = `${ev.spazio}|${ev.formato}|${ev.ospiti}|${ev.palco}|${r.toFixed(2)}|${Object.keys(spostati()).length}`;
+		if (k !== chiave) {
+			chiave = k;
+			const p = dispone(ev.spazio, ev.formato, ev.ospiti, ev.palco);
+			hostPianta.innerHTML = svgPianta(p, { ritiro: r, override: spostati() });
+		}
+	}
+
+	// i video partono solo con la sezione in vista, mai con reduced-motion o risparmio dati
+	const video = [...radice.querySelectorAll<HTMLVideoElement>('video[data-src]')];
+	const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+	const risparmio = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
+	let caricati = false;
+	function sincronizza() {
+		const t = tappa(leggi().ora);
+		for (const v of video) {
+			if (!v.src) continue;
+			if (Number(v.dataset.tappa) === t) v.play().catch(() => {});
+			else v.pause();
+		}
+	}
+	if (!ridotto && !risparmio && 'IntersectionObserver' in window) {
+		new IntersectionObserver((voci, o) => {
+			if (!voci.some((x) => x.isIntersecting) || caricati) return;
+			caricati = true;
+			o.disconnect();
+			for (const v of video) {
+				v.addEventListener('canplay', () => v.classList.add('pronto'), { once: true });
+				v.src = v.dataset.src!;
+				v.load();
+			}
+			sincronizza();
+		}, { rootMargin: '0px 0px -10% 0px' }).observe(radice);
+	}
+	ascolta(sincronizza);
+
+	rng.addEventListener('input', () => imposta({ ora: Number(rng.value) }));
+	bottoni.forEach((b) => b.addEventListener('click', () => imposta({ ora: Number(b.dataset.da) })));
+	ascolta(aggiorna);
+	aggiorna();
+</script>

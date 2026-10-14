@@ -1,0 +1,89 @@
+---
+import logo from '../../assets/hub/loop-logo-on-dark.svg';
+import Simbolo from './Simbolo.astro';
+---
+
+<footer class="footer">
+	<div class="wrap footer__in">
+		<p class="footer__marca">
+			<Simbolo tam={44} arco="#bcd7e6" vetro="#16224a" />
+			<span>Limonaia Aurelia</span>
+		</p>
+		<nav class="footer__nav" aria-label="Piè di pagina">
+			<a href="#pianta">La pianta</a>
+			<a href="#giornata">La giornata</a>
+			<a href="#spazi">Gli spazi</a>
+			<a href="#calendario">Calendario</a>
+			<a href="#preventivo">Preventivo</a>
+			<a href="#sopralluogo">Sopralluogo</a>
+		</nav>
+		<p class="footer__copia">
+			© 2026 Limonaia Aurelia. Location di fantasia: concept dimostrativo. La sede, le sale, i prezzi, le date e i recapiti non esistono. Le
+			fotografie sono di archivio e illustrative. In una location vera, qui andrebbero l’informativa sulla privacy e le condizioni di
+			prenotazione.
+		</p>
+		<a class="footer__credito" href="https://theloopstudio.org/" target="_blank" rel="noopener">
+			<span>Sito ideato da</span>
+			<img src={logo.src} width="84" height="44" alt="Loop Studio" />
+			<span class="sr-only">(si apre in una nuova scheda)</span>
+		</a>
+	</div>
+</footer>
+
+<style>
+	.footer {
+		background: var(--inchiostro-2);
+		color: var(--vetro-chiaro);
+		padding: 56px 0 48px;
+		border-top: 6px solid var(--limone);
+	}
+	.footer__in {
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		gap: 20px 36px;
+		align-items: center;
+	}
+	.footer__marca {
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		font-weight: 800;
+		font-size: 1.3rem;
+		letter-spacing: -0.02em;
+		color: var(--bianco);
+	}
+	.footer__nav {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px 22px;
+		font-weight: 600;
+	}
+	.footer__nav a {
+		display: inline-flex;
+		align-items: center;
+		min-height: 44px;
+		text-decoration: none;
+	}
+	.footer__nav a:hover {
+		color: var(--limone);
+	}
+	.footer__copia {
+		grid-column: 1 / -1;
+		font-size: 0.85rem;
+		color: var(--vetro);
+		max-width: 78ch;
+	}
+	.footer__credito {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		font-size: 0.8rem;
+		text-decoration: none;
+		color: var(--vetro);
+	}
+	@media (max-width: 860px) {
+		.footer__in {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+</style>

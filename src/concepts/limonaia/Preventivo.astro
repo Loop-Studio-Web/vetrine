@@ -1,0 +1,343 @@
+---
+---
+
+<section class="sezione preventivo scuro" id="preventivo" aria-labelledby="t-preventivo">
+	<div class="wrap">
+		<p class="cartellino">N° 05 · Il preventivo</p>
+		<h2 id="t-preventivo">Quanto costa, <span class="evid">voce per voce</span>.</h2>
+		<p class="sezione__intro">
+			Una forchetta, non una cifra a sorpresa: cambia sala, data o ospiti e le voci si ricalcolano. Tieni due versioni e
+			confrontale.
+		</p>
+
+		<div class="prev__griglia">
+			<div class="conto">
+				<p class="conto__testata" data-testata>—</p>
+				<ul class="conto__voci" data-voci></ul>
+				<label class="conto__catering">
+					<input type="checkbox" data-catering />
+					<span>Aggiungi il catering del nostro cuoco <small data-cat-nota></small></span>
+				</label>
+				<div class="conto__totale">
+					<span>Totale indicativo</span>
+					<strong data-totale>—</strong>
+				</div>
+				<p class="conto__forchetta">
+					Forchetta: <span data-forchetta>—</span> · <span data-testa>—</span> a persona
+				</p>
+				<p class="conto__nota">Cifre di fantasia, IVA inclusa. Il preventivo vero arriva dopo il sopralluogo.</p>
+			</div>
+
+			<div class="confronto">
+				<h3>Confronta due idee</h3>
+				<p class="confronto__aiuto">Tieni la scheda com’è adesso, cambia qualcosa sopra, tienine un’altra.</p>
+				<div class="opz">
+					<article class="opz__c" data-slot="A">
+						<h4>Idea A</h4>
+						<div class="opz__corpo" data-corpo>Vuota</div>
+						<div class="opz__azioni">
+							<button type="button" class="btn btn--vuoto" data-tieni="A">Tieni questa</button>
+							<button type="button" class="opz__link" data-usa="A" hidden>Riapri</button>
+						</div>
+					</article>
+					<article class="opz__c" data-slot="B">
+						<h4>Idea B</h4>
+						<div class="opz__corpo" data-corpo>Vuota</div>
+						<div class="opz__azioni">
+							<button type="button" class="btn btn--vuoto" data-tieni="B">Tieni questa</button>
+							<button type="button" class="opz__link" data-usa="B" hidden>Riapri</button>
+						</div>
+					</article>
+				</div>
+				<p class="confronto__diff" data-diff aria-live="polite"></p>
+
+				<div class="link">
+					<label for="link-scheda">Il link a questa scheda</label>
+					<div class="link__riga">
+						<input id="link-scheda" type="text" readonly data-link />
+						<button type="button" class="btn" data-copia>Copia</button>
+					</div>
+					<p class="link__nota" data-copia-esito aria-live="polite">Chi lo apre vede la tua stessa pianta.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.prev__griglia {
+		display: grid;
+		grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+		gap: clamp(24px, 4vw, 64px);
+		margin-top: 40px;
+		align-items: start;
+	}
+	.conto {
+		background: var(--bianco);
+		color: var(--inchiostro);
+		padding: clamp(18px, 3vw, 32px);
+		border-radius: 6px 6px 0 0;
+		position: relative;
+		margin-bottom: 12px;
+	}
+	.conto::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 100%;
+		height: 10px;
+		background:
+			linear-gradient(135deg, var(--bianco) 50%, transparent 50%) 0 0 / 20px 10px,
+			linear-gradient(225deg, var(--bianco) 50%, transparent 50%) 0 0 / 20px 10px;
+		background-repeat: repeat-x;
+	}
+	.conto__testata {
+		font-weight: 800;
+		font-size: 1.05rem;
+		padding-bottom: 14px;
+		border-bottom: 3px solid var(--inchiostro);
+	}
+	.conto__voci :global(li) {
+		display: flex;
+		justify-content: space-between;
+		gap: 16px;
+		padding: 12px 0;
+		border-bottom: 1px dashed color-mix(in oklab, var(--inchiostro) 35%, transparent);
+	}
+	.conto__voci :global(small) {
+		display: block;
+		font-size: 0.82rem;
+		color: var(--testo-2);
+	}
+	.conto__voci :global(b) {
+		font-weight: 800;
+		font-variant-numeric: tabular-nums;
+		white-space: nowrap;
+	}
+	.conto__catering {
+		display: flex;
+		gap: 12px;
+		align-items: flex-start;
+		padding: 14px 0;
+		cursor: pointer;
+	}
+	.conto__catering input {
+		flex: none;
+		width: 24px;
+		height: 24px;
+		margin-top: 1px;
+		accent-color: var(--inchiostro);
+	}
+	.conto__catering small {
+		display: block;
+		color: var(--testo-2);
+	}
+	.conto__totale {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 12px;
+		padding: 14px 16px;
+		background: var(--limone);
+		border-radius: 12px 12px 4px 4px;
+		font-weight: 700;
+	}
+	.conto__totale strong {
+		font-size: clamp(1.8rem, 4vw, 2.6rem);
+		font-weight: 800;
+		letter-spacing: -0.03em;
+		font-variant-numeric: tabular-nums;
+	}
+	.conto__forchetta {
+		margin-top: 12px;
+		font-weight: 700;
+	}
+	.conto__nota {
+		margin-top: 6px;
+		font-size: 0.85rem;
+		color: var(--testo-2);
+	}
+	.confronto h3 {
+		font-size: clamp(1.5rem, 3vw, 2rem);
+		color: var(--bianco);
+	}
+	.confronto__aiuto {
+		margin-top: 6px;
+		color: var(--vetro);
+	}
+	.opz {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 12px;
+		margin-top: 18px;
+	}
+	.opz__c {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		padding: 16px;
+		border: 2px solid var(--vetro);
+		border-radius: 14px 14px 4px 4px;
+	}
+	.opz__c[data-piena='true'] {
+		border-color: var(--limone);
+	}
+	.opz__c h4 {
+		font-size: 0.78rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--limone);
+	}
+	.opz__corpo {
+		flex: 1;
+		font-size: 0.93rem;
+		color: var(--vetro-chiaro);
+	}
+	.opz__corpo :global(b) {
+		display: block;
+		font-size: 1.4rem;
+		letter-spacing: -0.02em;
+		color: var(--bianco);
+	}
+	.opz__azioni {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 10px;
+	}
+	.opz__azioni .btn {
+		min-height: 44px;
+		padding: 0 16px;
+		font-size: 0.9rem;
+	}
+	.opz__link {
+		background: none;
+		border: 0;
+		min-height: 44px;
+		padding: 0 4px;
+		color: var(--limone);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+		cursor: pointer;
+	}
+	.confronto__diff {
+		margin-top: 14px;
+		min-height: 1.5em;
+		font-weight: 700;
+		color: var(--limone);
+	}
+	.link {
+		margin-top: 28px;
+	}
+	.link label {
+		display: block;
+		font-size: 0.78rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--limone);
+		margin-bottom: 8px;
+	}
+	.link__riga {
+		display: flex;
+		gap: 10px;
+	}
+	.link input {
+		flex: 1;
+		min-width: 0;
+		min-height: 48px;
+		padding: 0 14px;
+		border: 2px solid var(--vetro);
+		border-radius: 10px;
+		background: var(--inchiostro-2);
+		color: var(--vetro-chiaro);
+		font-size: 0.85rem;
+	}
+	.link__nota {
+		margin-top: 8px;
+		font-size: 0.88rem;
+		color: var(--vetro);
+	}
+	@media (max-width: 900px) {
+		.prev__griglia {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+	@media (max-width: 420px) {
+		.opz {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+</style>
+
+<script>
+	import { preventivo, verdetto, type Evento } from './evento';
+	import { formato, spazio, tipo } from './dati';
+	import { ascolta, imposta, leggi, linkScheda, scelte, tieni, usa } from './stato';
+
+	const radice = document.getElementById('preventivo')!;
+	const q = <T extends HTMLElement>(s: string) => radice.querySelector<T>(s)!;
+	const eur = (n: number) => `${n.toLocaleString('it-IT')} €`;
+	const dataFmt = new Intl.DateTimeFormat('it-IT', { day: 'numeric', month: 'long' });
+	const cat = q<HTMLInputElement>('[data-catering]');
+
+	const descrivi = (e: Evento) => {
+		const data = e.data ? dataFmt.format(new Date(`${e.data}T12:00:00`)) : 'data da scegliere';
+		return `${e.ospiti} ospiti ${spazio(e.spazio).dove}, ${formato(e.formato).nome.toLowerCase()}, ${data}`;
+	};
+
+	function aggiorna() {
+		const ev = leggi();
+		const p = preventivo(ev);
+		q('[data-testata]').textContent = `${tipo(ev.tipo).nome} · ${descrivi(ev)}`;
+		q('[data-voci]').innerHTML = p.voci
+			.map((v) => `<li><span>${v.nome}${v.nota ? `<small>${v.nota}</small>` : ''}</span><b>${eur(v.importo)}</b></li>`)
+			.join('');
+		q('[data-totale]').textContent = eur(p.totale);
+		q('[data-forchetta]').textContent = `${eur(p.da)} – ${eur(p.a)}`;
+		q('[data-testa]').textContent = eur(p.allaTesta);
+		cat.checked = ev.catering;
+		q('[data-cat-nota]').textContent = `${tipo(ev.tipo).cateringTesta} € a persona`;
+		q<HTMLInputElement>('[data-link]').value = linkScheda();
+
+		const s = scelte();
+		(['A', 'B'] as const).forEach((k) => {
+			const card = q(`[data-slot="${k}"]`);
+			const o = s[k];
+			card.dataset.piena = String(!!o);
+			card.querySelector<HTMLElement>('[data-corpo]')!.innerHTML = o
+				? `<b>${eur(preventivo(o).totale)}</b>${descrivi(o)}${o.catering ? ' · con catering' : ''}`
+				: 'Vuota';
+			card.querySelector<HTMLElement>('[data-usa]')!.hidden = !o;
+		});
+		const diff = q('[data-diff]');
+		if (s.A && s.B) {
+			const d = preventivo(s.B).totale - preventivo(s.A).totale;
+			const va = verdetto(s.A).giudizio;
+			const vb = verdetto(s.B).giudizio;
+			const nota = va === 'noncista' || vb === 'noncista' ? ' Attenzione: in una delle due non ci state.' : '';
+			diff.textContent = d === 0 ? `Costano uguale.${nota}` : `B costa ${eur(Math.abs(d))} ${d > 0 ? 'in più' : 'in meno'} di A.${nota}`;
+		} else diff.textContent = '';
+	}
+
+	cat.addEventListener('change', () => imposta({ catering: cat.checked }));
+	radice.querySelectorAll<HTMLButtonElement>('[data-tieni]').forEach((b) => b.addEventListener('click', () => tieni(b.dataset.tieni as 'A' | 'B')));
+	radice.querySelectorAll<HTMLButtonElement>('[data-usa]').forEach((b) => b.addEventListener('click', () => usa(b.dataset.usa as 'A' | 'B')));
+
+	const esito = q('[data-copia-esito]');
+	q<HTMLButtonElement>('[data-copia]').addEventListener('click', async () => {
+		const campo = q<HTMLInputElement>('[data-link]');
+		try {
+			await navigator.clipboard.writeText(campo.value);
+			esito.textContent = 'Copiato. Chi lo apre vede la tua stessa pianta.';
+		} catch {
+			campo.select();
+			esito.textContent = 'Seleziona e copia il link qui sopra.';
+		}
+	});
+
+	ascolta(aggiorna);
+	aggiorna();
+</script>

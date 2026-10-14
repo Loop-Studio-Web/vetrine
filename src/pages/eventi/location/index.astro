@@ -1,0 +1,74 @@
+---
+import '@fontsource-variable/epilogue';
+import '../../../concepts/limonaia/base.css';
+import epiUrl from '@fontsource-variable/epilogue/files/epilogue-latin-wght-normal.woff2?url';
+import Fascia from '../../../concepts/limonaia/Fascia.astro';
+import Navbar from '../../../concepts/limonaia/Navbar.astro';
+import Apertura from '../../../concepts/limonaia/Apertura.astro';
+import Pianta from '../../../concepts/limonaia/Pianta.astro';
+import Giornata from '../../../concepts/limonaia/Giornata.astro';
+import Spazi from '../../../concepts/limonaia/Spazi.astro';
+import Calendario from '../../../concepts/limonaia/Calendario.astro';
+import Preventivo from '../../../concepts/limonaia/Preventivo.astro';
+import Sopralluogo from '../../../concepts/limonaia/Sopralluogo.astro';
+import Footer from '../../../concepts/limonaia/Footer.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const title = 'Limonaia Aurelia — Location per eventi';
+const description =
+	'Location di fantasia in una limonaia ottocentesca: componi la pianta dei tavoli, scorri la giornata, scegli la data e leggi il preventivo. Vetrina dimostrativa.';
+const ogImage = new URL(`${base}/images/limonaia/og.jpg`, Astro.site).href;
+const pageUrl = new URL(`${base}/eventi/location/`, Astro.site).href;
+---
+
+<html lang="it">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href={`${base}/images/limonaia/favicon.svg`} />
+		<link rel="preload" as="font" type="font/woff2" href={epiUrl} crossorigin />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<meta name="robots" content="noindex, nofollow" />
+		<meta name="theme-color" content="#16224a" />
+		<meta property="og:type" content="website" />
+		<meta property="og:locale" content="it_IT" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={pageUrl} />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta name="twitter:card" content="summary_large_image" />
+	</head>
+	<body>
+		<a href="#main" class="skip-link">Vai al contenuto</a>
+		<Fascia />
+		<Navbar />
+		<main id="main">
+			<Apertura />
+			<Pianta />
+			<Giornata />
+			<Spazi />
+			<Calendario />
+			<Preventivo />
+			<Sopralluogo />
+		</main>
+		<Footer />
+		<script>
+			// Le ancore interne si muovono via script (lo scroll nativo su Safari può atterrare storto) e non toccano l'hash:
+			// l'hash porta la scheda dell'evento.
+			document.addEventListener('click', (e) => {
+				const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
+				if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey) return;
+				const id = a.getAttribute('href')!.slice(1);
+				const el = id && id !== 'top' ? document.getElementById(id) : document.documentElement;
+				if (!el) return;
+				e.preventDefault();
+				const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+				requestAnimationFrame(() => el.scrollIntoView({ behavior: ridotto ? 'auto' : 'smooth', block: 'start' }));
+			});
+		</script>
+	</body>
+</html>

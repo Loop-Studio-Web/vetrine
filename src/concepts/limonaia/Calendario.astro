@@ -1,0 +1,368 @@
+---
+const giorni = ['L', 'M', 'M', 'G', 'V', 'S', 'D'];
+---
+
+<section class="sezione calendario" id="calendario" aria-labelledby="t-calendario">
+	<div class="wrap">
+		<p class="cartellino">N° 04 · Il calendario</p>
+		<h2 id="t-calendario">Quando la <span class="evid">sala è libera</span>.</h2>
+		<p class="sezione__intro">
+			Le date dipendono dalla sala e dal numero di ospiti che hai scelto sopra. Il sabato di maggio è il primo a finire.
+		</p>
+
+		<div class="cal">
+			<div class="cal__mese">
+				<div class="cal__testa">
+					<button type="button" class="cal__nav" data-prec aria-label="Mese precedente">
+						<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+					</button>
+					<h3 data-mese aria-live="polite">—</h3>
+					<button type="button" class="cal__nav" data-succ aria-label="Mese successivo">
+						<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+					</button>
+				</div>
+				<div class="cal__giorni" aria-hidden="true">
+					{giorni.map((g) => <span>{g}</span>)}
+				</div>
+				<div class="cal__griglia" data-griglia></div>
+				<ul class="cal__legenda" aria-label="Legenda">
+					<li><i class="l l--libero"></i> Libero</li>
+					<li><i class="l l--opzionato"></i> Opzionato</li>
+					<li><i class="l l--occupato"></i> Occupato</li>
+					<li><i class="l l--chiuso"></i> Non disponibile</li>
+				</ul>
+			</div>
+
+			<aside class="cal__lato" aria-live="polite">
+				<p class="cal__etichetta">La tua data</p>
+				<p class="cal__scelta" data-scelta>Nessuna data scelta</p>
+				<p class="cal__nota" data-nota>Tocca un giorno libero.</p>
+				<button type="button" class="btn btn--inchiostro" data-prossimo>Trova il prossimo sabato libero</button>
+				<button type="button" class="cal__togli" data-togli hidden>Togli la data</button>
+			</aside>
+		</div>
+	</div>
+</section>
+
+<style>
+	.calendario {
+		background: var(--limone);
+	}
+	.calendario .sezione__intro {
+		color: var(--inchiostro);
+	}
+	.calendario .cartellino {
+		background: var(--inchiostro);
+		color: var(--limone);
+	}
+	.calendario .evid {
+		background: linear-gradient(transparent 58%, var(--bianco) 58% 92%, transparent 92%);
+	}
+	.cal {
+		display: grid;
+		grid-template-columns: minmax(0, 1.4fr) minmax(240px, 0.6fr);
+		gap: clamp(24px, 4vw, 56px);
+		margin-top: 40px;
+		align-items: start;
+	}
+	.cal__mese {
+		background: var(--bianco);
+		border: 3px solid var(--inchiostro);
+		border-radius: 20px 20px 6px 6px;
+		padding: clamp(12px, 2.2vw, 24px);
+	}
+	.cal__testa {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 10px;
+		margin-bottom: 14px;
+	}
+	.cal__testa h3 {
+		font-size: clamp(1.3rem, 3vw, 1.8rem);
+		text-transform: capitalize;
+	}
+	.cal__nav {
+		width: 48px;
+		height: 48px;
+		display: grid;
+		place-items: center;
+		border: 2px solid var(--inchiostro);
+		border-radius: 50%;
+		background: transparent;
+		cursor: pointer;
+		transition: transform 140ms var(--ease);
+	}
+	.cal__nav:active {
+		transform: scale(0.93);
+	}
+	.cal__nav:disabled {
+		opacity: 0.35;
+		cursor: default;
+	}
+	.cal__giorni,
+	.cal__griglia {
+		display: grid;
+		grid-template-columns: repeat(7, minmax(0, 1fr));
+		gap: clamp(3px, 0.8vw, 8px);
+	}
+	.cal__giorni span {
+		text-align: center;
+		font-size: 0.78rem;
+		font-weight: 800;
+		letter-spacing: 0.06em;
+		color: var(--testo-2);
+		padding-bottom: 6px;
+	}
+	.cal__griglia :global(.g) {
+		aspect-ratio: 1;
+		min-height: 44px;
+		display: grid;
+		place-items: center;
+		border: 2px solid transparent;
+		border-radius: 12px 12px 4px 4px;
+		background: var(--vetro-chiaro);
+		font-weight: 800;
+		font-size: 1rem;
+		font-variant-numeric: tabular-nums;
+		cursor: pointer;
+		transition:
+			transform 120ms var(--ease),
+			background-color 140ms var(--ease);
+	}
+	.cal__griglia :global(.g:active:not(:disabled)) {
+		transform: scale(0.94);
+	}
+	.cal__griglia :global(.g--vuoto) {
+		visibility: hidden;
+	}
+	.cal__griglia :global(.g[data-s='libero']) {
+		background: var(--limone-2);
+		border-color: var(--inchiostro);
+	}
+	.cal__griglia :global(.g[data-s='opzionato']) {
+		background: repeating-linear-gradient(135deg, var(--limone-2) 0 6px, var(--bianco) 6px 12px);
+		border: 2px dashed var(--inchiostro);
+	}
+	.cal__griglia :global(.g[data-s='occupato']) {
+		background: var(--inchiostro);
+		color: var(--vetro);
+		cursor: default;
+	}
+	.cal__griglia :global(.g[data-s='chiuso']),
+	.cal__griglia :global(.g[data-s='passato']),
+	.cal__griglia :global(.g[data-s='incompatibile']) {
+		background: transparent;
+		color: color-mix(in oklab, var(--testo-2) 70%, transparent);
+		cursor: default;
+		text-decoration: line-through;
+		text-decoration-thickness: 1px;
+	}
+	.cal__griglia :global(.g[aria-pressed='true']) {
+		background: var(--inchiostro);
+		color: var(--limone);
+		border-color: var(--inchiostro);
+		box-shadow: 0 0 0 3px var(--limone), 0 0 0 5px var(--inchiostro);
+	}
+	@media (hover: hover) {
+		.cal__griglia :global(.g[data-s='libero']:hover),
+		.cal__griglia :global(.g[data-s='opzionato']:hover) {
+			background: var(--limone);
+		}
+	}
+	.cal__legenda {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px 18px;
+		margin-top: 16px;
+		font-size: 0.85rem;
+		color: var(--testo-2);
+	}
+	.cal__legenda li {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+	}
+	.l {
+		display: inline-block;
+		width: 16px;
+		height: 16px;
+		border-radius: 5px 5px 2px 2px;
+		border: 2px solid var(--inchiostro);
+	}
+	.l--libero {
+		background: var(--limone-2);
+	}
+	.l--opzionato {
+		background: repeating-linear-gradient(135deg, var(--limone-2) 0 3px, var(--bianco) 3px 6px);
+		border-style: dashed;
+	}
+	.l--occupato {
+		background: var(--inchiostro);
+	}
+	.l--chiuso {
+		border-color: color-mix(in oklab, var(--testo-2) 60%, transparent);
+	}
+	.cal__lato {
+		display: grid;
+		gap: 12px;
+		justify-items: start;
+		padding: clamp(16px, 2.4vw, 28px);
+		background: var(--inchiostro);
+		color: var(--vetro-chiaro);
+		border-radius: 20px 20px 6px 6px;
+	}
+	.cal__etichetta {
+		font-size: 0.78rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--limone);
+	}
+	.cal__scelta {
+		font-size: clamp(1.4rem, 3vw, 1.9rem);
+		font-weight: 800;
+		letter-spacing: -0.02em;
+		line-height: 1.1;
+		color: var(--bianco);
+	}
+	.cal__nota {
+		color: var(--vetro);
+		font-size: 0.95rem;
+	}
+	.cal__lato .btn {
+		border-color: var(--limone);
+		background: var(--limone);
+		color: var(--inchiostro);
+		margin-top: 8px;
+		font-size: 0.95rem;
+		padding-inline: 18px;
+	}
+	.cal__togli {
+		background: none;
+		border: 0;
+		color: var(--vetro-chiaro);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+		min-height: 44px;
+		cursor: pointer;
+	}
+	@media (max-width: 860px) {
+		.cal {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.cal__griglia :global(.g),
+		.cal__nav {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	import { iso, preventivo, stagione, statoGiorno, type StatoGiorno } from './evento';
+	import { ascolta, imposta, leggi } from './stato';
+
+	const radice = document.getElementById('calendario')!;
+	const griglia = radice.querySelector<HTMLElement>('[data-griglia]')!;
+	const titolo = radice.querySelector<HTMLElement>('[data-mese]')!;
+	const prec = radice.querySelector<HTMLButtonElement>('[data-prec]')!;
+	const succ = radice.querySelector<HTMLButtonElement>('[data-succ]')!;
+	const scelta = radice.querySelector<HTMLElement>('[data-scelta]')!;
+	const nota = radice.querySelector<HTMLElement>('[data-nota]')!;
+	const prossimo = radice.querySelector<HTMLButtonElement>('[data-prossimo]')!;
+	const togli = radice.querySelector<HTMLButtonElement>('[data-togli]')!;
+
+	const oggi = new Date();
+	const MESI_AVANTI = 14;
+	let mese = new Date(oggi.getFullYear(), oggi.getMonth(), 1);
+	const primo = new Date(oggi.getFullYear(), oggi.getMonth(), 1);
+	const ultimo = new Date(oggi.getFullYear(), oggi.getMonth() + MESI_AVANTI, 1);
+
+	const frase: Record<StatoGiorno, string> = {
+		libero: 'libero',
+		opzionato: 'opzionato da altri',
+		occupato: 'occupato',
+		passato: 'passato',
+		chiuso: 'sala chiusa in questo mese',
+		incompatibile: 'troppo piccola per i tuoi ospiti',
+	};
+	const lungo = new Intl.DateTimeFormat('it-IT', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+	const meseFmt = new Intl.DateTimeFormat('it-IT', { month: 'long', year: 'numeric' });
+	const prenotabile = (s: StatoGiorno) => s === 'libero' || s === 'opzionato';
+
+	function disegna() {
+		const ev = leggi();
+		titolo.textContent = meseFmt.format(mese);
+		prec.disabled = mese <= primo;
+		succ.disabled = mese >= new Date(ultimo.getFullYear(), ultimo.getMonth() - 1, 1);
+		const n = new Date(mese.getFullYear(), mese.getMonth() + 1, 0).getDate();
+		const off = (mese.getDay() + 6) % 7;
+		let h = '';
+		for (let i = 0; i < off; i++) h += '<span class="g g--vuoto" aria-hidden="true"></span>';
+		for (let d = 1; d <= n; d++) {
+			const data = new Date(mese.getFullYear(), mese.getMonth(), d);
+			const s = statoGiorno(data, ev, oggi);
+			const k = iso(data);
+			const premuto = ev.data === k;
+			h += `<button type="button" class="g" data-s="${s}" data-d="${k}" aria-pressed="${premuto}" aria-label="${lungo.format(data)}, ${frase[s]}"${prenotabile(s) ? '' : ' disabled'}>${d}</button>`;
+		}
+		griglia.innerHTML = h;
+	}
+
+	function riepilogo() {
+		const ev = leggi();
+		togli.hidden = !ev.data;
+		if (!ev.data) {
+			scelta.textContent = 'Nessuna data scelta';
+			nota.textContent = 'Tocca un giorno libero.';
+			return;
+		}
+		const d = new Date(`${ev.data}T12:00:00`);
+		scelta.textContent = lungo.format(d);
+		const s = statoGiorno(d, ev, oggi);
+		const stag = stagione(d);
+		const p = preventivo(ev);
+		const base = `Stagione ${stag}. Sala e allestimento da ${p.da.toLocaleString('it-IT')} a ${p.a.toLocaleString('it-IT')} €.`;
+		nota.textContent =
+			s === 'opzionato' ? `Qualcun altro l’ha opzionato: puoi metterti in lista, ti avvisiamo se cade. ${base}` : s === 'libero' ? base : 'Questa data non è più disponibile con la sala scelta: scegline un’altra.';
+	}
+
+	griglia.addEventListener('click', (e) => {
+		const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-d]');
+		if (b && !b.disabled) imposta({ data: b.dataset.d! });
+	});
+	prec.addEventListener('click', () => {
+		mese = new Date(mese.getFullYear(), mese.getMonth() - 1, 1);
+		disegna();
+	});
+	succ.addEventListener('click', () => {
+		mese = new Date(mese.getFullYear(), mese.getMonth() + 1, 1);
+		disegna();
+	});
+	togli.addEventListener('click', () => imposta({ data: null }));
+	prossimo.addEventListener('click', () => {
+		const ev = leggi();
+		const d = new Date(oggi.getFullYear(), oggi.getMonth(), oggi.getDate());
+		for (let i = 0; i < 450; i++) {
+			d.setDate(d.getDate() + 1);
+			if (d.getDay() === 6 && statoGiorno(d, ev, oggi) === 'libero') {
+				mese = new Date(d.getFullYear(), d.getMonth(), 1);
+				imposta({ data: iso(d) });
+				return;
+			}
+		}
+		nota.textContent = 'Nessun sabato libero nei prossimi mesi con questa sala: prova un’altra sala.';
+	});
+
+	function aggiorna() {
+		disegna();
+		riepilogo();
+	}
+	// se arriva una data da un link, il calendario si apre su quel mese
+	const iniz = leggi().data;
+	if (iniz) mese = new Date(Number(iniz.slice(0, 4)), Number(iniz.slice(5, 7)) - 1, 1);
+	ascolta(aggiorna);
+	aggiorna();
+</script>

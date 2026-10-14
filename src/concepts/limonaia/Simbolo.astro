@@ -1,0 +1,17 @@
+---
+// Il simbolo (arco con limone e germoglio) inline, ricolorabile: l'arco e il vetro cambiano su fondo scuro.
+import raw from '../../assets/limonaia/brand/simbolo.svg?raw';
+interface Props {
+	tam?: number;
+	arco?: string;
+	vetro?: string;
+	class?: string;
+}
+const { tam = 40, arco = '#16224a', vetro = '#ffffff', class: cls = '' } = Astro.props;
+const svg = raw
+	.replace('<svg ', `<svg width="${tam}" height="${Math.round(tam * 1.26)}" aria-hidden="true" focusable="false" class="${cls}" `)
+	.replace('fill="#16224a"', `fill="${arco}"`)
+	.replace('fill="#ffffff"', `fill="${vetro}"`);
+---
+
+<Fragment set:html={svg} />

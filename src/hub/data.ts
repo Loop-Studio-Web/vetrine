@@ -26,6 +26,8 @@ import cardScalavera from '../assets/hub/card-scalavera.jpg';
 import shotScalavera from '../assets/hub/shot-scalavera.jpg';
 import cardMalahierba from '../assets/hub/card-malahierba.jpg';
 import shotMalahierba from '../assets/hub/shot-malahierba.jpg';
+import cardLimonaia from '../assets/hub/card-limonaia.jpg';
+import shotLimonaia from '../assets/hub/shot-limonaia.jpg';
 
 export const SITE = 'https://theloopstudio.org/';
 export const CONTACT = 'https://theloopstudio.org/contatti';
@@ -811,6 +813,60 @@ export const concepts: Concept[] = [
 		palette: ['#c20b60', '#0e3b2b', '#ff9a1f', '#12b5ad', '#ffc7dc', '#fff0f6'],
 		metriche: [
 			{ label: 'Performance', valore: '90' },
+			{ label: 'Accessibilità', valore: '100' },
+			{ label: 'Buone pratiche', valore: '100' },
+		],
+	},
+	{
+		slug: 'limonaia',
+		macro: 'eventi',
+		nome: 'Limonaia Aurelia',
+		categoria: 'Eventi e creativi',
+		archetipo: 'La location per feste e cerimonie',
+		claim: 'Una limonaia, un giardino, una cantina. Dì che festa è: la pianta dei tavoli, la giornata ora per ora e il preventivo si compongono da soli.',
+		path: '/eventi/location/',
+		infoPath: '/eventi/location/info/',
+		titoloSeo: 'Sito web per location eventi: homepage concept con pianta dei tavoli e preventivo',
+		descrizioneSeo:
+			'Come potrebbe essere la homepage di una location per matrimoni, feste e cene aziendali: pianta dei tavoli che si dispone davvero, giornata dalle 16 all’una, calendario con le date libere, preventivo a forchetta e scheda dell’evento da condividere. Concept dimostrativo di Loop Studio.',
+		intro: [
+			'Chi cerca una location ha tre domande: ci stiamo, quando è libera, quanto costa. Questa homepage le mette nello stesso posto: si sceglie il tipo di festa, gli ospiti e il formato, e la pianta dispone i tavoli con i corridoi veri, dicendo apertamente se non ci si sta.',
+			'È il livello Evoluto della categoria Eventi e creativi e una vetrina dimostrativa: la limonaia, le sale, i prezzi, le date e i recapiti sono di fantasia, e le fotografie sono d’archivio. Ogni scelta finisce in una scheda dell’evento che si manda con un link e si può confrontare con una seconda idea.',
+		],
+		perChi:
+			'Location per matrimoni e ricevimenti, ville e agriturismi con sale e giardino, spazi per cene aziendali e feste private. Adatta a chi vuole che il cliente arrivi al sopralluogo con le idee già chiare.',
+		sezioni: [
+			{
+				t: 'Una pianta che dispone davvero',
+				d: 'Tavoli tondi, tavolata imperiale, cocktail o cerimonia: i tavoli si dispongono con misure e corridoi veri, con il palco opzionale. Si trascinano per provare un’altra idea.',
+			},
+			{
+				t: 'La giornata, dalle 16 all’una',
+				d: 'Un cursore d’orario cambia la luce, il momento della festa e la sala: dopo la cena i tavoli si ritirano e nasce la pista.',
+			},
+			{
+				t: 'Calendario e preventivo che si parlano',
+				d: 'Le date libere dipendono da sala e ospiti; il preventivo è una forchetta con le voci, e due idee si confrontano una accanto all’altra.',
+			},
+			{
+				t: 'Una scheda che si manda',
+				d: 'Tutto finisce nell’indirizzo della pagina: chi riceve il link vede la stessa pianta, e al sopralluogo si parte da lì.',
+			},
+		],
+		awning: ['#efd84a', '#16224a'],
+		glow: 'rgba(239, 216, 74, 0.5)',
+		livello: 2,
+		lingua: 'IT',
+		card: cardLimonaia,
+		shot: shotLimonaia,
+		shotAlt: '',
+		crop: '70% 40%',
+		cardAlt: 'Limonaia Aurelia su desktop e su telefono: titolo bianco e limone su fondo blu inchiostro, una finestra ad arco con una serra apparecchiata, il menù mobile a tovaglia con i segnaposto.',
+		mood: 'Una serra al calar della sera: limone, blu inchiostro e vetro, finestre ad arco, cartellini da vaso e una pianta che si compone con i tavoli veri.',
+		caratteri: 'Epilogue',
+		palette: ['#efd84a', '#16224a', '#bcd7e6', '#c8532b', '#2e5b45', '#eaf3f8'],
+		metriche: [
+			{ label: 'Performance', valore: '96' },
 			{ label: 'Accessibilità', valore: '100' },
 			{ label: 'Buone pratiche', valore: '100' },
 		],

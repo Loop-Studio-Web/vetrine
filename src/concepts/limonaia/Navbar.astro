@@ -1,0 +1,276 @@
+---
+import Simbolo from './Simbolo.astro';
+const voci = [
+	{ href: '#pianta', t: 'La pianta' },
+	{ href: '#giornata', t: 'La giornata' },
+	{ href: '#spazi', t: 'Gli spazi' },
+	{ href: '#calendario', t: 'Calendario' },
+	{ href: '#preventivo', t: 'Preventivo' },
+];
+---
+
+<header class="nav" data-nav>
+	<div class="nav__in">
+		<a class="nav__marca" href="#top" aria-label="Limonaia Aurelia, inizio">
+			<Simbolo tam={32} />
+			<span class="nav__nome">Limonaia Aurelia</span>
+		</a>
+		<nav class="nav__links" aria-label="Principale">
+			{voci.map((v) => <a href={v.href}>{v.t}</a>)}
+		</nav>
+		<a class="btn btn--inchiostro nav__cta" href="#sopralluogo">Prenota un sopralluogo</a>
+		<button class="nav__burger" type="button" aria-expanded="false" aria-controls="menu" data-apri>
+			<span class="sr-only">Apri il menù</span>
+			<span class="nav__barre" aria-hidden="true"><i></i><i></i></span>
+		</button>
+	</div>
+</header>
+
+<div class="menu" id="menu" role="dialog" aria-label="Menù" aria-hidden="true" inert data-menu>
+	<div class="menu__testa">
+		<span class="menu__nome"><Simbolo tam={30} /> Limonaia Aurelia</span>
+		<button class="menu__x" type="button" data-chiudi>
+			<span class="sr-only">Chiudi il menù</span>
+			<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M4 4l16 16M20 4L4 20" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path></svg>
+		</button>
+	</div>
+	<nav class="menu__voci" aria-label="Menù mobile">
+		{
+			voci.map((v, i) => (
+				<a href={v.href} style={`--i:${i}`} data-chiudi>
+					<small>Tavolo {i + 1}</small>
+					{v.t}
+				</a>
+			))
+		}
+		<a class="menu__cta" href="#sopralluogo" style="--i:5" data-chiudi>
+			<small>Posto riservato</small>
+			Prenota un sopralluogo
+		</a>
+	</nav>
+</div>
+
+<style>
+	.nav {
+		position: fixed;
+		top: var(--fascia, 0px);
+		left: 0;
+		right: 0;
+		z-index: 120;
+		height: var(--nav-h);
+		background: color-mix(in oklab, var(--vetro-chiaro) 92%, transparent);
+		backdrop-filter: blur(10px);
+		border-bottom: 1px solid color-mix(in oklab, var(--inchiostro) 18%, transparent);
+	}
+	.nav__in {
+		max-width: var(--max);
+		height: 100%;
+		margin-inline: auto;
+		padding-inline: var(--gutter);
+		display: flex;
+		align-items: center;
+		gap: 26px;
+	}
+	.nav__marca {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		text-decoration: none;
+		margin-right: auto;
+		min-height: 44px;
+	}
+	.nav__nome {
+		font-weight: 800;
+		font-size: 1.1rem;
+		letter-spacing: -0.02em;
+		white-space: nowrap;
+	}
+	.nav__links {
+		display: flex;
+		gap: 24px;
+		font-weight: 600;
+		font-size: 0.93rem;
+	}
+	.nav__links a {
+		text-decoration: none;
+		padding: 6px 0;
+		border-bottom: 3px solid transparent;
+		transition: border-color 160ms var(--ease);
+	}
+	.nav__links a:hover {
+		border-bottom-color: var(--limone);
+	}
+	.nav__cta {
+		min-height: 44px;
+		padding: 0 18px;
+		font-size: 0.93rem;
+		white-space: nowrap;
+	}
+	.nav__burger {
+		display: none;
+		width: 48px;
+		height: 48px;
+		border: 2px solid var(--inchiostro);
+		border-radius: 50%;
+		background: var(--limone);
+		cursor: pointer;
+		place-items: center;
+	}
+	.nav__barre {
+		display: grid;
+		gap: 6px;
+		width: 20px;
+	}
+	.nav__barre i {
+		display: block;
+		height: 3px;
+		border-radius: 2px;
+		background: var(--inchiostro);
+	}
+	@media (max-width: 1080px) {
+		.nav__links,
+		.nav__cta {
+			display: none;
+		}
+		.nav__burger {
+			display: grid;
+		}
+	}
+	@media (max-width: 380px) {
+		.nav__nome {
+			font-size: 1rem;
+		}
+	}
+
+	/* Menù mobile: la tovaglia si stende dall'alto e ogni voce è un segnaposto sul tavolo */
+	.menu {
+		position: fixed;
+		inset: 0;
+		z-index: 300;
+		height: 100lvh;
+		display: flex;
+		flex-direction: column;
+		background:
+			repeating-linear-gradient(90deg, transparent 0 46px, color-mix(in oklab, var(--vetro) 55%, transparent) 46px 48px),
+			var(--bianco);
+		color: var(--inchiostro);
+		clip-path: inset(0 0 100% 0);
+		visibility: hidden;
+		transition:
+			clip-path 520ms var(--ease),
+			visibility 0s linear 520ms;
+	}
+	.menu[aria-hidden='false'] {
+		clip-path: inset(0 0 0 0);
+		visibility: visible;
+		transition: clip-path 520ms var(--ease);
+	}
+	.menu__testa {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		height: var(--nav-h);
+		padding-inline: var(--gutter);
+		border-bottom: 3px solid var(--limone);
+		background: var(--bianco);
+	}
+	.menu__nome {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		font-weight: 800;
+		font-size: 1.05rem;
+	}
+	.menu__x {
+		width: 48px;
+		height: 48px;
+		display: grid;
+		place-items: center;
+		border: 2px solid var(--inchiostro);
+		border-radius: 50%;
+		background: var(--limone);
+		cursor: pointer;
+	}
+	.menu__voci {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 16px;
+		padding: 24px var(--gutter) 40px;
+		overflow-y: auto;
+	}
+	.menu__voci a {
+		display: block;
+		align-self: flex-start;
+		min-width: min(78vw, 320px);
+		padding: 12px 22px 14px;
+		background: var(--inchiostro);
+		color: var(--bianco);
+		border-radius: 4px;
+		font-weight: 800;
+		font-size: clamp(1.4rem, 6vw, 2rem);
+		letter-spacing: -0.02em;
+		line-height: 1.1;
+		text-decoration: none;
+		box-shadow: 0 6px 0 -2px color-mix(in oklab, var(--inchiostro) 25%, transparent);
+		rotate: calc((var(--i) - 2) * 0.9deg);
+		opacity: 0;
+		translate: 0 -14px;
+		transition:
+			opacity 300ms var(--ease),
+			translate 380ms var(--ease);
+	}
+	.menu__voci a small {
+		display: block;
+		font-size: 0.7rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--limone);
+		margin-bottom: 2px;
+	}
+	.menu__voci a.menu__cta {
+		background: var(--limone);
+		color: var(--inchiostro);
+	}
+	.menu__voci a.menu__cta small {
+		color: var(--inchiostro);
+	}
+	.menu[aria-hidden='false'] .menu__voci a {
+		opacity: 1;
+		translate: 0 0;
+		transition-delay: calc(240ms + var(--i) * 60ms);
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.menu,
+		.menu[aria-hidden='false'] {
+			transition: none;
+		}
+		.menu__voci a {
+			transition: none;
+			translate: 0 0;
+		}
+	}
+</style>
+
+<script>
+	const menu = document.querySelector<HTMLElement>('[data-menu]');
+	const apri = document.querySelector<HTMLButtonElement>('[data-apri]');
+	if (menu && apri) {
+		const imposta = (aperto: boolean) => {
+			menu.setAttribute('aria-hidden', String(!aperto));
+			menu.toggleAttribute('inert', !aperto);
+			apri.setAttribute('aria-expanded', String(aperto));
+			document.body.classList.toggle('menu-aperto', aperto);
+			if (aperto) menu.querySelector<HTMLElement>('[data-chiudi]')?.focus();
+			else apri.focus({ preventScroll: true });
+		};
+		apri.addEventListener('click', () => imposta(true));
+		menu.querySelectorAll('[data-chiudi]').forEach((b) => b.addEventListener('click', () => setTimeout(() => imposta(false), 0)));
+		addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && menu.getAttribute('aria-hidden') === 'false') imposta(false);
+		});
+		matchMedia('(min-width: 1081px)').addEventListener('change', (m) => m.matches && imposta(false));
+	}
+</script>

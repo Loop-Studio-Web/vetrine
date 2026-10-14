@@ -1,0 +1,234 @@
+---
+import { Image } from 'astro:assets';
+import limonaia from '../../assets/limonaia/foto/spazio-limonaia.jpg';
+import giardino from '../../assets/limonaia/foto/spazio-giardino.jpg';
+import cantina from '../../assets/limonaia/foto/spazio-cantina.jpg';
+import castel from '../../assets/limonaia/foto/storia-castel.jpg';
+import { SPAZI } from './dati';
+
+const foto = { limonaia, giardino, cantina };
+const alt = {
+	limonaia: 'Tavolo apparecchiato sotto le capriate vetrate della limonaia',
+	giardino: 'Il giardino visto dall’alto, con prato, viali e agrumi in vaso',
+	cantina: 'La cantina a volta in pietra, illuminata di blu',
+};
+const mesiNome = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'];
+const aperto = (m: number[]) => (m.length === 12 ? 'Aperta tutto l’anno' : `Da ${mesiNome[m[0]]} a ${mesiNome[m[m.length - 1]]}`);
+const metri = (cm: number) => (cm / 100).toLocaleString('it-IT');
+---
+
+<section class="sezione spazi" id="spazi" aria-labelledby="t-spazi">
+	<div class="wrap">
+		<p class="cartellino">N° 03 · Gli spazi</p>
+		<h2 id="t-spazi">Tre sale, <span class="evid">tre feste diverse</span>.</h2>
+		<p class="sezione__intro">Scegli una sala e la pianta sopra si rimette a posto con le sue misure vere.</p>
+
+		<ul class="spazi__lista">
+			{
+				SPAZI.map((s, i) => (
+					<li class="sp" data-spazio={s.id} style={`--i:${i}`}>
+						<Image
+							src={foto[s.id]}
+							alt={alt[s.id]}
+							widths={[360, 520, 720]}
+							sizes="(max-width: 860px) 88vw, 360px"
+							loading="lazy"
+							quality={68}
+						/>
+						<div class="sp__corpo">
+							<h3>{s.nome}</h3>
+							<p class="sp__misure">
+								{metri(s.w)} × {metri(s.d)} m · fino a {s.max} ospiti
+							</p>
+							<p>{s.testo}</p>
+							<p class="sp__mesi">{aperto(s.mesi)}</p>
+							<p class="sp__cap" data-cap aria-live="polite" />
+							<button type="button" class="btn btn--vuoto sp__btn" data-scegli={s.id}>
+								Scegli {s.nome.toLowerCase()}
+							</button>
+						</div>
+					</li>
+				))
+			}
+		</ul>
+
+		<div class="storia">
+			<figure class="storia__foto">
+				<Image
+					src={castel}
+					alt="Limoni coltivati a spalliera contro una parete di roccia, con pali di legno"
+					widths={[320, 480]}
+					sizes="(max-width: 860px) 70vw, 320px"
+					loading="lazy"
+					quality={68}
+				/>
+				<figcaption>Foto di archivio, illustrativa</figcaption>
+			</figure>
+			<div>
+				<p class="cartellino">La storia</p>
+				<h3>Nata per far svernare i limoni.</h3>
+				<p>
+					Nel 1824 una famiglia di fantasia costruì la limonaia per riparare gli agrumi dal freddo: pietra a nord, vetri a sud, una stufa
+					al centro. Oggi i limoni sono ancora nei vasi, lungo i viali. La cantina, scavata sotto la serra, teneva l’olio e il vino.
+				</p>
+				<p class="storia__nota">Storia, luoghi e misure sono di fantasia, come tutta la vetrina.</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.spazi {
+		background: var(--bianco);
+	}
+	.spazi__lista {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: clamp(18px, 3vw, 40px);
+		margin-top: 44px;
+	}
+	.sp {
+		display: flex;
+		flex-direction: column;
+		gap: 18px;
+	}
+	.sp :global(img) {
+		width: 100%;
+		aspect-ratio: 4 / 5;
+		object-fit: cover;
+		border-radius: var(--arco);
+		border: 4px solid var(--inchiostro);
+		transition:
+			transform 500ms var(--ease),
+			border-color 200ms var(--ease);
+	}
+	.sp[data-attiva='true'] :global(img) {
+		border-color: var(--limone);
+		outline: 3px solid var(--inchiostro);
+	}
+	.sp h3 {
+		font-size: 1.7rem;
+	}
+	.sp__corpo {
+		display: grid;
+		gap: 8px;
+		align-content: start;
+		flex: 1;
+	}
+	.sp__misure {
+		font-weight: 700;
+		font-variant-numeric: tabular-nums;
+	}
+	.sp__mesi {
+		font-size: 0.9rem;
+		color: var(--testo-2);
+	}
+	.sp__cap {
+		min-height: 1.4em;
+		font-size: 0.93rem;
+		font-weight: 700;
+		color: var(--foglia);
+	}
+	.sp__cap[data-no='true'] {
+		color: var(--errore);
+	}
+	.sp__btn {
+		justify-self: start;
+		margin-top: 6px;
+	}
+	.sp[data-attiva='true'] .sp__btn {
+		background: var(--inchiostro);
+		color: var(--limone);
+	}
+	@media (hover: hover) {
+		.sp:hover :global(img) {
+			transform: translateY(-4px);
+		}
+	}
+	.storia {
+		display: grid;
+		grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+		gap: clamp(24px, 5vw, 64px);
+		align-items: center;
+		margin-top: clamp(56px, 8vw, 104px);
+		padding-top: clamp(36px, 5vw, 56px);
+		border-top: 3px solid var(--inchiostro);
+	}
+	.storia__foto {
+		margin: 0;
+	}
+	.storia__foto :global(img) {
+		width: 100%;
+		aspect-ratio: 3 / 4;
+		object-fit: cover;
+		border-radius: var(--arco);
+	}
+	.storia figcaption {
+		margin-top: 8px;
+		font-size: 0.78rem;
+		color: var(--testo-2);
+	}
+	.storia h3 {
+		font-size: clamp(1.7rem, 3.6vw, 2.5rem);
+		margin: 16px 0 12px;
+	}
+	.storia p:not(.cartellino) {
+		max-width: 56ch;
+	}
+	.storia__nota {
+		margin-top: 12px;
+		font-size: 0.9rem;
+		color: var(--testo-2);
+	}
+	@media (max-width: 860px) {
+		.spazi__lista {
+			grid-template-columns: minmax(0, 1fr);
+			max-width: 440px;
+		}
+		.storia {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.storia__foto {
+			max-width: 260px;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.sp :global(img) {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	import { capienza } from './evento';
+	import { ascolta, imposta, leggi } from './stato';
+	import { formato, type SpazioId } from './dati';
+
+	const radice = document.getElementById('spazi')!;
+	const carte = [...radice.querySelectorAll<HTMLElement>('[data-spazio]')];
+
+	function aggiorna() {
+		const ev = leggi();
+		const f = formato(ev.formato);
+		for (const c of carte) {
+			const id = c.dataset.spazio as SpazioId;
+			c.dataset.attiva = String(id === ev.spazio);
+			const cap = capienza(id, ev.formato, ev.palco);
+			const el = c.querySelector<HTMLElement>('[data-cap]')!;
+			const entra = ev.ospiti <= cap;
+			el.dataset.no = String(!entra);
+			el.textContent = entra
+				? `Con ${f.nome.toLowerCase()}: ${cap} posti. Voi siete ${ev.ospiti}, ci state.`
+				: `Con ${f.nome.toLowerCase()}: ${cap} posti. Voi siete ${ev.ospiti}, non ci state.`;
+			c.querySelector<HTMLButtonElement>('[data-scegli]')!.setAttribute('aria-pressed', String(id === ev.spazio));
+		}
+	}
+	radice.querySelectorAll<HTMLButtonElement>('[data-scegli]').forEach((b) =>
+		b.addEventListener('click', () => {
+			imposta({ spazio: b.dataset.scegli as SpazioId });
+			document.getElementById('pianta')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+		}),
+	);
+	ascolta(aggiorna);
+	aggiorna();
+</script>

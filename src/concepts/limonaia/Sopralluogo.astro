@@ -1,0 +1,305 @@
+---
+---
+
+<section class="sezione sopralluogo" id="sopralluogo" aria-labelledby="t-sopr">
+	<div class="wrap sopr__in">
+		<div class="sopr__testo">
+			<p class="cartellino">N° 06 · Il sopralluogo</p>
+			<h2 id="t-sopr">Vieni a vedere la sala <span class="evid">con la tua pianta in mano</span>.</h2>
+			<p class="sezione__intro">
+				Un’ora, un caffè, il giardino al tramonto se capita. Portiamo la scheda che hai composto: la ritrovi qui accanto.
+			</p>
+			<div class="riepilogo" aria-label="La tua scheda">
+				<p class="riepilogo__t">La tua scheda</p>
+				<p class="riepilogo__c" data-riepilogo>—</p>
+				<p class="riepilogo__p" data-riepilogo-prezzo>—</p>
+			</div>
+		</div>
+
+		<div class="sopr__scheda">
+			<form class="modulo" novalidate data-modulo>
+				<div class="campo">
+					<label for="s-nome">Come ti chiami</label>
+					<input id="s-nome" name="nome" type="text" autocomplete="name" required aria-describedby="e-nome" />
+					<p class="errore" id="e-nome" hidden></p>
+				</div>
+				<div class="campo">
+					<label for="s-email">La tua email</label>
+					<input id="s-email" name="email" type="email" autocomplete="email" required aria-describedby="e-email" />
+					<p class="errore" id="e-email" hidden></p>
+				</div>
+				<div class="campo">
+					<label for="s-giorno">Quando puoi venire</label>
+					<select id="s-giorno" name="giorno" required aria-describedby="e-giorno" data-giorni>
+						<option value="">Scegli un giorno</option>
+					</select>
+					<p class="errore" id="e-giorno" hidden></p>
+				</div>
+				<fieldset class="campo">
+					<legend>A che ora</legend>
+					<div class="orari">
+						<label class="orario"><input type="radio" name="fascia" value="mattina" checked /><span>Mattina</span></label>
+						<label class="orario"><input type="radio" name="fascia" value="pomeriggio" /><span>Pomeriggio</span></label>
+						<label class="orario"><input type="radio" name="fascia" value="tramonto" /><span>Al tramonto</span></label>
+					</div>
+				</fieldset>
+				<div class="campo">
+					<label for="s-note">Qualcosa da sapere <small>(facoltativo)</small></label>
+					<textarea id="s-note" name="note" rows="3"></textarea>
+				</div>
+				<button type="submit" class="btn btn--inchiostro">Prenota il sopralluogo</button>
+				<p class="modulo__nota">Vetrina dimostrativa: non viene inviato nulla e nessun dato è conservato.</p>
+			</form>
+
+			<div class="ricevuta" data-ricevuta hidden tabindex="-1">
+				<p class="ricevuta__t">Posto riservato</p>
+				<p class="ricevuta__n" data-r-num></p>
+				<p class="ricevuta__c" data-r-corpo></p>
+				<p class="ricevuta__nota">Questa è una prova: nessuna richiesta è partita davvero.</p>
+				<button type="button" class="btn btn--vuoto" data-r-nuova>Compila di nuovo</button>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.sopralluogo {
+		background: var(--vetro);
+	}
+	.sopr__in {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		gap: clamp(28px, 5vw, 80px);
+		align-items: start;
+	}
+	.riepilogo {
+		margin-top: 30px;
+		padding: 18px 22px;
+		background: var(--bianco);
+		border-left: 8px solid var(--inchiostro);
+		border-radius: 4px 14px 14px 4px;
+	}
+	.riepilogo__t {
+		font-size: 0.78rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--terra-testo);
+	}
+	.riepilogo__c {
+		margin-top: 4px;
+		font-weight: 700;
+	}
+	.riepilogo__p {
+		margin-top: 4px;
+		color: var(--testo-2);
+	}
+	.sopr__scheda {
+		min-width: 0;
+	}
+	.modulo,
+	.ricevuta {
+		display: grid;
+		gap: 18px;
+		padding: clamp(20px, 3vw, 36px);
+		background: var(--bianco);
+		border: 3px solid var(--inchiostro);
+		border-radius: 20px 20px 6px 6px;
+		box-shadow: 8px 8px 0 -2px var(--limone);
+	}
+	.modulo[hidden],
+	.ricevuta[hidden] {
+		display: none;
+	}
+	.campo {
+		border: 0;
+		min-width: 0;
+		display: grid;
+		gap: 6px;
+	}
+	.campo label,
+	.campo legend {
+		font-weight: 700;
+		font-size: 0.95rem;
+	}
+	.campo small {
+		font-weight: 400;
+		color: var(--testo-2);
+	}
+	.campo input[type='text'],
+	.campo input[type='email'],
+	.campo select,
+	.campo textarea {
+		width: 100%;
+		min-height: 48px;
+		padding: 10px 14px;
+		border: 2px solid var(--inchiostro);
+		border-radius: 10px;
+		background: var(--vetro-chiaro);
+		font-size: 1rem;
+	}
+	.campo textarea {
+		resize: vertical;
+	}
+	.campo [aria-invalid='true'] {
+		border-color: var(--errore);
+		background: #fdecea;
+	}
+	.errore {
+		color: var(--errore);
+		font-weight: 700;
+		font-size: 0.9rem;
+	}
+	.orari {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+	.orario input {
+		position: absolute;
+		opacity: 0;
+		pointer-events: none;
+	}
+	.orario span {
+		display: inline-flex;
+		align-items: center;
+		min-height: 44px;
+		padding: 0 16px;
+		border: 2px solid var(--inchiostro);
+		border-radius: 999px;
+		font-weight: 700;
+		cursor: pointer;
+	}
+	.orario input:checked + span {
+		background: var(--inchiostro);
+		color: var(--limone);
+	}
+	.orario input:focus-visible + span {
+		outline: 3px solid var(--terracotta);
+		outline-offset: 3px;
+	}
+	.modulo .btn {
+		justify-self: start;
+	}
+	.modulo__nota,
+	.ricevuta__nota {
+		font-size: 0.88rem;
+		color: var(--testo-2);
+	}
+	.ricevuta {
+		background: var(--limone);
+		justify-items: start;
+	}
+	.ricevuta__t {
+		font-size: 0.78rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+	.ricevuta__n {
+		font-size: clamp(1.8rem, 4vw, 2.6rem);
+		font-weight: 800;
+		letter-spacing: -0.03em;
+		line-height: 1.05;
+	}
+	@media (max-width: 860px) {
+		.sopr__in {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.modulo,
+		.ricevuta {
+			box-shadow: none;
+		}
+	}
+</style>
+
+<script>
+	import { preventivo, oraTesto } from './evento';
+	import { ascolta, leggi } from './stato';
+	import { formato, spazio, tipo } from './dati';
+
+	const radice = document.getElementById('sopralluogo')!;
+	const modulo = radice.querySelector<HTMLFormElement>('[data-modulo]')!;
+	const ricevuta = radice.querySelector<HTMLElement>('[data-ricevuta]')!;
+	const sel = radice.querySelector<HTMLSelectElement>('[data-giorni]')!;
+	const eur = (n: number) => `${n.toLocaleString('it-IT')} €`;
+	const dataFmt = new Intl.DateTimeFormat('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
+	const giornoFmt = new Intl.DateTimeFormat('it-IT', { weekday: 'long', day: 'numeric', month: 'long' });
+
+	// i prossimi sei giorni utili: la sala non fa sopralluoghi la domenica
+	{
+		const d = new Date();
+		let n = 0;
+		while (n < 6) {
+			d.setDate(d.getDate() + 1);
+			if (d.getDay() === 0) continue;
+			const o = document.createElement('option');
+			o.value = giornoFmt.format(d);
+			o.textContent = giornoFmt.format(d);
+			sel.append(o);
+			n++;
+		}
+	}
+
+	function riepilogo() {
+		const ev = leggi();
+		const p = preventivo(ev);
+		const data = ev.data ? dataFmt.format(new Date(`${ev.data}T12:00:00`)) : 'data ancora da scegliere';
+		radice.querySelector('[data-riepilogo]')!.textContent =
+			`${tipo(ev.tipo).nome}, ${ev.ospiti} ospiti ${spazio(ev.spazio).dove}, ${formato(ev.formato).nome.toLowerCase()}, ${data}, dalle ${oraTesto(ev.ora)}.`;
+		radice.querySelector('[data-riepilogo-prezzo]')!.textContent = `Forchetta indicativa: ${eur(p.da)} – ${eur(p.a)}.`;
+	}
+
+	const campi = ['nome', 'email', 'giorno'] as const;
+	const msg: Record<(typeof campi)[number], string> = {
+		nome: 'Scrivi come ti chiami.',
+		email: 'Scrivi un indirizzo email valido, per esempio nome@posta.it.',
+		giorno: 'Scegli un giorno per il sopralluogo.',
+	};
+
+	modulo.addEventListener('submit', (e) => {
+		e.preventDefault();
+		const dati = new FormData(modulo);
+		let primo: HTMLElement | null = null;
+		for (const c of campi) {
+			const v = String(dati.get(c) ?? '').trim();
+			const ok = c === 'email' ? /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) : v.length > 0;
+			const el = modulo.elements.namedItem(c) as HTMLElement;
+			const err = radice.querySelector<HTMLElement>(`#e-${c}`)!;
+			el.setAttribute('aria-invalid', String(!ok));
+			err.hidden = ok;
+			err.textContent = ok ? '' : msg[c];
+			if (!ok && !primo) primo = el;
+		}
+		if (primo) {
+			primo.focus();
+			return;
+		}
+		const ev = leggi();
+		const num = `LA-${new Date().getFullYear()}-${String(Math.floor(1000 + Math.random() * 9000))}`;
+		radice.querySelector('[data-r-num]')!.textContent = num;
+		radice.querySelector('[data-r-corpo]')!.textContent =
+			`${dati.get('nome')}, ti aspettiamo ${String(dati.get('giorno'))}, ${String(dati.get('fascia')) === 'tramonto' ? 'al tramonto' : `di ${dati.get('fascia')}`}. ` +
+			`Scheda: ${tipo(ev.tipo).nome.toLowerCase()}, ${ev.ospiti} ospiti ${spazio(ev.spazio).dove}.`;
+		modulo.hidden = true;
+		ricevuta.hidden = false;
+		ricevuta.focus();
+	});
+	modulo.addEventListener('input', (e) => {
+		const t = e.target as HTMLElement;
+		if (t.getAttribute('aria-invalid') === 'true') {
+			t.setAttribute('aria-invalid', 'false');
+			const err = radice.querySelector<HTMLElement>(`#e-${(t as HTMLInputElement).name}`);
+			if (err) err.hidden = true;
+		}
+	});
+	radice.querySelector('[data-r-nuova]')!.addEventListener('click', () => {
+		ricevuta.hidden = true;
+		modulo.hidden = false;
+		modulo.reset();
+		modulo.querySelector<HTMLElement>('input')?.focus();
+	});
+
+	ascolta(riepilogo);
+	riepilogo();
+</script>

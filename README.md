@@ -283,11 +283,30 @@
 
 <br>
 
+### 14 · Limonaia Aurelia
+
+<a href="https://vetrine.theloopstudio.org/eventi/location/"><img src="docs/img/card-limonaia.jpg" alt="Limonaia Aurelia on desktop and mobile: a white and lemon title on ink blue beside an arched window onto a greenhouse set for dinner, and the phone menu as a tablecloth with place cards." width="100%"></a>
+
+*Disegna la tua festa tavolo per tavolo.* A floor plan that lays out the tables for real, in Italian.
+
+| | |
+|---|---|
+| **Archetype** | The event venue: the **evolved** tier of the Events & creatives window, for a villa or farmhouse with a hall, a garden and a cellar |
+| **Mood** | A greenhouse at dusk: lemon, ink blue and glass, arched windows, plant-pot tags and a plan that works out the tables honestly, saying so when guests do not fit |
+| **Type** | Epilogue, one family from 400 to 800 |
+| **Palette** | <img src="docs/img/palette-limonaia.svg" alt="Lemon, ink blue, glass blue, terracotta, leaf green and pale sky" height="22"> |
+| **Signature moves** | A **shared event state** (type, guests, format, room, date, hour) that every section reads and writes, and that lives in the URL hash so the page can be sent. A **floor plan computed from real dimensions** (round tables, long tables, cocktail, ceremony rows, optional stage) with a verdict and an alternative room, tables draggable by mouse, pen, touch (tap to pick, then drag) or arrow keys. A **day slider from 16:00 to 01:00** that shifts the light, the moment of the party and the room: after dinner the tables move aside and a dance floor appears. A **calendar** that depends on room and guests, a **quote as a range** with line items, and **two ideas side by side**. The phone menu is a **tablecloth** that unrolls with place cards |
+| **Lighthouse** | 96 performance on mobile locally, 100 on desktop, 100 on accessibility and best practices, no layout shift. Photographs are free archive images declared as illustrative; the plan, logo mark and ornaments are SVG and CSS |
+
+[**Open Limonaia Aurelia →**](https://vetrine.theloopstudio.org/eventi/location/)
+
+<br>
+
 ### Next on the street
 
 | Category | Archetype | Status |
 |---|---|---|
-| Events & creatives | location for events, princely wedding planner | Planned |
+| Events & creatives | princely wedding planner | Planned |
 | Legal & professional | to be decided | Planned |
 | Local shop / e-commerce | to be decided | Planned |
 

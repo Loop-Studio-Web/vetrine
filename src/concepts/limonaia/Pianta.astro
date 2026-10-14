@@ -1,0 +1,512 @@
+---
+import { FORMATI, SPAZI, TIPI } from './dati';
+const mesiNome = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
+const aperti = (m: number[]) => (m.length === 12 ? 'tutto l’anno' : `${mesiNome[m[0]]}–${mesiNome[m[m.length - 1]]}`);
+---
+
+<section class="sezione pianta" id="pianta" aria-labelledby="t-pianta">
+	<div class="wrap">
+		<p class="cartellino">N° 01 · La pianta</p>
+		<h2 id="t-pianta">Quanti siete? Guarda <span class="evid">dove vi mettiamo</span>.</h2>
+		<p class="sezione__intro">
+			Cambia ospiti, formato e sala: i tavoli si dispongono davvero, con i corridoi. Se non ci state, la pianta lo dice.
+			Trascina i tavoli per provare un’altra idea.
+		</p>
+
+		<div class="pianta__griglia">
+			<form class="pianta__ctrl" onsubmit="return false" aria-label="Com’è la tua festa">
+				<fieldset>
+					<legend>Che festa è</legend>
+					<div class="chips">
+						{
+							TIPI.map((t) => (
+								<label class="chip">
+									<input type="radio" name="tipo" value={t.id} />
+									<span>{t.nome}</span>
+								</label>
+							))
+						}
+					</div>
+				</fieldset>
+
+				<div class="campo">
+					<label for="ospiti" class="campo__t">Ospiti <output id="ospiti-n" for="ospiti">90</output></label>
+					<input type="range" id="ospiti" name="ospiti" min="20" max="220" step="2" value="90" />
+					<div class="campo__scala" aria-hidden="true"><span>20</span><span>220</span></div>
+				</div>
+
+				<fieldset>
+					<legend>Come si siede</legend>
+					<div class="scelte">
+						{
+							FORMATI.map((f) => (
+								<label class="scelta">
+									<input type="radio" name="formato" value={f.id} />
+									<span class="scelta__n">{f.nome}</span>
+									<span class="scelta__d">{f.nota}</span>
+								</label>
+							))
+						}
+					</div>
+				</fieldset>
+
+				<fieldset>
+					<legend>In quale sala</legend>
+					<div class="scelte">
+						{
+							SPAZI.map((s) => (
+								<label class="scelta">
+									<input type="radio" name="spazio" value={s.id} />
+									<span class="scelta__n">{s.nome}</span>
+									<span class="scelta__d">
+										fino a {s.max} · {aperti(s.mesi)}
+									</span>
+								</label>
+							))
+						}
+					</div>
+				</fieldset>
+
+				<label class="interr">
+					<input type="checkbox" name="palco" />
+					<span><strong>Palco per la band</strong><small>toglie 2,6 m alla sala</small></span>
+				</label>
+			</form>
+
+			<div class="pianta__vista">
+				<div class="pianta__tela" data-tela></div>
+				<div class="verdetto" data-verdetto data-g="giusto" role="status" aria-live="polite">
+					<p class="verdetto__testo" data-v-testo></p>
+					<button type="button" class="btn btn--inchiostro verdetto__alt" data-v-alt hidden></button>
+				</div>
+				<dl class="numeri">
+					<div>
+						<dt>Seduti</dt>
+						<dd data-n-posti>—</dd>
+					</div>
+					<div>
+						<dt>Capienza</dt>
+						<dd data-n-cap>—</dd>
+					</div>
+					<div>
+						<dt>m² a testa</dt>
+						<dd data-n-mq>—</dd>
+					</div>
+					<div>
+						<dt>Tavoli</dt>
+						<dd data-n-tav>—</dd>
+					</div>
+				</dl>
+				<div class="pianta__azioni">
+					<p class="pianta__aiuto" data-aiuto>Trascina un tavolo, oppure selezionalo e usa le frecce.</p>
+					<button type="button" class="btn btn--vuoto" data-riordina hidden>Rimetti in ordine</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.pianta {
+		background: var(--vetro-chiaro);
+	}
+	.pianta__griglia {
+		display: grid;
+		grid-template-columns: minmax(280px, 380px) minmax(0, 1fr);
+		gap: clamp(24px, 4vw, 56px);
+		margin-top: 40px;
+		align-items: start;
+	}
+	.pianta__ctrl {
+		display: grid;
+		gap: 26px;
+	}
+	fieldset {
+		border: 0;
+		min-width: 0;
+	}
+	legend,
+	.campo__t {
+		display: block;
+		font-size: 0.78rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		margin-bottom: 10px;
+	}
+	.campo__t output {
+		float: right;
+		font-size: 1.1rem;
+		letter-spacing: 0;
+		padding: 0 10px;
+		background: var(--limone);
+		border-radius: 999px;
+	}
+	.chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+	.chip input,
+	.scelta input,
+	.interr input {
+		position: absolute;
+		opacity: 0;
+		pointer-events: none;
+	}
+	.chip span {
+		display: inline-flex;
+		align-items: center;
+		min-height: 44px;
+		padding: 0 16px;
+		border: 2px solid var(--inchiostro);
+		border-radius: 999px;
+		font-weight: 700;
+		font-size: 0.95rem;
+		cursor: pointer;
+		transition:
+			background-color 140ms var(--ease),
+			transform 140ms var(--ease);
+	}
+	.chip span:active {
+		transform: scale(0.96);
+	}
+	.chip input:checked + span {
+		background: var(--inchiostro);
+		color: var(--limone);
+	}
+	.chip input:focus-visible + span,
+	.scelta:has(input:focus-visible),
+	.interr:has(input:focus-visible) {
+		outline: 3px solid var(--terracotta);
+		outline-offset: 3px;
+	}
+	.scelte {
+		display: grid;
+		gap: 8px;
+	}
+	.scelta {
+		display: grid;
+		gap: 1px;
+		padding: 10px 16px;
+		border: 2px solid color-mix(in oklab, var(--inchiostro) 30%, transparent);
+		border-radius: 14px 14px 4px 4px;
+		background: var(--bianco);
+		cursor: pointer;
+		transition:
+			border-color 140ms var(--ease),
+			background-color 140ms var(--ease);
+	}
+	.scelta:has(input:checked) {
+		border-color: var(--inchiostro);
+		background: var(--limone);
+	}
+	.scelta__n {
+		font-weight: 800;
+	}
+	.scelta__d {
+		font-size: 0.85rem;
+		color: var(--testo-2);
+	}
+	.scelta:has(input:checked) .scelta__d {
+		color: var(--inchiostro);
+	}
+	.interr {
+		display: flex;
+		gap: 14px;
+		align-items: center;
+		padding: 12px 16px;
+		border: 2px solid var(--inchiostro);
+		border-radius: 14px;
+		background: var(--bianco);
+		cursor: pointer;
+	}
+	.interr::before {
+		content: '';
+		flex: none;
+		width: 26px;
+		height: 26px;
+		border: 2px solid var(--inchiostro);
+		border-radius: 8px;
+		background: var(--bianco);
+		transition: background-color 140ms var(--ease);
+	}
+	.interr:has(input:checked)::before {
+		background: var(--limone) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7' fill='none' stroke='%2316224a' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 18px no-repeat;
+	}
+	.interr span {
+		display: grid;
+	}
+	.interr small {
+		font-size: 0.85rem;
+		color: var(--testo-2);
+	}
+
+	input[type='range'] {
+		width: 100%;
+		height: 44px;
+		accent-color: var(--inchiostro);
+		cursor: pointer;
+	}
+	.campo__scala {
+		display: flex;
+		justify-content: space-between;
+		font-size: 0.8rem;
+		color: var(--testo-2);
+		margin-top: -6px;
+	}
+
+	.pianta__vista {
+		position: sticky;
+		top: calc(var(--nav-h) + 16px);
+		display: grid;
+		gap: 16px;
+		min-width: 0;
+	}
+	.pianta__tela {
+		background: var(--bianco);
+		border: 3px solid var(--inchiostro);
+		border-radius: 20px 20px 6px 6px;
+		padding: clamp(6px, 1.4vw, 14px);
+		box-shadow: 8px 8px 0 -2px var(--limone);
+	}
+	.verdetto {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		padding: 14px 18px;
+		border-left: 8px solid var(--foglia);
+		background: var(--bianco);
+		border-radius: 4px 14px 14px 4px;
+		font-weight: 600;
+	}
+	.verdetto[data-g='stretto'] {
+		border-left-color: var(--limone);
+	}
+	.verdetto[data-g='noncista'] {
+		border-left-color: var(--errore);
+	}
+	.verdetto[data-g='ampio'] {
+		border-left-color: var(--vetro);
+	}
+	.verdetto__alt {
+		min-height: 44px;
+		padding: 0 18px;
+		font-size: 0.93rem;
+	}
+	.numeri {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 8px;
+	}
+	.numeri div {
+		padding: 8px 12px;
+		background: color-mix(in oklab, var(--vetro) 45%, transparent);
+		border-radius: 10px;
+	}
+	.numeri dt {
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--testo-2);
+	}
+	.numeri dd {
+		font-size: 1.5rem;
+		font-weight: 800;
+		letter-spacing: -0.02em;
+		font-variant-numeric: tabular-nums;
+	}
+	.pianta__azioni {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+	}
+	.pianta__aiuto {
+		font-size: 0.9rem;
+		color: var(--testo-2);
+	}
+	.pianta__azioni .btn {
+		min-height: 44px;
+		padding: 0 18px;
+		font-size: 0.93rem;
+	}
+
+	@media (max-width: 900px) {
+		.pianta__griglia {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.pianta__vista {
+			order: -1;
+			top: calc(var(--nav-h) + 8px);
+			z-index: 2;
+			padding-block: 8px;
+			background: var(--vetro-chiaro);
+			margin-inline: calc(var(--gutter) * -1);
+			padding-inline: var(--gutter);
+			gap: 10px;
+		}
+		.numeri,
+		.pianta__azioni {
+			display: none;
+		}
+		.pianta__tela {
+			box-shadow: none;
+		}
+	}
+	@media (max-width: 480px) {
+		.verdetto {
+			padding: 10px 14px;
+			font-size: 0.93rem;
+		}
+	}
+</style>
+
+<script>
+	import { dispone, mqUtili, type Pianta } from './pianta';
+	import { capienza, verdetto, type Evento } from './evento';
+	import { svgPianta } from './pianta-svg';
+	import { spazio } from './dati';
+	import { ascolta, imposta, leggi, riordina, scegliTipo, sposta, spostati } from './stato';
+
+	const radice = document.getElementById('pianta')!;
+	const tela = radice.querySelector<HTMLElement>('[data-tela]')!;
+	const vTesto = radice.querySelector<HTMLElement>('[data-v-testo]')!;
+	const vBox = radice.querySelector<HTMLElement>('[data-verdetto]')!;
+	const vAlt = radice.querySelector<HTMLButtonElement>('[data-v-alt]')!;
+	const btnRiordina = radice.querySelector<HTMLButtonElement>('[data-riordina]')!;
+	const aiuto = radice.querySelector<HTMLElement>('[data-aiuto]')!;
+	const ospitiIn = radice.querySelector<HTMLInputElement>('#ospiti')!;
+	const ospitiOut = radice.querySelector<HTMLOutputElement>('#ospiti-n')!;
+	const palco = radice.querySelector<HTMLInputElement>('input[name="palco"]')!;
+	const num = (n: number) => n.toLocaleString('it-IT', { maximumFractionDigits: 1 });
+	const set = (sel: string, v: string) => (radice.querySelector(sel)!.textContent = v);
+
+	let corrente: Pianta;
+	let scelto: string | null = null;
+
+	function radio(nome: string, valore: string) {
+		radice.querySelectorAll<HTMLInputElement>(`input[name="${nome}"]`).forEach((i) => (i.checked = i.value === valore));
+	}
+
+	function disegna(ev: Evento) {
+		const attivo = document.activeElement as HTMLElement | null;
+		const idAttivo = attivo && tela.contains(attivo) ? attivo.dataset.id : null;
+		corrente = dispone(ev.spazio, ev.formato, ev.ospiti, ev.palco);
+		tela.innerHTML = svgPianta(corrente, { override: spostati(), ospiti: ev.ospiti });
+		if (scelto) tela.querySelector(`[data-id="${scelto}"]`)?.classList.add('scelto');
+		if (idAttivo) tela.querySelector<HTMLElement>(`[data-id="${idAttivo}"]`)?.focus({ preventScroll: true });
+	}
+
+	function aggiorna() {
+		const ev = leggi();
+		radio('tipo', ev.tipo);
+		radio('formato', ev.formato);
+		radio('spazio', ev.spazio);
+		palco.checked = ev.palco;
+		if (document.activeElement !== ospitiIn) ospitiIn.value = String(ev.ospiti);
+		ospitiOut.textContent = String(ev.ospiti);
+		disegna(ev);
+		const v = verdetto(ev);
+		vBox.dataset.g = v.giudizio;
+		vTesto.textContent = v.testo;
+		vAlt.hidden = !v.alternativa;
+		if (v.alternativa) {
+			vAlt.textContent = `Passa ${spazio(v.alternativa).dove}`;
+			vAlt.dataset.spazio = v.alternativa;
+		}
+		set('[data-n-posti]', String(corrente.posti));
+		set('[data-n-cap]', String(capienza(ev.spazio, ev.formato, ev.palco)));
+		set('[data-n-mq]', num(mqUtili(ev.spazio, ev.palco) / ev.ospiti));
+		set('[data-n-tav]', String(corrente.elementi.filter((e) => e.tipo !== 'fila').length || corrente.elementi.length));
+		btnRiordina.hidden = Object.keys(spostati()).length === 0;
+	}
+
+	radice.querySelectorAll<HTMLInputElement>('input[name="tipo"]').forEach((i) => i.addEventListener('change', () => scegliTipo(i.value as never)));
+	radice.querySelectorAll<HTMLInputElement>('input[name="formato"]').forEach((i) => i.addEventListener('change', () => imposta({ formato: i.value as never })));
+	radice.querySelectorAll<HTMLInputElement>('input[name="spazio"]').forEach((i) => i.addEventListener('change', () => imposta({ spazio: i.value as never })));
+	palco.addEventListener('change', () => imposta({ palco: palco.checked }));
+	ospitiIn.addEventListener('input', () => imposta({ ospiti: Number(ospitiIn.value) }));
+	vAlt.addEventListener('click', () => vAlt.dataset.spazio && imposta({ spazio: vAlt.dataset.spazio as never }));
+	btnRiordina.addEventListener('click', riordina);
+
+	// ---- trascinamento dei tavoli (mouse e penna subito; su touch prima si tocca per sceglierlo) ----
+	let drag: { el: SVGGElement; id: string; dx: number; dy: number; mosso: boolean; w: number; h: number } | null = null;
+
+	function puntoSvg(svg: SVGSVGElement, ev: PointerEvent) {
+		const m = svg.getScreenCTM();
+		if (!m) return { x: 0, y: 0 };
+		const p = new DOMPoint(ev.clientX, ev.clientY).matrixTransform(m.inverse());
+		return { x: p.x, y: p.y };
+	}
+	const fra = (n: number, a: number, b: number) => Math.min(b, Math.max(a, n));
+
+	tela.addEventListener('pointerdown', (ev) => {
+		const el = (ev.target as Element).closest<SVGGElement>('.ps-el');
+		if (!el || !corrente) return;
+		const id = el.dataset.id!;
+		const info = corrente.elementi.find((e) => e.id === id);
+		if (!info) return;
+		const svg = el.ownerSVGElement!;
+		if (ev.pointerType === 'touch' && scelto !== id) {
+			// primo tocco: lo sceglie, il trascinamento parte dal tocco successivo
+			scelto = id;
+			tela.querySelectorAll('.scelto').forEach((x) => x.classList.remove('scelto'));
+			el.classList.add('scelto');
+			aiuto.textContent = 'Tavolo scelto: ora trascinalo.';
+			return;
+		}
+		const t = el.transform.baseVal.consolidate()?.matrix;
+		const p = puntoSvg(svg, ev);
+		drag = { el, id, dx: (t?.e ?? info.x) - p.x, dy: (t?.f ?? info.y) - p.y, mosso: false, w: info.w, h: info.h };
+		el.setPointerCapture(ev.pointerId);
+		el.classList.add('trascinato');
+		ev.preventDefault();
+	});
+	tela.addEventListener('pointermove', (ev) => {
+		if (!drag) return;
+		const svg = drag.el.ownerSVGElement!;
+		const p = puntoSvg(svg, ev);
+		const x = Math.round(fra(p.x + drag.dx, drag.w / 2 + 10, corrente.w - drag.w / 2 - 10));
+		const y = Math.round(fra(p.y + drag.dy, drag.h / 2 + 10, corrente.d - drag.h / 2 - 10));
+		drag.el.setAttribute('transform', `translate(${x} ${y})`);
+		drag.mosso = true;
+	});
+	const fine = () => {
+		if (!drag) return;
+		const d = drag;
+		drag = null;
+		d.el.classList.remove('trascinato');
+		if (d.mosso) {
+			const t = d.el.transform.baseVal.consolidate()!.matrix;
+			scelto = d.id;
+			sposta(d.id, { x: t.e, y: t.f });
+		}
+	};
+	tela.addEventListener('pointerup', fine);
+	tela.addEventListener('pointercancel', fine);
+
+	tela.addEventListener('keydown', (ev) => {
+		const el = (ev.target as Element).closest<SVGGElement>('.ps-el');
+		if (!el) return;
+		const passo = ev.shiftKey ? 100 : 20;
+		const d: Record<string, [number, number]> = { ArrowLeft: [-passo, 0], ArrowRight: [passo, 0], ArrowUp: [0, -passo], ArrowDown: [0, passo] };
+		const mossa = d[ev.key];
+		if (!mossa) return;
+		ev.preventDefault();
+		const info = corrente.elementi.find((e) => e.id === el.dataset.id);
+		if (!info) return;
+		const t = el.transform.baseVal.consolidate()!.matrix;
+		sposta(info.id, {
+			x: fra(t.e + mossa[0], info.w / 2 + 10, corrente.w - info.w / 2 - 10),
+			y: fra(t.f + mossa[1], info.h / 2 + 10, corrente.d - info.h / 2 - 10),
+		});
+	});
+
+	ascolta(aggiorna);
+	aggiorna();
+</script>

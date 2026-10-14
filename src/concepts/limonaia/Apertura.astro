@@ -1,0 +1,208 @@
+---
+import { Image } from 'astro:assets';
+import serra from '../../assets/limonaia/foto/apertura-serra.jpg';
+import { TIPI } from './dati';
+---
+
+<section class="apertura scuro" id="top" aria-labelledby="t-apertura">
+	<div class="apertura__in wrap">
+		<div class="apertura__testo">
+			<p class="cartellino">Limonaia · giardino · cantina</p>
+			<h1 id="t-apertura">Disegna la tua festa <span class="evid">tavolo per tavolo</span>.</h1>
+			<p class="apertura__sotto">
+				Una limonaia dell’Ottocento, un giardino di agrumi e una cantina a volta. Dì che festa è: la pianta, la giornata e il
+				preventivo si compongono da soli.
+			</p>
+			<fieldset class="apertura__tipi">
+				<legend>Che festa è?</legend>
+				<div class="apertura__bottoni">
+					{
+						TIPI.map((t) => (
+							<button type="button" class="tipo" data-tipo={t.id}>
+								<span class="tipo__nome">{t.nome}</span>
+								<span class="tipo__n">{t.ospiti} ospiti</span>
+							</button>
+						))
+					}
+				</div>
+			</fieldset>
+			<p class="apertura__nota">Spazi, prezzi e date sono di fantasia: è una vetrina dimostrativa.</p>
+		</div>
+		<figure class="apertura__finestra">
+			<Image
+				src={serra}
+				alt="Tavolata apparecchiata sotto le vetrate di una serra, tra piante e fiori bianchi"
+				widths={[480, 760, 1000]}
+				sizes="(max-width: 900px) 90vw, 520px"
+				loading="eager"
+				fetchpriority="high"
+				quality={72}
+			/>
+			<figcaption>Foto di archivio, illustrativa</figcaption>
+		</figure>
+	</div>
+</section>
+
+<style>
+	.apertura {
+		position: relative;
+		padding-top: calc(var(--fascia-h) + var(--nav-h) + clamp(28px, 5vw, 64px));
+		padding-bottom: clamp(48px, 7vw, 96px);
+		overflow: clip;
+		background:
+			radial-gradient(60% 70% at 85% 30%, color-mix(in oklab, var(--limone) 22%, transparent), transparent 70%),
+			var(--inchiostro);
+	}
+	.apertura__in {
+		display: grid;
+		grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+		gap: clamp(28px, 5vw, 72px);
+		align-items: center;
+	}
+	.apertura h1 {
+		font-size: clamp(2.5rem, 7vw, 5.2rem);
+		margin-top: 22px;
+		line-height: 0.98;
+		max-width: 12ch;
+		color: var(--bianco);
+	}
+	.apertura__sotto {
+		margin-top: 22px;
+		max-width: 46ch;
+		font-size: 1.15rem;
+		color: var(--vetro);
+	}
+	.apertura__tipi {
+		border: 0;
+		margin-top: 30px;
+		min-width: 0;
+	}
+	.apertura__tipi legend {
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--limone);
+		margin-bottom: 12px;
+	}
+	.apertura__bottoni {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 10px;
+		max-width: 520px;
+	}
+	.tipo {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 2px;
+		min-height: 64px;
+		padding: 10px 16px;
+		background: transparent;
+		border: 2px solid var(--vetro);
+		border-radius: 14px 14px 4px 4px;
+		color: var(--bianco);
+		text-align: left;
+		cursor: pointer;
+		transition:
+			background-color 160ms var(--ease),
+			color 160ms var(--ease),
+			transform 160ms var(--ease);
+	}
+	.tipo:active {
+		transform: scale(0.97);
+	}
+	.tipo__nome {
+		font-weight: 800;
+		font-size: 1.05rem;
+	}
+	.tipo__n {
+		font-size: 0.85rem;
+		color: var(--vetro);
+	}
+	@media (hover: hover) {
+		.tipo:hover {
+			background: var(--limone);
+			color: var(--inchiostro);
+			border-color: var(--limone);
+		}
+		.tipo:hover .tipo__n {
+			color: var(--inchiostro);
+		}
+	}
+	.apertura__nota {
+		margin-top: 22px;
+		font-size: 0.9rem;
+		color: var(--vetro);
+	}
+	.apertura__finestra {
+		position: relative;
+		margin: 0;
+		justify-self: end;
+		width: min(100%, 460px);
+	}
+	.apertura__finestra :global(img) {
+		width: 100%;
+		aspect-ratio: 4 / 5.2;
+		object-fit: cover;
+		border-radius: var(--arco);
+		border: 6px solid var(--limone);
+		outline: 2px solid var(--limone);
+		outline-offset: 8px;
+	}
+	.apertura__finestra figcaption {
+		margin-top: 18px;
+		font-size: 0.8rem;
+		color: var(--vetro);
+		text-align: right;
+	}
+	@media (max-width: 900px) {
+		.apertura__in {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.apertura__finestra {
+			justify-self: center;
+			width: min(100%, 380px);
+		}
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.apertura__testo > * {
+			animation: sale 700ms var(--ease) both;
+		}
+		.apertura__testo > :nth-child(2) {
+			animation-delay: 80ms;
+		}
+		.apertura__testo > :nth-child(3) {
+			animation-delay: 160ms;
+		}
+		.apertura__testo > :nth-child(4) {
+			animation-delay: 240ms;
+		}
+		.apertura__finestra {
+			animation: finestra 900ms var(--ease) 120ms both;
+		}
+	}
+	@keyframes sale {
+		from {
+			opacity: 0;
+			transform: translateY(16px);
+		}
+	}
+	@keyframes finestra {
+		from {
+			opacity: 0;
+			clip-path: inset(40% 0 0 0 round 999px 999px 10px 10px);
+		}
+	}
+</style>
+
+<script>
+	import { scegliTipo } from './stato';
+	import type { TipoEvento } from './dati';
+	document.querySelectorAll<HTMLButtonElement>('[data-tipo]').forEach((b) => {
+		b.addEventListener('click', () => {
+			scegliTipo(b.dataset.tipo as TipoEvento);
+			document.getElementById('pianta')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+		});
+	});
+</script>
