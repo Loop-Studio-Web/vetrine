@@ -1,9 +1,11 @@
 ---
-// L'ingresso dell'enfilade: titolo, un arco con la prima foto che si tesse, l'invito a scorrere.
-import Foto from './Foto.astro';
+// L'ingresso dell'enfilade: titolo su una foto a tutta pagina che si tesse, e l'invito a scorrere.
+import Fondo from './Fondo.astro';
+import { ingresso } from './dati';
 ---
 
-<section class="ingresso" id="ingresso" data-sala data-tinta="pompeiano" aria-labelledby="ingresso-t">
+<section class="ingresso" id="ingresso" data-sala data-con-foto data-hero data-tinta="pompeiano" data-disp="a" data-nome="" aria-labelledby="ingresso-t">
+	<Fondo scatti={[ingresso]} eager />
 	<span class="sala__filo" aria-hidden="true"></span>
 	<div class="ingresso__in">
 		<div class="ingresso__testo">
@@ -16,16 +18,12 @@ import Foto from './Foto.astro';
 				<a class="btn" href="#scrivici">Ask about a date</a>
 			</div>
 		</div>
-		<Foto
-			file="ingresso-loggia"
-			alt="A columned loggia with a mosaic floor opening onto the lake and the mountains"
-			forma="arco"
-			classe="ingresso__foto"
-			eager
-		/>
 		<p class="ingresso__invito" aria-hidden="true">
 			<span class="ingresso__freccia"></span>
 		</p>
+	</div>
+	<div class="didascalia" aria-hidden="true" data-cap>
+		<p class="didascalia__testo">{ingresso.cap}</p>
 	</div>
 </section>
 
@@ -33,14 +31,21 @@ import Foto from './Foto.astro';
 	.ingresso {
 		position: relative;
 		overflow: hidden;
-		padding: calc(var(--fascia-h) + var(--nav-h) + 36px) var(--gutter) 72px;
+		display: flex;
+		flex-direction: column;
+	}
+	.ingresso .fondo {
+		order: 2;
 	}
 	.ingresso__in {
 		position: relative;
 		z-index: 2;
-		display: grid;
-		gap: 44px;
-		align-items: center;
+		order: 1;
+		padding: calc(var(--fascia-h) + var(--nav-h) + 36px) var(--gutter) 40px;
+	}
+	.ingresso .didascalia {
+		order: 3;
+		padding-top: 14px;
 	}
 	.ingresso__testo {
 		display: grid;
@@ -57,51 +62,43 @@ import Foto from './Foto.astro';
 		gap: 14px;
 		margin-top: 6px;
 	}
-	.ingresso__foto {
-		width: min(100%, 440px);
-		justify-self: center;
-	}
 	.ingresso__invito {
 		display: none;
 	}
-	@media (min-width: 820px) {
-		.ingresso__in {
-			grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.9fr);
-		}
-		.ingresso__foto {
-			justify-self: end;
-		}
-	}
 
 	html.h .ingresso {
+		display: block;
 		flex: none;
 		width: 112vw;
 		height: 100svh;
-		padding: calc(var(--fascia-h) + var(--nav-h) + 2svh) 0 5svh 8vw;
 	}
 	html.h .ingresso__in {
-		height: 100%;
+		position: absolute;
+		inset: 0;
 		display: flex;
 		align-items: center;
-		gap: 5vw;
+		padding: calc(var(--fascia-h) + var(--nav-h) + 2svh) 0 9svh 8vw;
 	}
 	html.h .ingresso__testo {
-		flex: none;
-		width: min(48vw, 780px);
+		width: min(52vw, 820px);
 	}
 	html.h .ingresso__testo .titolo {
-		font-size: min(8.6vw, 17svh);
-	}
-	html.h .ingresso__foto {
-		width: auto;
-		height: min(76svh, 58vw);
-		flex: none;
+		font-size: min(8.4vw, 17svh);
 	}
 	html.h .ingresso__invito {
 		display: block;
 		position: absolute;
 		right: 6vw;
-		bottom: 5svh;
+		bottom: 8svh;
+	}
+	html.h .ingresso .didascalia {
+		position: absolute;
+		left: 8vw;
+		bottom: 8svh;
+		padding: 0;
+		width: 16rem;
+		transform: translate3d(var(--cx, 0px), 0, 0);
+		color: var(--testo);
 	}
 	.ingresso__freccia {
 		display: block;

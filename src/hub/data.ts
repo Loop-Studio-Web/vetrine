@@ -879,14 +879,14 @@ export const concepts: Concept[] = [
 		nome: 'Marrow & Knot',
 		categoria: 'Eventi e creativi',
 		archetipo: 'Il wedding planner per nozze in Italia',
-		claim: 'Weddings in Italy. Cinque sale da attraversare, dal lago di Como a Venezia: le foto si tessono a fili, il nodo si stringe mentre scrivi.',
+		claim: 'Weddings in Italy. Cinque sale da attraversare, dal lago di Como a Venezia: foto a tutta pagina che si tessono a fili, storia e consigli per chi arriva da lontano, un nodo che si stringe mentre scrivi.',
 		path: '/eventi/wedding/',
 		infoPath: '/eventi/wedding/info/',
 		titoloSeo: 'Sito web per wedding planner: homepage concept in inglese per matrimoni di destinazione',
 		descrizioneSeo:
-			'Come potrebbe essere la homepage di un wedding planner per coppie straniere che si sposano in Italia: un corridoio di cinque sale (Como, Puglia, Amalfi, Toscana, Venezia) con foto che si tessono a fili in WebGL, un video in una serratura e una richiesta che stringe un nodo. In inglese. Concept dimostrativo di Loop Studio.',
+			'Come potrebbe essere la homepage di un wedding planner per coppie straniere che si sposano in Italia: un corridoio di cinque sale (Como, Puglia, Amalfi, Toscana, Venezia) con foto a tutta pagina che si tessono a fili in WebGL, testi di storia e di contesto per chi viene dall’estero, un video in una serratura e una richiesta che stringe un nodo. In inglese. Concept dimostrativo di Loop Studio.',
 		intro: [
-			'Chi sceglie di sposarsi in Italia da lontano sceglie prima un luogo, poi una persona che se ne occupi. Questa homepage parte dal luogo: è un’infilata di sale, come in un palazzo, e ogni sala è un posto con la sua tinta, la sua foto e i suoi numeri veri (ospiti, stagione, distanza). Alla fine, una richiesta in quattro campi.',
+			'Chi sceglie di sposarsi in Italia da lontano sceglie prima un luogo, poi una persona che se ne occupi. Questa homepage parte dal luogo: è un’infilata di sale, come in un palazzo, e ogni sala è un posto con la sua tinta, le sue foto, i suoi numeri (ospiti, stagione, distanza) e un po’ di storia e di cose da sapere per chi arriva da lontano. Alla fine, una richiesta in quattro campi.',
 			'È il livello Esperienza della categoria Eventi e creativi e una vetrina dimostrativa, scritta in inglese per coppie anglofone: lo studio, i luoghi proposti, i tempi e i recapiti sono di fantasia, e le fotografie e il video sono d’archivio. Il filo del sito è il nodo del marchio: i fili che tessono le foto, il filo che corre tra le sale, il nodo che si stringe nel modulo.',
 		],
 		perChi:
@@ -898,7 +898,7 @@ export const concepts: Concept[] = [
 			},
 			{
 				t: 'Foto che si tessono a fili',
-				d: 'Entrando in sala l’ordito scende e la trama lo attraversa fino a chiudere l’immagine; uscendo si sfila. Una lente segue il mouse. Dietro c’è una sola tela WebGL molto leggera, con l’immagine normale come ripiego.',
+				d: 'Ogni sala ha da tre a quattro foto a tutta pagina: entrando l’ordito scende e la trama lo attraversa fino a chiudere l’immagine, e proseguendo la foto dopo si tesse sulla precedente. Il testo resta fermo e si costruisce parola per parola. Una lente segue il mouse. Dietro c’è una sola tela WebGL molto leggera, con l’immagine normale come ripiego.',
 			},
 			{
 				t: 'Un video dentro una serratura',
@@ -922,7 +922,7 @@ export const concepts: Concept[] = [
 		caratteri: 'Imbue e Commissioner',
 		palette: ['#5e0e1c', '#17463f', '#2b0b1a', '#e6ecee', '#7a1428', '#d9a5ad'],
 		metriche: [
-			{ label: 'Performance', valore: '96' },
+			{ label: 'Performance', valore: '97' },
 			{ label: 'Accessibilità', valore: '100' },
 			{ label: 'Buone pratiche', valore: '100' },
 		],

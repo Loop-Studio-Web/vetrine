@@ -2,7 +2,7 @@
 // (OGL) e il piccolo cervello che dice alla navbar in quale sala ci si trova. Caricato dopo il primo paint.
 // Corridoio solo con mouse, schermo largo e senza reduced-motion: altrove la pagina resta una pila verticale nativa.
 
-import { Arazzo } from './arazzo';
+import { Arazzo, type InfoSala } from './arazzo';
 
 const lim = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 
@@ -107,20 +107,83 @@ export async function avvia() {
 	}
 
 	// ———— ogni fotogramma ————
+	// Per ogni sala: --e (quanto del testo è già costruito), --p (parallasse del nome), --draw (filo),
+	// didascalia e segmenti della foto corrente. Le misure vanno anche alla tela, che disegna le foto.
+	interface Dati {
+		caps: string[];
+		cap: HTMLElement | null;
+		capTesto: HTMLElement | null;
+		segs: HTMLElement[];
+		corrente: number;
+	}
+	const dati = new Map<HTMLElement, Dati>();
+	for (const s of sale) {
+		const f = s.querySelector<HTMLElement>('[data-fondo]');
+		const caps: string[] = f ? (JSON.parse(f.dataset.scatti || '[]') as { cap: string }[]).map((x) => x.cap) : [];
+		dati.set(s, {
+			caps,
+			cap: s.querySelector<HTMLElement>('[data-cap]'),
+			capTesto: s.querySelector<HTMLElement>('[data-cap-testo]'),
+			segs: [...s.querySelectorAll<HTMLElement>('[data-seg]')],
+			corrente: 0,
+		});
+	}
+
 	let attiva = '';
 	function frame() {
 		const W = innerWidth;
 		const H = innerHeight;
 		let migliore: HTMLElement | null = null;
 		let distMin = Infinity;
+		const info: InfoSala[] = [];
 		for (const s of sale) {
 			const r = s.getBoundingClientRect();
-			if (orizz ? r.right < -W * 0.2 || r.left > W * 1.2 : r.bottom < -H * 0.2 || r.top > H * 1.2) continue;
+			if (orizz ? r.right < -W * 0.2 || r.left > W * 1.2 : r.bottom < -H * 0.2 || r.top > H * 1.2) {
+				if (arazzo && s.hasAttribute('data-con-foto')) info.push({ el: s, r, u: orizz ? (r.left < 0 ? 1 : 0) : r.top < 0 ? 1 : 0 });
+				continue;
+			}
 			const centro = orizz ? (r.left + r.right) / 2 - W / 2 : (r.top + r.bottom) / 2 - H / 2;
 			const ampiezza = orizz ? W : H;
 			s.style.setProperty('--p', lim(centro / ampiezza, -1.5, 1.5).toFixed(3));
 			const entrata = orizz ? (W - r.left) / (W * 0.9) : (H - r.top) / (H * 0.9);
 			s.style.setProperty('--draw', lim(entrata).toFixed(3));
+
+			// il testo si costruisce entrando; l'ingresso resta fermo (è l'LCP)
+			if (!ridotto && !s.hasAttribute('data-hero')) {
+				const e = orizz ? lim((W - r.left) / (W * 0.72)) : lim((H * 0.95 - r.top) / (H * 0.8));
+				s.style.setProperty('--e', e.toFixed(3));
+			}
+
+			// avanzamento nella sala: decide quale foto è in primo piano
+			const u = orizz ? lim((W * 0.3 - r.left) / (W * 0.3 + r.width - W)) : lim((H * 0.8 - r.top) / (r.height * 0.9));
+			const d = dati.get(s)!;
+			if (d.caps.length > 1) {
+				const idx = Math.min(d.caps.length - 1, Math.floor(u * (d.caps.length - 1) + 0.5));
+				if (idx !== d.corrente) {
+					d.corrente = idx;
+					d.cap?.classList.add('cambia');
+					setTimeout(() => {
+						if (d.capTesto) d.capTesto.textContent = d.caps[d.corrente];
+						d.cap?.classList.remove('cambia');
+					}, 320);
+					d.segs.forEach((g, k) => g.classList.toggle('attivo', k <= idx));
+				}
+			}
+			// corridoio: il testo resta fermo sullo schermo mentre le foto si danno il cambio; la sala dopo lo copre come una tenda
+			if (orizz && !s.hasAttribute('data-hero')) {
+				const tx = s.dataset.disp === 'b' ? Math.min(0, W - r.left - r.width) : Math.max(0, -r.left);
+				s.style.setProperty('--tx', tx.toFixed(1) + 'px');
+			}
+			// la didascalia segue lo schermo dentro la sala (corridoio)
+			if (orizz && d.cap) {
+				const b = s.dataset.disp === 'b';
+				const cw = d.cap.offsetWidth;
+				const voluto = b ? W * 0.06 : W * 0.94 - cw;
+				const cx = lim(voluto - r.left - d.cap.offsetLeft, 0, Math.max(0, r.width - cw - d.cap.offsetLeft - W * 0.04));
+				d.cap.style.setProperty('--cx', cx.toFixed(1) + 'px');
+			}
+			if (s.hasAttribute('data-con-foto')) info.push({ el: s, r, u });
+
 			// la sala "attiva" è quella che contiene il punto a un terzo dello schermo (orizz.) o il centro (pila)
 			const ref = orizz ? W * 0.38 : H * 0.45;
 			const inizio = orizz ? r.left : r.top;
@@ -139,7 +202,7 @@ export async function avvia() {
 				for (const a of linkNav) a.setAttribute('aria-current', String(a.dataset.vai === id));
 			}
 		}
-		arazzo?.disegna();
+		arazzo?.disegna(info);
 	}
 	const giro = () => {
 		frame();

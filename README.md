@@ -306,16 +306,16 @@
 
 <a href="https://vetrine.theloopstudio.org/eventi/wedding/"><img src="docs/img/card-marrowknot.jpg" alt="Marrow & Knot on desktop and mobile: a white title on a Pompeian-red background beside an arch showing a lakeside loggia, and the phone menu as a marble arch listing the five places." width="100%"></a>
 
-*Start with the room, not the checklist.* A wedding planner for destinations in Italy, in English.
+*Start with the room, not the checklist.* A wedding planner for destinations in Italy, in English, with full-page photographs that weave themselves.
 
 | | |
 |---|---|
 | **Archetype** | The destination wedding planner: the **experience** tier of the Events & creatives window, for a studio that sells places more than services |
 | **Mood** | An enfilade of rooms in a palazzo: Pompeian red, verdigris, cold marble and wine, tall condensed titles, no gold. The knot of the logo is the thread of the whole page |
-| **Type** | Imbue (a narrow high-contrast display serif with an optical-size axis) for titles and the huge room names, Commissioner for text |
+| **Type** | Imbue (a narrow high-contrast display serif with an optical-size axis) for titles, Great Vibes for the place names, Commissioner for text |
 | **Palette** | <img src="docs/img/palette-marrowknot.svg" alt="Pompeian red, verdigris, wine, cold marble, carmine and dusty pink" height="22"> |
-| **Signature moves** | A **horizontal corridor of five rooms** (Como, Puglia, Amalfi, Tuscany, Venice) driven by vertical scroll on desktop with a mouse (GSAP ScrollTrigger pin + Lenis), a plain vertical stack on phones, touch and reduced motion. **Photographs woven from threads**: one WebGL canvas (OGL, no Three.js) draws every photo in its place; entering a room the warp drops, the weft crosses it and the picture closes, leaving it unweaves, and a lens follows the mouse. On phones the canvas starts at the first gesture. A **video inside a keyhole mask** that only plays in view. A **trefoil knot** drawn point by point with over/under crossings that tightens as the request is filled in. The phone menu is a **marble arch** that rises from the bottom |
-| **Lighthouse** | 96 performance on mobile locally, 99 on desktop, 100 on accessibility and best practices, no layout shift (SEO 66 only because the page is `noindex` by design). Photographs and one video are free archive images declared as illustrative; logo mark rebuilt by hand as SVG |
+| **Signature moves** | A **horizontal corridor of five rooms** (Como, Puglia, Amalfi, Tuscany, Venice) driven by vertical scroll on desktop with a mouse (GSAP ScrollTrigger pin + Lenis), a plain vertical stack on phones, touch and reduced motion. **Full-page photographs woven from threads**: one WebGL canvas (OGL, no Three.js) sits behind the text and draws three to four photos per room; entering a room the warp drops, the weft crosses it and the picture closes, and moving on the next photo weaves over the previous one, with a colour veil under the text and a lens that follows the mouse. Textures load when a room is near and are released when far; on phones the canvas starts at the first gesture. The **text builds itself** word by word with the scroll and stays still while the photographs change; each room adds a short history and a few things to know for guests coming from abroad. A **video inside a keyhole mask** that only plays in view. A **trefoil knot** drawn point by point with over/under crossings that tightens as the request is filled in. Place names are set in Great Vibes. The phone menu is a **marble arch** that rises from the bottom |
+| **Lighthouse** | 97 performance on mobile locally, 98 on desktop, 100 on accessibility and best practices, no layout shift (SEO 66 only because the page is `noindex` by design). Photographs (Unsplash, free licence) and one video (Pexels) are archive images declared as illustrative; logo mark rebuilt by hand as SVG |
 
 [**Open Marrow & Knot →**](https://vetrine.theloopstudio.org/eventi/wedding/)
 

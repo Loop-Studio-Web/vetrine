@@ -1,7 +1,9 @@
-// Le foto come arazzi: ogni <figure data-foto> viene disegnata da una tela WebGL (OGL) sulla sua stessa posizione.
-// Entrando nella sala i fili dell'ordito scendono, poi la trama li attraversa e l'immagine si chiude;
-// uscendo si sfila. Col mouse, una lente ingrandisce il punto sotto il cursore.
-// Un solo contesto per tutta la pagina; si disegna solo ciò che è in vista.
+// Gli sfondi come arazzi. Una sola tela WebGL (OGL) disegna, per ogni sala, una pila di fotografie:
+// la prima si tesse entrando in sala (l'ordito scende, la trama lo attraversa, l'immagine si chiude),
+// le altre si tessono una sull'altra mentre si attraversa la sala. Una lente segue il mouse.
+// Corridoio: la foto resta ferma sullo schermo e la sala è una tenda che la scopre, con un velo di colore sotto il testo.
+// Pila (telefono): la foto sta in un pannello in cima alla sala.
+// Le texture si caricano quando la sala si avvicina e si rilasciano quando è lontana.
 
 import { Renderer, Program, Mesh, Geometry, Texture } from 'ogl';
 
@@ -9,62 +11,72 @@ const VERT = /* glsl */ `
 attribute vec2 position;
 uniform vec4 uRect;
 uniform vec2 uRes;
-varying vec2 vUv;
+varying vec2 vPx;
 void main() {
-	vUv = position;
-	vec2 px = uRect.xy + position * uRect.zw;
-	vec2 c = px / uRes * 2.0 - 1.0;
+	vPx = uRect.xy + position * uRect.zw;
+	vec2 c = vPx / uRes * 2.0 - 1.0;
 	gl_Position = vec4(c.x, -c.y, 0.0, 1.0);
 }`;
 
 const FRAG = /* glsl */ `
 precision highp float;
-varying vec2 vUv;
+varying vec2 vPx;
 uniform sampler2D uTex;
-uniform vec2 uSize;
+uniform vec4 uRect;
+uniform vec2 uRes;
 uniform vec2 uImg;
-uniform float uR;
+uniform float uScreen;
+uniform float uSolid;
+uniform vec3 uColor;
 uniform float uCell;
 uniform float uWeave;
 uniform vec2 uMouse;
 uniform float uHover;
+uniform float uDrift;
+uniform float uVeil;
+uniform float uSide;
+uniform vec2 uRoom;
 
 float hash(float n) { return fract(sin(n * 127.1 + 11.7) * 43758.5453); }
 
-float sdTop(vec2 p, vec2 b, float r) {
-	float rr = p.y < 0.0 ? r : 0.0;
-	vec2 q = abs(p) - b + rr;
-	return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - rr;
-}
-
 void main() {
-	vec2 uv = vUv;
-	float asp = uSize.x / uSize.y;
+	if (uSolid > 0.5) {
+		gl_FragColor = vec4(uColor, 1.0);
+		return;
+	}
+	vec2 box = uScreen > 0.5 ? uRes : uRect.zw;
+	vec2 loc = uScreen > 0.5 ? vPx : vPx - uRect.xy;
+	vec2 q = loc / box;
+	float asp = box.x / box.y;
 
 	// lente
-	vec2 dv = (uv - uMouse) * vec2(asp, 1.0);
-	float bl = uHover * smoothstep(0.42, 0.0, length(dv));
-	vec2 suv = uv - (uv - uMouse) * 0.24 * bl;
+	vec2 dv = (loc - uMouse) / box.y;
+	float bl = uHover * smoothstep(0.4, 0.0, length(dv));
+	vec2 sq = q - (q - uMouse / box) * 0.16 * bl;
 
-	// object-fit: cover
+	// object-fit: cover, un po' di zoom e una deriva lenta con l'avanzare nella sala
 	float ia = uImg.x / uImg.y;
 	vec2 s = vec2(1.0);
 	if (asp > ia) s.y = ia / asp; else s.x = asp / ia;
-	vec3 col = texture2D(uTex, (suv - 0.5) * s + 0.5).rgb;
+	s /= 1.08;
+	vec3 col = texture2D(uTex, (sq - 0.5) * s + 0.5 + vec2(uDrift * 0.03, uDrift * 0.035)).rgb;
 
-	// forma: arco o arco ribassato
-	float d = sdTop((uv - 0.5) * uSize, uSize * 0.5, uR);
-	float a = 1.0 - smoothstep(-1.0, 0.6, d);
+	// velo di colore sotto il testo (nelle coordinate della sala)
+	if (uVeil > 0.0) {
+		float rx = uSide > 0.5 ? (uRoom.x - vPx.x) / uRoom.y : (vPx.x - uRoom.x) / uRoom.y;
+		float a = 0.22 + 0.72 * (1.0 - smoothstep(0.38, 0.7, rx));
+		col = mix(col, uColor, a * uVeil);
+	}
 
 	// tessitura
 	float W = uWeave;
-	vec2 g = uv * uSize / uCell;
+	vec2 g = vPx / uCell;
 	vec2 id = floor(g);
 	vec2 f = fract(g);
 	float wp = clamp((W - hash(id.x) * 0.32) / 0.5, 0.0, 1.0);
 	float tp = clamp((W - 0.28 - hash(id.y + 37.0) * 0.3) / 0.46, 0.0, 1.0);
-	float fy = mod(id.x, 2.0) < 1.0 ? uv.y : 1.0 - uv.y;
-	float fx = mod(id.y, 2.0) < 1.0 ? uv.x : 1.0 - uv.x;
+	float fy = mod(id.x, 2.0) < 1.0 ? q.y : 1.0 - q.y;
+	float fx = mod(id.y, 2.0) < 1.0 ? q.x : 1.0 - q.x;
 	float warp = step(fy - 0.0015, wp) * step(0.0005, W);
 	float weft = step(fx - 0.0015, tp) * step(0.0005, W);
 	float over = mod(id.x + id.y, 2.0);
@@ -79,29 +91,49 @@ void main() {
 		vis = 1.0;
 		shade = mix(1.0, over > 0.5 ? sW : sT, build);
 	} else if (warp > 0.5) {
-		vis = 1.0 - smoothstep(0.30, 0.36, abs(f.x - 0.5)) * 1.0;
-		vis = mix(1.0, vis, build);
+		vis = mix(1.0, 1.0 - smoothstep(0.30, 0.36, abs(f.x - 0.5)), build);
 		shade = mix(1.0, sW * 0.8, build);
 	} else if (weft > 0.5) {
-		vis = 1.0 - smoothstep(0.30, 0.36, abs(f.y - 0.5));
-		vis = mix(1.0, vis, build);
+		vis = mix(1.0, 1.0 - smoothstep(0.30, 0.36, abs(f.y - 0.5)), build);
 		shade = mix(1.0, sT * 0.8, build);
 	}
 	shade *= 1.0 + (hash(id.x * 7.0 + id.y * 13.0) - 0.5) * 0.12 * build;
-
-	float k = a * vis;
-	gl_FragColor = vec4(col * shade * k, k);
+	gl_FragColor = vec4(col * shade * vis, vis);
 }`;
 
-interface Pezzo {
+export interface InfoSala {
 	el: HTMLElement;
-	mesh: Mesh;
+	r: DOMRect;
+	u: number; // 0..1 avanzamento nella sala
+}
+
+interface DatoScatto {
+	g: string;
+	m: string;
+	cap: string;
+	w: number;
+	h: number;
+}
+
+interface Scatto {
+	dato: DatoScatto;
 	prog: Program;
-	pronto: boolean;
+	mesh: Mesh;
+	tex: Texture | null;
+	stato: 'vuoto' | 'carica' | 'pronto';
 	weave: number;
-	hover: number;
-	mouse: [number, number];
-	dentro: boolean;
+	hov: number;
+}
+
+interface SalaGL {
+	el: HTMLElement;
+	fondo: HTMLElement;
+	scatti: Scatto[];
+	solid: Mesh;
+	solidProg: Program;
+	colore: [number, number, number];
+	hero: boolean;
+	lato: number;
 }
 
 const lim = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -110,14 +142,24 @@ const smooth = (a: number, b: number, x: number) => {
 	return t * t * (3 - 2 * t);
 };
 
+function rgb(css: string): [number, number, number] {
+	const c = document.createElement('canvas').getContext('2d')!;
+	c.fillStyle = css.trim() || '#000';
+	const h = c.fillStyle as string; // "#rrggbb"
+	return [parseInt(h.slice(1, 3), 16) / 255, parseInt(h.slice(3, 5), 16) / 255, parseInt(h.slice(5, 7), 16) / 255];
+}
+
 export class Arazzo {
 	private renderer: Renderer;
 	private gl: WebGL2RenderingContext | WebGLRenderingContext;
-	private pezzi: Pezzo[] = [];
+	private sale: SalaGL[] = [];
 	private orizz: boolean;
 	private fine: boolean;
 	private t0 = performance.now();
+	private mouse = { x: -1, y: -1 };
+	private hover = 0;
 	private disegnato = false;
+	private vuota: Texture;
 
 	constructor(
 		private tela: HTMLCanvasElement,
@@ -130,33 +172,30 @@ export class Arazzo {
 			alpha: true,
 			premultipliedAlpha: true,
 			antialias: false,
-			dpr: Math.min(devicePixelRatio || 1, 1.6),
+			dpr: Math.min(devicePixelRatio || 1, 1.5),
 			powerPreference: 'low-power',
 		});
 		this.gl = this.renderer.gl;
 		this.gl.clearColor(0, 0, 0, 0);
+		this.vuota = new Texture(this.gl);
 		tela.addEventListener('webglcontextlost', (e) => {
 			e.preventDefault();
 			opts.onPerso();
 		});
 		this.ridimensiona();
 		addEventListener('resize', () => this.ridimensiona());
+		if (this.fine) addEventListener('pointermove', (e) => ((this.mouse.x = e.clientX), (this.mouse.y = e.clientY)), { passive: true });
 
-		const geo = new Geometry(this.gl, {
-			position: { size: 2, data: new Float32Array([0, 0, 1, 0, 0, 1, 1, 1]) },
-		});
-		document.querySelectorAll<HTMLElement>('[data-foto]').forEach((el) => this.aggiungi(el, geo));
-		if (this.fine) addEventListener('pointermove', (e) => this.muovi(e), { passive: true });
+		const geo = new Geometry(this.gl, { position: { size: 2, data: new Float32Array([0, 0, 1, 0, 0, 1, 1, 1]) } });
+		document.querySelectorAll<HTMLElement>('[data-sala][data-con-foto]').forEach((el) => this.aggiungi(el, geo));
 	}
 
 	private ridimensiona() {
 		this.renderer.setSize(innerWidth, innerHeight);
 	}
 
-	private aggiungi(el: HTMLElement, geo: Geometry) {
-		const gl = this.gl;
-		const texture = new Texture(gl, { generateMipmaps: false, flipY: false, minFilter: gl.LINEAR, magFilter: gl.LINEAR });
-		const prog = new Program(gl, {
+	private programma(solid: boolean, colore: [number, number, number], tex?: Texture) {
+		return new Program(this.gl, {
 			vertex: VERT,
 			fragment: FRAG,
 			transparent: true,
@@ -164,86 +203,153 @@ export class Arazzo {
 			depthWrite: false,
 			cullFace: false,
 			uniforms: {
-				uTex: { value: texture },
-				uRect: { value: [0, 0, 0, 0] },
+				uTex: { value: tex ?? this.vuota },
+				uRect: { value: [0, 0, 1, 1] },
 				uRes: { value: [innerWidth, innerHeight] },
-				uSize: { value: [1, 1] },
 				uImg: { value: [1, 1] },
-				uR: { value: 0 },
+				uScreen: { value: this.orizz ? 1 : 0 },
+				uSolid: { value: solid ? 1 : 0 },
+				uColor: { value: colore },
 				uCell: { value: 18 },
 				uWeave: { value: 0 },
-				uMouse: { value: [0.5, 0.5] },
+				uMouse: { value: [0, 0] },
 				uHover: { value: 0 },
+				uDrift: { value: 0 },
+				uVeil: { value: 0 },
+				uSide: { value: 0 },
+				uRoom: { value: [0, 1] },
 			},
 		});
-		const mesh = new Mesh(gl, { geometry: geo, program: prog, mode: gl.TRIANGLE_STRIP, frustumCulled: false });
-		const pezzo: Pezzo = { el, mesh, prog, pronto: false, weave: 0, hover: 0, mouse: [0.5, 0.5], dentro: false };
-		this.pezzi.push(pezzo);
+	}
 
+	private aggiungi(el: HTMLElement, geo: Geometry) {
+		const fondo = el.querySelector<HTMLElement>('[data-fondo]');
+		if (!fondo) return;
+		const dati: DatoScatto[] = JSON.parse(fondo.dataset.scatti || '[]');
+		const colore = rgb(getComputedStyle(el).getPropertyValue('--fondo'));
+		const gl = this.gl;
+		const mk = (prog: Program) => new Mesh(gl, { geometry: geo, program: prog, mode: gl.TRIANGLE_STRIP, frustumCulled: false });
+		const solidProg = this.programma(true, colore);
+		const sala: SalaGL = {
+			el,
+			fondo,
+			colore,
+			hero: el.hasAttribute('data-hero'),
+			lato: el.dataset.disp === 'b' ? 1 : 0,
+			solidProg,
+			solid: mk(solidProg),
+			scatti: dati.map((dato) => {
+				const prog = this.programma(false, colore);
+				return { dato, prog, mesh: mk(prog), tex: null, stato: 'vuoto', weave: 0, hov: 0 };
+			}),
+		};
+		this.sale.push(sala);
+	}
+
+	private carica(s: Scatto) {
+		if (s.stato !== 'vuoto') return;
+		s.stato = 'carica';
 		const img = new Image();
 		img.decoding = 'async';
 		img.onload = () => {
-			texture.image = img;
-			prog.uniforms.uImg.value = [img.naturalWidth, img.naturalHeight];
-			pezzo.pronto = true;
+			if (s.stato !== 'carica') return;
+			const gl = this.gl;
+			const tex = new Texture(gl, { generateMipmaps: false, flipY: false, minFilter: gl.LINEAR, magFilter: gl.LINEAR });
+			tex.image = img;
+			s.tex = tex;
+			s.prog.uniforms.uTex.value = tex;
+			s.prog.uniforms.uImg.value = [img.naturalWidth, img.naturalHeight];
+			s.stato = 'pronto';
 		};
-		img.src = el.dataset.tex!;
+		img.src = this.orizz ? s.dato.g : s.dato.m;
 	}
 
-	private muovi(e: PointerEvent) {
-		for (const p of this.pezzi) {
-			const r = p.el.getBoundingClientRect();
-			const dentro = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
-			p.dentro = dentro;
-			if (dentro) p.mouse = [(e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height];
-		}
+	private rilascia(s: Scatto) {
+		if (s.stato === 'vuoto') return;
+		if (s.tex) this.gl.deleteTexture(s.tex.texture);
+		s.tex = null;
+		s.prog.uniforms.uTex.value = this.vuota;
+		s.stato = 'vuoto';
+		s.weave = 0;
 	}
 
-	/** quanto è "tessuta" la foto in base a dove sta nello schermo */
-	private tessitura(r: DOMRect) {
-		// intera quando la foto è per buona parte in vista, si sfila solo uscendo davvero dallo schermo
-		if (this.orizz) {
-			return Math.min(smooth(1.0, 0.64, r.left / innerWidth), smooth(0.02, 0.4, r.right / innerWidth));
-		}
-		return Math.min(smooth(1.0, 0.7, r.top / innerHeight), smooth(0.0, 0.3, r.bottom / innerHeight));
-	}
-
-	/** da chiamare a ogni fotogramma (ticker) */
-	disegna() {
+	/** da chiamare a ogni fotogramma, con le sale già misurate dal motore */
+	disegna(info: InfoSala[]) {
 		const gl = this.gl;
-		const w = innerWidth;
-		const h = innerHeight;
+		const W = innerWidth;
+		const H = innerHeight;
 		const t = (performance.now() - this.t0) / 1000;
-		const intro = smooth(0.35, 2.7, t); // la prima foto si tesse da sola al caricamento
-		let qualcuna = false;
-		const da: Pezzo[] = [];
+		const intro = smooth(0.35, 2.7, t); // la foto dell'ingresso si tesse da sola al caricamento
+		const da: Mesh[] = [];
 
-		for (const p of this.pezzi) {
-			const r = p.el.getBoundingClientRect();
-			const fuori = r.right < -40 || r.left > w + 40 || r.bottom < -40 || r.top > h + 40;
-			let target = fuori ? 0 : this.tessitura(r);
-			if (p.el.closest('.ingresso')) target = Math.min(target, intro);
-			p.weave += (target - p.weave) * 0.18;
-			if (Math.abs(target - p.weave) < 0.0008) p.weave = target;
-			p.hover += ((p.dentro && p.weave > 0.95 ? 1 : 0) - p.hover) * 0.1;
-			if (!p.pronto || fuori || p.weave <= 0.0005) continue;
+		for (const inf of info) {
+			const sala = this.sale.find((x) => x.el === inf.el);
+			if (!sala) continue;
+			const r = inf.r;
+			const pr = this.orizz ? r : sala.fondo.getBoundingClientRect();
+			const vicino = this.orizz ? r.left < W * 2.2 && r.right > -W * 1.2 : pr.top < H * 2.5 && pr.bottom > -H * 1.5;
+			const lontano = this.orizz ? r.left > W * 4 || r.right < -W * 3 : pr.top > H * 4.5 || pr.bottom < -H * 3.5;
+			if (lontano) {
+				sala.scatti.forEach((s) => this.rilascia(s));
+				continue;
+			}
+			if (vicino) sala.scatti.forEach((s) => this.carica(s));
 
-			const u = p.prog.uniforms;
-			u.uRect.value = [r.left, r.top, r.width, r.height];
-			u.uRes.value = [w, h];
-			u.uSize.value = [r.width, r.height];
-			u.uR.value = r.width * (p.el.dataset.forma === 'arco' ? 0.5 : 0.22);
-			u.uCell.value = Math.max(12, Math.min(26, r.width / 22));
-			u.uWeave.value = p.weave;
-			u.uMouse.value = p.mouse;
-			u.uHover.value = p.hover;
-			da.push(p);
-			qualcuna = true;
+			const x0 = this.orizz ? Math.max(pr.left, 0) : pr.left;
+			const x1 = this.orizz ? Math.min(pr.right, W) : pr.right;
+			if (x1 - x0 <= 0 || pr.bottom < -4 || pr.top > H + 4) continue;
+			const rect = [x0, pr.top, x1 - x0, pr.height];
+
+			// quanto è tessuta la prima foto (entrata) e le successive (avanzamento nella sala)
+			const n = sala.scatti.length;
+			let w0 = this.orizz ? smooth(1.04, 0.5, r.left / W) : Math.min(smooth(1.0, 0.7, pr.top / H), smooth(0.0, 0.3, pr.bottom / H));
+			if (sala.hero) w0 = Math.min(w0, intro);
+			const bersagli = sala.scatti.map((_, k) => (k === 0 ? w0 : smooth(0.12, 0.88, inf.u * (n - 1) - (k - 1))));
+			sala.scatti.forEach((s, k) => {
+				s.weave += (bersagli[k] - s.weave) * 0.16;
+				if (Math.abs(bersagli[k] - s.weave) < 0.0008) s.weave = bersagli[k];
+			});
+
+			const comune = (p: Program) => {
+				const u = p.uniforms;
+				u.uRect.value = rect;
+				u.uRes.value = [W, H];
+				u.uCell.value = 18;
+				// il velo segue il testo, che resta fermo sullo schermo (vedi --tx nel motore)
+				const ancora = sala.hero ? r.left : sala.lato ? Math.min(r.right, W) : Math.max(r.left, 0);
+				u.uRoom.value = [ancora, r.width];
+				u.uSide.value = sala.lato;
+				u.uVeil.value = this.orizz ? 1 : 0;
+				u.uDrift.value = (inf.u - 0.5) * 2;
+			};
+
+			// colore di base (corridoio: le sale sono trasparenti e il colore lo dà la tela)
+			if (this.orizz) {
+				comune(sala.solidProg);
+				da.push(sala.solid);
+			}
+			// parte dall'ultimo scatto già tessuto per intero: quelli sotto sono coperti
+			let da0 = 0;
+			sala.scatti.forEach((s, k) => {
+				if (s.stato === 'pronto' && s.weave >= 0.999) da0 = k;
+			});
+			const dentro = this.fine && this.mouse.x >= x0 && this.mouse.x <= x1 && this.mouse.y >= pr.top && this.mouse.y <= pr.bottom;
+			for (let k = da0; k < n; k++) {
+				const s = sala.scatti[k];
+				if (s.stato !== 'pronto' || s.weave <= 0.0005) continue;
+				comune(s.prog);
+				const u = s.prog.uniforms;
+				u.uWeave.value = s.weave;
+				s.hov += ((dentro && s.weave > 0.95 ? 1 : 0) - s.hov) * 0.1;
+				u.uHover.value = s.hov;
+				u.uMouse.value = this.orizz ? [this.mouse.x, this.mouse.y] : [this.mouse.x - x0, this.mouse.y - pr.top];
+				da.push(s.mesh);
+			}
 		}
 
-		if (!qualcuna && !this.disegnato) return;
+		if (!da.length && !this.disegnato) return;
 		gl.clear(gl.COLOR_BUFFER_BIT);
-		for (const p of da) this.renderer.render({ scene: p.mesh, clear: false } as never);
-		this.disegnato = qualcuna;
+		for (const m of da) this.renderer.render({ scene: m, clear: false } as never);
+		this.disegnato = da.length > 0;
 	}
 }

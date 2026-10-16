@@ -1,6 +1,7 @@
 ---
-// Una sala del percorso: un luogo, una tinta. I contenuti vengono da dati.ts.
-import Foto from './Foto.astro';
+// Una sala del percorso: un luogo, una tinta, più foto di sfondo che si danno il cambio tessendosi.
+// Il testo si costruisce con lo scroll: ogni parola e ogni riga ha un indice (--i) e compare quando --e (0..1, dal motore) lo raggiunge.
+import Fondo from './Fondo.astro';
 import type { Sala } from './dati';
 
 interface Props {
@@ -8,44 +9,85 @@ interface Props {
 }
 const { sala } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const parole = sala.titolo.split(' ');
+const nParole = parole.length;
+// voci che seguono il titolo: paragrafo, righe dei dati, pulsante
+const iBtn = nParole + 1 + sala.fatti.length;
+const iStoria = iBtn + 1;
+const nVoci = iStoria + 2 + sala.sapere.length;
 ---
 
-<section class="sala" id={sala.id} data-sala data-tinta={sala.tinta} data-disp={sala.disposizione} data-nome={sala.breve} aria-labelledby={`${sala.id}-t`}>
+<section
+	class="sala"
+	id={sala.id}
+	data-sala
+	data-con-foto
+	data-tinta={sala.tinta}
+	data-disp={sala.disposizione}
+	data-nome={sala.breve}
+	aria-labelledby={`${sala.id}-t`}
+	style={`--n:${nVoci}`}
+>
+	<Fondo scatti={sala.scatti} />
 	<span class="sala__filo" aria-hidden="true"></span>
 	<div class="sala__in">
-		<Foto file={sala.a.file} alt={sala.a.alt} forma="arco" classe="sala__a" />
+		<div class="sala__blocchi">
 		<div class="sala__testo">
-			<h2 class="titolo" id={`${sala.id}-t`}>{sala.titolo}</h2>
-			<p class="corpo">{sala.testo}</p>
+			<h2 class="titolo" id={`${sala.id}-t`}>
+				{
+					parole.map((p, i) => (
+						<>
+							<span class="parola" style={`--i:${i}`}>
+								<span>{p}</span>
+							</span>{' '}
+						</>
+					))
+				}
+			</h2>
+			<p class="corpo voce" style={`--i:${nParole}`}>{sala.testo}</p>
 			<dl class="fatti">
 				{
-					sala.fatti.map(([k, v]) => (
-						<div>
+					sala.fatti.map(([k, v], j) => (
+						<div class="voce" style={`--i:${nParole + 1 + j}`}>
 							<dt>{k}</dt>
 							<dd>{v}</dd>
 						</div>
 					))
 				}
 			</dl>
-			<a class="btn" href="#scrivici" data-luogo={sala.nome}>{sala.cta}</a>
+			<a class="btn voce" style={`--i:${iBtn}`} href="#scrivici" data-luogo={sala.nome}>{sala.cta}</a>
+		</div>
+		<div class="sala__storia">
+			<h3 class="voce sala__sottotitolo" style={`--i:${iStoria}`}>A little history</h3>
+			<p class="voce" style={`--i:${iStoria + 1}`}>{sala.storia}</p>
+			<h3 class="voce sala__sottotitolo" style={`--i:${iStoria + 1}`}>Good to know</h3>
+			<ul class="sapere">
+				{sala.sapere.map((x, j) => <li class="voce" style={`--i:${iStoria + 2 + j}`}>{x}</li>)}
+			</ul>
+		</div>
 		</div>
 		{
-			'video' in sala.b ? (
-				<figure class="chiave sala__b" data-video>
+			sala.video && (
+				<figure class="chiave" data-video>
 					<video
 						muted
 						loop
 						playsinline
 						preload="none"
-						poster={`${base}/video/marrowknot/${sala.b.video}.jpg`}
-						aria-label={sala.b.alt}
-						data-src={`${base}/video/marrowknot/${sala.b.video}.mp4`}
+						poster={`${base}/video/marrowknot/${sala.video.file}.jpg`}
+						aria-label={sala.video.alt}
+						data-src={`${base}/video/marrowknot/${sala.video.file}.mp4`}
 					/>
 				</figure>
-			) : (
-				<Foto file={sala.b.file} alt={sala.b.alt} forma="ribassato" classe="sala__b" />
 			)
 		}
+	</div>
+	<div class="didascalia" aria-hidden="true" data-cap>
+		<p class="didascalia__testo" data-cap-testo>{sala.scatti[0].cap}</p>
+		<span class="didascalia__segmenti">
+			{sala.scatti.map((_, i) => <span data-seg class:list={{ attivo: i === 0 }}></span>)}
+		</span>
 	</div>
 </section>
 
@@ -70,55 +112,114 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 	.sala {
 		position: relative;
 		overflow: hidden;
-		padding: 96px var(--gutter) 88px;
+		--e: 1; /* senza JS tutto è già costruito */
 	}
+	/* pila: pannello foto, poi il testo sulla tinta della sala */
 	.sala__in {
 		position: relative;
 		z-index: 2;
 		display: grid;
-		gap: 40px;
-		align-items: start;
+		gap: 36px;
+		padding: 44px var(--gutter) 88px;
 	}
-	.sala::before {
+	/* il nome del luogo in corsivo: nella pila chiude la sala, nel corridoio sta sotto il testo */
+	.sala::after {
 		content: attr(data-nome);
-		content: attr(data-nome) / "";
-		position: absolute;
-		left: -0.02em;
-		bottom: -0.16em;
-		z-index: 0;
-		font-family: var(--serif);
-		font-size: clamp(7rem, 34vw, 30rem);
-		line-height: 1;
-		color: var(--fantasma);
+		content: attr(data-nome) / '';
+		display: block;
+		position: relative;
+		z-index: 1;
+		padding: 0 var(--gutter) 14px;
+		margin-top: -12px;
+		font-family: var(--script);
+		font-size: clamp(6rem, 25vw, 13rem);
+		line-height: 1.05;
+		color: color-mix(in srgb, var(--testo) 42%, transparent);
 		white-space: nowrap;
 		pointer-events: none;
 		user-select: none;
-		transform: translate3d(calc(var(--p, 0) * -9vw), 0, 0);
 	}
 	.sala__filo {
 		position: absolute;
 		z-index: 1;
 		left: 0;
 		right: 0;
-		top: 94%;
+		bottom: 8px;
 		height: 1.5px;
 		background: var(--filo-c);
 		transform-origin: 0 50%;
 		transform: scaleX(var(--draw, 1));
 		opacity: 0.8;
 	}
+	.sala__blocchi {
+		display: grid;
+		gap: 40px;
+		align-items: start;
+	}
+	.sala__storia {
+		display: grid;
+		gap: 14px;
+		align-content: start;
+		max-width: 30rem;
+		font-size: 0.95rem;
+	}
+	.sala__sottotitolo {
+		margin: 6px 0 0;
+		font: 600 0.95rem/1.3 var(--sans);
+		color: var(--testo);
+	}
+	.sapere {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		display: grid;
+		gap: 10px;
+	}
+	.sapere li {
+		position: relative;
+		padding-left: 18px;
+	}
+	.sapere li::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0.7em;
+		width: 8px;
+		height: 1.5px;
+		background: var(--filo-c);
+	}
 	.sala__testo {
 		display: grid;
 		gap: 22px;
 		justify-items: start;
 		align-content: center;
+		max-width: 30rem;
 	}
 	.sala__testo .titolo {
-		font-size: clamp(2.2rem, 4.6vw, 4.4rem);
+		font-size: clamp(2.4rem, 4.8vw, 4.6rem);
 	}
+
+	/* il testo si costruisce: parole che salgono da una maschera, poi le altre voci */
+	.parola {
+		display: inline-block;
+		overflow: hidden;
+		vertical-align: top;
+		padding-bottom: 0.16em;
+		margin-bottom: -0.16em;
+		--w: clamp(0, calc(var(--e) * var(--n) - var(--i) * 0.85), 1);
+	}
+	.parola > span {
+		display: inline-block;
+		transform: translateY(calc((1 - var(--w)) * 112%));
+	}
+	.voce {
+		--w: clamp(0, calc(var(--e) * var(--n) - var(--i) * 0.85), 1);
+		opacity: var(--w);
+		transform: translateY(calc((1 - var(--w)) * 22px));
+	}
+
 	.fatti {
 		display: grid;
-		gap: 0;
 		width: min(100%, 24rem);
 		margin: 4px 0 8px;
 	}
@@ -127,11 +228,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 		justify-content: space-between;
 		gap: 20px;
 		padding: 10px 0;
-		border-top: 1px solid color-mix(in srgb, var(--testo) 28%, transparent);
+		border-top: 1px solid color-mix(in srgb, var(--testo) 30%, transparent);
 		font-size: 0.95rem;
 	}
 	.fatti div:last-child {
-		border-bottom: 1px solid color-mix(in srgb, var(--testo) 28%, transparent);
+		border-bottom: 1px solid color-mix(in srgb, var(--testo) 30%, transparent);
 	}
 	.fatti dt {
 		color: var(--sotto);
@@ -142,10 +243,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 		font-weight: 500;
 	}
 
-	/* il video sta dentro una serratura (maschera), non in un arco: è un'altra materia */
+	/* il video sta dentro una serratura (maschera): un'altra materia */
 	.chiave {
+		display: none;
 		aspect-ratio: 5 / 8;
-		width: min(100%, 250px);
+		width: min(100%, 220px);
 		background: var(--fantasma);
 		-webkit-mask: var(--serratura) center / 100% 100% no-repeat;
 		mask: var(--serratura) center / 100% 100% no-repeat;
@@ -158,92 +260,143 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 		object-fit: cover;
 	}
 
-	/* pila: telefono o a un'altra colonna */
-	.sala__a {
-		width: min(100%, 460px);
+	/* didascalia della foto corrente e segmenti */
+	.didascalia {
+		position: relative;
+		z-index: 3;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		padding: 0 var(--gutter) 28px;
+		font-size: 0.86rem;
+		color: var(--testo);
 	}
-	.sala__b {
-		width: min(100%, 560px);
+	.didascalia__testo {
+		transition: opacity 0.35s;
 	}
+	/* il cambio con dissolvenza solo nel corridoio; in pila la didascalia cambia di scatto */
+	html.h .didascalia.cambia .didascalia__testo {
+		opacity: 0;
+	}
+	.didascalia__segmenti {
+		display: flex;
+		gap: 6px;
+		width: min(100%, 12rem);
+	}
+	.didascalia__segmenti span {
+		flex: 1;
+		height: 2px;
+		background: color-mix(in srgb, var(--testo) 28%, transparent);
+		transition: background-color 0.4s;
+	}
+	.didascalia__segmenti span.attivo {
+		background: var(--testo);
+	}
+
 	@media (min-width: 820px) {
 		.sala__in {
-			grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
-			column-gap: clamp(32px, 6vw, 96px);
-			row-gap: 56px;
+			grid-template-columns: minmax(0, 1fr);
+			align-items: center;
 		}
-		.sala__b {
-			grid-column: 2;
+		.chiave {
+			display: block;
 			justify-self: end;
 		}
-		.sala[data-disp='b'] .sala__a {
-			grid-column: 2;
-			grid-row: 1;
-			justify-self: end;
+		.sala__blocchi {
+			grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+			column-gap: clamp(24px, 4vw, 56px);
 		}
-		.sala[data-disp='b'] .sala__testo {
+		.sala[data-disp='b'] .sala__blocchi {
 			grid-column: 1;
 			grid-row: 1;
 		}
-		.sala[data-disp='b'] .sala__b {
-			grid-column: 1;
-			grid-row: 2;
+		.sala[data-disp='b'] .chiave {
 			justify-self: start;
 		}
 	}
 
-	/* corridoio */
+	/* corridoio: sfondo a tutta sala, testo sopra, didascalia che segue lo schermo */
 	html.h .sala {
 		flex: none;
 		width: 142vw;
 		height: 100svh;
-		padding: calc(var(--fascia-h) + var(--nav-h) + 3svh) 0 7svh 8vw;
+	}
+	html.h.gl [data-con-foto] {
+		background: transparent;
 	}
 	html.h .sala__in {
-		height: 100%;
+		position: absolute;
+		inset: 0;
 		display: flex;
 		align-items: center;
-		gap: 0;
+		padding: calc(var(--fascia-h) + var(--nav-h) + 2svh) 0 9svh 8vw;
 	}
-	html.h .sala__a {
-		width: auto;
-		height: min(70svh, 62vw);
+	html.h .sala[data-disp='b'] .sala__in {
+		justify-content: flex-end;
+		padding: calc(var(--fascia-h) + var(--nav-h) + 2svh) 8vw 9svh 0;
+	}
+	html.h .sala__blocchi {
 		flex: none;
-		margin-right: 6vw;
+		display: flex;
+		align-items: center;
+		gap: 3.2vw;
+		transform: translate3d(var(--tx, 0px), 0, 0);
+		will-change: transform;
+	}
+	html.h .sala[data-disp='b'] .sala__blocchi {
+		flex-direction: row-reverse;
 	}
 	html.h .sala__testo {
 		flex: none;
-		width: clamp(300px, 27vw, 460px);
-		margin-right: 7vw;
-		align-self: center;
+		width: clamp(300px, 28vw, 470px);
 	}
-	html.h .sala__b {
+	html.h .sala__storia {
 		flex: none;
-		width: clamp(300px, 30vw, 520px);
-		height: auto;
-		align-self: flex-end;
-		margin-bottom: 4svh;
+		width: clamp(250px, 22vw, 360px);
+		font-size: clamp(0.82rem, 0.95vw, 0.95rem);
+		align-content: center;
 	}
-	html.h .chiave.sala__b {
-		width: clamp(190px, 15vw, 270px);
-		margin-bottom: 7svh;
+	html.h .chiave {
+		display: block;
+		position: absolute;
+		top: 50%;
+		left: 47%;
+		margin-top: -14svh;
+		width: clamp(150px, 13vw, 230px);
+		transform: translate3d(var(--tx, 0px), 0, 0);
 	}
-	html.h .sala[data-disp='b'] .sala__in {
-		flex-direction: row-reverse;
-		justify-content: flex-end;
+	html.h .sala::after {
+		position: absolute;
+		left: 6vw;
+		bottom: -0.06em;
+		margin: 0;
+		padding: 0;
+		font-size: min(25svh, 17vw);
+		line-height: 1;
+		transform: translate3d(var(--tx, 0px), 0, 0);
 	}
-	html.h .sala[data-disp='b'] .sala__a {
-		margin-right: 0;
-		margin-left: 6vw;
+	html.h .sala[data-disp='b']::after {
+		left: auto;
+		right: 6vw;
 	}
-	html.h .sala[data-disp='b'] .sala__testo {
-		margin-right: 0;
-		margin-left: 7vw;
+	html.h .sala__filo {
+		bottom: 5svh;
 	}
-	html.h .sala[data-disp='b'] .sala__b {
-		margin-left: 7vw;
+	html.h .didascalia {
+		position: absolute;
+		left: 0;
+		bottom: 8svh;
+		padding: 0;
+		width: 14rem;
+		transform: translate3d(var(--cx, 0px), 0, 0);
+		align-items: flex-start;
+		color: var(--testo);
 	}
-	html.h .sala::before {
-		font-size: min(46svh, 26vw);
-		bottom: -0.2em;
+	html.h .didascalia__testo {
+		font-size: 0.95rem;
+		text-shadow: 0 0 16px rgb(0 0 0 / 0.6), 0 1px 3px rgb(0 0 0 / 0.45);
+	}
+	html.h .didascalia__segmenti span {
+		box-shadow: 0 0 8px rgb(0 0 0 / 0.35);
 	}
 </style>

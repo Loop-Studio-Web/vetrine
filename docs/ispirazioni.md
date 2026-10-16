@@ -27,7 +27,7 @@ le celle con "?" vanno verificate sul concept prima di fidarsi.
 | Scala Vera | strumento (brief) + ricevuta | WebGL acquerello | lo scroll è uno zoom di scala |
 | Mala Hierba Flores | strumento (ramo) + ordine | carta, papel picado | taller de papel picado |
 | Limonaia Aurelia | strumento (pianta) + invito | foto + vetro | la pagina cambia luce con l'ora della festa |
-| Marrow & Knot | corridoio orizzontale di sale + nodo che si stringe | foto tessute a fili (WebGL/OGL) + video in maschera a serratura | le foto si tessono entrando in sala e si sfilano uscendo |
+| Marrow & Knot | corridoio orizzontale di sale + nodo che si stringe | foto a tutta pagina tessute a fili (WebGL/OGL) + video in maschera a serratura | le foto si tessono entrando in sala e una si tesse sull'altra mentre si avanza; il testo si costruisce con lo scroll |
 
 ### Cosa si ripete (lettura al 2026-10-15)
 

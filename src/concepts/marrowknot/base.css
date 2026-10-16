@@ -12,6 +12,7 @@
 	--inchiostro: #1c0710;
 
 	--serif: 'Imbue Variable', 'Bodoni 72', 'Didot', Georgia, serif;
+	--script: 'Great Vibes', 'Snell Roundhand', cursive;
 	--sans: 'Commissioner Variable', 'Segoe UI', system-ui, sans-serif;
 
 	--fascia-h: 38px;
@@ -244,6 +245,13 @@ html.h .binario {
 	height: 100%;
 	z-index: 40;
 	pointer-events: none;
+}
+/* corridoio: la tela sta dietro al testo, le sale con foto sono trasparenti */
+html.h .tela {
+	z-index: 0;
+}
+html.h .infilata {
+	z-index: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
