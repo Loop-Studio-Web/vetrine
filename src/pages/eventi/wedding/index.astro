@@ -1,0 +1,86 @@
+---
+import '@fontsource-variable/imbue/wght.css';
+import '@fontsource-variable/commissioner/wght.css';
+import '../../../concepts/marrowknot/base.css';
+import imbueUrl from '@fontsource-variable/imbue/files/imbue-latin-wght-normal.woff2?url';
+import commUrl from '@fontsource-variable/commissioner/files/commissioner-latin-wght-normal.woff2?url';
+import Fascia from '../../../concepts/marrowknot/Fascia.astro';
+import Navbar from '../../../concepts/marrowknot/Navbar.astro';
+import Ingresso from '../../../concepts/marrowknot/Ingresso.astro';
+import Sala from '../../../concepts/marrowknot/Sala.astro';
+import Chiusura from '../../../concepts/marrowknot/Chiusura.astro';
+import Footer from '../../../concepts/marrowknot/Footer.astro';
+import { sale } from '../../../concepts/marrowknot/dati';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const title = 'Marrow & Knot: Weddings in Italy';
+const description =
+	'A made-up wedding planner for destination weddings in Italy: walk through five rooms, from Lake Como to Venice, and tie the request together. Concept page by Loop Studio.';
+const ogImage = new URL(`${base}/images/marrowknot/og.jpg`, Astro.site).href;
+const pageUrl = new URL(`${base}/eventi/wedding/`, Astro.site).href;
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href={`${base}/images/marrowknot/favicon.svg`} />
+		<link rel="preload" as="font" type="font/woff2" href={imbueUrl} crossorigin />
+		<link rel="preload" as="font" type="font/woff2" href={commUrl} crossorigin />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<meta name="robots" content="noindex, nofollow" />
+		<meta name="theme-color" content="#5e0e1c" />
+		<meta property="og:type" content="website" />
+		<meta property="og:locale" content="en_GB" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={pageUrl} />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<script is:inline>
+			// Prima del paint: sceglie il layout (corridoio o pila) e se disegnare le foto con WebGL (html.gl nasconde le <img>).
+			(function () {
+				var d = document.documentElement;
+				var m = matchMedia;
+				var ridotto = m('(prefers-reduced-motion: reduce)').matches;
+				if (ridotto) return;
+				if (m('(min-width: 900px)').matches && m('(hover: hover) and (pointer: fine)').matches) d.classList.add('h');
+				var debole = (navigator.deviceMemory && navigator.deviceMemory <= 2) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2);
+				if (debole || navigator.connection?.saveData) return;
+				try {
+					var c = document.createElement('canvas');
+					if (c.getContext('webgl2')) {
+						d.dataset.glOk = '1';
+						// col mouse la tela parte subito (le <img> restano nascoste); su telefono dopo il primo gesto, per non pesare sul caricamento
+						if (m('(hover: hover) and (pointer: fine)').matches) d.classList.add('gl');
+					}
+				} catch (e) {}
+			})();
+		</script>
+	</head>
+	<body>
+		<a href="#main" class="skip-link">Skip to content</a>
+		<Fascia />
+		<Navbar />
+		<main id="main">
+			<div class="infilata">
+				<div class="binario">
+					<Ingresso />
+					{sale.map((s) => <Sala sala={s} />)}
+					<Chiusura />
+				</div>
+			</div>
+		</main>
+		<canvas class="tela" data-tela aria-hidden="true"></canvas>
+		<Footer />
+		<script>
+			const parti = () => import('../../../concepts/marrowknot/motore').then((m) => m.avvia());
+			if ('requestIdleCallback' in window) requestIdleCallback(parti, { timeout: 1500 });
+			else setTimeout(parti, 300);
+		</script>
+	</body>
+</html>

@@ -1,0 +1,72 @@
+---
+// Una foto del percorso. Nel markup resta sempre un <img> (accessibile, ripiego senza WebGL, reduced-motion);
+// con WebGL attivo la disegna la tela, tessuta a fili, sulla stessa posizione (`motore/arazzo.ts`).
+import { Image, getImage } from 'astro:assets';
+
+interface Props {
+	file: string;
+	alt: string;
+	/** arco = tutto sesto, ribassato = arco basso, nessuna = rettangolo */
+	forma?: 'arco' | 'ribassato';
+	classe?: string;
+	eager?: boolean;
+	/** proporzioni larghezza/altezza della cornice */
+	ar?: number;
+}
+const { file, alt, forma = 'arco', classe = '', eager = false, ar = forma === 'arco' ? 0.75 : 1.45 } = Astro.props;
+
+const tutte = import.meta.glob<{ default: ImageMetadata }>('../../assets/marrowknot/foto/*.jpg', { eager: true });
+const src = tutte[`../../assets/marrowknot/foto/${file}.jpg`]?.default;
+if (!src) throw new Error(`Foto mancante: ${file}`);
+
+// texture per WebGL: più piccola dell'originale, webp
+const tex = await getImage({ src, width: forma === 'arco' ? 900 : 1300, format: 'webp', quality: 74 });
+const larghezze = forma === 'arco' ? [420, 640, 900] : [640, 960, 1300];
+---
+
+<figure
+	class:list={['foto', `foto--${forma}`, classe]}
+	data-foto
+	data-forma={forma}
+	data-tex={tex.src}
+	style={`--ar:${ar}`}
+>
+	<Image
+		src={src}
+		alt={alt}
+		widths={larghezze}
+		sizes={forma === 'arco' ? '(min-width: 900px) 36vw, 80vw' : '(min-width: 900px) 30vw, 90vw'}
+		format="webp"
+		quality={74}
+		loading={eager ? 'eager' : 'lazy'}
+		decoding="async"
+		class="foto__img"
+	/>
+</figure>
+
+<style is:global>
+	.foto {
+		position: relative;
+		aspect-ratio: var(--ar);
+		container-type: inline-size;
+		background: var(--fantasma, #00000022);
+		overflow: hidden;
+	}
+	.foto--arco {
+		border-radius: 50cqw 50cqw 0 0;
+		clip-path: inset(0 round 50cqw 50cqw 0 0);
+	}
+	.foto--ribassato {
+		clip-path: inset(0 round 22cqw 22cqw 0 0);
+	}
+	.foto__img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: opacity 0.4s;
+	}
+	/* con WebGL pronto la tela disegna al posto dell'immagine */
+	html.gl .foto__img {
+		opacity: 0;
+	}
+</style>

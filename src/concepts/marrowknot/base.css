@@ -1,0 +1,257 @@
+/* Marrow & Knot: token, reset e i due modi del percorso.
+   - pila (default): le sale una sotto l'altra. Telefono, touch, reduced-motion.
+   - html.h (corridoio): le sale in fila su un binario che scorre in orizzontale, comandato dallo scroll verticale. */
+
+:root {
+	--pompeiano: #5e0e1c;
+	--verderame: #17463f;
+	--marmo: #e6ecee;
+	--vino: #2b0b1a;
+	--carminio: #7a1428;
+	--filo: #d9a5ad;
+	--inchiostro: #1c0710;
+
+	--serif: 'Imbue Variable', 'Bodoni 72', 'Didot', Georgia, serif;
+	--sans: 'Commissioner Variable', 'Segoe UI', system-ui, sans-serif;
+
+	--fascia-h: 38px;
+	--nav-h: 68px;
+	--gutter: clamp(20px, 5vw, 64px);
+	color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	background: var(--pompeiano);
+	-webkit-text-size-adjust: 100%;
+	scroll-behavior: auto;
+}
+
+body {
+	margin: 0;
+	background: var(--pompeiano);
+	color: var(--marmo);
+	font-family: var(--sans);
+	font-size: 1.0625rem;
+	line-height: 1.6;
+	font-weight: 400;
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+p,
+dl,
+dd,
+figure {
+	margin: 0;
+}
+
+img,
+svg {
+	display: block;
+	max-width: 100%;
+}
+
+img {
+	height: auto;
+}
+
+a {
+	color: inherit;
+}
+
+[hidden] {
+	display: none !important;
+}
+
+:focus-visible {
+	outline: 2px solid var(--filo);
+	outline-offset: 4px;
+	border-radius: 2px;
+}
+[data-tinta='marmo'] :focus-visible {
+	outline-color: var(--pompeiano);
+}
+
+.skip-link {
+	position: absolute;
+	left: 12px;
+	top: -60px;
+	z-index: 400;
+	background: var(--marmo);
+	color: var(--inchiostro);
+	padding: 10px 16px;
+	font-weight: 600;
+	text-decoration: none;
+}
+.skip-link:focus {
+	top: calc(var(--fascia-h) + 8px);
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+
+/* ———— le tinte delle sale ———— */
+[data-tinta] {
+	background: var(--fondo);
+	color: var(--testo);
+}
+[data-tinta='pompeiano'] {
+	--fondo: var(--pompeiano);
+	--testo: var(--marmo);
+	--sotto: #cfa3ab;
+	--filo-c: var(--filo);
+	--fantasma: #6d1a2a;
+}
+[data-tinta='verderame'] {
+	--fondo: var(--verderame);
+	--testo: var(--marmo);
+	--sotto: #c4dad4;
+	--filo-c: #bfe0d6;
+	--fantasma: #1f564d;
+}
+[data-tinta='vino'] {
+	--fondo: var(--vino);
+	--testo: var(--marmo);
+	--sotto: #cdb3bb;
+	--filo-c: var(--filo);
+	--fantasma: #3a1325;
+}
+[data-tinta='marmo'] {
+	--fondo: var(--marmo);
+	--testo: var(--inchiostro);
+	--sotto: #5b4a50;
+	--filo-c: var(--pompeiano);
+	--fantasma: #d3dde0;
+}
+[data-tinta='carminio'] {
+	--fondo: var(--carminio);
+	--testo: var(--marmo);
+	--sotto: #efcbd1;
+	--filo-c: var(--filo);
+	--fantasma: #8b2034;
+}
+
+/* ———— tipografia ———— */
+.titolo {
+	font-family: var(--serif);
+	font-weight: 400;
+	line-height: 0.98;
+	letter-spacing: -0.012em;
+	text-wrap: balance;
+}
+.corpo {
+	max-width: 36ch;
+	text-wrap: pretty;
+}
+
+/* ———— bottoni: cella piena e cella a filo ———— */
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 52px;
+	padding: 0 28px;
+	font: 600 0.98rem/1 var(--sans);
+	letter-spacing: 0.01em;
+	text-decoration: none;
+	white-space: nowrap;
+	border: 1.5px solid currentColor;
+	border-radius: 0;
+	background: transparent;
+	color: inherit;
+	cursor: pointer;
+	position: relative;
+	overflow: hidden;
+	isolation: isolate;
+	transition: color 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.btn::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background: var(--testo);
+	transform: translateY(101%);
+	transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+@media (hover: hover) {
+	.btn:hover {
+		color: var(--fondo);
+	}
+	.btn:hover::before {
+		transform: none;
+	}
+}
+.btn--pieno {
+	background: var(--testo);
+	color: var(--fondo);
+}
+.btn--pieno::before {
+	background: var(--fondo);
+}
+@media (hover: hover) {
+	.btn--pieno:hover {
+		color: var(--testo);
+	}
+}
+.btn:active {
+	transform: scale(0.98);
+}
+
+/* ———— struttura: pila (default) ———— */
+.infilata {
+	position: relative;
+}
+.binario {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+}
+
+/* ———— struttura: corridoio ———— */
+html.h .infilata {
+	height: 100svh;
+	overflow: hidden;
+}
+html.h .binario {
+	flex-direction: row;
+	height: 100svh;
+	width: max-content;
+	will-change: transform;
+}
+
+/* tela WebGL delle foto: sopra al binario, sotto a navbar e menù */
+.tela {
+	position: fixed;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 40;
+	pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.001ms !important;
+	}
+}

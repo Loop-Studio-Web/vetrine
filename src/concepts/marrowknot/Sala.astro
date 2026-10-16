@@ -1,0 +1,249 @@
+---
+// Una sala del percorso: un luogo, una tinta. I contenuti vengono da dati.ts.
+import Foto from './Foto.astro';
+import type { Sala } from './dati';
+
+interface Props {
+	sala: Sala;
+}
+const { sala } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<section class="sala" id={sala.id} data-sala data-tinta={sala.tinta} data-disp={sala.disposizione} data-nome={sala.breve} aria-labelledby={`${sala.id}-t`}>
+	<span class="sala__filo" aria-hidden="true"></span>
+	<div class="sala__in">
+		<Foto file={sala.a.file} alt={sala.a.alt} forma="arco" classe="sala__a" />
+		<div class="sala__testo">
+			<h2 class="titolo" id={`${sala.id}-t`}>{sala.titolo}</h2>
+			<p class="corpo">{sala.testo}</p>
+			<dl class="fatti">
+				{
+					sala.fatti.map(([k, v]) => (
+						<div>
+							<dt>{k}</dt>
+							<dd>{v}</dd>
+						</div>
+					))
+				}
+			</dl>
+			<a class="btn" href="#scrivici" data-luogo={sala.nome}>{sala.cta}</a>
+		</div>
+		{
+			'video' in sala.b ? (
+				<figure class="chiave sala__b" data-video>
+					<video
+						muted
+						loop
+						playsinline
+						preload="none"
+						poster={`${base}/video/marrowknot/${sala.b.video}.jpg`}
+						aria-label={sala.b.alt}
+						data-src={`${base}/video/marrowknot/${sala.b.video}.mp4`}
+					/>
+				</figure>
+			) : (
+				<Foto file={sala.b.file} alt={sala.b.alt} forma="ribassato" classe="sala__b" />
+			)
+		}
+	</div>
+</section>
+
+<script>
+	// il video nella serratura parte solo quando è in vista, mai con reduced-motion o risparmio dati
+	const v = document.querySelector<HTMLVideoElement>('[data-video] video');
+	const nav = navigator as Navigator & { connection?: { saveData?: boolean } };
+	if (v && !matchMedia('(prefers-reduced-motion: reduce)').matches && !nav.connection?.saveData) {
+		new IntersectionObserver(
+			(e) => {
+				if (e[0].isIntersecting) {
+					if (!v.src) v.src = v.dataset.src!;
+					v.play().catch(() => {});
+				} else v.pause();
+			},
+			{ threshold: 0.25 },
+		).observe(v);
+	}
+</script>
+
+<style is:global>
+	.sala {
+		position: relative;
+		overflow: hidden;
+		padding: 96px var(--gutter) 88px;
+	}
+	.sala__in {
+		position: relative;
+		z-index: 2;
+		display: grid;
+		gap: 40px;
+		align-items: start;
+	}
+	.sala::before {
+		content: attr(data-nome);
+		content: attr(data-nome) / "";
+		position: absolute;
+		left: -0.02em;
+		bottom: -0.16em;
+		z-index: 0;
+		font-family: var(--serif);
+		font-size: clamp(7rem, 34vw, 30rem);
+		line-height: 1;
+		color: var(--fantasma);
+		white-space: nowrap;
+		pointer-events: none;
+		user-select: none;
+		transform: translate3d(calc(var(--p, 0) * -9vw), 0, 0);
+	}
+	.sala__filo {
+		position: absolute;
+		z-index: 1;
+		left: 0;
+		right: 0;
+		top: 94%;
+		height: 1.5px;
+		background: var(--filo-c);
+		transform-origin: 0 50%;
+		transform: scaleX(var(--draw, 1));
+		opacity: 0.8;
+	}
+	.sala__testo {
+		display: grid;
+		gap: 22px;
+		justify-items: start;
+		align-content: center;
+	}
+	.sala__testo .titolo {
+		font-size: clamp(2.2rem, 4.6vw, 4.4rem);
+	}
+	.fatti {
+		display: grid;
+		gap: 0;
+		width: min(100%, 24rem);
+		margin: 4px 0 8px;
+	}
+	.fatti div {
+		display: flex;
+		justify-content: space-between;
+		gap: 20px;
+		padding: 10px 0;
+		border-top: 1px solid color-mix(in srgb, var(--testo) 28%, transparent);
+		font-size: 0.95rem;
+	}
+	.fatti div:last-child {
+		border-bottom: 1px solid color-mix(in srgb, var(--testo) 28%, transparent);
+	}
+	.fatti dt {
+		color: var(--sotto);
+	}
+	.fatti dd {
+		margin: 0;
+		text-align: right;
+		font-weight: 500;
+	}
+
+	/* il video sta dentro una serratura (maschera), non in un arco: è un'altra materia */
+	.chiave {
+		aspect-ratio: 5 / 8;
+		width: min(100%, 250px);
+		background: var(--fantasma);
+		-webkit-mask: var(--serratura) center / 100% 100% no-repeat;
+		mask: var(--serratura) center / 100% 100% no-repeat;
+		--serratura: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 160' preserveAspectRatio='none'><path d='M50 0a42 42 0 0 1 26 75L96 160H4L24 75A42 42 0 0 1 50 0z'/></svg>");
+	}
+	.chiave video {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	/* pila: telefono o a un'altra colonna */
+	.sala__a {
+		width: min(100%, 460px);
+	}
+	.sala__b {
+		width: min(100%, 560px);
+	}
+	@media (min-width: 820px) {
+		.sala__in {
+			grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+			column-gap: clamp(32px, 6vw, 96px);
+			row-gap: 56px;
+		}
+		.sala__b {
+			grid-column: 2;
+			justify-self: end;
+		}
+		.sala[data-disp='b'] .sala__a {
+			grid-column: 2;
+			grid-row: 1;
+			justify-self: end;
+		}
+		.sala[data-disp='b'] .sala__testo {
+			grid-column: 1;
+			grid-row: 1;
+		}
+		.sala[data-disp='b'] .sala__b {
+			grid-column: 1;
+			grid-row: 2;
+			justify-self: start;
+		}
+	}
+
+	/* corridoio */
+	html.h .sala {
+		flex: none;
+		width: 142vw;
+		height: 100svh;
+		padding: calc(var(--fascia-h) + var(--nav-h) + 3svh) 0 7svh 8vw;
+	}
+	html.h .sala__in {
+		height: 100%;
+		display: flex;
+		align-items: center;
+		gap: 0;
+	}
+	html.h .sala__a {
+		width: auto;
+		height: min(70svh, 62vw);
+		flex: none;
+		margin-right: 6vw;
+	}
+	html.h .sala__testo {
+		flex: none;
+		width: clamp(300px, 27vw, 460px);
+		margin-right: 7vw;
+		align-self: center;
+	}
+	html.h .sala__b {
+		flex: none;
+		width: clamp(300px, 30vw, 520px);
+		height: auto;
+		align-self: flex-end;
+		margin-bottom: 4svh;
+	}
+	html.h .chiave.sala__b {
+		width: clamp(190px, 15vw, 270px);
+		margin-bottom: 7svh;
+	}
+	html.h .sala[data-disp='b'] .sala__in {
+		flex-direction: row-reverse;
+		justify-content: flex-end;
+	}
+	html.h .sala[data-disp='b'] .sala__a {
+		margin-right: 0;
+		margin-left: 6vw;
+	}
+	html.h .sala[data-disp='b'] .sala__testo {
+		margin-right: 0;
+		margin-left: 7vw;
+	}
+	html.h .sala[data-disp='b'] .sala__b {
+		margin-left: 7vw;
+	}
+	html.h .sala::before {
+		font-size: min(46svh, 26vw);
+		bottom: -0.2em;
+	}
+</style>

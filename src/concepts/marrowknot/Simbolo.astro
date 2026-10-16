@@ -1,0 +1,22 @@
+---
+// Simbolo ricostruito a mano sul PNG del logo: un arco a tutto sesto con un nodo che disegna una "M".
+// Il nodo è tagliato (maschera), quindi mostra ciò che sta dietro. `id` deve essere unico per istanza.
+interface Props {
+	tam?: number;
+	id?: string;
+	colore?: string;
+}
+const { tam = 44, id = 'mk', colore = 'currentColor' } = Astro.props;
+---
+
+<svg class="simbolo" viewBox="0 0 100 120" width={tam} height={tam * 1.2} aria-hidden="true" focusable="false">
+	<mask id={`${id}-m`} maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="120">
+		<rect width="100" height="120" fill="#fff"></rect>
+		<g fill="none" stroke-width="7.4" stroke-linejoin="round">
+			<path d="M22 106V52a12 12 0 0 1 24 0C46 62 36 66 38 74S48 82 56 90S68 102 78 118" stroke="#000" transform="translate(100 0) scale(-1 1)"></path>
+			<path d="M22 106V52a12 12 0 0 1 24 0C46 62 36 66 38 74S48 82 56 90S68 102 78 118" stroke="#fff" stroke-width="13"></path>
+			<path d="M22 106V52a12 12 0 0 1 24 0C46 62 36 66 38 74S48 82 56 90S68 102 78 118" stroke="#000"></path>
+		</g>
+	</mask>
+	<path d="M0 120V50a50 50 0 0 1 100 0v70z" fill={colore} mask={`url(#${id}-m)`}></path>
+</svg>

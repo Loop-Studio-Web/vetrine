@@ -302,11 +302,29 @@
 
 <br>
 
+### 15 · Marrow & Knot
+
+<a href="https://vetrine.theloopstudio.org/eventi/wedding/"><img src="docs/img/card-marrowknot.jpg" alt="Marrow & Knot on desktop and mobile: a white title on a Pompeian-red background beside an arch showing a lakeside loggia, and the phone menu as a marble arch listing the five places." width="100%"></a>
+
+*Start with the room, not the checklist.* A wedding planner for destinations in Italy, in English.
+
+| | |
+|---|---|
+| **Archetype** | The destination wedding planner: the **experience** tier of the Events & creatives window, for a studio that sells places more than services |
+| **Mood** | An enfilade of rooms in a palazzo: Pompeian red, verdigris, cold marble and wine, tall condensed titles, no gold. The knot of the logo is the thread of the whole page |
+| **Type** | Imbue (a narrow high-contrast display serif with an optical-size axis) for titles and the huge room names, Commissioner for text |
+| **Palette** | <img src="docs/img/palette-marrowknot.svg" alt="Pompeian red, verdigris, wine, cold marble, carmine and dusty pink" height="22"> |
+| **Signature moves** | A **horizontal corridor of five rooms** (Como, Puglia, Amalfi, Tuscany, Venice) driven by vertical scroll on desktop with a mouse (GSAP ScrollTrigger pin + Lenis), a plain vertical stack on phones, touch and reduced motion. **Photographs woven from threads**: one WebGL canvas (OGL, no Three.js) draws every photo in its place; entering a room the warp drops, the weft crosses it and the picture closes, leaving it unweaves, and a lens follows the mouse. On phones the canvas starts at the first gesture. A **video inside a keyhole mask** that only plays in view. A **trefoil knot** drawn point by point with over/under crossings that tightens as the request is filled in. The phone menu is a **marble arch** that rises from the bottom |
+| **Lighthouse** | 96 performance on mobile locally, 99 on desktop, 100 on accessibility and best practices, no layout shift (SEO 66 only because the page is `noindex` by design). Photographs and one video are free archive images declared as illustrative; logo mark rebuilt by hand as SVG |
+
+[**Open Marrow & Knot →**](https://vetrine.theloopstudio.org/eventi/wedding/)
+
+<br>
+
 ### Next on the street
 
 | Category | Archetype | Status |
 |---|---|---|
-| Events & creatives | princely wedding planner | Planned |
 | Legal & professional | to be decided | Planned |
 | Local shop / e-commerce | to be decided | Planned |
 

@@ -1,0 +1,273 @@
+---
+// L'ultima sala: un nodo che si stringe mentre si compila la richiesta. Non è un preventivo né una ricevuta.
+import { luoghi } from './dati';
+---
+
+<section class="chiusura" id="scrivici" data-sala data-tinta="vino" aria-labelledby="chiusura-t">
+	<div class="chiusura__in">
+		<div class="chiusura__nodo">
+			<svg viewBox="-190 -190 380 380" data-nodo role="img" aria-label="A knot that tightens as you fill in the form">
+				<path data-sotto pathLength="1" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+				<path data-alone fill="none" stroke="var(--fondo)" stroke-linecap="butt" stroke-linejoin="round"></path>
+				<path data-sopra fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+			</svg>
+		</div>
+		<div class="chiusura__testo">
+			<h2 class="titolo" id="chiusura-t">Tie it together.</h2>
+			<p class="corpo">
+				Tell us where, roughly when, and who is getting married. A planner writes back within two working days.
+			</p>
+			<form class="modulo" novalidate data-modulo>
+				<div class="campo">
+					<label for="mk-nomi">Your names</label>
+					<input id="mk-nomi" name="nomi" type="text" autocomplete="name" required aria-describedby="mk-nomi-e" />
+					<p class="campo__errore" id="mk-nomi-e" hidden>Add at least one name.</p>
+				</div>
+				<div class="campo">
+					<label for="mk-email">Email</label>
+					<input id="mk-email" name="email" type="email" autocomplete="email" required aria-describedby="mk-email-e" />
+					<p class="campo__errore" id="mk-email-e" hidden>That email looks incomplete. Try name@example.com.</p>
+				</div>
+				<div class="campo">
+					<label for="mk-luogo">Where</label>
+					<select id="mk-luogo" name="luogo">
+						{luoghi.map((l) => <option value={l} selected={l === 'Not sure yet'}>{l}</option>)}
+					</select>
+				</div>
+				<div class="campo">
+					<label for="mk-quando">When</label>
+					<input id="mk-quando" name="quando" type="text" placeholder="A month, a season or a date" autocomplete="off" required aria-describedby="mk-quando-e" />
+					<p class="campo__errore" id="mk-quando-e" hidden>Give us a month or a season, even a rough one.</p>
+				</div>
+				<button class="btn btn--pieno" type="submit">Send the request</button>
+			</form>
+			<p class="modulo__esito" data-esito role="status" hidden></p>
+			<p class="chiusura__nota">Demo: nothing is sent and no one will write back.</p>
+		</div>
+	</div>
+</section>
+
+<style is:global>
+	.chiusura {
+		position: relative;
+		overflow: hidden;
+		padding: 104px var(--gutter) 96px;
+		color: var(--marmo);
+	}
+	.chiusura__in {
+		display: grid;
+		gap: 40px;
+		align-items: center;
+	}
+	.chiusura__nodo {
+		color: var(--filo-c);
+		width: min(100%, 460px);
+		justify-self: center;
+	}
+	.chiusura__nodo svg {
+		width: 100%;
+		height: auto;
+		overflow: visible;
+	}
+	.chiusura__testo {
+		display: grid;
+		gap: 22px;
+		justify-items: start;
+		max-width: 34rem;
+	}
+	.chiusura__testo .titolo {
+		font-size: clamp(2.8rem, 6.4vw, 6rem);
+	}
+	.modulo {
+		display: grid;
+		gap: 18px;
+		width: 100%;
+	}
+	.campo {
+		display: grid;
+		gap: 6px;
+	}
+	.campo label {
+		font-size: 0.92rem;
+		color: var(--sotto);
+	}
+	.campo input,
+	.campo select {
+		font: inherit;
+		color: var(--testo);
+		background: transparent;
+		border: 0;
+		border-bottom: 1.5px solid color-mix(in srgb, var(--testo) 45%, transparent);
+		border-radius: 0;
+		padding: 10px 0 11px;
+		min-height: 46px;
+		width: 100%;
+		transition: border-color 0.25s;
+	}
+	.campo select {
+		appearance: none;
+		background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(-45deg, transparent 50%, currentColor 50%);
+		background-size: 6px 6px;
+		background-position: calc(100% - 10px) 55%, calc(100% - 4px) 55%;
+		background-repeat: no-repeat;
+	}
+	.campo select option {
+		color: #1c0710;
+	}
+	.campo input::placeholder {
+		color: color-mix(in srgb, var(--testo) 50%, transparent);
+	}
+	.campo input:focus,
+	.campo select:focus {
+		outline: none;
+		border-bottom-color: var(--filo-c);
+	}
+	.campo[data-errore] input {
+		border-bottom-color: #ff9aa8;
+	}
+	.campo__errore {
+		color: #ffb3bf;
+		font-size: 0.9rem;
+	}
+	.modulo .btn {
+		justify-self: start;
+		margin-top: 8px;
+	}
+	.modulo__esito {
+		font-family: var(--serif);
+		font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+		line-height: 1.15;
+		max-width: 22ch;
+	}
+	.chiusura__nota {
+		font-size: 0.86rem;
+		color: var(--sotto);
+	}
+	@media (min-width: 820px) {
+		.chiusura__in {
+			grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+			column-gap: clamp(40px, 7vw, 120px);
+		}
+	}
+	html.h .chiusura {
+		flex: none;
+		width: 100vw;
+		height: 100svh;
+		padding: calc(var(--fascia-h) + var(--nav-h) + 2svh) 0 5svh 6vw;
+	}
+	html.h .chiusura__in {
+		height: 100%;
+		width: 100%;
+		padding-right: 8vw;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 32rem);
+	}
+	html.h .chiusura__nodo {
+		width: min(100%, 76svh);
+	}
+</style>
+
+<script>
+	import { creaNodo } from './nodo';
+
+	const sez = document.querySelector<HTMLElement>('#scrivici')!;
+	const svg = sez.querySelector<SVGSVGElement>('[data-nodo]')!;
+	const modulo = sez.querySelector<HTMLFormElement>('[data-modulo]')!;
+	const esito = sez.querySelector<HTMLElement>('[data-esito]')!;
+	const nodo = creaNodo(svg);
+	const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	let campi = 0; // 0..1 dalla compilazione
+	let inviato = false;
+	let attivo = false;
+	const mostrato = { s: -1, d: -1 };
+	const target = { s: 0, d: 0 };
+	const corrente = { s: 0, d: 0 };
+
+	function valida(el: HTMLInputElement | HTMLSelectElement) {
+		if (el.name === 'nomi') return el.value.trim().length > 1;
+		if (el.name === 'email') return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(el.value.trim());
+		if (el.name === 'quando') return el.value.trim().length > 1;
+		return true;
+	}
+	function aggiornaCampi() {
+		const els = [...modulo.querySelectorAll<HTMLInputElement>('input[required]')];
+		campi = els.filter(valida).length / els.length;
+	}
+	modulo.addEventListener('input', (e) => {
+		aggiornaCampi();
+		// l'errore sparisce non appena il campo torna valido
+		const el = e.target as HTMLInputElement;
+		const campo = el.closest<HTMLElement>('.campo');
+		if (campo?.hasAttribute('data-errore') && valida(el)) {
+			campo.removeAttribute('data-errore');
+			campo.querySelector<HTMLElement>('.campo__errore')!.hidden = true;
+			el.setAttribute('aria-invalid', 'false');
+		}
+	});
+
+	function entrata() {
+		const r = sez.getBoundingClientRect();
+		const orizz = document.documentElement.classList.contains('h');
+		const v = orizz ? (innerWidth - r.left) / (innerWidth * 0.95) : (innerHeight - r.top) / (innerHeight * 0.9);
+		return Math.max(0, Math.min(1, v));
+	}
+
+	function frame() {
+		const amb = entrata();
+		target.d = ridotto ? 1 : Math.max(0, Math.min(1, (amb - 0.25) / 0.55));
+		target.s = inviato ? 1 : Math.min(0.78, 0.12 + campi * 0.66) * (amb > 0.8 ? 1 : amb);
+		const k = ridotto ? 1 : 0.14;
+		corrente.d += (target.d - corrente.d) * k;
+		corrente.s += (target.s - corrente.s) * k;
+		if (Math.abs(corrente.d - mostrato.d) > 0.002 || Math.abs(corrente.s - mostrato.s) > 0.002) {
+			nodo.imposta(corrente.s, corrente.d);
+			mostrato.s = corrente.s;
+			mostrato.d = corrente.d;
+		}
+		if (attivo) requestAnimationFrame(frame);
+	}
+	new IntersectionObserver((e) => {
+		const vis = e[0].isIntersecting;
+		if (vis && !attivo) {
+			attivo = true;
+			requestAnimationFrame(frame);
+		} else if (!vis) attivo = false;
+	}).observe(sez);
+	nodo.imposta(0, 0);
+
+	// dai pulsanti delle sale: precompila il luogo
+	document.addEventListener('click', (e) => {
+		const a = (e.target as HTMLElement).closest<HTMLElement>('[data-luogo]');
+		if (!a) return;
+		(modulo.elements.namedItem('luogo') as HTMLSelectElement).value = a.dataset.luogo!;
+	});
+
+	modulo.addEventListener('submit', (e) => {
+		e.preventDefault();
+		let primo: HTMLElement | null = null;
+		for (const el of modulo.querySelectorAll<HTMLInputElement>('input[required]')) {
+			const campo = el.closest<HTMLElement>('.campo')!;
+			const err = campo.querySelector<HTMLElement>('.campo__errore')!;
+			const ok = valida(el);
+			campo.toggleAttribute('data-errore', !ok);
+			err.hidden = ok;
+			el.setAttribute('aria-invalid', String(!ok));
+			if (!ok && !primo) primo = el;
+		}
+		if (primo) {
+			primo.focus();
+			return;
+		}
+		const nomi = (modulo.elements.namedItem('nomi') as HTMLInputElement).value.trim();
+		const luogo = (modulo.elements.namedItem('luogo') as HTMLSelectElement).value;
+		inviato = true;
+		modulo.hidden = true;
+		esito.hidden = false;
+		esito.textContent =
+			luogo === 'Not sure yet'
+				? `Pulled tight, ${nomi}. We’ll write about the places that could suit you.`
+				: `Pulled tight, ${nomi}. We’ll write about ${luogo}.`;
+		esito.tabIndex = -1;
+		esito.focus({ preventScroll: true });
+	});
+</script>

@@ -1,0 +1,101 @@
+---
+import logo from '../../assets/hub/loop-logo-on-dark.svg';
+import Simbolo from './Simbolo.astro';
+import { sale } from './dati';
+---
+
+<footer class="piede" data-tinta="pompeiano">
+	<div class="piede__in">
+		<p class="piede__marca">
+			<Simbolo tam={44} id="piede" />
+			<span>Marrow &amp; Knot<small>Weddings in Italy</small></span>
+		</p>
+		<nav class="piede__nav" aria-label="Footer">
+			{sale.map((s) => <a href={`#${s.id}`} data-vai={s.id}>{s.nome}</a>)}
+			<a href="#scrivici" data-vai="scrivici">Plan my wedding</a>
+		</nav>
+		<p class="piede__copia">
+			© 2026 Marrow &amp; Knot. A made-up wedding planner: this is a concept page. The team, places, dates and contact details do not exist, and
+			the photographs are archive images used as illustrations. A real studio would put its privacy policy and booking terms here.
+		</p>
+		<a class="piede__credito" href="https://theloopstudio.org/" target="_blank" rel="noopener">
+			<span>Sito ideato da</span>
+			<img src={logo.src} width="84" height="44" alt="Loop Studio" />
+			<span class="sr-only">(si apre in una nuova scheda)</span>
+		</a>
+	</div>
+</footer>
+
+<style>
+	.piede {
+		position: relative;
+		z-index: 60;
+		padding: 64px var(--gutter) 52px;
+		background: #12040a;
+		border-top: 1.5px solid var(--filo);
+	}
+	.piede__in {
+		display: grid;
+		gap: 28px 48px;
+		align-items: center;
+	}
+	.piede__marca {
+		display: inline-flex;
+		align-items: center;
+		gap: 14px;
+		font-family: var(--serif);
+		font-size: 1.7rem;
+		line-height: 1.1;
+		color: var(--marmo);
+	}
+	.piede__marca small {
+		display: block;
+		font: 400 0.82rem/1.4 var(--sans);
+		color: var(--sotto);
+		letter-spacing: 0.06em;
+	}
+	.piede__nav {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px 26px;
+		font-weight: 500;
+	}
+	.piede__nav a {
+		text-decoration: none;
+		padding: 8px 0;
+		min-height: 44px;
+		display: inline-flex;
+		align-items: center;
+	}
+	@media (hover: hover) {
+		.piede__nav a:hover {
+			text-decoration: underline;
+			text-underline-offset: 4px;
+		}
+	}
+	.piede__copia {
+		max-width: 62ch;
+		font-size: 0.86rem;
+		color: var(--sotto);
+	}
+	.piede__credito {
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		font-size: 0.86rem;
+		color: var(--sotto);
+		text-decoration: none;
+		min-height: 44px;
+	}
+	@media (min-width: 900px) {
+		.piede__in {
+			grid-template-columns: auto 1fr auto;
+		}
+		.piede__copia {
+			grid-column: 1 / 3;
+		}
+		.piede__credito {
+			justify-self: end;
+		}
+	}
+</style>

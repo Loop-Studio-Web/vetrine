@@ -28,6 +28,8 @@ import cardMalahierba from '../assets/hub/card-malahierba.jpg';
 import shotMalahierba from '../assets/hub/shot-malahierba.jpg';
 import cardLimonaia from '../assets/hub/card-limonaia.jpg';
 import shotLimonaia from '../assets/hub/shot-limonaia.jpg';
+import cardMarrowknot from '../assets/hub/card-marrowknot.jpg';
+import shotMarrowknot from '../assets/hub/shot-marrowknot.jpg';
 
 export const SITE = 'https://theloopstudio.org/';
 export const CONTACT = 'https://theloopstudio.org/contatti';
@@ -867,6 +869,60 @@ export const concepts: Concept[] = [
 		palette: ['#efd84a', '#16224a', '#bcd7e6', '#a8421f', '#2e5b45', '#ece0f1'],
 		metriche: [
 			{ label: 'Performance', valore: '97' },
+			{ label: 'Accessibilità', valore: '100' },
+			{ label: 'Buone pratiche', valore: '100' },
+		],
+	},
+	{
+		slug: 'wedding',
+		macro: 'eventi',
+		nome: 'Marrow & Knot',
+		categoria: 'Eventi e creativi',
+		archetipo: 'Il wedding planner per nozze in Italia',
+		claim: 'Weddings in Italy. Cinque sale da attraversare, dal lago di Como a Venezia: le foto si tessono a fili, il nodo si stringe mentre scrivi.',
+		path: '/eventi/wedding/',
+		infoPath: '/eventi/wedding/info/',
+		titoloSeo: 'Sito web per wedding planner: homepage concept in inglese per matrimoni di destinazione',
+		descrizioneSeo:
+			'Come potrebbe essere la homepage di un wedding planner per coppie straniere che si sposano in Italia: un corridoio di cinque sale (Como, Puglia, Amalfi, Toscana, Venezia) con foto che si tessono a fili in WebGL, un video in una serratura e una richiesta che stringe un nodo. In inglese. Concept dimostrativo di Loop Studio.',
+		intro: [
+			'Chi sceglie di sposarsi in Italia da lontano sceglie prima un luogo, poi una persona che se ne occupi. Questa homepage parte dal luogo: è un’infilata di sale, come in un palazzo, e ogni sala è un posto con la sua tinta, la sua foto e i suoi numeri veri (ospiti, stagione, distanza). Alla fine, una richiesta in quattro campi.',
+			'È il livello Esperienza della categoria Eventi e creativi e una vetrina dimostrativa, scritta in inglese per coppie anglofone: lo studio, i luoghi proposti, i tempi e i recapiti sono di fantasia, e le fotografie e il video sono d’archivio. Il filo del sito è il nodo del marchio: i fili che tessono le foto, il filo che corre tra le sale, il nodo che si stringe nel modulo.',
+		],
+		perChi:
+			'Wedding planner e studi di organizzazione per nozze di destinazione, agenzie che vendono luoghi più che servizi, location e dimore con più sedi. Adatta a chi vende atmosfera e fiducia e vuole che il sito sia già un pezzo di quell’esperienza.',
+		sezioni: [
+			{
+				t: 'Un corridoio di sale, non una pagina che scorre',
+				d: 'Su desktop lo scroll verticale muove un binario orizzontale: cinque sale in fila, ognuna con la sua tinta. Su telefono e con il movimento ridotto diventa una pila verticale normale, senza trucchi.',
+			},
+			{
+				t: 'Foto che si tessono a fili',
+				d: 'Entrando in sala l’ordito scende e la trama lo attraversa fino a chiudere l’immagine; uscendo si sfila. Una lente segue il mouse. Dietro c’è una sola tela WebGL molto leggera, con l’immagine normale come ripiego.',
+			},
+			{
+				t: 'Un video dentro una serratura',
+				d: 'A Venezia il video non è un rettangolo ma una maschera: parte solo quando è in vista e mai con il movimento ridotto o il risparmio dati.',
+			},
+			{
+				t: 'Una richiesta che stringe un nodo',
+				d: 'Non una ricevuta né un preventivo: mentre si compilano i campi il nodo del marchio si stringe, e all’invio si serra del tutto. Errori chiari, un campo alla volta.',
+			},
+		],
+		awning: ['#5e0e1c', '#e6ecee'],
+		glow: 'rgba(122, 20, 40, 0.55)',
+		livello: 3,
+		lingua: 'EN',
+		card: cardMarrowknot,
+		shot: shotMarrowknot,
+		shotAlt: '',
+		crop: '70% 40%',
+		cardAlt: 'Marrow & Knot su desktop e su telefono: titolo bianco su fondo rosso pompeiano con un arco che mostra una loggia sul lago di Como, e il menù mobile in marmo con i nomi dei cinque luoghi.',
+		mood: 'Un’infilata di sale di un palazzo: rosso pompeiano, verderame, marmo e vino, titoli stretti e alti, foto che si tessono a fili e un nodo che si stringe. Niente oro.',
+		caratteri: 'Imbue e Commissioner',
+		palette: ['#5e0e1c', '#17463f', '#2b0b1a', '#e6ecee', '#7a1428', '#d9a5ad'],
+		metriche: [
+			{ label: 'Performance', valore: '96' },
 			{ label: 'Accessibilità', valore: '100' },
 			{ label: 'Buone pratiche', valore: '100' },
 		],

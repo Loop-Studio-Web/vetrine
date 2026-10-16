@@ -1,0 +1,139 @@
+---
+// L'ingresso dell'enfilade: titolo, un arco con la prima foto che si tesse, l'invito a scorrere.
+import Foto from './Foto.astro';
+---
+
+<section class="ingresso" id="ingresso" data-sala data-tinta="pompeiano" aria-labelledby="ingresso-t">
+	<span class="sala__filo" aria-hidden="true"></span>
+	<div class="ingresso__in">
+		<div class="ingresso__testo">
+			<h1 class="titolo" id="ingresso-t">Start with the room, not the checklist.</h1>
+			<p class="corpo">
+				Marrow &amp; Knot plans weddings in Italy: five places we know by heart, one team from the first visit to the last dance.
+			</p>
+			<div class="ingresso__azioni">
+				<a class="btn btn--pieno" href="#como" data-vai="como">Walk through</a>
+				<a class="btn" href="#scrivici">Ask about a date</a>
+			</div>
+		</div>
+		<Foto
+			file="ingresso-loggia"
+			alt="A columned loggia with a mosaic floor opening onto the lake and the mountains"
+			forma="arco"
+			classe="ingresso__foto"
+			eager
+		/>
+		<p class="ingresso__invito" aria-hidden="true">
+			<span class="ingresso__freccia"></span>
+		</p>
+	</div>
+</section>
+
+<style is:global>
+	.ingresso {
+		position: relative;
+		overflow: hidden;
+		padding: calc(var(--fascia-h) + var(--nav-h) + 36px) var(--gutter) 72px;
+	}
+	.ingresso__in {
+		position: relative;
+		z-index: 2;
+		display: grid;
+		gap: 44px;
+		align-items: center;
+	}
+	.ingresso__testo {
+		display: grid;
+		gap: 26px;
+		justify-items: start;
+	}
+	.ingresso__testo .titolo {
+		font-size: clamp(2.8rem, 8.2vw, 7.2rem);
+		max-width: 11ch;
+	}
+	.ingresso__azioni {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 14px;
+		margin-top: 6px;
+	}
+	.ingresso__foto {
+		width: min(100%, 440px);
+		justify-self: center;
+	}
+	.ingresso__invito {
+		display: none;
+	}
+	@media (min-width: 820px) {
+		.ingresso__in {
+			grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.9fr);
+		}
+		.ingresso__foto {
+			justify-self: end;
+		}
+	}
+
+	html.h .ingresso {
+		flex: none;
+		width: 112vw;
+		height: 100svh;
+		padding: calc(var(--fascia-h) + var(--nav-h) + 2svh) 0 5svh 8vw;
+	}
+	html.h .ingresso__in {
+		height: 100%;
+		display: flex;
+		align-items: center;
+		gap: 5vw;
+	}
+	html.h .ingresso__testo {
+		flex: none;
+		width: min(48vw, 780px);
+	}
+	html.h .ingresso__testo .titolo {
+		font-size: min(8.6vw, 17svh);
+	}
+	html.h .ingresso__foto {
+		width: auto;
+		height: min(76svh, 58vw);
+		flex: none;
+	}
+	html.h .ingresso__invito {
+		display: block;
+		position: absolute;
+		right: 6vw;
+		bottom: 5svh;
+	}
+	.ingresso__freccia {
+		display: block;
+		width: 96px;
+		height: 1.5px;
+		background: var(--filo-c);
+		position: relative;
+		transform-origin: 0 50%;
+		animation: freccia 2.4s cubic-bezier(0.6, 0, 0.2, 1) infinite;
+	}
+	.ingresso__freccia::after {
+		content: '';
+		position: absolute;
+		right: 0;
+		top: -4px;
+		width: 9px;
+		height: 9px;
+		border-top: 1.5px solid var(--filo-c);
+		border-right: 1.5px solid var(--filo-c);
+		transform: rotate(45deg);
+	}
+	@keyframes freccia {
+		0% {
+			transform: scaleX(0.2);
+			opacity: 0;
+		}
+		40% {
+			opacity: 1;
+		}
+		100% {
+			transform: scaleX(1);
+			opacity: 0;
+		}
+	}
+</style>
