@@ -1,0 +1,94 @@
+---
+// Barra fissa su telefono: "Build your PC" e "My list" (con il contatore). Compare dopo il primo schermo e si nasconde
+// dentro il builder (trascinare i pezzi con la barra sopra è scomodo) e davanti alla visita. Il contatore lo aggiorna
+// la navbar con hotswap:lista; il tasto apre il cassetto con [data-cart-open], gestito da Lista.
+---
+
+<nav class="barra" data-barra aria-label="Quick actions">
+	<a class="tasto tasto--arancio barra__b" href="#builder">Build your PC</a>
+	<button class="tasto barra__l" type="button" data-cart-open>
+		My list <b class="barra__n" data-cart-count2>0</b>
+	</button>
+</nav>
+
+<style>
+	.barra {
+		display: none;
+	}
+	@media (max-width: 720px) {
+		.barra {
+			position: fixed;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			z-index: 120;
+			display: flex;
+			gap: 12px;
+			padding: 10px var(--gutter) calc(10px + env(safe-area-inset-bottom));
+			background: var(--cassa-2);
+			border-top: 3px solid var(--grafite);
+			transform: translateY(110%);
+			visibility: hidden;
+			transition:
+				transform 0.3s cubic-bezier(0.25, 1.1, 0.4, 1),
+				visibility 0s 0.3s;
+		}
+		.barra.is-visibile {
+			transform: none;
+			visibility: visible;
+			transition-delay: 0s;
+		}
+		:global(.piede) {
+			padding-bottom: calc(80px + env(safe-area-inset-bottom));
+		}
+		.barra__b {
+			flex: 1.3;
+		}
+		.barra__l {
+			flex: 1;
+			white-space: nowrap;
+		}
+		.barra__n {
+			display: inline-grid;
+			place-items: center;
+			min-width: 1.6em;
+			height: 1.6em;
+			padding: 0 0.3em;
+			border-radius: 99px;
+			background: var(--grafite);
+			color: var(--avorio);
+			font-size: 0.85rem;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.barra {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	const barra = document.querySelector<HTMLElement>('[data-barra]');
+	const hero = document.getElementById('top');
+	const builder = document.getElementById('builder');
+	const visita = document.getElementById('visit');
+	if (barra && hero) {
+		// visibile quando il primo schermo è passato e non si è nel builder né nella visita
+		const fuori = new Set<Element>();
+		const aggiorna = () => barra.classList.toggle('is-visibile', !fuori.has(hero) && fuori.size === 0);
+		const osserva = (el: HTMLElement | null, soglia: number) => {
+			if (!el) return;
+			new IntersectionObserver(
+				([e]) => {
+					if (e.isIntersecting) fuori.add(el);
+					else fuori.delete(el);
+					aggiorna();
+				},
+				{ threshold: soglia },
+			).observe(el);
+		};
+		osserva(hero, 0.5);
+		osserva(builder, 0.05);
+		osserva(visita, 0.2);
+	}
+</script>

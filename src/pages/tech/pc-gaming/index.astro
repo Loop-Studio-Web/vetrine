@@ -15,6 +15,7 @@ import Offerte from '../../../concepts/hotswap/Offerte.astro';
 import Recensioni from '../../../concepts/hotswap/Recensioni.astro';
 import Visita from '../../../concepts/hotswap/Visita.astro';
 import Footer from '../../../concepts/hotswap/Footer.astro';
+import Barra from '../../../concepts/hotswap/Barra.astro';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const title = 'Hot Swap — Computer & gaming store';
@@ -65,6 +66,7 @@ const pageUrl = new URL(`${base}/tech/pc-gaming/`, Astro.site).href;
 		</main>
 		<Footer />
 		<Lista />
+		<Barra />
 		<script>
 			// Le ancore interne scorrono via script e non con l'ancora nativa: su Safari/iPhone l'ancora con scorrimento
 			// morbido può partire dall'alto e atterrare storta quando la pagina cambia altezza mentre scorre.

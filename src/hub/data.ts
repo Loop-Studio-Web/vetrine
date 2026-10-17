@@ -814,7 +814,7 @@ export const concepts: Concept[] = [
 		caratteri: 'Caprasimo, Familjen Grotesk e Permanent Marker',
 		palette: ['#c20b60', '#0e3b2b', '#ff9a1f', '#12b5ad', '#ffc7dc', '#fff0f6'],
 		metriche: [
-			{ label: 'Performance', valore: '96' },
+			{ label: 'Performance', valore: '97' },
 			{ label: 'Accessibilità', valore: '100' },
 			{ label: 'Buone pratiche', valore: '100' },
 		],
