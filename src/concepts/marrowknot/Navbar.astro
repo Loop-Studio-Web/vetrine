@@ -22,6 +22,18 @@ import { sale } from './dati';
 	</button>
 </header>
 
+<!-- mappa del corridoio (solo desktop con mouse): cinque tacche, una per sala, cliccabili; duplica la navbar, quindi nascosta agli screen reader -->
+<nav class="rail" data-rail aria-hidden="true">
+	{
+		sale.map((s) => (
+			<a href={`#${s.id}`} data-vai={s.id} tabindex="-1">
+				<i></i>
+				<span>{s.breve}</span>
+			</a>
+		))
+	}
+</nav>
+
 <div class="menu" id="menu" data-menu role="dialog" aria-modal="true" aria-label="Menu" aria-hidden="true" inert>
 	<div class="menu__testa">
 		<span class="menu__marca"><Simbolo tam={28} id="menu" /> Marrow &amp; Knot</span>
@@ -166,6 +178,100 @@ import { sale } from './dati';
 		}
 		.nav__burger {
 			display: none;
+		}
+	}
+
+	/* mappa del corridoio: cinque tacche, la sala in cui sei si riempie piano mentre scorri (--p, lo scrive il motore) */
+	.rail {
+		display: none;
+	}
+	html.h .rail {
+		display: flex;
+		position: fixed;
+		z-index: 150;
+		left: 50%;
+		bottom: 0;
+		transform: translateX(-50%);
+		gap: 6px;
+		/* colore opposto al filo di sala sopra di lei (che segue il tono della navbar), così le tacche si distinguono dalla striscia */
+		color: var(--inchiostro);
+		text-shadow: 0 0 8px rgb(255 255 255 / 0.6);
+		transition:
+			color 0.6s,
+			opacity 0.4s;
+	}
+	html.h .rail[data-tono='scuro'] {
+		color: var(--marmo);
+		text-shadow: 0 0 8px rgb(0 0 0 / 0.55);
+	}
+	html.h .rail[data-solido] {
+		opacity: 0;
+		pointer-events: none;
+	}
+	.rail a {
+		position: relative;
+		display: grid;
+		justify-items: center;
+		align-content: start;
+		gap: 7px;
+		width: 64px;
+		height: 42px;
+		padding-top: 4px;
+		color: inherit;
+		text-decoration: none;
+	}
+	.rail i {
+		display: block;
+		width: 100%;
+		height: 4px;
+		background: color-mix(in srgb, currentColor 52%, transparent);
+		box-shadow: 0 0 8px rgb(0 0 0 / 0.3);
+		background-image: linear-gradient(currentColor, currentColor);
+		background-repeat: no-repeat;
+		background-size: calc(var(--p, 0) * 100%) 100%;
+	}
+	.rail span {
+		font: 600 0.66rem/1 var(--sans);
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		opacity: 0;
+		transform: translateY(-3px);
+		transition:
+			opacity 0.25s,
+			transform 0.25s;
+		pointer-events: none;
+	}
+	/* in home (sull'ingresso) tacche e nomi sono sempre bianchi e tutti visibili, senza hover (sotto c'è il mare scuro): si naviga anche dal basso */
+	html.h .rail[data-home] {
+		color: var(--marmo);
+		text-shadow: 0 0 8px rgb(0 0 0 / 0.65);
+	}
+	html.h .rail[data-home] a {
+		color: var(--filo); /* il rosa del filo: si stacca sia dalla linea bianca sia dal mare scuro */
+		transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+	}
+	@media (hover: hover) {
+		html.h .rail[data-home] a:hover {
+			transform: scale(1.14);
+		}
+	}
+	.rail[data-home] i {
+		background-color: var(--filo);
+	}
+	.rail[data-home] span {
+		opacity: 1;
+		transform: none;
+		color: var(--marmo);
+		text-shadow: 0 0 8px rgb(0 0 0 / 0.65);
+	}
+	.rail a[aria-current='true'] span {
+		opacity: 1;
+		transform: none;
+	}
+	@media (hover: hover) {
+		.rail a:hover span {
+			opacity: 1;
+			transform: none;
 		}
 	}
 

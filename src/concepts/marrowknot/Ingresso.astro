@@ -91,7 +91,17 @@ import { ingresso } from './dati';
 	.ingresso .btn--pieno {
 		color: var(--inchiostro);
 	}
+	/* il pulsante a filo può cadere su una zona scura della foto (la cupola): un fondo scuro semitrasparente lo tiene leggibile */
+	.ingresso .btn:not(.btn--pieno) {
+		background: rgb(10 10 10 / 0.5);
+		-webkit-backdrop-filter: blur(6px);
+		backdrop-filter: blur(6px);
+		color: var(--marmo);
+	}
 	@media (hover: hover) {
+		.ingresso .btn:not(.btn--pieno):hover {
+			color: var(--inchiostro);
+		}
 		.ingresso .btn--pieno:hover {
 			color: var(--marmo);
 		}
@@ -136,6 +146,7 @@ import { ingresso } from './dati';
 		min-height: 0;
 		justify-content: flex-start;
 		display: flex;
+		flex-direction: row; /* la base è una colonna (pila): lì align-items: center centrerebbe il testo in orizzontale */
 		align-items: center;
 		padding: calc(var(--fascia-h) + var(--nav-h) + 2svh) 0 9svh 8vw;
 	}

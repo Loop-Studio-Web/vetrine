@@ -19,6 +19,11 @@ export async function avvia() {
 	const sale = [...document.querySelectorAll<HTMLElement>('[data-sala]')];
 	const nav = document.querySelector<HTMLElement>('[data-nav]')!;
 	const linkNav = [...nav.querySelectorAll<HTMLAnchorElement>('.nav__sale a')];
+	// mappa del corridoio: una tacca per sala (solo desktop), la sala corrente si riempie con lo scroll
+	const rail = document.querySelector<HTMLElement>('[data-rail]');
+	const tacche = rail
+		? [...rail.querySelectorAll<HTMLAnchorElement>('a')].map((a) => ({ a, el: document.getElementById(a.dataset.vai!), p: -1 }))
+		: [];
 
 	let lenis: { scrollTo: (y: number, o: object) => void } | null = null;
 	let pinY0 = 0;
@@ -320,6 +325,23 @@ export async function avvia() {
 				nav.dataset.tinta = (migliore as HTMLElement).dataset.tinta!;
 				nav.dataset.tono = (migliore as HTMLElement).dataset.tonoNav ?? 'chiaro';
 				for (const a of linkNav) a.setAttribute('aria-current', String(a.dataset.vai === id));
+				if (rail) {
+					rail.dataset.tono = nav.dataset.tono!;
+					rail.toggleAttribute('data-home', id === 'ingresso');
+					for (const t of tacche) t.a.setAttribute('aria-current', String(t.a.dataset.vai === id));
+				}
+			}
+		}
+		if (rail && orizz) {
+			rail.toggleAttribute('data-solido', scrollY > pinY1 + 4);
+			for (const t of tacche) {
+				if (!t.el) continue;
+				const r = t.el.getBoundingClientRect();
+				const p = Math.round(lim((W * 0.38 - r.left) / r.width, 0, 1) * 200) / 200;
+				if (p !== t.p) {
+					t.p = p;
+					t.a.style.setProperty('--p', String(p));
+				}
 			}
 		}
 		// finito il corridoio la pagina scorre in verticale sotto la navbar: sfondo nero, così non si confonde col testo

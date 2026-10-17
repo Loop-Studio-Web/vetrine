@@ -392,8 +392,8 @@ const mCh = 3 + sala.fatti.length + 1;
 	}
 	.didascalia__segmenti span {
 		flex: 1;
-		height: 2px;
-		background: color-mix(in srgb, var(--testo) 30%, transparent);
+		height: 3px;
+		background: color-mix(in srgb, var(--testo) 45%, transparent);
 		transition: background-color 0.4s;
 	}
 	.didascalia__segmenti span.attivo {
@@ -516,9 +516,19 @@ const mCh = 3 + sala.fatti.length + 1;
 	}
 	html.h .didascalia__testo {
 		font-size: 0.95rem;
+		text-shadow: 0 0 14px rgb(0 0 0 / 0.7), 0 1px 3px rgb(0 0 0 / 0.55);
 	}
 	html.h .didascalia__segmenti span {
-		box-shadow: 0 0 8px rgb(0 0 0 / 0.35);
+		box-shadow: 0 0 8px rgb(0 0 0 / 0.5);
+	}
+	/* un'ombra morbida e locale dietro didascalia e segmenti: regge anche su pietra e cielo chiari */
+	html.h .didascalia::before {
+		content: '';
+		position: absolute;
+		z-index: -1;
+		inset: -26px -44px -18px -34px;
+		background: radial-gradient(closest-side, rgb(0 0 0 / 0.5), rgb(0 0 0 / 0.28) 58%, transparent);
+		pointer-events: none;
 	}
 	html.h .slide[inert] {
 		pointer-events: none;
