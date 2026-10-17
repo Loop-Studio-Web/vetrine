@@ -1,15 +1,18 @@
 ---
 // Lo sfondo fotografico di una sala: una pila di scatti che si danno il cambio tessendosi.
-// Nel markup resta un <img> (il primo scatto: ripiego senza WebGL, reduced-motion, LCP mai). Gli altri scatti
-// sono solo dati (data-scatti): li carica e li disegna la tela WebGL (`arazzo.ts`).
+// Nel markup restano gli <img> di tutti gli scatti (ripiego senza WebGL e con reduced-motion: si danno il cambio con
+// una dissolvenza, `fondo__img--on` la mette il motore). Con WebGL li nasconde la tela (`arazzo.ts`), che li disegna
+// tessendoli; nel corridoio gli scatti dopo il primo non si scaricano affatto (display: none).
 import { Image, getImage } from 'astro:assets';
 import type { Scatto } from './dati';
 
 interface Props {
 	scatti: Scatto[];
 	eager?: boolean;
+	/** un velo di colore sopra le foto (nelle sale: il testo ci sta sopra) */
+	velo?: boolean;
 }
-const { scatti, eager = false } = Astro.props;
+const { scatti, eager = false, velo = false } = Astro.props;
 
 const tutte = import.meta.glob<{ default: ImageMetadata }>('../../assets/marrowknot/foto/*.jpg', { eager: true });
 const meta = (f: string) => {
@@ -28,25 +31,32 @@ const dati = await Promise.all(
 		return { g: g.src, m: m.src, cap: s.cap, w: src.width, h: src.height };
 	}),
 );
-const primo = meta(scatti[0].file);
+const foto = scatti.map((x) => ({ src: meta(x.file), alt: x.alt }));
 ---
 
 <div class="fondo" data-fondo data-scatti={JSON.stringify(dati)}>
-	<Image
-		src={primo}
-		alt={scatti[0].alt}
-		widths={[640, 1100, 1600, 2200]}
-		sizes="(min-width: 900px) 142vw, 100vw"
-		format="webp"
-		quality={72}
-		loading={eager ? 'eager' : 'lazy'}
-		decoding="async"
-		class="fondo__img"
-	/>
+	{
+		foto.map((f, k) => (
+			<Image
+				src={f.src}
+				alt={k === 0 ? f.alt : ''}
+				widths={[640, 1100, 1600, 2200]}
+				sizes="100vw"
+				format="webp"
+				quality={72}
+				loading={eager && k === 0 ? 'eager' : 'lazy'}
+				decoding="async"
+				class:list={['fondo__img', { 'fondo__img--on': k === 0 }]}
+				data-k={k}
+				aria-hidden={k === 0 ? undefined : 'true'}
+			/>
+		))
+	}
+	{velo && <span class="velo" aria-hidden="true" />}
 </div>
 
 <style is:global>
-	/* pila: un pannello in cima alla sala */
+	/* pannello (ingresso in pila); nelle sale è sticky a tutto schermo (vedi Sala.astro) */
 	.fondo {
 		position: relative;
 		aspect-ratio: 4 / 3;
@@ -54,19 +64,27 @@ const primo = meta(scatti[0].file);
 		overflow: hidden;
 		background: var(--fantasma, #00000022);
 	}
-	.fondo__img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-	}
 	@media (min-width: 640px) {
 		.fondo {
 			aspect-ratio: 16 / 9;
 		}
 	}
-	/* con WebGL pronto l'immagine lascia il posto alla tela */
+	.fondo__img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		opacity: 0;
+		transition: opacity 0.7s ease;
+	}
+	.fondo__img--on {
+		opacity: 1;
+	}
+	/* con WebGL pronto gli <img> lasciano il posto alla tela */
 	html.gl .fondo__img {
 		opacity: 0;
+		transition: none;
 	}
 
 	/* corridoio: il fondo è l'intera sala, dietro al testo; senza WebGL la foto sta sotto un velo di colore */
@@ -77,19 +95,23 @@ const primo = meta(scatti[0].file);
 		aspect-ratio: auto;
 		width: auto;
 	}
-	html.h .fondo::after {
+	/* nel corridoio gli scatti dopo il primo si vedono solo senza WebGL: con WebGL non si scaricano */
+	html.h.gl .fondo__img:not([data-k='0']) {
+		display: none;
+	}
+	html.h .velo {
 		content: '';
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(90deg, color-mix(in srgb, var(--fondo) 92%, transparent) 0%, color-mix(in srgb, var(--fondo) 70%, transparent) 38%, transparent 72%);
+		background: linear-gradient(90deg, color-mix(in srgb, var(--fondo) 90%, transparent) 0%, color-mix(in srgb, var(--fondo) 62%, transparent) 36%, transparent 66%);
 	}
-	html.h [data-disp='b'] .fondo::after {
-		background: linear-gradient(270deg, color-mix(in srgb, var(--fondo) 92%, transparent) 0%, color-mix(in srgb, var(--fondo) 70%, transparent) 38%, transparent 72%);
+	html.h [data-disp='b'] .velo {
+		background: linear-gradient(270deg, color-mix(in srgb, var(--fondo) 90%, transparent) 0%, color-mix(in srgb, var(--fondo) 62%, transparent) 36%, transparent 66%);
 	}
-	html.h.gl .fondo {
+	html.gl .fondo {
 		background: transparent;
 	}
-	html.h.gl .fondo::after {
+	html.h.gl .velo {
 		display: none; /* il velo lo disegna lo shader */
 	}
 </style>

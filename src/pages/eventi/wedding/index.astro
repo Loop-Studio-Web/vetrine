@@ -5,6 +5,7 @@ import '@fontsource/great-vibes/400.css';
 import '../../../concepts/marrowknot/base.css';
 import imbueUrl from '@fontsource-variable/imbue/files/imbue-latin-wght-normal.woff2?url';
 import commUrl from '@fontsource-variable/commissioner/files/commissioner-latin-wght-normal.woff2?url';
+import gvUrl from '@fontsource/great-vibes/files/great-vibes-latin-400-normal.woff2?url';
 import Fascia from '../../../concepts/marrowknot/Fascia.astro';
 import Navbar from '../../../concepts/marrowknot/Navbar.astro';
 import Ingresso from '../../../concepts/marrowknot/Ingresso.astro';
@@ -27,6 +28,7 @@ const pageUrl = new URL(`${base}/eventi/wedding/`, Astro.site).href;
 		<link rel="icon" type="image/svg+xml" href={`${base}/images/marrowknot/favicon.svg`} />
 		<link rel="preload" as="font" type="font/woff2" href={imbueUrl} crossorigin />
 		<link rel="preload" as="font" type="font/woff2" href={commUrl} crossorigin />
+			<link rel="preload" as="font" type="font/woff2" href={gvUrl} crossorigin />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>

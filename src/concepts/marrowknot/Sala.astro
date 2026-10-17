@@ -1,6 +1,8 @@
 ---
-// Una sala del percorso: un luogo, una tinta, più foto di sfondo che si danno il cambio tessendosi.
-// Il testo si costruisce con lo scroll: ogni parola e ogni riga ha un indice (--i) e compare quando --e (0..1, dal motore) lo raggiunge.
+// Una sala del percorso: un luogo, una tinta, quattro foto a tutto schermo che si danno il cambio tessendosi.
+// Il testo è diviso in quattro "slide", una per foto: la prima ha il nome grande (Great Vibes) e il claim, le altre
+// sono pillole (storia, da sapere, dati). Ogni slide compare con la sua foto e se ne va quando arriva la successiva:
+// il motore le dà --in e --out (0..1), ogni voce ha un indice --i e compare a scalare.
 import Fondo from './Fondo.astro';
 import type { Sala } from './dati';
 
@@ -10,12 +12,12 @@ interface Props {
 const { sala } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-const parole = sala.titolo.split(' ');
-const nParole = parole.length;
-// voci che seguono il titolo: paragrafo, righe dei dati, pulsante
-const iBtn = nParole + 1 + sala.fatti.length;
-const iStoria = iBtn + 1;
-const nVoci = iStoria + 2 + sala.sapere.length;
+const { storia, sapere, chiusura } = sala;
+const tono = (k: number) => sala.scatti[Math.min(k, sala.scatti.length - 1)].tono ?? 'chiaro';
+// voci per slide (per il calcolo dell'ingresso a scalare)
+const mSt = 2 + 1;
+const mSa = 2 + sapere.punti!.length;
+const mCh = 3 + sala.fatti.length + 1;
 ---
 
 <section
@@ -26,46 +28,46 @@ const nVoci = iStoria + 2 + sala.sapere.length;
 	data-tinta={sala.tinta}
 	data-disp={sala.disposizione}
 	data-nome={sala.breve}
+	data-tono-nav={sala.tonoNav}
 	aria-labelledby={`${sala.id}-t`}
-	style={`--n:${nVoci}`}
 >
-	<Fondo scatti={sala.scatti} />
+	<Fondo scatti={sala.scatti} velo />
 	<span class="sala__filo" aria-hidden="true"></span>
-	<div class="sala__in">
-		<div class="sala__blocchi">
-		<div class="sala__testo">
-			<h2 class="titolo" id={`${sala.id}-t`}>
-				{
-					parole.map((p, i) => (
-						<>
-							<span class="parola" style={`--i:${i}`}>
-								<span>{p}</span>
-							</span>{' '}
-						</>
-					))
-				}
-			</h2>
-			<p class="corpo voce" style={`--i:${nParole}`}>{sala.testo}</p>
-			<dl class="fatti">
-				{
-					sala.fatti.map(([k, v], j) => (
-						<div class="voce" style={`--i:${nParole + 1 + j}`}>
-							<dt>{k}</dt>
-							<dd>{v}</dd>
-						</div>
-					))
-				}
-			</dl>
-			<a class="btn voce" style={`--i:${iBtn}`} href="#scrivici" data-luogo={sala.nome}>{sala.cta}</a>
-		</div>
-		<div class="sala__storia">
-			<h3 class="voce sala__sottotitolo" style={`--i:${iStoria}`}>A little history</h3>
-			<p class="voce" style={`--i:${iStoria + 1}`}>{sala.storia}</p>
-			<h3 class="voce sala__sottotitolo" style={`--i:${iStoria + 1}`}>Good to know</h3>
-			<ul class="sapere">
-				{sala.sapere.map((x, j) => <li class="voce" style={`--i:${iStoria + 2 + j}`}>{x}</li>)}
-			</ul>
-		</div>
+	<div class="scena" data-scena>
+		<h2 class="nome" id={`${sala.id}-t`} data-nome-grande data-tono={sala.tonoNome}>{sala.breve}</h2>
+		<div class="slides">
+			<div class="slide slide--0" data-slide data-lato="dx" data-tono={tono(0)} style="--m:2">
+				<p class="claim el" style="--i:0">{sala.claim}</p>
+				<p class="corpo el" style="--i:1">{sala.testo}</p>
+			</div>
+			<div class="slide" data-slide data-lato="sx" data-tono={tono(1)} style={`--m:${mSt}`}>
+				<p class="kicker el" style="--i:0"><span class="kicker__luogo">{sala.breve} · </span>{storia.kicker}</p>
+				<h3 class="pt el" style="--i:1">{storia.titolo}</h3>
+				<p class="el" style="--i:2">{storia.testo}</p>
+			</div>
+			<div class="slide" data-slide data-lato="dx" data-tono={tono(2)} style={`--m:${mSa}`}>
+				<p class="kicker el" style="--i:0"><span class="kicker__luogo">{sala.breve} · </span>{sapere.kicker}</p>
+				<h3 class="pt el" style="--i:1">{sapere.titolo}</h3>
+				<ul class="punti">
+					{sapere.punti!.map((x, j) => <li class="el" style={`--i:${2 + j}`}>{x}</li>)}
+				</ul>
+			</div>
+			<div class="slide" data-slide data-lato="sx" data-tono={tono(3)} style={`--m:${mCh}`}>
+				<p class="kicker el" style="--i:0"><span class="kicker__luogo">{sala.breve} · </span>{chiusura.kicker}</p>
+				<h3 class="pt el" style="--i:1">{chiusura.titolo}</h3>
+				<p class="el" style="--i:2">{chiusura.testo}</p>
+				<dl class="fatti">
+					{
+						sala.fatti.map(([k, v], j) => (
+							<div class="el" style={`--i:${3 + j}`}>
+								<dt>{k}</dt>
+								<dd>{v}</dd>
+							</div>
+						))
+					}
+				</dl>
+				<a class="btn el" style={`--i:${3 + sala.fatti.length}`} href="#scrivici" data-luogo={sala.nome}>{sala.cta}</a>
+			</div>
 		</div>
 		{
 			sala.video && (
@@ -109,130 +111,187 @@ const nVoci = iStoria + 2 + sala.sapere.length;
 </script>
 
 <style is:global>
+	/* ———— pila (telefono, touch, reduced-motion): foto sticky a tutto schermo, le slide le scorrono sopra ———— */
 	.sala {
 		position: relative;
-		overflow: hidden;
-		--e: 1; /* senza JS tutto è già costruito */
+		overflow: clip; /* non hidden: sticky non deve trovare un contenitore di scorrimento */
+		--in: 1; /* senza JS tutto è già costruito */
+		--out: 0;
 	}
-	/* pila: pannello foto, poi il testo sulla tinta della sala */
-	.sala__in {
+	html.gl .sala {
+		background: transparent;
+	}
+	.sala .fondo {
+		position: sticky;
+		top: 0;
+		z-index: 0;
+		height: 100svh;
+		aspect-ratio: auto;
+		margin-bottom: -100svh;
+	}
+	/* il velo sotto le slide (pila): dal basso, scuro per le slide a testo chiaro, chiaro per quelle a testo scuro;
+	   il motore mette data-vt sulla sala secondo la slide in vista */
+	.sala .velo,
+	.sala .velo::after {
+		position: absolute;
+		inset: 0;
+	}
+	.sala .velo {
+		background: linear-gradient(
+			to top,
+			color-mix(in srgb, var(--fondo) 80%, transparent) 0%,
+			color-mix(in srgb, var(--fondo) 58%, transparent) 45%,
+			color-mix(in srgb, var(--fondo) 32%, transparent) 78%,
+			color-mix(in srgb, var(--fondo) 16%, transparent) 100%
+		);
+	}
+	.sala .velo::after {
+		content: '';
+		background: linear-gradient(
+			to top,
+			color-mix(in srgb, var(--marmo) 72%, transparent) 0%,
+			color-mix(in srgb, var(--marmo) 52%, transparent) 45%,
+			color-mix(in srgb, var(--marmo) 28%, transparent) 78%,
+			color-mix(in srgb, var(--marmo) 12%, transparent) 100%
+		);
+		opacity: 0;
+		transition: opacity 0.5s;
+	}
+	.sala[data-vt='scuro'] .velo::after {
+		opacity: 1;
+	}
+	.scena {
 		position: relative;
 		z-index: 2;
-		display: grid;
-		gap: 36px;
-		padding: 44px var(--gutter) 88px;
 	}
-	/* il nome del luogo in corsivo: nella pila chiude la sala, nel corridoio sta sotto il testo */
-	.sala::after {
-		content: attr(data-nome);
-		content: attr(data-nome) / '';
-		display: block;
-		position: relative;
-		z-index: 1;
-		padding: 0 var(--gutter) 14px;
-		margin-top: -12px;
-		font-family: var(--script);
-		font-size: clamp(6rem, 25vw, 13rem);
-		line-height: 1.05;
-		color: color-mix(in srgb, var(--testo) 42%, transparent);
-		white-space: nowrap;
-		pointer-events: none;
-		user-select: none;
-	}
-	.sala__filo {
+	.nome {
 		position: absolute;
 		z-index: 1;
+		top: calc(var(--fascia-h) + var(--nav-h) + 5svh);
 		left: 0;
 		right: 0;
-		bottom: 8px;
-		height: 1.5px;
-		background: var(--filo-c);
-		transform-origin: 0 50%;
-		transform: scaleX(var(--draw, 1));
-		opacity: 0.8;
+		text-align: center;
+		font: 400 min(30vw, 19svh) / 1.1 var(--script);
+		white-space: nowrap;
+		color: var(--marmo);
+		pointer-events: none;
+		opacity: var(--vn, 1);
 	}
-	.sala__blocchi {
-		display: grid;
-		gap: 40px;
-		align-items: start;
-	}
-	.sala__storia {
-		display: grid;
-		gap: 14px;
-		align-content: start;
-		max-width: 30rem;
-		font-size: 0.95rem;
-	}
-	.sala__sottotitolo {
-		margin: 6px 0 0;
-		font: 600 0.95rem/1.3 var(--sans);
+	/* ogni slide ha il colore di testo che regge sulla sua foto: chiaro (bianco) o scuro (inchiostro); il titolo lo segue */
+	.slide {
 		color: var(--testo);
 	}
-	.sapere {
+	.slide {
+		--titolo: var(--inchiostro);
+	}
+	.slide[data-tono='chiaro'] {
+		--testo: var(--marmo);
+		--sotto: color-mix(in srgb, var(--marmo) 74%, transparent);
+		--filo-c: var(--marmo);
+	}
+	.slide[data-tono='scuro'] {
+		--testo: var(--inchiostro);
+		--sotto: #4a3a40;
+		--filo-c: var(--inchiostro);
+	}
+	/* solo i titoli e i claim (Great Vibes, neri) hanno un bagliore bianco che li stacca da qualunque foto */
+	.pt,
+	.claim {
+		color: var(--inchiostro);
+		text-shadow: 0 0 10px rgb(255 255 255 / 0.55), 0 0 2px rgb(255 255 255 / 0.5);
+	}
+	.slide {
+		min-height: 86svh;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		align-items: flex-start;
+		gap: 14px;
+		padding: 0 var(--gutter) 11svh;
+		max-width: 40rem;
+	}
+	.slide--0 {
+		min-height: 100svh;
+		padding-bottom: 13svh;
+	}
+
+	.claim {
+		font-family: var(--script);
+		font-size: clamp(2.2rem, 9.5vw, 2.9rem);
+		line-height: 1.12;
+		padding-right: 0.2em;
+		text-wrap: balance;
+	}
+	.kicker {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		font: 600 0.72rem/1 var(--sans);
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: color-mix(in srgb, var(--testo) 84%, transparent);
+	}
+	.kicker::before {
+		content: '';
+		width: 28px;
+		height: 1.5px;
+		background: var(--inchiostro);
+		transform-origin: 0 50%;
+		transform: scaleX(var(--w, 1));
+	}
+	.kicker__luogo {
+		display: none; /* nel corridoio il nome è già in basso; in pila ricorda dove sei */
+	}
+	.pt {
+		font: 400 clamp(2.5rem, 11vw, 3.4rem) / 1.12 var(--script);
+		color: var(--titolo);
+		margin-top: 8px; /* gli svolazzi delle maiuscole salgono: non devono toccare l'etichetta */
+		padding-right: 0.2em; /* le aste di Great Vibes sporgono */
+		text-wrap: balance;
+	}
+
+	.slide p:not(.kicker):not(.claim),
+	.punti {
+		font-size: clamp(0.96rem, 1.05vw, 1.05rem);
+		line-height: 1.55;
+		color: color-mix(in srgb, var(--testo) 90%, transparent);
+		text-wrap: pretty;
+	}
+	.punti {
 		margin: 0;
 		padding: 0;
 		list-style: none;
 		display: grid;
 		gap: 10px;
 	}
-	.sapere li {
+	.punti li {
 		position: relative;
 		padding-left: 18px;
 	}
-	.sapere li::before {
+	.punti li::before {
 		content: '';
 		position: absolute;
 		left: 0;
-		top: 0.7em;
+		top: 0.78em;
 		width: 8px;
 		height: 1.5px;
 		background: var(--filo-c);
 	}
-	.sala__testo {
-		display: grid;
-		gap: 22px;
-		justify-items: start;
-		align-content: center;
-		max-width: 30rem;
-	}
-	.sala__testo .titolo {
-		font-size: clamp(2.4rem, 4.8vw, 4.6rem);
-	}
-
-	/* il testo si costruisce: parole che salgono da una maschera, poi le altre voci */
-	.parola {
-		display: inline-block;
-		overflow: hidden;
-		vertical-align: top;
-		padding-bottom: 0.16em;
-		margin-bottom: -0.16em;
-		--w: clamp(0, calc(var(--e) * var(--n) - var(--i) * 0.85), 1);
-	}
-	.parola > span {
-		display: inline-block;
-		transform: translateY(calc((1 - var(--w)) * 112%));
-	}
-	.voce {
-		--w: clamp(0, calc(var(--e) * var(--n) - var(--i) * 0.85), 1);
-		opacity: var(--w);
-		transform: translateY(calc((1 - var(--w)) * 22px));
-	}
-
 	.fatti {
 		display: grid;
 		width: min(100%, 24rem);
-		margin: 4px 0 8px;
+		margin: 2px 0 8px;
 	}
 	.fatti div {
 		display: flex;
 		justify-content: space-between;
 		gap: 20px;
-		padding: 10px 0;
-		border-top: 1px solid color-mix(in srgb, var(--testo) 30%, transparent);
+		padding: 9px 0;
+		border-top: 1px solid color-mix(in srgb, var(--testo) 34%, transparent);
 		font-size: 0.95rem;
 	}
 	.fatti div:last-child {
-		border-bottom: 1px solid color-mix(in srgb, var(--testo) 30%, transparent);
+		border-bottom: 1px solid color-mix(in srgb, var(--testo) 34%, transparent);
 	}
 	.fatti dt {
 		color: var(--sotto);
@@ -243,11 +302,37 @@ const nVoci = iStoria + 2 + sala.sapere.length;
 		font-weight: 500;
 	}
 
-	/* il video sta dentro una serratura (maschera): un'altra materia */
+	/* ogni voce compare a scalare con --in e se ne va con --out */
+	.slide .el {
+		--w: clamp(0, calc(var(--in) * var(--m) - var(--i) * 0.8), 1);
+		opacity: calc(var(--w) * (1 - var(--out)));
+		transform: translate3d(0, calc((1 - var(--w)) * 22px - var(--out) * 14px), 0);
+	}
+	/* il titolo in Great Vibes si scrive: un'onda da sinistra (nessuna maschera che taglierebbe le aste) */
+	.slide .pt.el {
+		clip-path: inset(-30% calc((1 - var(--w)) * 100%) -30% -4%);
+	}
+	.slide .kicker.el {
+		transform: translate3d(calc((1 - var(--w)) * -14px), 0, 0);
+	}
+
+	.sala__filo {
+		position: absolute;
+		z-index: 3;
+		left: 0;
+		right: 0;
+		bottom: 8px;
+		height: 1.5px;
+		background: var(--filo-c);
+		transform-origin: 0 50%;
+		transform: scaleX(var(--draw, 1));
+		opacity: 0.8;
+	}
+
+	/* il video nella serratura vive solo nel corridoio */
 	.chiave {
 		display: none;
 		aspect-ratio: 5 / 8;
-		width: min(100%, 220px);
 		background: var(--fantasma);
 		-webkit-mask: var(--serratura) center / 100% 100% no-repeat;
 		mask: var(--serratura) center / 100% 100% no-repeat;
@@ -262,141 +347,173 @@ const nVoci = iStoria + 2 + sala.sapere.length;
 
 	/* didascalia della foto corrente e segmenti */
 	.didascalia {
-		position: relative;
+		position: sticky;
+		bottom: 14px;
 		z-index: 3;
 		display: flex;
 		flex-direction: column;
-		gap: 10px;
-		padding: 0 var(--gutter) 28px;
-		font-size: 0.86rem;
+		gap: 8px;
+		margin-top: -44px;
+		padding: 0 var(--gutter) 0;
+		font-size: 0.82rem;
 		color: var(--testo);
+		pointer-events: none;
 	}
 	.didascalia__testo {
+		white-space: nowrap; /* una riga sola */
 		transition: opacity 0.35s;
-	}
-	/* il cambio con dissolvenza solo nel corridoio; in pila la didascalia cambia di scatto */
-	html.h .didascalia.cambia .didascalia__testo {
-		opacity: 0;
+		text-shadow: 0 0 14px rgb(0 0 0 / 0.55), 0 1px 3px rgb(0 0 0 / 0.4);
 	}
 	.didascalia__segmenti {
 		display: flex;
 		gap: 6px;
-		width: min(100%, 12rem);
+		width: min(100%, 9rem);
 	}
 	.didascalia__segmenti span {
 		flex: 1;
 		height: 2px;
-		background: color-mix(in srgb, var(--testo) 28%, transparent);
+		background: color-mix(in srgb, var(--testo) 30%, transparent);
 		transition: background-color 0.4s;
 	}
 	.didascalia__segmenti span.attivo {
 		background: var(--testo);
 	}
-
-	@media (min-width: 820px) {
-		.sala__in {
-			grid-template-columns: minmax(0, 1fr);
-			align-items: center;
-		}
-		.chiave {
-			display: block;
-			justify-self: end;
-		}
-		.sala__blocchi {
-			grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-			column-gap: clamp(24px, 4vw, 56px);
-		}
-		.sala[data-disp='b'] .sala__blocchi {
-			grid-column: 1;
-			grid-row: 1;
-		}
-		.sala[data-disp='b'] .chiave {
-			justify-self: start;
-		}
+	html.h .didascalia.cambia .didascalia__testo {
+		opacity: 0;
+	}
+	/* in pila le slide scorrono sotto la didascalia e si sovrapporrebbero: resta solo nel corridoio */
+	html:not(.h) .didascalia {
+		display: none;
 	}
 
-	/* corridoio: sfondo a tutta sala, testo sopra, didascalia che segue lo schermo */
+	/* la didascalia sta su qualunque foto: sempre chiara, con ombra */
+	.didascalia {
+		color: #f4f1f1;
+	}
+	.nome[data-tono='scuro'] {
+		color: var(--inchiostro);
+	}
+
+	/* ———— corridoio: sfondo a tutta sala, scena fissa sullo schermo, slide che si danno il cambio ———— */
 	html.h .sala {
 		flex: none;
-		width: 142vw;
+		width: 220vw;
 		height: 100svh;
+		overflow: hidden;
 	}
-	html.h.gl [data-con-foto] {
-		background: transparent;
-	}
-	html.h .sala__in {
+	html.h .sala .fondo {
 		position: absolute;
 		inset: 0;
-		display: flex;
-		align-items: center;
-		padding: calc(var(--fascia-h) + var(--nav-h) + 2svh) 0 9svh 8vw;
+		height: auto;
+		margin: 0;
 	}
-	html.h .sala[data-disp='b'] .sala__in {
-		justify-content: flex-end;
-		padding: calc(var(--fascia-h) + var(--nav-h) + 2svh) 8vw 9svh 0;
+	html.h .sala .velo::after {
+		display: none;
 	}
-	html.h .sala__blocchi {
-		flex: none;
-		display: flex;
+	html.h .scena {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100%;
+		display: grid;
 		align-items: center;
-		gap: 3.2vw;
+		padding: calc(var(--fascia-h) + var(--nav-h) + 1svh) 8vw 28svh; /* sotto resta il posto del nome */
 		transform: translate3d(var(--tx, 0px), 0, 0);
-		will-change: transform;
 	}
-	html.h .sala[data-disp='b'] .sala__blocchi {
-		flex-direction: row-reverse;
+	html.h .slides {
+		display: grid;
+		width: 100%;
 	}
-	html.h .sala__testo {
-		flex: none;
-		width: clamp(300px, 28vw, 470px);
+	html.h .slide {
+		grid-area: 1 / 1;
+		width: clamp(320px, 33vw, 520px);
+		justify-self: start;
+		min-height: 0;
+		max-width: none;
+		padding: 0;
+		justify-content: center;
+		align-self: center;
+		gap: 16px;
 	}
-	html.h .sala__storia {
-		flex: none;
-		width: clamp(250px, 22vw, 360px);
-		font-size: clamp(0.82rem, 0.95vw, 0.95rem);
-		align-content: center;
+	html.h .slide[data-lato='dx'] {
+		justify-self: end;
+	}
+	html.h .slide--0 {
+		min-height: 0;
+	}
+	html.h .claim {
+		font-size: clamp(2.4rem, 3.3vw, 3.5rem);
+	}
+	html.h .pt {
+		font-size: clamp(2.7rem, 3.7vw, 3.9rem);
+	}
+	/* il nome: nasce grande a sinistra, al centro; scorrendo scende dritto e si posa in basso a sinistra, grande e trasparente
+	   (la posizione di partenza e l'opacità le scrive il motore) */
+	html.h .nome {
+		left: 6vw;
+		right: auto;
+		top: auto;
+		bottom: -0.1em;
+		text-align: left;
+		font-size: min(23svh, 15.5vw);
+		line-height: 1.1;
+		transform-origin: 0 50%; /* resta sulla stessa linea di sinistra: scende dritto */
+		padding: 0 0.14em;
+		clip-path: inset(-40% calc((1 - var(--wn, 1)) * 112% - 12%) -40% -12%);
 	}
 	html.h .chiave {
 		display: block;
 		position: absolute;
 		top: 50%;
-		left: 47%;
-		margin-top: -14svh;
+		left: 50%;
+		margin: -17svh 0 0 calc(clamp(150px, 13vw, 230px) / -2);
 		width: clamp(150px, 13vw, 230px);
-		transform: translate3d(var(--tx, 0px), 0, 0);
-	}
-	html.h .sala::after {
-		position: absolute;
-		left: 6vw;
-		bottom: -0.06em;
-		margin: 0;
-		padding: 0;
-		font-size: min(25svh, 17vw);
-		line-height: 1;
-		transform: translate3d(var(--tx, 0px), 0, 0);
-	}
-	html.h .sala[data-disp='b']::after {
-		left: auto;
-		right: 6vw;
+		opacity: var(--vk, 1);
 	}
 	html.h .sala__filo {
 		bottom: 5svh;
 	}
+	/* il filo in fondo alla sala segue l'alternanza bianco/nero della navbar */
+	[data-tono-nav='chiaro'] > .sala__filo {
+		background: var(--marmo);
+	}
+	[data-tono-nav='scuro'] > .sala__filo {
+		background: var(--inchiostro);
+	}
 	html.h .didascalia {
 		position: absolute;
 		left: 0;
+		z-index: 4;
 		bottom: 8svh;
+		margin: 0;
 		padding: 0;
-		width: 14rem;
+		width: max-content;
+		max-width: 90vw;
 		transform: translate3d(var(--cx, 0px), 0, 0);
 		align-items: flex-start;
-		color: var(--testo);
 	}
 	html.h .didascalia__testo {
 		font-size: 0.95rem;
-		text-shadow: 0 0 16px rgb(0 0 0 / 0.6), 0 1px 3px rgb(0 0 0 / 0.45);
 	}
 	html.h .didascalia__segmenti span {
 		box-shadow: 0 0 8px rgb(0 0 0 / 0.35);
+	}
+	html.h .slide[inert] {
+		pointer-events: none;
+	}
+
+	/* pila su schermi larghi (tablet): le slide restano una colonna a sinistra */
+	@media (min-width: 820px) {
+		html:not(.h) .slide {
+			padding-left: max(var(--gutter), 8vw);
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.slide .el,
+		.slide .pt.el,
+		.nome {
+			transition: none;
+		}
 	}
 </style>

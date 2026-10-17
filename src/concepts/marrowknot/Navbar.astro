@@ -1,5 +1,6 @@
 ---
-// Navbar: marchio, le cinque sale, richiesta. Prende la tinta della sala in cui ci si trova (data-tinta, lo script del motore).
+// Navbar: marchio, Home, le cinque sale, richiesta. Prende la tinta della sala in cui ci si trova (data-tinta) e, nel corridoio,
+// il tono chiaro o scuro adatto alle sue foto (data-tono): lo scrive il motore.
 // Su telefono il menù è un arco di marmo che sale dal basso (.menu sta FUORI dall'header).
 import Simbolo from './Simbolo.astro';
 import { sale } from './dati';
@@ -11,6 +12,7 @@ import { sale } from './dati';
 		<span>Marrow &amp; Knot</span>
 	</a>
 	<nav class="nav__sale" aria-label="Places">
+		<a href="#ingresso" data-vai="ingresso">Home</a>
 		{sale.map((s) => <a href={`#${s.id}`} data-vai={s.id}>{s.breve}</a>)}
 	</nav>
 	<a class="btn nav__cta" href="#scrivici" data-vai="scrivici">Plan my wedding</a>
@@ -26,6 +28,7 @@ import { sale } from './dati';
 		<button class="menu__x" type="button" data-chiudi aria-label="Close menu"><span aria-hidden="true"></span></button>
 	</div>
 	<nav class="menu__voci" aria-label="Places">
+		<a href="#ingresso" data-vai="ingresso">Home</a>
 		{sale.map((s) => <a href={`#${s.id}`} data-vai={s.id}>{s.nome}</a>)}
 	</nav>
 	<a class="btn btn--pieno menu__cta" href="#scrivici" data-vai="scrivici">Plan my wedding</a>
@@ -133,8 +136,21 @@ import { sale } from './dati';
 		-webkit-backdrop-filter: none;
 		backdrop-filter: none;
 	}
-	html.h .nav[data-tinta='marmo'] {
-		text-shadow: 0 0 10px rgb(230 236 238 / 0.95), 0 0 2px rgb(230 236 238 / 0.8);
+	/* corridoio: logo e voci seguono il tono della fascia alta delle foto della sala (data-tono, lo scrive il motore) */
+	html.h .nav[data-tono='scuro'] {
+		--testo: var(--inchiostro);
+		--fondo: var(--marmo);
+		text-shadow: 0 0 10px rgb(230 236 238 / 0.55);
+	}
+	html.h .nav[data-tono='chiaro'] {
+		--testo: var(--marmo);
+		--fondo: var(--pompeiano);
+	}
+	/* dopo il corridoio (scroll verticale su desktop): fondo nero e testo bianco; lo imposta il motore (data-solido) */
+	html.h .nav[data-solido] {
+		--testo: var(--marmo);
+		background: var(--inchiostro);
+		text-shadow: none;
 	}
 	@media (min-width: 900px) {
 		.nav__sale {

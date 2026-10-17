@@ -3,7 +3,7 @@
 import { luoghi } from './dati';
 ---
 
-<section class="chiusura" id="scrivici" data-sala data-tinta="vino" aria-labelledby="chiusura-t">
+<section class="chiusura" id="scrivici" data-sala data-tinta="vino" data-tono-nav="chiaro" aria-labelledby="chiusura-t">
 	<div class="chiusura__in">
 		<div class="chiusura__nodo">
 			<svg viewBox="-190 -190 380 380" data-nodo role="img" aria-label="A knot that tightens as you fill in the form">
@@ -18,29 +18,29 @@ import { luoghi } from './dati';
 				Tell us where, roughly when, and who is getting married. A planner writes back within two working days.
 			</p>
 			<form class="modulo" novalidate data-modulo>
-				<div class="campo">
-					<label for="mk-nomi">Your names</label>
-					<input id="mk-nomi" name="nomi" type="text" autocomplete="name" required aria-describedby="mk-nomi-e" />
-					<p class="campo__errore" id="mk-nomi-e" hidden>Add at least one name.</p>
-				</div>
-				<div class="campo">
-					<label for="mk-email">Email</label>
-					<input id="mk-email" name="email" type="email" autocomplete="email" required aria-describedby="mk-email-e" />
-					<p class="campo__errore" id="mk-email-e" hidden>That email looks incomplete. Try name@example.com.</p>
-				</div>
-				<div class="campo">
-					<label for="mk-luogo">Where</label>
-					<select id="mk-luogo" name="luogo">
-						{luoghi.map((l) => <option value={l} selected={l === 'Not sure yet'}>{l}</option>)}
-					</select>
-				</div>
-				<div class="campo">
-					<label for="mk-quando">When</label>
-					<input id="mk-quando" name="quando" type="text" placeholder="A month, a season or a date" autocomplete="off" required aria-describedby="mk-quando-e" />
-					<p class="campo__errore" id="mk-quando-e" hidden>Give us a month or a season, even a rough one.</p>
-				</div>
-				<button class="btn btn--pieno" type="submit">Send the request</button>
-			</form>
+					<div class="campo">
+						<input id="mk-nomi" name="nomi" type="text" autocomplete="name" placeholder="Anna &amp; Luca" required aria-describedby="mk-nomi-e" />
+						<label for="mk-nomi">Your names</label>
+						<p class="campo__errore" id="mk-nomi-e" hidden>Add at least one name.</p>
+					</div>
+					<div class="campo">
+						<input id="mk-email" name="email" type="email" autocomplete="email" placeholder="name@example.com" required aria-describedby="mk-email-e" />
+						<label for="mk-email">Email</label>
+						<p class="campo__errore" id="mk-email-e" hidden>That email looks incomplete. Try name@example.com.</p>
+					</div>
+					<div class="campo campo--sel">
+						<select id="mk-luogo" name="luogo">
+							{luoghi.map((l) => <option value={l} selected={l === 'Not sure yet'}>{l}</option>)}
+						</select>
+						<label for="mk-luogo">Where</label>
+					</div>
+					<div class="campo">
+						<input id="mk-quando" name="quando" type="text" placeholder="A month, a season or a date" autocomplete="off" required aria-describedby="mk-quando-e" />
+						<label for="mk-quando">When</label>
+						<p class="campo__errore" id="mk-quando-e" hidden>Give us a month or a season, even a rough one.</p>
+					</div>
+					<button class="btn btn--pieno" type="submit">Send the request</button>
+				</form>
 			<p class="modulo__esito" data-esito role="status" hidden></p>
 			<p class="chiusura__nota">Demo: nothing is sent and no one will write back.</p>
 		</div>
@@ -71,7 +71,7 @@ import { luoghi } from './dati';
 	}
 	.chiusura__testo {
 		display: grid;
-		gap: 22px;
+		gap: 18px;
 		justify-items: start;
 		max-width: 34rem;
 	}
@@ -80,16 +80,37 @@ import { luoghi } from './dati';
 	}
 	.modulo {
 		display: grid;
-		gap: 12px;
+		gap: 10px 28px;
 		width: 100%;
 	}
+	/* l'etichetta sta sulla riga del campo e sale al fuoco o quando c'è testo: il modulo resta basso */
 	.campo {
+		position: relative;
 		display: grid;
-		gap: 6px;
+		padding-top: 16px;
 	}
 	.campo label {
-		font-size: 0.92rem;
+		position: absolute;
+		left: 0;
+		top: 25px;
+		font-size: 1rem;
+		line-height: 1.2;
 		color: var(--sotto);
+		transform-origin: 0 0;
+		pointer-events: none;
+		transition:
+			transform 0.22s cubic-bezier(0.23, 1, 0.32, 1),
+			color 0.22s;
+	}
+	.campo input:focus + label,
+	.campo input:not(:placeholder-shown) + label,
+	.campo input:-webkit-autofill + label,
+	.campo--sel label {
+		transform: translateY(-21px) scale(0.78);
+	}
+	.campo input:focus + label,
+	.campo select:focus + label {
+		color: var(--filo-c);
 	}
 	.campo input,
 	.campo select {
@@ -99,8 +120,8 @@ import { luoghi } from './dati';
 		border: 0;
 		border-bottom: 1.5px solid color-mix(in srgb, var(--testo) 45%, transparent);
 		border-radius: 0;
-		padding: 10px 0 11px;
-		min-height: 42px;
+		padding: 7px 0 8px;
+		min-height: 40px;
 		width: 100%;
 		transition: border-color 0.25s;
 	}
@@ -112,10 +133,16 @@ import { luoghi } from './dati';
 		background-repeat: no-repeat;
 	}
 	.campo select option {
-		color: #1c0710;
+		color: var(--inchiostro);
 	}
+	/* il suggerimento si vede solo quando il campo è attivo: a riposo c'è l'etichetta */
 	.campo input::placeholder {
 		color: color-mix(in srgb, var(--testo) 50%, transparent);
+		opacity: 0;
+		transition: opacity 0.2s;
+	}
+	.campo input:focus::placeholder {
+		opacity: 1;
 	}
 	.campo input:focus,
 	.campo select:focus {
@@ -127,11 +154,21 @@ import { luoghi } from './dati';
 	}
 	.campo__errore {
 		color: #ffb3bf;
-		font-size: 0.9rem;
+		font-size: 0.85rem;
+		line-height: 1.3;
+		margin-top: 4px;
 	}
 	.modulo .btn {
 		justify-self: start;
-		margin-top: 8px;
+		margin-top: 6px;
+	}
+	@media (min-width: 560px) {
+		.modulo {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+		.modulo .btn {
+			grid-column: 1 / -1;
+		}
 	}
 	.modulo__esito {
 		font-family: var(--serif);
@@ -153,13 +190,20 @@ import { luoghi } from './dati';
 		flex: none;
 		width: 100vw;
 		height: 100svh;
-		padding: calc(var(--fascia-h) + var(--nav-h) + 1svh) 0 12svh 6vw;
+		padding: calc(var(--fascia-h) + var(--nav-h) + 1svh) 0 9svh 6vw;
 	}
 	html.h .chiusura__in {
 		height: 100%;
 		width: 100%;
 		padding-right: 8vw;
-		grid-template-columns: minmax(0, 1fr) minmax(0, 32rem);
+		grid-template-columns: minmax(0, 1fr) minmax(0, 38rem);
+	}
+	html.h .chiusura__testo {
+		max-width: 38rem;
+		gap: clamp(10px, 2svh, 18px);
+	}
+	html.h .chiusura__testo .titolo {
+		font-size: min(5.2vw, 10svh);
 	}
 	html.h .chiusura__nodo {
 		width: min(100%, 76svh);

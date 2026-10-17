@@ -34,8 +34,10 @@ uniform vec2 uMouse;
 uniform float uHover;
 uniform float uDrift;
 uniform float uVeil;
-uniform float uSide;
-uniform vec2 uRoom;
+uniform vec2 uSide; // quanto pesa il velo a sinistra e a destra (dipende da dove stanno le slide visibili)
+uniform vec3 uColL; // colore del velo a sinistra e a destra: scuro sotto il testo chiaro, chiaro sotto il testo scuro
+uniform vec3 uColR;
+uniform vec2 uRoom; // bordo sinistro e destro della sala sullo schermo
 
 float hash(float n) { return fract(sin(n * 127.1 + 11.7) * 43758.5453); }
 
@@ -61,11 +63,13 @@ void main() {
 	s /= 1.08;
 	vec3 col = texture2D(uTex, (sq - 0.5) * s + 0.5 + vec2(uDrift * 0.03, uDrift * 0.035)).rgb;
 
-	// velo di colore sotto il testo (nelle coordinate della sala)
+	// velo di colore dal lato del testo: leggero, la foto resta la protagonista (misure in schermi dal bordo della sala)
 	if (uVeil > 0.0) {
-		float rx = uSide > 0.5 ? (uRoom.x - vPx.x) / uRoom.y : (vPx.x - uRoom.x) / uRoom.y;
-		float a = 0.22 + 0.72 * (1.0 - smoothstep(0.38, 0.7, rx));
-		col = mix(col, uColor, a * uVeil);
+		float xl = (vPx.x - uRoom.x) / uRes.x;
+		float xr = (uRoom.y - vPx.x) / uRes.x;
+		float aL = 0.5 * uSide.x * (1.0 - smoothstep(0.24, 0.58, xl));
+		float aR = 0.5 * uSide.y * (1.0 - smoothstep(0.24, 0.58, xr));
+		col = mix(mix(col, uColL, aL), uColR, aR);
 	}
 
 	// tessitura
@@ -105,6 +109,10 @@ export interface InfoSala {
 	el: HTMLElement;
 	r: DOMRect;
 	u: number; // 0..1 avanzamento nella sala
+	/** quanto vuole essere tessuta ogni foto dopo la prima (0..1), deciso dal motore insieme alle slide */
+	w?: number[];
+	/** velo a sinistra e a destra: peso (0..1) e quanto è chiaro (0 = scuro, per il testo chiaro; 1 = chiaro, per il testo scuro) */
+	vel?: { w: [number, number]; chiaro: [number, number] };
 }
 
 interface DatoScatto {
@@ -133,8 +141,9 @@ interface SalaGL {
 	solidProg: Program;
 	colore: [number, number, number];
 	hero: boolean;
-	lato: number;
 }
+
+const CHIARO = [0.902, 0.925, 0.933]; // il marmo (#e6ecee), colore del velo sotto il testo scuro
 
 const lim = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const smooth = (a: number, b: number, x: number) => {
@@ -216,7 +225,9 @@ export class Arazzo {
 				uHover: { value: 0 },
 				uDrift: { value: 0 },
 				uVeil: { value: 0 },
-				uSide: { value: 0 },
+				uSide: { value: [0, 0] },
+					uColL: { value: colore },
+					uColR: { value: colore },
 				uRoom: { value: [0, 1] },
 			},
 		});
@@ -235,7 +246,6 @@ export class Arazzo {
 			fondo,
 			colore,
 			hero: el.hasAttribute('data-hero'),
-			lato: el.dataset.disp === 'b' ? 1 : 0,
 			solidProg,
 			solid: mk(solidProg),
 			scatti: dati.map((dato) => {
@@ -304,7 +314,7 @@ export class Arazzo {
 			const n = sala.scatti.length;
 			let w0 = this.orizz ? smooth(1.04, 0.5, r.left / W) : Math.min(smooth(1.0, 0.7, pr.top / H), smooth(0.0, 0.3, pr.bottom / H));
 			if (sala.hero) w0 = Math.min(w0, intro);
-			const bersagli = sala.scatti.map((_, k) => (k === 0 ? w0 : smooth(0.12, 0.88, inf.u * (n - 1) - (k - 1))));
+			const bersagli = sala.scatti.map((_, k) => (k === 0 ? w0 : (inf.w?.[k] ?? smooth(0.12, 0.88, inf.u * (n - 1) - (k - 1)))));
 			sala.scatti.forEach((s, k) => {
 				s.weave += (bersagli[k] - s.weave) * 0.16;
 				if (Math.abs(bersagli[k] - s.weave) < 0.0008) s.weave = bersagli[k];
@@ -316,9 +326,12 @@ export class Arazzo {
 				u.uRes.value = [W, H];
 				u.uCell.value = 18;
 				// il velo segue il testo, che resta fermo sullo schermo (vedi --tx nel motore)
-				const ancora = sala.hero ? r.left : sala.lato ? Math.min(r.right, W) : Math.max(r.left, 0);
-				u.uRoom.value = [ancora, r.width];
-				u.uSide.value = sala.lato;
+				u.uRoom.value = [sala.hero ? r.left : Math.max(r.left, 0), Math.min(r.right, W)];
+				const v = inf.vel;
+				u.uSide.value = v ? v.w : [1, 0];
+				const mescola = (t: number) => sala.colore.map((c, i) => c + (CHIARO[i] - c) * t);
+				u.uColL.value = mescola(v ? v.chiaro[0] : 0);
+				u.uColR.value = mescola(v ? v.chiaro[1] : 0);
 				u.uVeil.value = this.orizz ? 1 : 0;
 				u.uDrift.value = (inf.u - 0.5) * 2;
 			};

@@ -4,12 +4,12 @@ import Fondo from './Fondo.astro';
 import { ingresso } from './dati';
 ---
 
-<section class="ingresso" id="ingresso" data-sala data-con-foto data-hero data-tinta="pompeiano" data-disp="a" data-nome="" aria-labelledby="ingresso-t">
+<section class="ingresso" id="ingresso" data-sala data-con-foto data-hero data-tinta="pompeiano" data-tono-nav="chiaro" data-disp="a" data-nome="" aria-labelledby="ingresso-t">
 	<Fondo scatti={[ingresso]} eager />
 	<span class="sala__filo" aria-hidden="true"></span>
 	<div class="ingresso__in">
 		<div class="ingresso__testo">
-			<h1 class="titolo" id="ingresso-t">Start with the room, not the checklist.</h1>
+			<h1 class="titolo ingresso__h1" id="ingresso-t">Start with the room, not the checklist.</h1>
 			<p class="corpo">
 				Marrow &amp; Knot plans weddings in Italy: five places we know by heart, one team from the first visit to the last dance.
 			</p>
@@ -52,9 +52,14 @@ import { ingresso } from './dati';
 		gap: 26px;
 		justify-items: start;
 	}
-	.ingresso__testo .titolo {
-		font-size: clamp(2.8rem, 8.2vw, 7.2rem);
-		max-width: 11ch;
+	/* il titolone di impatto è in Great Vibes; le aste sporgono, quindi un po' di respiro a destra */
+	.ingresso__testo .ingresso__h1 {
+		font-family: var(--script);
+		color: var(--inchiostro); /* nero: stacca dal resto del testo, che è bianco */
+		font-size: clamp(3.4rem, 15vw, 7rem);
+		line-height: 1.02;
+		letter-spacing: 0;
+		padding-right: 0.15em;
 	}
 	.ingresso__azioni {
 		display: flex;
@@ -66,6 +71,14 @@ import { ingresso } from './dati';
 		display: none;
 	}
 
+	/* con WebGL l'ingresso è trasparente (la foto sta sulla tela dietro): in pila il testo tiene il suo colore */
+	html.gl .ingresso {
+		background: transparent;
+	}
+	html.gl:not(.h) .ingresso__in,
+	html.gl:not(.h) .ingresso .didascalia {
+		background: var(--fondo);
+	}
 	html.h .ingresso {
 		display: block;
 		flex: none;
@@ -82,8 +95,8 @@ import { ingresso } from './dati';
 	html.h .ingresso__testo {
 		width: min(52vw, 820px);
 	}
-	html.h .ingresso__testo .titolo {
-		font-size: min(8.4vw, 17svh);
+	html.h .ingresso__testo .ingresso__h1 {
+		font-size: min(7.6vw, 16svh);
 	}
 	html.h .ingresso__invito {
 		display: block;
@@ -104,7 +117,7 @@ import { ingresso } from './dati';
 		display: block;
 		width: 96px;
 		height: 1.5px;
-		background: var(--filo-c);
+		background: var(--marmo);
 		position: relative;
 		transform-origin: 0 50%;
 		animation: freccia 2.4s cubic-bezier(0.6, 0, 0.2, 1) infinite;
@@ -116,8 +129,8 @@ import { ingresso } from './dati';
 		top: -4px;
 		width: 9px;
 		height: 9px;
-		border-top: 1.5px solid var(--filo-c);
-		border-right: 1.5px solid var(--filo-c);
+		border-top: 1.5px solid var(--marmo);
+		border-right: 1.5px solid var(--marmo);
 		transform: rotate(45deg);
 	}
 	@keyframes freccia {
