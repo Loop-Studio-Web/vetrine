@@ -274,7 +274,8 @@ export class Arazzo {
 			s.prog.uniforms.uImg.value = [img.naturalWidth, img.naturalHeight];
 			s.stato = 'pronto';
 		};
-		img.src = this.orizz ? s.dato.g : innerWidth < 900 && s.dato.v ? s.dato.v : s.dato.m;
+		// telefono girato (corridoio senza mouse): la misura media basta e pesa meno
+		img.src = this.orizz ? (this.fine ? s.dato.g : s.dato.m) : innerWidth < 900 && s.dato.v ? s.dato.v : s.dato.m;
 	}
 
 	private rilascia(s: Scatto) {

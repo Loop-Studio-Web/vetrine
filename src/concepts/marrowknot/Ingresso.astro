@@ -10,6 +10,13 @@ import { ingresso } from './dati';
 	<div class="ingresso__in">
 		<div class="ingresso__testo">
 			<h1 class="titolo ingresso__h1" id="ingresso-t">Start with the room, not the checklist.</h1>
+				<p class="ingresso__gira">
+					<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+						<rect x="7" y="2.5" width="10" height="19" rx="2" fill="none" stroke="currentColor" stroke-width="1.5" />
+						<path d="M10.5 18.5h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+					</svg>
+					<span>Turn your phone sideways to walk the rooms</span>
+				</p>
 			<p class="corpo">
 				Marrow &amp; Knot plans weddings in Italy: five places we know by heart, one team from the first visit to the last dance.
 			</p>
@@ -123,6 +130,44 @@ import { ingresso } from './dati';
 	}
 	.ingresso__invito {
 		display: none;
+	}
+
+	/* invito a girare il telefono: solo in verticale, su touch e a schermo stretto (e se il movimento è consentito:
+	   con reduced-motion il corridoio non esiste). L'icona si inclina, resta un attimo di lato e torna. */
+	.ingresso__gira {
+		display: none;
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		html.inv:not(.h) .ingresso__gira {
+			display: inline-flex;
+			align-items: center;
+			gap: 10px;
+			padding: 8px 14px 8px 11px;
+			background: rgb(10 10 10 / 0.5);
+			-webkit-backdrop-filter: blur(6px);
+			backdrop-filter: blur(6px);
+			color: var(--marmo);
+			font: 500 0.8rem/1.25 var(--sans);
+			letter-spacing: 0.01em;
+		}
+		.ingresso__gira svg {
+			flex: none;
+			animation: gira 3.6s cubic-bezier(0.6, 0, 0.2, 1) infinite;
+		}
+	}
+	@keyframes gira {
+		0%,
+		18% {
+			rotate: 0deg;
+		}
+		40%,
+		72% {
+			rotate: -90deg;
+		}
+		92%,
+		100% {
+			rotate: 0deg;
+		}
 	}
 
 	/* con WebGL l'ingresso è trasparente (la foto sta sulla tela dietro): in pila il testo tiene il suo colore */

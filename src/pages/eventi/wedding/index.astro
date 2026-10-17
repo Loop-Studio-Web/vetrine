@@ -12,6 +12,7 @@ import Ingresso from '../../../concepts/marrowknot/Ingresso.astro';
 import Sala from '../../../concepts/marrowknot/Sala.astro';
 import Chiusura from '../../../concepts/marrowknot/Chiusura.astro';
 import Footer from '../../../concepts/marrowknot/Footer.astro';
+import '../../../concepts/marrowknot/tel.css';
 import { sale } from '../../../concepts/marrowknot/dati';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -51,7 +52,24 @@ const pageUrl = new URL(`${base}/eventi/wedding/`, Astro.site).href;
 				var m = matchMedia;
 				var ridotto = m('(prefers-reduced-motion: reduce)').matches;
 				if (ridotto) return;
-				if (m('(min-width: 900px)').matches && m('(hover: hover) and (pointer: fine)').matches) d.classList.add('h');
+				// La stessa regola sta in motore.ts (modo): se la cambi, cambiala anche lì.
+				// Telefono = schermo a sfioro con il lato corto <= 560 px (non ci si fida di (pointer: coarse): alcuni browser Android lo sbagliano).
+				var tocco = navigator.maxTouchPoints > 0 || 'ontouchstart' in window;
+				var telefono = tocco && Math.min(screen.width, screen.height) <= 560;
+				var mouse = !telefono && m('(hover: hover) and (pointer: fine)').matches;
+				var w = innerWidth;
+				var hh = innerHeight;
+				// corridoio: schermo largo con mouse, oppure telefono girato in orizzontale (html.tel: schermo basso, scorrimento col dito)
+				var tel = telefono && w > hh && w >= 640 && hh <= 520;
+				if (tel) {
+					d.classList.add('h', 'tel');
+					d.style.setProperty('--hh', hh + 'px');
+					// a tutto schermo anche ai lati dell'incavo (le safe area le gestisce tel.css)
+					var vp = document.querySelector('meta[name=viewport]');
+					if (vp) vp.setAttribute('content', 'width=device-width, initial-scale=1, viewport-fit=cover');
+				} else if (mouse && m('(min-width: 900px)').matches) d.classList.add('h');
+				// invito a girare il telefono: solo in verticale su telefono
+				if (telefono && hh > w && w <= 640) d.classList.add('inv');
 				var debole = (navigator.deviceMemory && navigator.deviceMemory <= 2) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2);
 				if (debole || navigator.connection?.saveData) return;
 				try {
@@ -59,7 +77,7 @@ const pageUrl = new URL(`${base}/eventi/wedding/`, Astro.site).href;
 					if (c.getContext('webgl2')) {
 						d.dataset.glOk = '1';
 						// col mouse la tela parte subito (le <img> restano nascoste); su telefono dopo il primo gesto, per non pesare sul caricamento
-						if (m('(hover: hover) and (pointer: fine)').matches) d.classList.add('gl');
+						if (mouse || tel) d.classList.add('gl');
 					}
 				} catch (e) {}
 			})();

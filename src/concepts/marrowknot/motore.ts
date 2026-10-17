@@ -9,11 +9,42 @@ const lim = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 export async function avvia() {
 	const d = document.documentElement;
 	const orizz = d.classList.contains('h');
+	const tel = d.classList.contains('tel'); // telefono girato: corridoio a scorrimento nativo, senza Lenis
 	const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-	// se cambia la modalità (finestra ridimensionata, tablet con mouse) si ricarica: due layout diversi
-	for (const q of ['(min-width: 900px)', '(hover: hover) and (pointer: fine)']) {
-		matchMedia(q).addEventListener('change', () => location.reload());
+	// se cambia la modalità (finestra ridimensionata, telefono girato) si ricarica: due layout diversi.
+	// Stessa regola dello script nell'head (index.astro); la sala in cui ci si trova si salva e si ritrova dopo il ricaricamento.
+	const tocco = navigator.maxTouchPoints > 0 || 'ontouchstart' in window;
+	const telefono = tocco && Math.min(screen.width, screen.height) <= 560;
+	const modo = () => {
+		if (ridotto) return 'pila';
+		if (telefono) return innerWidth > innerHeight && innerWidth >= 640 && innerHeight <= 520 ? 'tel' : 'pila';
+		return matchMedia('(hover: hover) and (pointer: fine)').matches && matchMedia('(min-width: 900px)').matches ? 'h' : 'pila';
+	};
+	const modoIniziale = tel ? 'tel' : orizz ? 'h' : 'pila';
+	let attiva = ''; // id della sala attiva (la scrive frame)
+	let attesa = 0;
+	const controlla = () => {
+		clearTimeout(attesa);
+		attesa = window.setTimeout(() => {
+			if (modo() === modoIniziale) return;
+			try {
+				sessionStorage.setItem('mk-sala', attiva);
+				history.scrollRestoration = 'manual';
+			} catch {}
+			location.reload();
+		}, 250);
+	};
+	addEventListener('resize', controlla);
+	addEventListener('orientationchange', controlla);
+
+	// telefono girato: l'altezza vera dello schermo (le barre di Safari/Chrome si ritraggono e fanno variare svh)
+	if (tel) {
+		let raf = 0;
+		addEventListener('resize', () => {
+			cancelAnimationFrame(raf);
+			raf = requestAnimationFrame(() => d.style.setProperty('--hh', innerHeight + 'px'));
+		});
 	}
 
 	const sale = [...document.querySelectorAll<HTMLElement>('[data-sala]')];
@@ -37,11 +68,16 @@ export async function avvia() {
 			import('lenis'),
 		]);
 		gsap.registerPlugin(ScrollTrigger);
-		const l = new Lenis({ lerp: 0.085, wheelMultiplier: 0.9, smoothWheel: true });
-		lenis = l;
-		l.on('scroll', ScrollTrigger.update);
-		gsap.ticker.add((t) => l.raf(t * 1000));
-		gsap.ticker.lagSmoothing(0);
+		if (tel) {
+			// col dito lo scorrimento è già nativo e morbido: Lenis non serve, basta uno scrollTo per i link
+			lenis = { scrollTo: (y, o) => scrollTo({ top: y, behavior: 'immediate' in o ? 'auto' : 'smooth' }) };
+		} else {
+			const l = new Lenis({ lerp: 0.085, wheelMultiplier: 0.9, smoothWheel: true });
+			lenis = l;
+			l.on('scroll', ScrollTrigger.update);
+			gsap.ticker.add((t) => l.raf(t * 1000));
+			gsap.ticker.lagSmoothing(0);
+		}
 
 		const binario = document.querySelector<HTMLElement>('.binario')!;
 		const infilata = document.querySelector<HTMLElement>('.infilata')!;
@@ -62,6 +98,70 @@ export async function avvia() {
 		});
 		pinY0 = st.start;
 		pinY1 = st.end;
+	}
+
+	// telefono girato: il dito trascina il corridoio in orizzontale (il binario è guidato dallo scroll verticale: si traduce lo
+	// spostamento orizzontale in scroll, con un po' d'inerzia). I gesti verticali restano nativi.
+	if (orizz && tel) {
+		let x0 = 0;
+		let y0 = 0;
+		let xp = 0;
+		let tp = 0;
+		let v = 0; // px per ms, positiva = verso destra
+		let asse: '' | 'x' | 'y' = '';
+		let inerzia = 0;
+		const dentro = (t: EventTarget | null) => t instanceof Element && !!t.closest('.infilata') && !t.closest('input, select, textarea');
+		addEventListener(
+			'touchstart',
+			(e) => {
+				cancelAnimationFrame(inerzia);
+				asse = '';
+				if (e.touches.length !== 1 || !dentro(e.target)) {
+					asse = 'y';
+					return;
+				}
+				x0 = xp = e.touches[0].clientX;
+				y0 = e.touches[0].clientY;
+				tp = e.timeStamp;
+				v = 0;
+			},
+			{ passive: true },
+		);
+		addEventListener(
+			'touchmove',
+			(e) => {
+				if (asse === 'y' || e.touches.length !== 1) return;
+				const t = e.touches[0];
+				if (!asse) {
+					const dx = Math.abs(t.clientX - x0);
+					const dy = Math.abs(t.clientY - y0);
+					if (dx + dy < 8) return;
+					asse = dx > dy ? 'x' : 'y';
+					if (asse === 'y') return;
+				}
+				if (e.cancelable) e.preventDefault();
+				const dx = t.clientX - xp;
+				const dt = Math.max(1, e.timeStamp - tp);
+				v = 0.7 * v + 0.3 * (dx / dt);
+				xp = t.clientX;
+				tp = e.timeStamp;
+				if (scrollY <= pinY1) scrollBy(0, -dx);
+			},
+			{ passive: false },
+		);
+		const fine = () => {
+			if (asse !== 'x' || Math.abs(v) < 0.05) return;
+			let vel = v * 16; // px a fotogramma
+			const passo = () => {
+				if (Math.abs(vel) < 0.4 || scrollY > pinY1) return;
+				scrollBy(0, -vel);
+				vel *= 0.95;
+				inerzia = requestAnimationFrame(passo);
+			};
+			inerzia = requestAnimationFrame(passo);
+		};
+		addEventListener('touchend', fine, { passive: true });
+		addEventListener('touchcancel', () => (asse = ''), { passive: true });
 	}
 
 	// il binario è traslato, non scorso: se la tastiera porta il fuoco in una sala fuori vista, il browser scorrerebbe
@@ -190,7 +290,6 @@ export async function avvia() {
 		el.style.setProperty(nome, t);
 	};
 
-	let attiva = '';
 	function frame() {
 		const W = innerWidth;
 		const H = innerHeight;
@@ -348,6 +447,16 @@ export async function avvia() {
 		nav.toggleAttribute('data-solido', orizz && scrollY > pinY1 + 4);
 		arazzo?.disegna(info);
 	}
+	// dopo aver girato il telefono (o ridimensionato la finestra) si riparte dalla sala in cui si era
+	try {
+		const salvata = sessionStorage.getItem('mk-sala');
+		if (salvata) {
+			sessionStorage.removeItem('mk-sala');
+			history.scrollRestoration = 'auto';
+			const el = salvata === 'ingresso' ? null : document.getElementById(salvata);
+			if (el) scrollTo(0, Math.max(0, Math.round(orizz ? pinY0 + (el.offsetLeft || 0) : el.getBoundingClientRect().top + scrollY)));
+		}
+	} catch {}
 	const giro = () => {
 		frame();
 		requestAnimationFrame(giro);

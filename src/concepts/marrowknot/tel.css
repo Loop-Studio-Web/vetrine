@@ -1,0 +1,204 @@
+/* Telefono girato in orizzontale (html.h.tel): lo stesso corridoio del desktop, ma su uno schermo basso (circa 360-430 px) e a dito.
+   Va dopo i componenti; la specificità (html.h.tel) basta comunque a vincere sulle regole di html.h. */
+
+html.tel,
+html.tel body {
+	background: var(--inchiostro); /* ai lati dell'incavo/notch non deve comparire l'amaranto */
+}
+html.h.tel {
+	--fascia-h: 30px;
+	--nav-h: 50px;
+}
+html.h.tel .fascia {
+	font-size: 0.72rem;
+	padding-left: max(var(--gutter), env(safe-area-inset-left));
+	padding-right: max(var(--gutter), env(safe-area-inset-right));
+}
+
+/* altezza: quella vera dello schermo (--hh, la scrive lo script), non svh: con le barre del browser ritratte svh lascia una fascia nera sotto.
+   Il dito trascina in orizzontale (motore.ts); i gesti verticali restano nativi. */
+html.h.tel .infilata,
+html.h.tel .binario,
+html.h.tel .ingresso,
+html.h.tel .sala,
+html.h.tel .chiusura {
+	height: var(--hh, 100svh);
+}
+html.h.tel .infilata {
+	touch-action: pan-y;
+}
+
+/* navbar: marchio e menù (le voci non ci stanno); la mappa a tacche resta al desktop */
+html.h.tel .nav {
+	grid-template-columns: 1fr auto;
+	padding-left: max(var(--gutter), env(safe-area-inset-left));
+	padding-right: max(var(--gutter), env(safe-area-inset-right));
+}
+html.h.tel .nav__sale,
+html.h.tel .nav__cta,
+html.h.tel .rail {
+	display: none;
+}
+html.h.tel .nav__burger {
+	display: grid;
+}
+html.h.tel .nav__marca {
+	font-size: 1.25rem;
+}
+html.h.tel .menu {
+	padding: 6px 0 calc(100lvh - 100svh + 12px);
+}
+html.h.tel .menu__testa {
+	min-height: 44px;
+}
+html.h.tel .menu__voci a {
+	font-size: 1.7rem;
+	line-height: 1.08;
+}
+html.h.tel .menu__cta {
+	min-height: 40px;
+}
+
+/* ingresso */
+html.h.tel .ingresso__in {
+	padding: calc(var(--fascia-h) + var(--nav-h)) 0 5svh max(7vw, env(safe-area-inset-left));
+}
+html.h.tel .ingresso__testo {
+	width: min(60vw, 560px);
+	gap: 12px;
+}
+html.h.tel .ingresso__testo .ingresso__h1 {
+	font-size: min(6.4vw, 17svh);
+}
+html.h.tel .ingresso__testo .corpo {
+	font-size: 0.86rem;
+	line-height: 1.45;
+}
+html.h.tel .ingresso__azioni {
+	margin-top: 0;
+}
+html.h.tel .btn {
+	min-height: 40px;
+	padding: 0 18px;
+	font-size: 0.86rem;
+}
+html.h.tel .ingresso__invito {
+	bottom: 5svh;
+}
+html.h.tel .ingresso .didascalia {
+	bottom: max(5svh, calc(env(safe-area-inset-bottom) + 6px));
+}
+
+/* sale: slide più strette e più fitte, nome più basso, didascalia e filo vicini al bordo */
+html.h.tel .scena {
+	padding: calc(var(--fascia-h) + var(--nav-h) - 8px) max(6vw, env(safe-area-inset-right)) 20svh max(6vw, env(safe-area-inset-left));
+}
+html.h.tel .slide {
+	width: 39vw;
+	gap: 5px;
+}
+html.h.tel .claim {
+	font-size: 1.9rem;
+}
+html.h.tel .pt {
+	font-size: 1.9rem;
+	margin-top: 2px;
+}
+html.h.tel .kicker {
+	font-size: 0.6rem;
+	gap: 8px;
+}
+html.h.tel .slide p:not(.kicker):not(.claim),
+html.h.tel .punti {
+	font-size: 0.8rem;
+	line-height: 1.38;
+}
+html.h.tel .punti {
+	gap: 4px;
+}
+html.h.tel .fatti {
+	display: flex;
+	width: 100%;
+	margin: 0;
+	flex-wrap: wrap;
+	gap: 0 14px;
+}
+html.h.tel .fatti div {
+	flex-direction: column;
+	gap: 0;
+	padding: 3px 0;
+	font-size: 0.76rem;
+	border-bottom: 0;
+}
+html.h.tel .fatti div:last-child {
+	border-bottom: 0;
+}
+html.h.tel .fatti dd {
+	text-align: left;
+}
+html.h.tel .nome {
+	font-size: min(19svh, 13vw);
+}
+html.h.tel .sala__filo {
+	bottom: max(3svh, calc(env(safe-area-inset-bottom) - 6px));
+}
+html.h.tel .didascalia {
+	bottom: max(5svh, calc(env(safe-area-inset-bottom) + 6px));
+}
+html.h.tel .didascalia__testo {
+	font-size: 0.8rem;
+}
+html.h.tel .chiave {
+	width: 104px;
+	margin: -12svh 0 0 -52px;
+}
+
+/* chiusura: il modulo in due colonne, senza il testo di accompagnamento */
+html.h.tel .chiusura {
+	padding: calc(var(--fascia-h) + var(--nav-h) - 8px) 0 4svh max(6vw, env(safe-area-inset-left));
+}
+html.h.tel .chiusura__in {
+	padding-right: max(6vw, env(safe-area-inset-right));
+	grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+	column-gap: 5vw;
+}
+html.h.tel .chiusura__testo {
+	gap: 4px;
+}
+html.h.tel .chiusura__testo .titolo {
+	font-size: min(5vw, 12svh);
+}
+html.h.tel .chiusura__testo .corpo {
+	display: none;
+}
+html.h.tel .modulo {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 0 18px;
+}
+html.h.tel .campo input,
+html.h.tel .campo select {
+	min-height: 34px;
+	padding: 4px 0 5px;
+}
+html.h.tel .modulo .btn {
+	grid-column: 1 / -1;
+	margin-top: 2px;
+}
+html.h.tel .chiusura__nota {
+	font-size: 0.74rem;
+}
+
+/* schermi molto bassi (telefoni piccoli): via le etichette, tutto un po' piu fitto */
+@media (max-height: 350px) {
+	html.h.tel .kicker {
+		display: none;
+	}
+	html.h.tel .slide p:not(.kicker):not(.claim),
+	html.h.tel .punti {
+		font-size: 0.74rem;
+		line-height: 1.3;
+	}
+	html.h.tel .btn {
+		min-height: 34px;
+	}
+}
