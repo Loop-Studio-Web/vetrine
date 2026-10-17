@@ -72,7 +72,22 @@ const pageUrl = new URL(`${base}${path}`, Astro.site).href;
 
 		<script>
 			// Rivela le sezioni quando entrano in vista
-			const els = document.querySelectorAll('[data-reveal]');
+			// Gli elementi altissimi (la via) non possono aspettare il 12% della loro altezza: data-reveal-early
+			// li rivela appena il bordo superiore entra nello schermo.
+			const els = document.querySelectorAll('[data-reveal]:not([data-reveal-early])');
+			const presto = document.querySelectorAll('[data-reveal-early]');
+			const ioPresto = new IntersectionObserver(
+				(entries) => {
+					for (const e of entries) {
+						if (e.isIntersecting) {
+							e.target.classList.add('is-visible');
+							ioPresto.unobserve(e.target);
+						}
+					}
+				},
+				{ rootMargin: '0px 0px -12% 0px' },
+			);
+			presto.forEach((el) => ioPresto.observe(el));
 			const io = new IntersectionObserver(
 				(entries) => {
 					for (const e of entries) {

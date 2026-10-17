@@ -84,6 +84,8 @@ function skyline(seed: number, id: string, o: { h: number; min: number; max: num
 }
 // Ogni categoria ha la sua ora del giorno: la via cambia luce passando da una all'altra
 const atmoDi = (slug: string) => ({ ristorazione: 'sera', benessere: 'alba', tech: 'notte', casa: 'tramonto', eventi: 'orablu', studi: 'giorno', commercio: 'giorno' } as Record<string, string>)[slug] ?? 'giorno';
+// Colore del neon di ogni voce della mini-nav: richiama l'ora della sua riga (il rosso resta all'insegna "Aperto")
+const neonDi = (slug: string) => ({ ristorazione: '#ff8a3d', benessere: '#ff7ac8', tech: '#35e6ff', casa: '#ffd23d', eventi: '#9a8bff', presto: '#5dff9a', cantiere: '#d3d6db' } as Record<string, string>)[slug] ?? '#ffffff';
 const gru = `<svg viewBox="0 0 120 160" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M52 160V28M64 160V28M52 140l12-14M52 118l12-14M52 96l12-14M52 74l12-14M52 52l12-14M64 140L52 126M64 118L52 104M64 96L52 82M64 74L52 60M64 52L52 38"/><path d="M6 28h108M6 28l52-22 52 22M58 6V28"/><path d="M22 28v14M96 28v36M96 64l-5 7h10z"/></g><rect x="10" y="38" width="22" height="10" fill="currentColor"/></svg>`;
 const stelle = (() => {
 	const r = rng(7);
@@ -139,7 +141,7 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 			</p>
 		</div>
 
-		<div class="street" data-reveal>
+		<div class="street" data-reveal data-reveal-early>
 			<div class="street__sign" aria-hidden="true">
 				<p class="street__neon">
 					<span class="nl nl--a">A</span><span class="nl">p</span><span class="nl nl--e">e</span><span class="nl nl--r">r</span><span class="nl">t</span><span class="nl">o</span>
@@ -150,9 +152,25 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 					>
 				</span>
 			</div>
+			<nav class="salta" aria-label="Vai alla categoria della via" data-salta>
+				<div class="salta__in">
+					{gruppi.map((g, i) => (
+						<a class="salta__link" href={`#via-${g.slug}`} data-via={`via-${g.slug}`} style={`--neon:${neonDi(g.slug)}`} aria-current={i === 0 ? 'location' : undefined}>
+							<span class="salta__t">{g.nome}</span>
+							<span class="salta__n" aria-hidden="true">{g.live.length}</span>
+						</a>
+					))}
+					{perStato.map((g) => (
+						<a class="salta__link" href={`#via-${g.stato}`} data-via={`via-${g.stato}`} style={`--neon:${neonDi(g.stato)}`}>
+							<span class="salta__t">{g.titolo}</span>
+							<span class="salta__n" aria-hidden="true">{g.lista.length}</span>
+						</a>
+					))}
+					</div>
+			</nav>
 			{
 				gruppi.map((g, gi) => (
-					<div class="street__group">
+					<div class="street__group" style={`--gd:${-((gi * 11 + 3) % 37)}s`}>
 						<p class="street__tag" id={`via-${g.slug}`}>
 							<a href={`#${g.slug}`}>{g.nome}</a>
 							<span class="street__n">{g.live.length} {g.live.length === 1 ? 'vetrina aperta' : 'vetrine aperte'}</span>
@@ -211,7 +229,7 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 			}
 			{
 				perStato.map((g, gi) => (
-					<div class="street__group street__group--soon">
+					<div class="street__group street__group--soon" style={`--gd:${-(((gruppi.length + gi) * 11 + 3) % 37)}s`}>
 						<p class="street__tag" id={`via-${g.stato}`}>
 							<span>{g.titolo}</span>
 							<span class="street__n">{g.conto(g.lista.length)}</span>
@@ -257,6 +275,7 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 		position: relative;
 		padding: clamp(120px, 16vw, 190px) 0 clamp(60px, 8vw, 110px);
 		overflow: hidden;
+		overflow: clip; /* come hidden, ma non crea un contenitore di scorrimento: serve alla barra sticky della via */
 		isolation: isolate;
 	}
 	.hero__glow {
@@ -454,7 +473,96 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 	.street__group + .street__group {
 		margin-top: 38px;
 	}
+	/* Mini-nav della via: sta sotto l'insegna, poi si aggancia sotto l'header (62 px a pagina scorsa) */
+	.salta {
+		position: sticky;
+		top: 62px;
+		z-index: 40;
+		/* a tutta larghezza come i blocchi della via */
+		margin: 0 calc(50% - 50vw) 30px;
+		padding-inline: calc(50vw - 50%);
+		background: color-mix(in srgb, var(--bg) 78%, transparent);
+		-webkit-backdrop-filter: blur(14px) saturate(1.2);
+		backdrop-filter: blur(14px) saturate(1.2);
+		border-block: 1px solid var(--border);
+	}
+	.salta__in {
+		display: flex;
+		gap: 10px;
+		padding-block: 10px;
+		overflow-x: auto;
+		scrollbar-width: none;
+	}
+	.salta__in::-webkit-scrollbar {
+		display: none;
+	}
+	@media (min-width: 700px) {
+		.salta__in {
+			justify-content: center;
+		}
+	}
+	.salta__link {
+		flex: none;
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		min-height: 40px;
+		padding: 6px 16px;
+		/* insegna al neon come "Aperto": targa scura anche in tema chiaro, tubo spento finché la riga non è in vista */
+		border: 2px solid color-mix(in srgb, var(--neon) 38%, #0a0a0a);
+		border-radius: 12px;
+		background: #0a0a0a;
+		color: color-mix(in srgb, var(--neon) 72%, #0a0a0a);
+		font-size: 0.82rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		text-decoration: none;
+		transition: border-color 0.35s, color 0.35s, box-shadow 0.35s, text-shadow 0.35s, transform 0.15s;
+	}
+	.salta__link:hover,
+	.salta__link:focus-visible {
+		border-color: color-mix(in srgb, var(--neon) 75%, #0a0a0a);
+		color: var(--neon);
+		transform: translateY(-2px);
+	}
+	.salta__link[aria-current='location'] {
+		border-color: var(--neon);
+		color: var(--neon);
+		text-shadow: 0 0 10px color-mix(in srgb, var(--neon) 80%, transparent);
+		box-shadow: 0 0 14px color-mix(in srgb, var(--neon) 50%, transparent), inset 0 0 10px color-mix(in srgb, var(--neon) 28%, transparent);
+	}
+	/* Tubo difettoso: ogni tanto UNA lettera a caso di una voce a caso si spegne e si riaccende (script in fondo;
+	   mai più di due cambi al secondo, fermo fuori vista e con reduced-motion) */
+	.salta__t :global(.salta__c.guasto) {
+		animation: salta-guasto 2.4s linear;
+	}
+	/* spenta, poi un tentativo di accensione a piena luce, di nuovo spenta, poi si riaccende: due lampi in 2,4 s */
+	@keyframes salta-guasto {
+		0%, 100% { opacity: 1; }
+		9% { opacity: 0.04; text-shadow: none; }
+		22% { opacity: 1; color: var(--neon); text-shadow: 0 0 10px var(--neon), 0 0 22px var(--neon); }
+		38% { opacity: 0.04; text-shadow: none; }
+		52% { opacity: 1; color: var(--neon); text-shadow: 0 0 10px var(--neon), 0 0 22px var(--neon); }
+		60% { opacity: 0.35; text-shadow: none; }
+		74% { opacity: 1; }
+	}
+	.salta__n {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 1.3rem;
+		height: 1.3rem;
+		padding-inline: 0.3rem;
+		border-radius: 6px;
+		background: var(--neon);
+		color: #0a0a0a;
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0;
+	}
 	.street__tag {
+		scroll-margin-top: 170px;
 		display: flex;
 		flex-wrap: wrap;
 		align-items: baseline;
@@ -973,7 +1081,7 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 	[data-atmo='tramonto'] .sc :global(.sk-l) {
 		opacity: 0.6;
 	}
-	/* Ora blu (eventi e creativi): il cielo prima del buio, blu profondo con una fascia di luce, le feste che cominciano */
+	/* Ora blu (eventi): il cielo prima del buio, blu profondo con una fascia di luce, le feste che cominciano */
 	[data-atmo='orablu'] .scene {
 		--sky-mid: #06142e;
 		--sky-hz: #2a5cb5;
@@ -1245,6 +1353,22 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 			animation-delay: calc(var(--i, 0) * 0.15s);
 		}
 	}
+	/* Ogni tanto un lampione balbetta: luce che cala e torna (non tutti, non insieme, circa uno per riga, un episodio ogni ~37 s) */
+	@media (prefers-reduced-motion: no-preference) {
+		.street.is-visible .shop:nth-child(3n + 1):not(:last-child)::before {
+			animation: lamp-on 1.2s ease-out both, lamp-guasto 37s var(--gd, 0s) infinite;
+			animation-delay: calc(var(--i, 0) * 0.15s), var(--gd, 0s);
+		}
+	}
+	@keyframes lamp-guasto {
+		70% { opacity: 1; }
+		71% { opacity: 0.25; }
+		72% { opacity: 1; }
+		73.5% { opacity: 0.1; }
+		74.5% { opacity: 0.8; }
+		75.5% { opacity: 0.15; }
+		77.5% { opacity: 1; }
+	}
 	@keyframes lamp-on {
 		0%, 30% { opacity: 0; }
 		38% { opacity: 0.9; }
@@ -1285,6 +1409,88 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 		});
 	focusable();
 	addEventListener('resize', focusable);
+
+	// Mini-nav della via: salta alla riga della categoria (ancora #via-…, nessun filtro) e l'accento
+	// segue la riga che sta sotto la barra.
+	const salta = document.querySelector<HTMLElement>('[data-salta]');
+	if (salta) {
+		const links = [...salta.querySelectorAll<HTMLAnchorElement>('.salta__link')];
+		const tag = links.map((l) => document.getElementById(l.dataset.via!));
+		const riga = salta.querySelector<HTMLElement>('.salta__in')!;
+		const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+		let corrente = -1;
+		const segna = (i: number) => {
+			if (i === corrente) return;
+			corrente = i;
+			links.forEach((l, k) => (k === i ? l.setAttribute('aria-current', 'location') : l.removeAttribute('aria-current')));
+			// su telefono la barra scorre: la voce attiva resta in vista
+			const l = links[i];
+			if (l && riga.scrollWidth > riga.clientWidth) {
+				riga.scrollTo({ left: l.offsetLeft - (riga.clientWidth - l.offsetWidth) / 2, behavior: ridotto ? 'auto' : 'smooth' });
+			}
+		};
+		// Il salto nativo dell'ancora si ferma qualche decina di px prima (la pagina sotto cambia mentre scorre):
+		// la posizione si calcola al clic e si ricontrolla a fine scroll.
+		const SOTTO = 170;
+		const quota = (t: HTMLElement) => t.getBoundingClientRect().top + scrollY - SOTTO;
+		links.forEach((l, i) =>
+			l.addEventListener('click', (e) => {
+				const t = tag[i];
+				if (!t) return;
+				e.preventDefault();
+				scrollTo({ top: quota(t), behavior: ridotto ? 'auto' : 'smooth' });
+				const rifinisci = () => {
+					if (Math.abs(t.getBoundingClientRect().top - SOTTO) > 3) scrollTo({ top: quota(t), behavior: 'auto' });
+				};
+				if ('onscrollend' in window) addEventListener('scrollend', rifinisci, { once: true });
+				else setTimeout(rifinisci, 1200);
+			}),
+		);
+
+		// Neon fulminato: a intervalli casuali una lettera a caso di una voce a caso si spegne e si riaccende.
+		// Le lettere si separano solo qui (senza JS o con reduced-motion il testo resta intero).
+		if (!ridotto) {
+			links.forEach((l) => {
+				const t = l.querySelector<HTMLElement>('.salta__t')!;
+				const testo = t.textContent ?? '';
+				t.innerHTML = [...testo].map((c) => (c === ' ' ? ' ' : `<span class="salta__c">${c}</span>`)).join('');
+			});
+			const lettere = links.map((l) => [...l.querySelectorAll<HTMLElement>('.salta__c')]);
+			const prossimo = () => {
+				setTimeout(() => {
+					if (street?.classList.contains('is-visible') && !document.hidden) {
+						const gruppo = lettere[Math.floor(Math.random() * lettere.length)];
+						const c = gruppo[Math.floor(Math.random() * gruppo.length)];
+						c.classList.add('guasto');
+						c.addEventListener('animationend', () => c.classList.remove('guasto'), { once: true });
+					}
+					prossimo();
+				}, 3500 + Math.random() * 6500);
+			};
+			prossimo();
+		}
+
+		let tick = false;
+		const aggiorna = () => {
+			tick = false;
+			let attiva = 0;
+			tag.forEach((t, i) => {
+				if (t && t.getBoundingClientRect().top <= 200) attiva = i;
+			});
+			segna(attiva);
+		};
+		addEventListener(
+			'scroll',
+			() => {
+				if (!tick) {
+					tick = true;
+					requestAnimationFrame(aggiorna);
+				}
+			},
+			{ passive: true },
+		);
+		aggiorna();
+	}
 
 	// Parallasse della scena: ogni blocco riceve --p, la distanza (in px) del suo centro dal centro dello schermo
 	const scenes = [...document.querySelectorAll<HTMLElement>('.block')];

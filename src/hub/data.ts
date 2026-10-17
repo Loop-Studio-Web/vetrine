@@ -43,7 +43,7 @@ export const macros = [
 	{ slug: 'benessere', nome: 'Benessere' },
 	{ slug: 'tech', nome: 'Tech' },
 	{ slug: 'casa', nome: 'Abitare' },
-	{ slug: 'eventi', nome: 'Eventi e creativi' },
+	{ slug: 'eventi', nome: 'Eventi' },
 	{ slug: 'commercio', nome: 'Commercio' },
 ] as const;
 export type MacroSlug = (typeof macros)[number]['slug'];
@@ -769,7 +769,7 @@ export const concepts: Concept[] = [
 		slug: 'malahierba',
 		macro: 'eventi',
 		nome: 'Mala Hierba Flores',
-		categoria: 'Eventi e creativi',
+		categoria: 'Eventi',
 		archetipo: 'La florería per cerimonie e ricorrenze',
 		claim: 'Flores con carácter para las fechas que importan. Un ramo che si compone mentre scegli: ocasión, tamaño, flor, colores e tarjeta, con il prezzo in diretta.',
 		path: '/eventi/fiorista/',
@@ -779,7 +779,7 @@ export const concepts: Concept[] = [
 			'Come potrebbe essere la homepage di una florería che lavora per matrimoni, XV anni, bautizos e Día de Muertos: un ramo da comporre con prezzo e tarjeta in diretta, montajes, prenotazione della consegna. In spagnolo messicano. Concept dimostrativo di Loop Studio.',
 		intro: [
 			'Chi ordina fiori per una cerimonia ha poco tempo e molte domande: quanto costa, arriva in tempo, come sarà. Questa homepage lascia che sia il cliente a comporre il ramo, scegliendo ocasión, tamaño, flor, colori e confezione, e vedendo subito il disegno, il prezzo e la tarjeta scritta a mano, prima ancora di scrivere su WhatsApp.',
-			'È il livello Essenziale della categoria Eventi e creativi e una vetrina dimostrativa, scritta in spagnolo messicano per il mercato del Messico: la florería, i prezzi in pesos, le recensioni, il telefono e l’indirizzo sono di fantasia, e le fotografie sono d’archivio. Il filo del sito è il papel picado, le banderine di carta calata che in Messico decorano ogni festa.',
+			'È il livello Essenziale della categoria Eventi e una vetrina dimostrativa, scritta in spagnolo messicano per il mercato del Messico: la florería, i prezzi in pesos, le recensioni, il telefono e l’indirizzo sono di fantasia, e le fotografie sono d’archivio. Il filo del sito è il papel picado, le banderine di carta calata che in Messico decorano ogni festa.',
 		],
 		perChi:
 			'Fioristi e studi di allestimento per cerimonie (matrimoni, quince, battesimi, funerali e ricorrenze), botteghe di quartiere con consegna in giornata e chi lavora su ordinazione via WhatsApp. Adatta a chi vuole far capire in pochi secondi cosa può avere, quanto costa e entro quando.',
@@ -823,7 +823,7 @@ export const concepts: Concept[] = [
 		slug: 'limonaia',
 		macro: 'eventi',
 		nome: 'Limonaia Aurelia',
-		categoria: 'Eventi e creativi',
+		categoria: 'Eventi',
 		archetipo: 'La location per feste e cerimonie',
 		claim: 'Una limonaia, un giardino, una cantina. Dì che festa è: la pianta dei tavoli, la giornata ora per ora e il preventivo si compongono da soli.',
 		path: '/eventi/location/',
@@ -833,7 +833,7 @@ export const concepts: Concept[] = [
 			'Come potrebbe essere la homepage di una location per matrimoni, feste e cene aziendali: pianta dei tavoli che si dispone davvero, giornata dalle 16 all’una, calendario con le date libere, preventivo a forchetta e scheda dell’evento da condividere. Concept dimostrativo di Loop Studio.',
 		intro: [
 			'Chi cerca una location ha tre domande: ci stiamo, quando è libera, quanto costa. Questa homepage le mette nello stesso posto: si sceglie il tipo di festa, gli ospiti e il formato, e la pianta dispone i tavoli con i corridoi veri, dicendo apertamente se non ci si sta.',
-			'È il livello Evoluto della categoria Eventi e creativi e una vetrina dimostrativa: la limonaia, le sale, i prezzi, le date e i recapiti sono di fantasia, e le fotografie sono d’archivio. Ogni scelta finisce in una scheda dell’evento che si manda con un link e si può confrontare con una seconda idea.',
+			'È il livello Evoluto della categoria Eventi e una vetrina dimostrativa: la limonaia, le sale, i prezzi, le date e i recapiti sono di fantasia, e le fotografie sono d’archivio. Ogni scelta finisce in una scheda dell’evento che si manda con un link e si può confrontare con una seconda idea.',
 		],
 		perChi:
 			'Location per matrimoni e ricevimenti, ville e agriturismi con sale e giardino, spazi per cene aziendali e feste private. Adatta a chi vuole che il cliente arrivi al sopralluogo con le idee già chiare.',
@@ -877,7 +877,7 @@ export const concepts: Concept[] = [
 		slug: 'wedding',
 		macro: 'eventi',
 		nome: 'Marrow & Knot',
-		categoria: 'Eventi e creativi',
+		categoria: 'Eventi',
 		archetipo: 'Il wedding planner per nozze in Italia',
 		claim: 'Weddings in Italy. Cinque sale da attraversare, dal lago di Como a Venezia: foto a tutta pagina che si tessono a fili, storia e consigli per chi arriva da lontano, un nodo che si stringe mentre scrivi.',
 		path: '/eventi/wedding/',
@@ -887,7 +887,7 @@ export const concepts: Concept[] = [
 			'Come potrebbe essere la homepage di un wedding planner per coppie straniere che si sposano in Italia: un corridoio di cinque sale (Como, Puglia, Amalfi, Toscana, Venezia) con foto a tutta pagina che si tessono a fili in WebGL, testi di storia e di contesto per chi viene dall’estero, un video in una serratura e una richiesta che stringe un nodo. In inglese. Concept dimostrativo di Loop Studio.',
 		intro: [
 			'Chi sceglie di sposarsi in Italia da lontano sceglie prima un luogo, poi una persona che se ne occupi. Questa homepage parte dal luogo: è un’infilata di sale, come in un palazzo, e ogni sala è un posto con la sua tinta, le sue foto, i suoi numeri (ospiti, stagione, distanza) e un po’ di storia e di cose da sapere per chi arriva da lontano. Alla fine, una richiesta in quattro campi.',
-			'È il livello Esperienza della categoria Eventi e creativi e una vetrina dimostrativa, scritta in inglese per coppie anglofone: lo studio, i luoghi proposti, i tempi e i recapiti sono di fantasia, e le fotografie e il video sono d’archivio. Il filo del sito è il nodo del marchio: i fili che tessono le foto, il filo che corre tra le sale, il nodo che si stringe nel modulo.',
+			'È il livello Esperienza della categoria Eventi e una vetrina dimostrativa, scritta in inglese per coppie anglofone: lo studio, i luoghi proposti, i tempi e i recapiti sono di fantasia, e le fotografie e il video sono d’archivio. Il filo del sito è il nodo del marchio: i fili che tessono le foto, il filo che corre tra le sale, il nodo che si stringe nel modulo.',
 		],
 		perChi:
 			'Wedding planner e studi di organizzazione per nozze di destinazione, agenzie che vendono luoghi più che servizi, location e dimore con più sedi. Adatta a chi vende atmosfera e fiducia e vuole che il sito sia già un pezzo di quell’esperienza.',
