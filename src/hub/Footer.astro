@@ -4,16 +4,19 @@ import logoLight from '../assets/hub/loop-logo-on-light.svg';
 import face from '../assets/hub/social/face.webp';
 import insta from '../assets/hub/social/insta.webp';
 import gmail from '../assets/hub/social/gmail.webp';
-import { SITE, CONTACT, LAB, REPO, concepts } from './data';
+import { SITE, CONTACT, LAB, REPO, concepts, macros } from './data';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const year = new Date().getFullYear();
 
 // Colonne del piè di pagina come sul sito dello studio (stessa struttura e stessi testi): le voci della prima sono le vetrine.
+// Solo le macro con vetrine aperte, che filtrano l'hub via hash (/#tech); le pagine `info` sono raggiungibili dalle card.
 const vetrine = [
-	{ href: `${base}/#vetrine`, label: 'Le vetrine' },
+	{ href: `${base}/#vetrine`, label: `Tutte le vetrine (${concepts.length})` },
+	...macros
+		.filter((m) => concepts.some((c) => c.macro === m.slug))
+		.map((m) => ({ href: `${base}/#${m.slug}`, label: m.nome })),
 	{ href: `${base}/#prossime`, label: 'Prossime' },
-	...concepts.map((c) => ({ href: `${base}${c.infoPath}`, label: c.nome })),
 ];
 const naviga = [
 	{ href: SITE, label: 'Home' },
@@ -52,35 +55,41 @@ const social = [
 		</div>
 
 		<nav class="ftr__col" aria-label="Le vetrine">
-			<h2 class="ftr__title">Vetrine</h2>
-			<ul>
-				{vetrine.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
-			</ul>
+			<details open>
+				<summary><h2 class="ftr__title">Vetrine</h2></summary>
+				<ul>
+					{vetrine.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+				</ul>
+			</details>
 		</nav>
 
 		<nav class="ftr__col" aria-label="Il sito dello studio">
-			<h2 class="ftr__title">Naviga</h2>
-			<ul>
-				{naviga.map((l) => <li><a href={l.href}>{l.label} <span aria-hidden="true">↗</span></a></li>)}
-			</ul>
+			<details open>
+				<summary><h2 class="ftr__title">Naviga</h2></summary>
+				<ul>
+					{naviga.map((l) => <li><a href={l.href}>{l.label} <span aria-hidden="true">↗</span></a></li>)}
+				</ul>
+			</details>
 		</nav>
 
 		<nav class="ftr__col ftr__col--social" aria-label="Seguici">
-			<h2 class="ftr__title">Seguici</h2>
-			<ul>
-				{
-					social.map((l) => (
-						<li>
-							<a href={l.href} target="_blank" rel="noopener noreferrer" class="social-link">
-								<img src={l.icon} alt="" class="social-icon" width="24" height="24" />
-								<span>{l.label}</span>
-								<span class="sr-only">(si apre in una nuova scheda)</span>
-							</a>
-						</li>
-					))
-				}
-				<li><a href={REPO} rel="noopener">Il codice su GitHub</a></li>
-			</ul>
+			<details open>
+				<summary><h2 class="ftr__title">Seguici</h2></summary>
+				<ul>
+					{
+						social.map((l) => (
+							<li>
+								<a href={l.href} target="_blank" rel="noopener noreferrer" class="social-link">
+									<img src={l.icon} alt="" class="social-icon" width="24" height="24" />
+									<span>{l.label}</span>
+									<span class="sr-only">(si apre in una nuova scheda)</span>
+								</a>
+							</li>
+						))
+					}
+					<li><a href={REPO} rel="noopener">Il codice su GitHub</a></li>
+				</ul>
+			</details>
 		</nav>
 	</div>
 
@@ -107,6 +116,15 @@ const social = [
 	// l'anno stampato in build resterebbe indietro dopo Capodanno: lo corregge il browser
 	var y = document.getElementById('ftr-year');
 	if (y) y.textContent = String(new Date().getFullYear());
+
+	// su telefono le colonne sono accordion chiusi; senza JS restano aperte (su desktop lo sono sempre, via CSS)
+	var mq = matchMedia('(max-width: 48rem)');
+	var chiudi = function () {
+		if (mq.matches) document.querySelectorAll('.ftr__col details[open]').forEach(function (d) { d.removeAttribute('open'); });
+		else document.querySelectorAll('.ftr__col details').forEach(function (d) { d.setAttribute('open', ''); });
+	};
+	chiudi();
+	mq.addEventListener('change', chiudi);
 </script>
 
 <style>
@@ -255,7 +273,7 @@ const social = [
 		font-weight: 700;
 		text-transform: uppercase;
 		letter-spacing: 1px;
-		color: var(--text);
+		color: var(--on-surface);
 		margin: 0 0 1rem;
 	}
 	.ftr__col ul {
@@ -333,12 +351,56 @@ const social = [
 	.ftr__made {
 		color: var(--on-surface);
 	}
+	/* colonne = <details>: su desktop sempre aperte e non cliccabili, su telefono accordion */
+	.ftr__col summary {
+		list-style: none;
+		pointer-events: none;
+	}
+	.ftr__col summary::-webkit-details-marker {
+		display: none;
+	}
+	@media (min-width: 48.001rem) {
+		.ftr__col details::details-content {
+			content-visibility: visible;
+		}
+	}
 	@media (max-width: 48rem) {
 		.ftr__in {
-			grid-template-columns: 1fr 1fr;
+			grid-template-columns: minmax(0, 1fr);
+			gap: 2rem 0;
 		}
-		.ftr__brand {
-			grid-column: 1 / -1;
+		.ftr__col summary {
+			pointer-events: auto;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			min-height: 48px;
+			border-bottom: 1px solid color-mix(in srgb, var(--border) 20%, transparent);
+		}
+		.ftr__col summary .ftr__title {
+			margin: 0;
+		}
+		.ftr__col summary::after {
+			content: '';
+			width: 8px;
+			height: 8px;
+			border-right: 2px solid var(--accent);
+			border-bottom: 2px solid var(--accent);
+			transform: rotate(45deg);
+			transition: transform 0.2s ease;
+		}
+		.ftr__col details[open] summary::after {
+			transform: rotate(-135deg);
+		}
+		.ftr__col ul {
+			padding-top: 1rem;
+		}
+		.ftr__col li a {
+			padding-block: 0.3rem;
+		}
+		.ftr__col li a:not(.social-link) {
+			display: inline-block;
 		}
 	}
 	@media (prefers-reduced-motion: reduce) {
