@@ -917,7 +917,7 @@ export const concepts: Concept[] = [
 		shot: shotMarrowknot,
 		shotAlt: '',
 		crop: '70% 40%',
-		cardAlt: 'Marrow & Knot su desktop e su telefono: titolo bianco su fondo rosso pompeiano con un arco che mostra una loggia sul lago di Como, e il menù mobile in marmo con i nomi dei cinque luoghi.',
+		cardAlt: 'Marrow & Knot su desktop e su telefono: titolo bianco su fondo rosso pompeiano con un arco che mostra una loggia sul lago di Como, e il menù mobile nero a strisce alternate nere e bianche con i nomi dei cinque luoghi.',
 		mood: 'Un’infilata di sale di un palazzo: rosso pompeiano, verderame, marmo e vino, titoli stretti e alti, foto che si tessono a fili e un nodo che si stringe. Niente oro.',
 		caratteri: 'Imbue e Commissioner',
 		palette: ['#5e0e1c', '#17463f', '#2b0b1a', '#e6ecee', '#7a1428', '#d9a5ad'],
