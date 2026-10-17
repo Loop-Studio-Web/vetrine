@@ -45,6 +45,12 @@ body {
 	text-rendering: optimizeLegibility;
 }
 
+/* pila (telefono): sfondo nero, mai amaranto: è ciò che si vede sotto e sopra la pagina quando le barre di Safari si muovono */
+html:not(.h),
+html:not(.h) body {
+	background: var(--inchiostro);
+}
+
 h1,
 h2,
 h3,

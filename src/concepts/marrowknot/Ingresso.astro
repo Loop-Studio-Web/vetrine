@@ -5,7 +5,7 @@ import { ingresso } from './dati';
 ---
 
 <section class="ingresso" id="ingresso" data-sala data-con-foto data-hero data-tinta="pompeiano" data-tono-nav="chiaro" data-disp="a" data-nome="" aria-labelledby="ingresso-t">
-	<Fondo scatti={[ingresso]} eager />
+	<Fondo scatti={[ingresso]} eager velo />
 	<span class="sala__filo" aria-hidden="true"></span>
 	<div class="ingresso__in">
 		<div class="ingresso__testo">
@@ -28,24 +28,40 @@ import { ingresso } from './dati';
 </section>
 
 <style is:global>
+	/* pila (telefono): la foto verticale sta ferma a tutto schermo (sticky, come nelle sale) e il testo le scorre sopra */
 	.ingresso {
 		position: relative;
-		overflow: hidden;
-		display: flex;
-		flex-direction: column;
+		overflow: clip;
 	}
 	.ingresso .fondo {
-		order: 2;
+		position: sticky;
+		top: 0;
+		z-index: 0;
+		height: 100lvh; /* lvh: quando la barra di Safari si ritrae la foto copre anche la fascia liberata */
+		aspect-ratio: auto;
+		margin-bottom: -100lvh;
+	}
+	/* con la tela accesa l'<img> dell'ingresso resta visibile (non è disegnata dalla tela) */
+	html.gl:not(.h) .ingresso .fondo__img--on {
+		opacity: 1;
+	}
+	html:not(.h) .ingresso .velo {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(to top, rgb(10 10 10 / 0.8) 0%, rgb(10 10 10 / 0.6) 40%, rgb(10 10 10 / 0.34) 66%, rgb(10 10 10 / 0.1) 100%);
 	}
 	.ingresso__in {
 		position: relative;
 		z-index: 2;
-		order: 1;
-		padding: calc(var(--fascia-h) + var(--nav-h) + 36px) var(--gutter) 40px;
+		min-height: 100svh;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		gap: 28px;
+		padding: calc(var(--fascia-h) + var(--nav-h) + 28px) var(--gutter) 9svh;
 	}
 	.ingresso .didascalia {
-		order: 3;
-		padding-top: 14px;
+		display: none;
 	}
 	.ingresso__testo {
 		display: grid;
@@ -60,12 +76,40 @@ import { ingresso } from './dati';
 		line-height: 1.02;
 		letter-spacing: 0;
 		padding-right: 0.15em;
+		text-shadow: 0 0 12px rgb(255 255 255 / 0.5), 0 0 2px rgb(255 255 255 / 0.45);
 	}
 	.ingresso__azioni {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 14px;
+		gap: 10px;
 		margin-top: 6px;
+	}
+	.ingresso__azioni .btn {
+		padding: 0 18px;
+		font-size: 0.94rem;
+	}
+	.ingresso .btn--pieno {
+		color: var(--inchiostro);
+	}
+	@media (hover: hover) {
+		.ingresso .btn--pieno:hover {
+			color: var(--marmo);
+		}
+	}
+	.ingresso__testo .corpo {
+		color: var(--marmo);
+		text-shadow: 0 0 14px rgb(0 0 0 / 0.85), 0 1px 3px rgb(0 0 0 / 0.6);
+	}
+	/* titolo in alto sul cielo, testo e pulsanti in basso */
+	html:not(.h) .ingresso__testo {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		flex: 1;
+		gap: 22px;
+	}
+	html:not(.h) .ingresso__testo .corpo {
+		margin-top: auto;
 	}
 	.ingresso__invito {
 		display: none;
@@ -75,11 +119,12 @@ import { ingresso } from './dati';
 	html.gl .ingresso {
 		background: transparent;
 	}
-	html.gl:not(.h) .ingresso__in,
-	html.gl:not(.h) .ingresso .didascalia {
-		background: var(--fondo);
+	html.h .ingresso .fondo {
+		height: auto;
+		margin: 0;
 	}
 	html.h .ingresso {
+		overflow: hidden;
 		display: block;
 		flex: none;
 		width: 112vw;
@@ -88,6 +133,8 @@ import { ingresso } from './dati';
 	html.h .ingresso__in {
 		position: absolute;
 		inset: 0;
+		min-height: 0;
+		justify-content: flex-start;
 		display: flex;
 		align-items: center;
 		padding: calc(var(--fascia-h) + var(--nav-h) + 2svh) 0 9svh 8vw;
@@ -105,6 +152,7 @@ import { ingresso } from './dati';
 		bottom: 8svh;
 	}
 	html.h .ingresso .didascalia {
+		display: block;
 		position: absolute;
 		left: 8vw;
 		bottom: 8svh;

@@ -2,6 +2,8 @@
 
 export interface Scatto {
 	file: string; // in src/assets/marrowknot/foto
+	/** foto verticale per il telefono (sotto i 900 px), se serve una inquadratura diversa */
+	mobile?: string;
 	/** colore del testo che regge su questa foto (misurato sulla zona del testo): chiaro = testo bianco, scuro = testo nero */
 	tono?: 'chiaro' | 'scuro';
 	alt: string;
@@ -45,6 +47,7 @@ export interface Sala {
 
 export const ingresso: Scatto = {
 	file: 'ingresso',
+	mobile: 'ingresso-mobile',
 	alt: 'Domes and bell towers of Venice in silhouette against an orange sunset, with flocks of birds',
 	cap: 'Venice at the end of the day',
 };

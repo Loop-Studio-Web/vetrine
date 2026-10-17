@@ -28,29 +28,49 @@ const dati = await Promise.all(
 			getImage({ src, width: 2200, format: 'webp', quality: 72 }),
 			getImage({ src, width: 1200, format: 'webp', quality: 72 }),
 		]);
-		return { g: g.src, m: m.src, cap: s.cap, w: src.width, h: src.height };
+		// foto verticale per il telefono (se c'è): la usa la tela in pila sotto i 900 px
+		const v = s.mobile ? await getImage({ src: meta(s.mobile), width: 1200, format: 'webp', quality: 74 }) : null;
+		return { g: g.src, m: m.src, v: v?.src, cap: s.cap, w: src.width, h: src.height };
 	}),
 );
-const foto = scatti.map((x) => ({ src: meta(x.file), alt: x.alt }));
+const foto = await Promise.all(
+	scatti.map(async (x) => {
+		const mob = x.mobile
+			? await Promise.all([750, 1125].map((width) => getImage({ src: meta(x.mobile!), width, format: 'webp', quality: 74 })))
+			: null;
+		return { src: meta(x.file), alt: x.alt, mob: mob ? mob.map((i, k) => `${i.src} ${[750, 1125][k]}w`).join(', ') : null };
+	}),
+);
 ---
 
 <div class="fondo" data-fondo data-scatti={JSON.stringify(dati)}>
 	{
-		foto.map((f, k) => (
-			<Image
-				src={f.src}
-				alt={k === 0 ? f.alt : ''}
-				widths={[640, 1100, 1600, 2200]}
-				sizes="100vw"
-				format="webp"
-				quality={72}
-				loading={eager && k === 0 ? 'eager' : 'lazy'}
-				decoding="async"
-				class:list={['fondo__img', { 'fondo__img--on': k === 0 }]}
-				data-k={k}
-				aria-hidden={k === 0 ? undefined : 'true'}
-			/>
-		))
+		foto.map((f, k) => {
+			const img = (
+				<Image
+					src={f.src}
+					alt={k === 0 ? f.alt : ''}
+					widths={[640, 1100, 1600, 2200]}
+					sizes="100vw"
+					format="webp"
+					quality={72}
+					loading={eager && k === 0 ? 'eager' : 'lazy'}
+					decoding="async"
+					class:list={['fondo__img', { 'fondo__img--on': k === 0 }]}
+					data-k={k}
+					aria-hidden={k === 0 ? undefined : 'true'}
+				/>
+			);
+			// sotto i 900 px una foto verticale (<source> prima dell'<img>)
+			return f.mob ? (
+				<picture>
+					<source media="(max-width: 899px)" srcset={f.mob} sizes="100vw" />
+					{img}
+				</picture>
+			) : (
+				img
+			);
+		})
 	}
 	{velo && <span class="velo" aria-hidden="true" />}
 </div>

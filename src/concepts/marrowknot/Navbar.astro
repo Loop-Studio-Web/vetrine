@@ -22,7 +22,7 @@ import { sale } from './dati';
 	</button>
 </header>
 
-<div class="menu" id="menu" data-menu data-tinta="marmo" role="dialog" aria-modal="true" aria-label="Menu" aria-hidden="true" inert>
+<div class="menu" id="menu" data-menu role="dialog" aria-modal="true" aria-label="Menu" aria-hidden="true" inert>
 	<div class="menu__testa">
 		<span class="menu__marca"><Simbolo tam={28} id="menu" /> Marrow &amp; Knot</span>
 		<button class="menu__x" type="button" data-chiudi aria-label="Close menu"><span aria-hidden="true"></span></button>
@@ -130,6 +130,11 @@ import { sale } from './dati';
 		top: -8px;
 		width: 18px;
 	}
+	/* pila (telefono): barra di vetro scuro, uguale in ogni sala (niente colore della tinta: faceva righe amaranto in cima) */
+	html:not(.h) .nav {
+		background: rgb(10 10 10 / 0.58);
+		color: var(--marmo);
+	}
 	html.h .nav {
 		text-shadow: 0 0 14px rgb(0 0 0 / 0.45);
 		background: transparent;
@@ -164,17 +169,20 @@ import { sale } from './dati';
 		}
 	}
 
-	/* menù: arco di marmo che sale dal basso */
+	/* menù: arco che sale dal basso, nero, con le voci a strisce alternate (nera con testo bianco, bianca con testo nero) */
 	.menu {
+		--fondo: var(--inchiostro);
+		--testo: var(--marmo);
 		position: fixed;
 		inset: 0;
 		z-index: 300;
 		height: 100lvh;
 		display: grid;
 		grid-template-rows: auto 1fr auto;
-		padding: 18px var(--gutter) calc(28px + env(safe-area-inset-bottom, 0px));
-		background: var(--marmo);
-		color: var(--inchiostro);
+		/* sotto: lo spazio della barra di Safari (lvh - svh) più un margine, così il pulsante sta tutto nello schermo */
+		padding: 18px 0 calc(100lvh - 100svh + 36px + env(safe-area-inset-bottom, 0px));
+		background: var(--inchiostro);
+		color: var(--marmo);
 		visibility: hidden;
 		clip-path: inset(100% 0 0 0 round 50vw 50vw 0 0);
 		transition:
@@ -193,7 +201,8 @@ import { sale } from './dati';
 		align-items: center;
 		justify-content: space-between;
 		min-height: 56px;
-		color: var(--pompeiano);
+		padding: 0 var(--gutter);
+		color: var(--marmo);
 	}
 	.menu__marca {
 		display: inline-flex;
@@ -228,30 +237,35 @@ import { sale } from './dati';
 	.menu__voci {
 		display: grid;
 		align-content: center;
-		gap: 2px;
 	}
 	.menu__voci a {
+		display: block;
+		padding: 0.05em var(--gutter) 0.1em;
 		font-family: var(--serif);
-		font-size: clamp(3.4rem, 18vw, 6rem);
+		font-size: clamp(2.4rem, 12.5vw, 4.4rem);
 		line-height: 1.12;
 		text-decoration: none;
-		color: var(--pompeiano);
-		opacity: 0;
-		transform: translateY(24px);
-		transition:
-			opacity 0.4s,
-			transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+		clip-path: inset(0 100% 0 0);
+		transition: clip-path 0.55s cubic-bezier(0.7, 0, 0.2, 1);
+	}
+	.menu__voci a:nth-child(odd) {
+		background: var(--inchiostro);
+		color: var(--marmo);
+	}
+	.menu__voci a:nth-child(even) {
+		background: var(--marmo);
+		color: var(--inchiostro);
+	}
+	.menu__voci a:focus-visible {
+		outline-color: currentColor;
+		outline-offset: -6px;
 	}
 	.menu.aperto .menu__voci a {
-		opacity: 1;
-		transform: none;
-		transition-delay: calc(0.28s + var(--i, 0) * 0.06s);
+		clip-path: inset(0);
+		transition-delay: calc(0.3s + var(--i, 0) * 0.07s);
 	}
 	.menu__cta {
-		justify-self: stretch;
-		color: var(--marmo);
-		background: var(--pompeiano);
-		border-color: var(--pompeiano);
+		margin: 0 var(--gutter);
 	}
 </style>
 

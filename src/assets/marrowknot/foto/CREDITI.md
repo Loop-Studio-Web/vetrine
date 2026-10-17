@@ -4,7 +4,7 @@ Tutte da Unsplash, licenza libera (nessuna attribuzione richiesta), in alta riso
 
 | Sala | File |
 |---|---|
-| Ingresso | ingresso.jpg |
+| Ingresso | ingresso.jpg (desktop) · ingresso-mobile.jpg (telefono, verticale: Piazza San Marco, foto di Francesco La Corte, Unsplash) |
 | Como | como-1.jpg … como-4.jpg |
 | Puglia | puglia-1.jpg … puglia-4.jpg |
 | Amalfi | amalfi-1.jpg … amalfi-4.jpg |

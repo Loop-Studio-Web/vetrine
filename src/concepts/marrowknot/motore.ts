@@ -281,6 +281,12 @@ export async function avvia() {
 						d.nome.style.transform = `translate3d(${(g.bx * (1 - t)).toFixed(1)}px,${(g.by * (1 - t)).toFixed(1)}px,0) scale(${(1 + (g.S - 1) * (1 - t)).toFixed(4)})`;
 						d.nome.style.setProperty('--wn', lim((e - 0.12) / 0.55).toFixed(3));
 					}
+					// pila: il nome fermo al centro è quasi pieno all'ingresso in sala, poi si fa trasparente dietro al testo
+					if (!orizz && d.nome) {
+						d.nome.style.opacity = (0.26 + 0.66 * (1 - smooth(0.02, 0.2, u))).toFixed(3);
+						if (u > 0.1) s.dataset.nm = 'f';
+						else delete s.dataset.nm;
+					}
 					// il video nella serratura entra quando il nome ha lasciato il centro
 					if (orizz && s.querySelector('[data-video]')) s.style.setProperty('--vk', smooth(LIM[1] - 0.02, LIM[1] + 0.08, u).toFixed(3));
 				}

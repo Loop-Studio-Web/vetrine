@@ -118,6 +118,7 @@ export interface InfoSala {
 interface DatoScatto {
 	g: string;
 	m: string;
+	v?: string; // foto verticale per il telefono
 	cap: string;
 	w: number;
 	h: number;
@@ -236,6 +237,8 @@ export class Arazzo {
 	private aggiungi(el: HTMLElement, geo: Geometry) {
 		const fondo = el.querySelector<HTMLElement>('[data-fondo]');
 		if (!fondo) return;
+		// telefono: la foto dell'ingresso resta l'<img> normale, senza tessitura (la tela parte al primo gesto e farebbe un salto)
+		if (!this.orizz && el.hasAttribute('data-hero')) return;
 		const dati: DatoScatto[] = JSON.parse(fondo.dataset.scatti || '[]');
 		const colore = rgb(getComputedStyle(el).getPropertyValue('--fondo'));
 		const gl = this.gl;
@@ -271,7 +274,7 @@ export class Arazzo {
 			s.prog.uniforms.uImg.value = [img.naturalWidth, img.naturalHeight];
 			s.stato = 'pronto';
 		};
-		img.src = this.orizz ? s.dato.g : s.dato.m;
+		img.src = this.orizz ? s.dato.g : innerWidth < 900 && s.dato.v ? s.dato.v : s.dato.m;
 	}
 
 	private rilascia(s: Scatto) {

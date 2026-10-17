@@ -125,9 +125,9 @@ const mCh = 3 + sala.fatti.length + 1;
 		position: sticky;
 		top: 0;
 		z-index: 0;
-		height: 100svh;
+		height: 100lvh; /* lvh: quando la barra di Safari si ritrae la foto copre anche la fascia liberata, niente righe di sfondo */
 		aspect-ratio: auto;
-		margin-bottom: -100svh;
+		margin-bottom: -100lvh;
 	}
 	/* il velo sotto le slide (pila): dal basso, scuro per le slide a testo chiaro, chiaro per quelle a testo scuro;
 	   il motore mette data-vt sulla sala secondo la slide in vista */
@@ -176,6 +176,28 @@ const mCh = 3 + sala.fatti.length + 1;
 		color: var(--marmo);
 		pointer-events: none;
 		opacity: var(--vn, 1);
+	}
+	/* pila: il nome della sala resta fermo al centro dello schermo per tutta la sala, trasparente dietro al testo: è il riferimento
+	   di dove ci si trova mentre le foto cambiano (all'ingresso in sala è quasi pieno, poi si abbassa: lo scrive il motore) */
+	html:not(.h) .nome {
+		top: 0;
+		position: sticky;
+		height: 100svh;
+		margin-bottom: -100svh;
+		display: grid;
+		place-items: center;
+		padding-bottom: 16svh;
+		opacity: 0.26;
+		color: var(--marmo);
+		transition: color 0.4s;
+	}
+	/* a inizio sala (nome quasi pieno) il colore è quello misurato sulla foto; poi bianco trasparente, che regge sotto il velo scuro */
+	html:not(.h) .sala:not([data-nm]) .nome[data-tono='scuro'] {
+		color: var(--inchiostro);
+	}
+	html:not(.h) .slides {
+		position: relative;
+		z-index: 1;
 	}
 	/* ogni slide ha il colore di testo che regge sulla sua foto: chiaro (bianco) o scuro (inchiostro); il titolo lo segue */
 	.slide {
@@ -321,12 +343,11 @@ const mCh = 3 + sala.fatti.length + 1;
 		z-index: 3;
 		left: 0;
 		right: 0;
-		bottom: 8px;
-		height: 1.5px;
+		bottom: 0; /* sul confine tra l'ultima foto di una sala e la prima della successiva */
+		height: 2px;
 		background: var(--filo-c);
 		transform-origin: 0 50%;
 		transform: scaleX(var(--draw, 1));
-		opacity: 0.8;
 	}
 
 	/* il video nella serratura vive solo nel corridoio */
