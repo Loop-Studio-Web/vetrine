@@ -385,7 +385,7 @@ export const concepts: Concept[] = [
 			'Come potrebbe essere la homepage di una clinica di longevità: elica di DNA in WebGL, protocolli a scorrimento orizzontale, Bio-Assessment con grafico radar, scanner cellulare e prenotazione della suite. Concept dimostrativo di Loop Studio.',
 		intro: [
 			'Una clinica di longevità vende fiducia nei dati prima ancora dei trattamenti: chi arriva vuole capire che cosa viene misurato, con quale metodo e che cosa ne esce. Aeterna lo mette in scena con un linguaggio da laboratorio: un’elica di DNA che reagisce al mouse, indicatori biometrici, un percorso in cinque tempi.',
-			'È il livello Esperienza della macrocategoria Benessere e una vetrina dimostrativa: la clinica, i medici, i valori, i prezzi e gli indirizzi sono di fantasia, e nulla è un parere medico. Serve a mostrare fin dove si può spingere un sito quando c’è budget per animazioni, grafica in tempo reale e interazioni su misura.',
+			'È il livello Esperienza della categoria Benessere e una vetrina dimostrativa: la clinica, i medici, i valori, i prezzi e gli indirizzi sono di fantasia, e nulla è un parere medico. Serve a mostrare fin dove si può spingere un sito quando c’è budget per animazioni, grafica in tempo reale e interazioni su misura.',
 		],
 		perChi:
 			'Cliniche private, centri di medicina estetica e della longevità, poliambulatori e brand del benessere premium che vogliono distinguersi con un’esperienza digitale memorabile e un percorso di prenotazione guidato.',
@@ -562,7 +562,7 @@ export const concepts: Concept[] = [
 			},
 			{
 				t: 'Le regole le scrivi in una frase',
-				d: '“Quando torno a casa e è sera, allora accendi le luci del soggiorno”: si compone dentro la frase, non trascinando blocchi. Poi si fa correre una giornata e si vede quando le regole scattano.',
+				d: '“Quando torno a casa ed è sera, allora accendi le luci del soggiorno”: si compone dentro la frase, non trascinando blocchi. Poi si fa correre una giornata e si vede quando le regole scattano.',
 			},
 			{
 				t: 'Capitolato su misura e sopralluogo',
@@ -608,7 +608,7 @@ export const concepts: Concept[] = [
 		sezioni: [
 			{
 				t: 'Una valvola da girare',
-				d: 'In apertura un volantino che si gira con il dito o con il mouse (o con un tocco): la valvola si apre, l’acqua scorre e compare il numero da chiamare con il tempo di arrivo.',
+				d: 'In apertura un volantino che si gira trascinandolo con il dito o con il mouse, oppure con un semplice tocco: la valvola si apre, l’acqua scorre e compare il numero da chiamare con il tempo di arrivo.',
 			},
 			{
 				t: 'Cosa fare subito, problema per problema',
@@ -720,7 +720,7 @@ export const concepts: Concept[] = [
 			'È il livello Esperienza della categoria Abitare e una vetrina dimostrativa: lo studio, i progetti, i prezzi e i contatti sono di fantasia, e le immagini sono render d’archivio. Serve a mostrare che il sito di uno studio può essere esso stesso un pezzo di progetto: un motore WebGL scritto apposta, senza librerie, una palette che scurisce dalla carta da lucido al basalto e un solo accento, il giallo del metro.',
 		],
 		perChi:
-			'Studi di interior design e architettura d’interni, progettisti di arredi su misura, showroom di materiali e superfici. Adatta a chi lavora su progetti di fascia medio-alta e vuole che il primo contatto racconti il metodo, non solo il portfolio, e arrivare alla consulenza con un cliente che ha già scelto i suoi materiali.',
+			'Studi di interior design e architettura d’interni, progettisti di arredi su misura, showroom di materiali e superfici. Adatta a chi lavora su progetti di fascia medio-alta e vuole che il primo contatto racconti il metodo, non solo il portfolio, e che alla consulenza si arrivi con un cliente che ha già scelto i suoi materiali.',
 		sezioni: [
 			{
 				t: 'Una pianta che si disegna da sola',
@@ -782,7 +782,7 @@ export const concepts: Concept[] = [
 			'È il livello Essenziale della categoria Eventi e una vetrina dimostrativa, scritta in spagnolo messicano per il mercato del Messico: la fioreria, i prezzi in pesos, le recensioni, il telefono e l’indirizzo sono di fantasia, e le fotografie sono d’archivio. Il filo del sito è la carta traforata (il “papel picado”), le bandierine che in Messico decorano ogni festa.',
 		],
 		perChi:
-			'Fioristi e studi di allestimento per cerimonie (matrimoni, feste dei quindici anni, battesimi, funerali e ricorrenze), botteghe di quartiere con consegna in giornata e chi lavora su ordinazione via WhatsApp. Adatta a chi vuole far capire in pochi secondi cosa può avere, quanto costa e entro quando.',
+			'Fioristi e studi di allestimento per cerimonie (matrimoni, feste dei quindici anni, battesimi, funerali e ricorrenze), botteghe di quartiere con consegna in giornata e chi lavora su ordinazione via WhatsApp. Adatta a chi vuole far capire in pochi secondi cosa può avere, quanto costa e per quando arriva.',
 		sezioni: [
 			{
 				t: 'Un mazzo che si compone mentre scegli',
@@ -884,7 +884,7 @@ export const concepts: Concept[] = [
 		infoPath: '/eventi/wedding/info/',
 		titoloSeo: 'Sito web per wedding planner: homepage concept in inglese per matrimoni di destinazione',
 		descrizioneSeo:
-			'Come potrebbe essere la homepage di un wedding planner per coppie straniere che si sposano in Italia: un corridoio di cinque sale (Como, Puglia, Amalfi, Toscana, Venezia) con foto a tutta pagina che si tessono a fili in WebGL, testi di storia e di contesto per chi viene dall’estero, un video in una serratura e una richiesta che stringe un nodo. In inglese. Concept dimostrativo di Loop Studio.',
+			'Come potrebbe essere la homepage di un wedding planner per coppie straniere che si sposano in Italia: un corridoio di cinque sale (Como, Puglia, Toscana, Amalfi, Venezia) con foto a tutta pagina che si tessono a fili in WebGL, testi di storia e di contesto per chi viene dall’estero, un video in una serratura e una richiesta che stringe un nodo. In inglese. Concept dimostrativo di Loop Studio.',
 		intro: [
 			'Chi sceglie di sposarsi in Italia da lontano sceglie prima un luogo, poi una persona che se ne occupi. Questa homepage parte dal luogo: è un’infilata di sale, come in un palazzo, e ogni sala è un posto con la sua tinta, le sue foto, i suoi numeri (ospiti, stagione, distanza) e un po’ di storia e di cose da sapere per chi arriva da lontano. Alla fine, una richiesta in quattro campi.',
 			'È il livello Esperienza della categoria Eventi e una vetrina dimostrativa, scritta in inglese per coppie anglofone: lo studio, i luoghi proposti, i tempi e i recapiti sono di fantasia, e le fotografie e il video sono d’archivio. Il filo del sito è il nodo del marchio: i fili che tessono le foto, il filo che corre tra le sale, il nodo che si stringe nel modulo.',
