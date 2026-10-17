@@ -60,7 +60,7 @@ const pageUrl = new URL(`${base}/eventi/wedding/`, Astro.site).href;
 				var w = innerWidth;
 				var hh = innerHeight;
 				// corridoio: schermo largo con mouse, oppure telefono girato in orizzontale (html.tel: schermo basso, scorrimento col dito)
-				var tel = telefono && w > hh && w >= 640 && hh <= 520;
+				var tel = telefono && w > hh && w >= 560 && hh <= 520;
 				if (tel) {
 					d.classList.add('h', 'tel');
 					d.style.setProperty('--hh', hh + 'px');

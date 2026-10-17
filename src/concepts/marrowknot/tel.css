@@ -22,10 +22,19 @@ html.h.tel .binario,
 html.h.tel .ingresso,
 html.h.tel .sala,
 html.h.tel .chiusura {
-	height: var(--hh, 100svh);
+	height: max(var(--hh, 100svh), 100dvh); /* mai più bassa dello schermo visibile, anche se --hh resta indietro */
 }
 html.h.tel .infilata {
 	touch-action: pan-y;
+}
+/* il pin di ScrollTrigger scrive in linea height e max-height misurati al caricamento e su mobile non li ricalcola quando la
+   barra di Chrome si ritrae (ignoreMobileResize): l'infilata restava bassa come lo schermo con la barra e tagliava il nome.
+   Solo fuori da iOS (-webkit-touch-callout esiste solo lì): su Safari la stessa regola tagliava il nome */
+@supports not (-webkit-touch-callout: none) {
+	html.h.tel .infilata.infilata {
+		height: max(var(--hh, 100svh), 100dvh) !important;
+		max-height: none !important;
+	}
 }
 
 /* navbar: marchio e menù (le voci non ci stanno); la mappa a tacche resta al desktop */
@@ -136,8 +145,12 @@ html.h.tel .fatti div:last-child {
 html.h.tel .fatti dd {
 	text-align: left;
 }
+/* il nome si posa sul fondo dello schermo visibile ADESSO (dvh segue la barra del browser che si apre e si ritrae);
+   --hh da solo restava indietro: la sala era più bassa dello schermo e tagliava il nome (iPhone) o lo nascondeva (Android) */
 html.h.tel .nome {
 	font-size: min(19svh, 13vw);
+	top: calc(100dvh - 1.3em);
+	bottom: auto;
 }
 html.h.tel .sala__filo {
 	bottom: max(3svh, calc(env(safe-area-inset-bottom) - 6px));
@@ -190,6 +203,10 @@ html.h.tel .chiusura__nota {
 
 /* schermi molto bassi (telefoni piccoli): via le etichette, tutto un po' piu fitto */
 @media (max-height: 350px) {
+	/* il nome posato non deve coprire testi e pulsante */
+	html.h.tel .nome {
+		font-size: min(14svh, 10vw);
+	}
 	html.h.tel .kicker {
 		display: none;
 	}

@@ -18,7 +18,7 @@ export async function avvia() {
 	const telefono = tocco && Math.min(screen.width, screen.height) <= 560;
 	const modo = () => {
 		if (ridotto) return 'pila';
-		if (telefono) return innerWidth > innerHeight && innerWidth >= 640 && innerHeight <= 520 ? 'tel' : 'pila';
+		if (telefono) return innerWidth > innerHeight && innerWidth >= 560 && innerHeight <= 520 ? 'tel' : 'pila';
 		return matchMedia('(hover: hover) and (pointer: fine)').matches && matchMedia('(min-width: 900px)').matches ? 'h' : 'pila';
 	};
 	const modoIniziale = tel ? 'tel' : orizz ? 'h' : 'pila';
@@ -280,7 +280,8 @@ export async function avvia() {
 	}
 	misura();
 	document.fonts?.ready.then(misura);
-	addEventListener('resize', misura);
+	// dopo il ridimensionamento: due fotogrammi, così su telefono girato --hh è già aggiornato
+	addEventListener('resize', () => requestAnimationFrame(() => requestAnimationFrame(misura)));
 
 	// scrive una proprietà solo se è cambiata davvero (a ogni fotogramma sono decine di slide)
 	const scrivi = (el: HTMLElement, i: number, d: Dati, nome: string, v: number) => {
