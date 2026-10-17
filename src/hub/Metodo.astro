@@ -6,7 +6,7 @@ const numeri = [
 	{ n: String(concepts.length), t: concepts.length === 1 ? 'vetrina aperta' : 'vetrine aperte', s: 'e altre in costruzione, una alla volta' },
 	{ n: '0', t: 'componenti condivisi', s: 'ogni vetrina nasce da zero' },
 	{ n: '0', t: 'violazioni di accessibilità', s: 'verificate con axe-core' },
-	{ n: '0', t: 'tracker', s: 'nessuna richiesta a servizi esterni: font e immagini sono nostri' },
+	{ n: '0', t: 'tracker', s: 'nessuna richiesta a servizi esterni' },
 ];
 const principi = [
 	{
@@ -19,7 +19,7 @@ const principi = [
 	},
 	{
 		t: 'Pulite, senza zone d’ombra',
-		d: 'Font e immagini sono nostri, nessun tracciamento, nessuna dipendenza nascosta. Quello che vedi è tutto quello che c’è.',
+		d: 'Font e immagini ospitati da noi, nessun tracciamento, nessuna dipendenza nascosta. Quello che vedi è tutto quello che c’è.',
 	},
 ];
 ---
@@ -145,6 +145,15 @@ const principi = [
 		}
 		.principi {
 			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+	@media (min-width: 1360px) {
+		/* Con la larghezza piena le descrizioni dei numeri stanno su una riga */
+		.numeri li {
+			padding-inline: 28px;
+		}
+		.numeri__s {
+			white-space: nowrap;
 		}
 	}
 </style>
