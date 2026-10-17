@@ -222,6 +222,15 @@ const mCh = 3 + sala.fatti.length + 1;
 		color: var(--inchiostro);
 		text-shadow: 0 0 10px rgb(255 255 255 / 0.55), 0 0 2px rgb(255 255 255 / 0.5);
 	}
+	/* in pila (telefono) le foto "chiare" stanno sotto un velo scuro: il nero con bagliore bianco non regge (misurato ~1,2:1), il titolo segue il tono della slide */
+	html:not(.h) .slide[data-tono='chiaro'] :is(.pt, .claim) {
+		color: var(--marmo);
+		text-shadow: 0 0 14px rgb(0 0 0 / 0.55), 0 1px 3px rgb(0 0 0 / 0.4);
+	}
+	/* foto chiare (Amalfi): inchiostro con alone bianco quasi pieno, sulla foto resta un velo sottile (contrasto misurato 9-14:1) */
+	html:not(.h) .slide[data-tono='scuro'] :is(.pt, .claim) {
+		text-shadow: 0 0 10px rgb(255 255 255 / 0.9), 0 0 2px rgb(255 255 255 / 0.9);
+	}
 	.slide {
 		min-height: 86svh;
 		display: flex;

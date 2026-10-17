@@ -651,14 +651,14 @@ export const concepts: Concept[] = [
 		nome: 'Obra Fina',
 		categoria: 'Abitare',
 		archetipo: 'L’impresa di ristrutturazioni',
-		claim: 'Obra gruesa para que aguante. Obra fina para que se note. Una casa in sezione da toccare stanza per stanza: preventivo, calendario e pavimento a vista.',
+		claim: 'Il grezzo perché regga, la finitura perché si noti. Una casa in sezione da toccare stanza per stanza: preventivo, calendario e pavimento a vista.',
 		path: '/casa/ristrutturazioni/',
 		infoPath: '/casa/ristrutturazioni/info/',
 		titoloSeo: 'Sito web per impresa di ristrutturazioni: homepage concept con preventivatore a stanze (in spagnolo)',
 		descrizioneSeo:
 			'Come potrebbe essere la homepage di un’impresa di ristrutturazioni: una casa in sezione da cui scegliere stanza per stanza, preventivo che si calcola da solo, calendario dei lavori, campionario di piastrelle idrauliche e prenotazione della visita. In spagnolo, per il mercato spagnolo. Concept dimostrativo di Loop Studio.',
 		intro: [
-			'Chi vuole ristrutturare casa ha due paure: che il preventivo cresca strada facendo e che i lavori non finiscano mai. Questa homepage le affronta prima di ogni telefonata: si disegna la propria casa stanza per stanza, si sceglie quanto lavoro serve a ciascuna e si vede subito costo, durata e perfino quando si consegna. Il sito è in spagnolo, pensato per il mercato spagnolo, e parla il linguaggio del cantiere: obra gruesa, obra fina, presupuesto cerrado.',
+			'Chi vuole ristrutturare casa ha due paure: che il preventivo cresca strada facendo e che i lavori non finiscano mai. Questa homepage le affronta prima di ogni telefonata: si disegna la propria casa stanza per stanza, si sceglie quanto lavoro serve a ciascuna e si vede subito costo, durata e perfino quando si consegna. Il sito è in spagnolo, pensato per il mercato spagnolo, e parla il linguaggio del cantiere: il grezzo, le finiture, il preventivo a prezzo chiuso.',
 			'È il livello Evoluto della categoria Abitare e una vetrina dimostrativa: l’impresa, i prezzi, i tempi, le recensioni e il numero di telefono sono di fantasia, e le fotografie sono d’archivio. Serve a mostrare che un’impresa edile può avere un sito che fa il preventivo insieme al cliente, con una sezione di casa da toccare, un calendario vero e una palette di calce, terracotta e un solo blu di gesso.',
 		],
 		perChi:
@@ -666,14 +666,14 @@ export const concepts: Concept[] = [
 		sezioni: [
 			{
 				t: 'Una casa in sezione da toccare',
-				d: 'Sette stanze in una sezione disegnata in CSS: se ne sceglie una, si decide quanta opera serve (nulla, ritocco, riforma, a fondo) e le pareti si ridipingono con un passaggio di cazzuola. Tre livelli da attraversare con una transizione: struttura, impianti, finiture.',
+				d: 'Sette stanze in una sezione disegnata in CSS: se ne sceglie una, si decide quanto lavoro serve (nulla, ritocco, riforma, a fondo) e le pareti si ridipingono con un passaggio di cazzuola. Tre livelli da attraversare con una transizione: struttura, impianti, finiture.',
 			},
 			{
 				t: 'Il preventivo si scrive da solo',
-				d: 'Metri quadri su un righello, extra per stanza e colore delle pareti: la hoja de obra mostra riga per riga i costi, il riparto fra opera grezza, impianti e finiture, IVA e totale con una forbice onesta.',
+				d: 'Metri quadri su un righello, extra per stanza e colore delle pareti: la scheda di cantiere mostra riga per riga i costi, il riparto fra opera grezza, impianti e finiture, IVA e totale con una forbice onesta.',
 			},
 			{
-				t: 'Il calendario della propria obra',
+				t: 'Il calendario del proprio cantiere',
 				d: 'Un diagramma di Gantt calcolato sulle scelte fatte: fasi, settimane, data di inizio e di consegna, e se si può restare a vivere in casa durante i lavori.',
 			},
 			{
@@ -694,7 +694,7 @@ export const concepts: Concept[] = [
 		shotAlt: '',
 		crop: '55% 40%',
 		cardAlt: 'Obra Fina su desktop e su telefono: titolo in serif su calce azzurrina, un arco di intonaco con fotografia e un filo a piombo, una casa in sezione con stanze colorate, una riga di gesso blu, il menù mobile a tre mani di cazzuola.',
-		mood: 'La bottega dell’obra fina: calce con l’azulete (l’azzurro delle case imbiancate), argilla, seppia e il blu del gesso (il cordello del muratore). Intonaco ovunque, rótulos di cantiere in carattere largo; la barra di avanzamento è una livella a bolla.',
+		mood: 'La bottega della finitura: calce con una punta di azzurro (quello delle case imbiancate), argilla, seppia e il blu del gesso (il cordello del muratore). Intonaco ovunque, scritte di cantiere in carattere largo; la barra di avanzamento è una livella a bolla.',
 		caratteri: 'Young Serif, Onest e Anybody',
 		palette: ['#d9e3f1', '#b9482a', '#241a14', '#2b49c8', '#d9a441', '#59582b'],
 		metriche: [
@@ -770,35 +770,35 @@ export const concepts: Concept[] = [
 		macro: 'eventi',
 		nome: 'Mala Hierba Flores',
 		categoria: 'Eventi',
-		archetipo: 'La florería per cerimonie e ricorrenze',
-		claim: 'Flores con carácter para las fechas que importan. Un ramo che si compone mentre scegli: ocasión, tamaño, flor, colores e tarjeta, con il prezzo in diretta.',
+		archetipo: 'La fioreria per cerimonie e ricorrenze',
+		claim: 'Fiori con carattere per le date che contano. Un mazzo che si compone mentre scegli: occasione, dimensione, fiore, colori e biglietto, con il prezzo in diretta.',
 		path: '/eventi/fiorista/',
 		infoPath: '/eventi/fiorista/info/',
-		titoloSeo: 'Sito web per fiorista e allestimenti per cerimonie: homepage concept con composizione del ramo',
+		titoloSeo: 'Sito web per fiorista e allestimenti per cerimonie: homepage concept con composizione del mazzo',
 		descrizioneSeo:
-			'Come potrebbe essere la homepage di una florería che lavora per matrimoni, XV anni, bautizos e Día de Muertos: un ramo da comporre con prezzo e tarjeta in diretta, montajes, prenotazione della consegna. In spagnolo messicano. Concept dimostrativo di Loop Studio.',
+			'Come potrebbe essere la homepage di una fioreria che lavora per matrimoni, feste dei quindici anni, battesimi e Giorno dei Morti: un mazzo da comporre con prezzo e biglietto in diretta, allestimenti, prenotazione della consegna. In spagnolo messicano. Concept dimostrativo di Loop Studio.',
 		intro: [
-			'Chi ordina fiori per una cerimonia ha poco tempo e molte domande: quanto costa, arriva in tempo, come sarà. Questa homepage lascia che sia il cliente a comporre il ramo, scegliendo ocasión, tamaño, flor, colori e confezione, e vedendo subito il disegno, il prezzo e la tarjeta scritta a mano, prima ancora di scrivere su WhatsApp.',
-			'È il livello Essenziale della categoria Eventi e una vetrina dimostrativa, scritta in spagnolo messicano per il mercato del Messico: la florería, i prezzi in pesos, le recensioni, il telefono e l’indirizzo sono di fantasia, e le fotografie sono d’archivio. Il filo del sito è il papel picado, le banderine di carta calata che in Messico decorano ogni festa.',
+			'Chi ordina fiori per una cerimonia ha poco tempo e molte domande: quanto costa, arriva in tempo, come sarà. Questa homepage lascia che sia il cliente a comporre il mazzo, scegliendo occasione, dimensione, fiore, colori e confezione, e vedendo subito il disegno, il prezzo e il biglietto scritto a mano, prima ancora di scrivere su WhatsApp.',
+			'È il livello Essenziale della categoria Eventi e una vetrina dimostrativa, scritta in spagnolo messicano per il mercato del Messico: la fioreria, i prezzi in pesos, le recensioni, il telefono e l’indirizzo sono di fantasia, e le fotografie sono d’archivio. Il filo del sito è la carta traforata (il “papel picado”), le bandierine che in Messico decorano ogni festa.',
 		],
 		perChi:
-			'Fioristi e studi di allestimento per cerimonie (matrimoni, quince, battesimi, funerali e ricorrenze), botteghe di quartiere con consegna in giornata e chi lavora su ordinazione via WhatsApp. Adatta a chi vuole far capire in pochi secondi cosa può avere, quanto costa e entro quando.',
+			'Fioristi e studi di allestimento per cerimonie (matrimoni, feste dei quindici anni, battesimi, funerali e ricorrenze), botteghe di quartiere con consegna in giornata e chi lavora su ordinazione via WhatsApp. Adatta a chi vuole far capire in pochi secondi cosa può avere, quanto costa e entro quando.',
 		sezioni: [
 			{
-				t: 'Un ramo che si compone mentre scegli',
-				d: 'Ocasión, tamaño, flor, colori e confezione: il ramo si ridisegna a ogni scelta con tallo, foglie e fiocco, e il totale si aggiorna con la spedizione. Un tasto lo rimescola per vederne un altro acomodo.',
+				t: 'Un mazzo che si compone mentre scegli',
+				d: 'Occasione, dimensione, fiore, colori e confezione: il mazzo si ridisegna a ogni scelta con gambo, foglie e fiocco, e il totale si aggiorna con la spedizione. Un tasto lo rimescola per vederne un’altra disposizione.',
 			},
 			{
 				t: 'Una stagione che si vede: Día de Muertos',
-				d: 'Una sezione di temporada con il conto alla rovescia al 2 novembre e un listino di mercato con i puntini: cempasúchil, cresta de gallo, kit e arco di ofrenda.',
+				d: 'Una sezione stagionale con il conto alla rovescia al 2 novembre e un listino di mercato con i puntini: tagete, cresta di gallo, kit e arco per l’altare dei morti.',
 			},
 			{
 				t: 'Consegna con giorni e fasce vere',
-				d: 'Il pedido sceglie giorno e fascia tra quelli possibili: la consegna in giornata si chiude alle 14 h (ora di Città del Messico), e la domenica ha meno fasce. Errori chiari e una ricevuta con folio.',
+				d: 'L’ordine sceglie giorno e fascia tra quelli possibili: la consegna in giornata si chiude alle 14 (ora di Città del Messico), e la domenica ha meno fasce. Errori chiari e una ricevuta con numero progressivo.',
 			},
 			{
-				t: 'Montajes e un tono che si adatta',
-				d: 'Arco, centros de mesa con calcolatrice e tapetes di fiori. Se si sceglie Condolencias la scena diventa sobria, senza banderine e con il telefono per coronas e velatorio.',
+				t: 'Allestimenti e un tono che si adatta',
+				d: 'Arco, centrotavola con calcolatrice e tappeti di fiori. Se si sceglie “Condolencias” (le condoglianze) la scena diventa sobria, senza bandierine e con il telefono per corone e veglia funebre.',
 			},
 		],
 		awning: ['#c20b60', '#ffc7dc'],
@@ -809,12 +809,12 @@ export const concepts: Concept[] = [
 		shot: shotMalahierba,
 		shotAlt: '',
 		crop: '70% 35%',
-		cardAlt: 'Mala Hierba Flores su desktop e su telefono: titolo grande su fondo fucsia con una fila di banderine di papel picado, una foto di ramos in carta kraft con un cartellino a pennarello, il menù mobile come cortina.',
-		mood: 'Un taller de papel picado: fucsia pieno, verde bosco, cempasúchil e turchese, lettering morbido e cartellini scritti a pennarello, con foto vere di mercato e un ramo disegnato che si ricompone.',
+		cardAlt: 'Mala Hierba Flores su desktop e su telefono: titolo grande su fondo fucsia con una fila di bandierine di carta traforata, una foto di mazzi in carta kraft con un cartellino a pennarello, il menù mobile come cortina.',
+		mood: 'Un laboratorio di carta traforata: fucsia pieno, verde bosco, tagete arancio e turchese, lettering morbido e cartellini scritti a pennarello, con foto vere di mercato e un mazzo disegnato che si ricompone.',
 		caratteri: 'Caprasimo, Familjen Grotesk e Permanent Marker',
 		palette: ['#c20b60', '#0e3b2b', '#ff9a1f', '#12b5ad', '#ffc7dc', '#fff0f6'],
 		metriche: [
-			{ label: 'Performance', valore: '90' },
+			{ label: 'Performance', valore: '96' },
 			{ label: 'Accessibilità', valore: '100' },
 			{ label: 'Buone pratiche', valore: '100' },
 		],
@@ -879,7 +879,7 @@ export const concepts: Concept[] = [
 		nome: 'Marrow & Knot',
 		categoria: 'Eventi',
 		archetipo: 'Il wedding planner per nozze in Italia',
-		claim: 'Weddings in Italy. Cinque sale da attraversare, dal lago di Como a Venezia: foto a tutta pagina che si tessono a fili, storia e consigli per chi arriva da lontano, un nodo che si stringe mentre scrivi.',
+		claim: 'Matrimoni in Italia. Cinque sale da attraversare, dal lago di Como a Venezia: foto a tutta pagina che si tessono a fili, storia e consigli per chi arriva da lontano, un nodo che si stringe mentre scrivi.',
 		path: '/eventi/wedding/',
 		infoPath: '/eventi/wedding/info/',
 		titoloSeo: 'Sito web per wedding planner: homepage concept in inglese per matrimoni di destinazione',
