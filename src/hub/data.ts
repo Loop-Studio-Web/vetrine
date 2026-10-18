@@ -30,6 +30,8 @@ import cardLimonaia from '../assets/hub/card-limonaia.jpg';
 import shotLimonaia from '../assets/hub/shot-limonaia.jpg';
 import cardMarrowknot from '../assets/hub/card-marrowknot.jpg';
 import shotMarrowknot from '../assets/hub/shot-marrowknot.jpg';
+import cardChioma from '../assets/hub/card-chioma.jpg';
+import shotChioma from '../assets/hub/shot-chioma.jpg';
 
 export const SITE = 'https://theloopstudio.org/';
 export const CONTACT = 'https://theloopstudio.org/contatti';
@@ -39,12 +41,14 @@ export const REPO = 'https://github.com/Loop-Studio-Web/vetrine';
 // Macrocategorie: filtro dell'hub. L'ordine è quello dei chip.
 export const macros = [
 	{ slug: 'ristorazione', nome: 'Ristorazione' },
-	{ slug: 'studi', nome: 'Studi e servizi' },
 	{ slug: 'benessere', nome: 'Benessere' },
 	{ slug: 'tech', nome: 'Tech' },
 	{ slug: 'casa', nome: 'Abitare' },
 	{ slug: 'eventi', nome: 'Eventi' },
-	{ slug: 'commercio', nome: 'Commercio' },
+	{ slug: 'ecommerce', nome: 'E-commerce' },
+	{ slug: 'ospitalita', nome: 'Ospitalità' },
+	{ slug: 'animali', nome: 'Animali' },
+	{ slug: 'legale', nome: 'Legale' },
 ] as const;
 export type MacroSlug = (typeof macros)[number]['slug'];
 
@@ -927,11 +931,66 @@ export const concepts: Concept[] = [
 			{ label: 'Buone pratiche', valore: '100' },
 		],
 	},
+	{
+		slug: 'olio',
+		macro: 'ecommerce',
+		nome: 'Chioma Saracena',
+		categoria: 'E-commerce',
+		archetipo: 'Il negozio di un solo prodotto',
+		claim: 'Un olio, una latta, una pagina. L’oliva cade dalla chioma, diventa goccia al frantoio e finisce nella latta che si gira e si mette nel carrello.',
+		path: '/ecommerce/olio/',
+		infoPath: '/ecommerce/olio/info/',
+		titoloSeo: 'Sito e-commerce per un solo prodotto: homepage concept di un olio in latta',
+		descrizioneSeo:
+			'Come potrebbe essere il negozio online di chi vende un solo prodotto, fatto bene: un olio extravergine nuovo in latta, raccontato dall’ulivo alla cassa con un oggetto che scende con lo scroll, la latta in 3D da girare, formati, rate, carrello e checkout di prova. Concept dimostrativo di Loop Studio.',
+		intro: [
+			'Chi vende un solo prodotto non ha bisogno di un catalogo: ha bisogno che quel prodotto si capisca e si compri in fretta. Questa homepage è una pagina lunga con un oggetto solo che la attraversa: un’oliva si stacca dalla chioma di un ulivo altissimo, al frantoio diventa una goccia, la goccia cade in una latta, e la latta si posa accanto al pulsante per comprarla.',
+			'È il livello Essenziale della categoria E-commerce e una vetrina dimostrativa: il frantoio, la Piana, i valori delle analisi, i prezzi e i recapiti sono di fantasia, le fotografie sono d’archivio e la latta è un render. I marchi dei pagamenti sono veri perché un negozio vero li mostra, ma nessun pagamento parte.',
+		],
+		perChi:
+			'Frantoi, aziende agricole e piccoli produttori con un prodotto di punta (olio, vino, miele, conserve, caffè), artigiani che vendono un oggetto solo e chi apre il primo negozio online e vuole partire da una pagina che vende, non da un catalogo vuoto.',
+		sezioni: [
+			{
+				t: 'Un oggetto solo che accompagna lo scroll',
+				d: 'Oliva, goccia, latta: tre forme di una stessa cosa che scende dalla prima all’ultima sezione. Un solo script scrive l’avanzamento in una variabile CSS e tutto il resto lo fa il CSS. Con il movimento ridotto ogni tappa ha il suo stato fermo.',
+			},
+			{
+				t: 'Lastre fotografiche e vetro cannettato',
+				d: 'Ogni tappa è una foto quasi a tutta sezione con il testo dietro un vetro rigato che rifrange l’immagine. I titoli sono stampati a due inchiostri leggermente fuori registro, come le latte d’olio litografate di una volta.',
+			},
+			{
+				t: 'La latta si gira prima di comprarla',
+				d: 'Nella cassa la latta posata si trascina per vederla da tutti i lati, fronte, fianchi e retro con l’etichetta legale vera. Cambiando formato (1, 3 o 5 litri) cambia la latta, il prezzo al litro e le rate.',
+			},
+			{
+				t: 'Carrello e checkout come un negozio vero',
+				d: 'Un cassetto con la barra della spedizione gratuita, l’indirizzo con errori chiari, corriere o ritiro, sette metodi di pagamento italiani (carte, PayPal, Klarna, Scalapay, Satispay, bonifico) e un ordine di prova. La data di partenza dell’olio nuovo si calcola da oggi.',
+			},
+		],
+		awning: ['#c8231b', '#cfd5d8'],
+		glow: 'rgba(200, 35, 27, 0.55)',
+		livello: 1,
+		lingua: 'IT',
+		card: cardChioma,
+		shot: shotChioma,
+		shotAlt: '',
+		crop: '55% 40%',
+		cardAlt: 'Chioma Saracena su desktop e su telefono: un ulivo secolare a tutta pagina con il titolo dietro un vetro rigato e la parola Chioma gigante in rosso, e sul telefono la latta blu e rossa da tre litri nella cassa, con prezzo e rate.',
+		mood: 'Una latta d’olio litografata degli anni Cinquanta: rosso latta, argento e blu tipografico, inchiostri fuori registro, foto vere della raccolta e del frantoio dietro un vetro rigato, e un oggetto solo che scende dall’ulivo alla cassa.',
+		caratteri: 'Kwokwi e Funnel Sans',
+		palette: ['#c8231b', '#cfd5d8', '#1c2a6b', '#c2b02a', '#2b1d2e', '#f7f8f6'],
+		metriche: [
+			{ label: 'Performance', valore: '83' },
+			{ label: 'Accessibilità', valore: '100' },
+			{ label: 'Buone pratiche', valore: '100' },
+		],
+	},
 ];
 
 // stato: 'presto' = quasi pronta, 'cantiere' = ancora in costruzione (nessuna data promessa)
 export type StatoProssima = 'presto' | 'cantiere';
 export const prossime: { nome: string; categoria: string; macro: MacroSlug; stato: StatoProssima }[] = [
-	{ nome: 'Legale e professionale', categoria: 'Studi e servizi', macro: 'studi', stato: 'cantiere' },
-	{ nome: 'Negozio locale', categoria: 'Commercio', macro: 'commercio', stato: 'cantiere' },
+	{ nome: 'Hotel, B&B e case vacanza', categoria: 'Ospitalità', macro: 'ospitalita', stato: 'cantiere' },
+	{ nome: 'Toelettatura, pensioni e negozi per animali', categoria: 'Animali', macro: 'animali', stato: 'cantiere' },
+	{ nome: 'Studi legali', categoria: 'Legale', macro: 'legale', stato: 'cantiere' },
 ];
