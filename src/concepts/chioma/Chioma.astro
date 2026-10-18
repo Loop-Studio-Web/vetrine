@@ -8,12 +8,13 @@ import alto from '../../assets/chioma/foto/ulivo.jpg';
 import { FORMATI, eur, partenza } from './dati';
 const p = partenza();
 // due tagli della stessa foto: orizzontale per lo schermo largo, verticale per il telefono
+// qualità 62: la chioma è tutta foglie e a 80 la foto da telefono pesava 400 KB (è l'LCP)
 const set = async (src: ImageMetadata, widths: number[]) => {
-	const img = await getImage({ src, widths, format: 'webp' });
+	const img = await getImage({ src, widths, format: 'webp', quality: 62 });
 	return { srcset: img.srcSet.attribute, src: img.src };
 };
 const desk = await set(largo, [960, 1400, 1920, 2400]);
-const mob = await set(alto, [480, 720, 960, 1200]);
+const mob = await set(alto, [480, 640, 800, 1080]);
 const titolo = 'Olio nuovo da ulivi alti quindici metri.';
 ---
 

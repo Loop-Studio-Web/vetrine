@@ -324,7 +324,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 		// La cassa chiede di girare la latta posata (miniature, trascinamento, tastiera) o di cambiarne il formato.
 		addEventListener('chioma:giro', (e) => {
 			giroUtente = (e as CustomEvent<number>).detail;
-			carica();
+			// la cassa imposta lo stato già al caricamento: i fotogrammi si scaricano solo da metà raccolta in poi
+			if (t > 0.6) carica();
 			disegna();
 		});
 		// nei fotogrammi della 1 L e della 5 L la latta non riempie tutta l'altezza: si compensa la scala
@@ -332,7 +333,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 		addEventListener('chioma:formato', (e) => {
 			const { id, scala } = (e as CustomEvent<{ id: string; scala: number }>).detail;
 			formato = id;
-			carica(id);
+			if (t > 0.6) carica(id);
 			palco.style.setProperty('--fs', String(scala / FRAZIONE[id]));
 			disegna(true);
 		});

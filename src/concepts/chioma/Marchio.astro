@@ -59,9 +59,10 @@ const etichette: Record<string, string> = {
 				<svg viewBox="0 0 24 24" aria-hidden="true">
 					<path fill="#003087" d={percorso(paypal)} />
 				</svg>
-				<b aria-hidden="true">
-					Pay<i>Pal</i>
-				</b>
+				{/* la parola in SVG, come nel logo vero: in HTML l'azzurro del marchio su bianco (3,1) conta come testo per axe */}
+				<svg class="pp" viewBox="0 0 41 14" width="41" height="14" aria-hidden="true">
+					<text x="0" y="11" textLength="40" lengthAdjust="spacingAndGlyphs"><tspan fill="#003087">Pay</tspan><tspan fill="#009cde">Pal</tspan></text>
+				</svg>
 			</>
 		)
 	}
@@ -74,15 +75,17 @@ const etichette: Record<string, string> = {
 					<path fill="#ffffff" d="M12 3.2 20.8 12 12 20.8 3.2 12z" />
 					<path fill="#ef373f" d="M12 7.6 16.4 12 12 16.4 7.6 12z" />
 				</svg>
-				<b aria-hidden="true">Satispay</b>
+				<svg class="scritta" viewBox="0 0 52 14" width="52" height="14" style="--r: 3.714" aria-hidden="true">
+					<text x="0" y="11" fill="#ffffff" textLength="51" lengthAdjust="spacingAndGlyphs">Satispay</text>
+				</svg>
 			</>
 		)
 	}
 	{
 		nome === 'mybank' && (
-			<b aria-hidden="true">
-				My<i>Bank</i>
-			</b>
+			<svg class="scritta" viewBox="0 0 44 14" width="44" height="14" style="--r: 3.143" aria-hidden="true">
+				<text x="0" y="11" textLength="43" lengthAdjust="spacingAndGlyphs"><tspan fill="#1a4a8f">My</tspan><tspan fill="#e5362a">Bank</tspan></text>
+			</svg>
 		)
 	}
 	{
@@ -129,12 +132,10 @@ const etichette: Record<string, string> = {
 	.marchio--americanexpress svg {
 		height: 22px;
 	}
-	.marchio--paypal b {
-		font-style: italic;
-		color: #003087;
-	}
-	.marchio--paypal i {
-		color: #009cde;
+	.marchio--paypal .pp {
+		height: 1.17em;
+		width: auto;
+		font: italic 800 12px/1 system-ui, sans-serif;
 	}
 	.marchio--paypal svg {
 		height: 15px;
@@ -156,12 +157,11 @@ const etichette: Record<string, string> = {
 	.marchio--satispay svg {
 		height: 14px;
 	}
-	.marchio--mybank b {
-		color: #1a4a8f;
-	}
-	.marchio--mybank i {
-		color: #e5362a;
-		font-style: normal;
+	.marchio .scritta {
+		flex: none;
+		height: 14px;
+		width: calc(14px * var(--r));
+		font: 800 12px/1 system-ui, sans-serif;
 	}
 	.marchio img {
 		width: auto;
