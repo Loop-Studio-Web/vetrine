@@ -5,7 +5,7 @@ Limonaia è stata rifatta perché troppo simile a Obra Fina. Non sostituisce le 
 (niente beige, palette diverse nella stessa macro, niente aspetto "da AI"): le completa con uno
 strumento per vedere cosa abbiamo già fatto e dove ci sono ancora buchi.
 
-## 1. Matrice dei 13 concept
+## 1. Matrice dei concept
 
 Tre scelte per ogni concept: **struttura** (che cosa fa la pagina), **materia** (di che cosa è fatta
 visivamente), **gesto** (l'unico effetto che si ricorda). Compilata dalle note del CLAUDE.md;
@@ -28,6 +28,7 @@ le celle con "?" vanno verificate sul concept prima di fidarsi.
 | Mala Hierba Flores | strumento (ramo) + ordine | carta, papel picado | taller de papel picado |
 | Limonaia Aurelia | strumento (pianta) + invito | foto + vetro | la pagina cambia luce con l'ora della festa |
 | Marrow & Knot | corridoio orizzontale di sale + nodo che si stringe | foto a tutta pagina tessute a fili (WebGL/OGL) + video in maschera a serratura | le foto si tessono entrando in sala e una si tesse sull'altra mentre si avanza; il testo si costruisce con lo scroll |
+| Chioma Saracena | pagina lunga a oggetto unico, acquisto in fondo (pagina prodotto + carrello + checkout) | lastre fotografiche + vetro cannettato, litografia su latta fuori registro, latta in render 3D | un oggetto solo che scende con lo scroll e cambia forma: oliva, goccia, latta che si posa accanto al pulsante |
 
 ### Cosa si ripete (lettura al 2026-10-15)
 
@@ -53,7 +54,7 @@ stessa macro non possono condividerne due. Scrivere la riga nella nota del conce
 Cinque direzioni che nessuna Vetrina occupa. Sono spunti da cui partire, non obblighi.
 
 1. **Solo tipografia, zero foto.** Testo enorme, colore pieno, solo line-art SVG. Quasi gratis in peso,
-   Lighthouse alto per costruzione. Candidata naturale: Studi e servizi (legale, commercialista).
+   Lighthouse alto per costruzione. Candidata naturale: Legale (studi legali).
 2. **Illustrazione a mano come identità.** Ritratti a penna, tratto disegnato, mano che spinge il
    pulsante del form. Mala Hierba ha la carta ma non un tratto disegnato. Adatta a bottega,
    libreria, artigiano.
@@ -62,7 +63,8 @@ Cinque direzioni che nessuna Vetrina occupa. Sono spunti da cui partire, non obb
 4. **Colonne a scroll indipendente.** Una colonna ferma, l'altra scorre, poi si sblocca. È un layout,
    non una scena: diversa dalla scena sticky che già usiamo. Fattibile con `position: sticky`.
 5. **Un solo grande gesto in una pagina semplice.** Il fiore che ruota e riempie lo sfondo di
-   Superlocal: l'opposto di Ordito/Aeterna. Tutto il resto resta sobrio.
+   Superlocal: l'opposto di Ordito/Aeterna. Tutto il resto resta sobrio. **Usata** da Chioma Saracena
+   (2026-10-18: oliva → goccia → latta): non riprenderla nella stessa forma.
 
 Dall'articolo Figma sulle tendenze sono utili solo **collage** (ritagli, texture, adesivi) e
 **massimalismo**. Scartati: neumorfismo (datato), gamification, voce, chatbot (fuori target per

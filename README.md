@@ -5,7 +5,7 @@
   <img src="docs/img/loop-logo-on-light.svg" alt="Loop Studio" height="64">
 </picture>
 
-<img src="docs/img/header.svg" alt="A street of shop fronts: Trattoria, Ossidiana, Luppolo & Watt, Bottega Tre Rasoi, Atelier Lumen, Aeterna, FIXLAB, Hot Swap, Ordito, Sifone, Obra Fina, Scala Vera and Mala Hierba Flores are lit and open, one more window is dark and coming soon." width="100%">
+<img src="docs/img/header.svg" alt="A street of shop fronts on two rows: Trattoria, Ossidiana, Luppolo & Watt, Bottega Tre Rasoi, Atelier Lumen, Aeterna, FIXLAB, Hot Swap, Ordito, Sifone, Obra Fina, Scala Vera, Mala Hierba Flores, Limonaia Aurelia, Marrow & Knot and Chioma Saracena are lit and open, one more window is dark and coming soon." width="100%">
 
 **Full-page homepage concepts for local businesses.<br>Each one designed as if it were the only one on the street.**
 
@@ -28,9 +28,9 @@
 *Vetrine* is Italian for **shop windows**. That is the whole idea: a shop window has one job, to make a stranger stop. So every concept here is a complete homepage with its own mood, structure, typography and motion, grouped by business category (Food & drink first), with several archetypes inside each category.
 
 > [!NOTE]
-> The pages are in Italian, because that is the audience they are built for (Hot Swap is the one exception: a computer store written in English, as many such shops are). All businesses, people, addresses and reviews are fictional and declared as such.
+> Most pages are in Italian, because that is the audience they are built for. A few are written for another market on purpose: Hot Swap and Marrow & Knot in English, Obra Fina in Spanish (Spain) and Mala Hierba Flores in Mexican Spanish. The hub, the detail pages and the "back to the street" strip stay in Italian. All businesses, people, addresses and reviews are fictional and declared as such.
 
-**A street, not a grid.** Each row sits in a full-width scene drawn in CSS and generated SVG (no image files): sky, two layers of skyline with lit windows, lamp posts, pavement and road, with a light parallax on scroll (off with reduced motion). The dark theme is night, the light theme is day, and every category has its own hour: restaurants at dusk, wellness at dawn, tech in the dead of night (windows lit like screens), studios in clear daylight, and the "in progress" rows under grey skies with a crane.
+**A street, not a grid.** Each row sits in a full-width scene drawn in CSS and generated SVG (no image files): sky, two layers of skyline with lit windows, lamp posts, pavement and road, with a light parallax on scroll (off with reduced motion). The dark theme is night, the light theme is day, and every category has its own hour: restaurants at dusk, wellness at dawn, tech in the dead of night (windows lit like screens), home and craft at sunset, events at the blue hour, e-commerce in clear daylight, and the "in progress" rows under grey skies with a crane. Under the neon "Open" sign, a row of neon pills (one per category, in the colour of its hour) jumps to each row of the street.
 
 **How the entrance is organised.** The street is grouped by category: one labelled row of windows per category (a horizontal scroller on phones, with a neon arrow hinting that it moves), and categories still without a concept collect in a final "coming soon" row. Below it, the full list can be filtered by category (the filter lives in the URL hash, so it can be shared) and every concept has an indexable detail page at `/<category>/<archetype>/info/` that explains the idea, who it is for and what is inside. The concepts themselves stay `noindex`. Links from the hub to a concept open in a new tab, so the street stays open while visitors explore.
 
@@ -272,7 +272,7 @@
 
 | | |
 |---|---|
-| **Archetype** | The florist for ceremonies and occasions: the **essential** tier of the Events & creatives window, for a neighbourhood shop that takes orders by WhatsApp and delivers the same day |
+| **Archetype** | The florist for ceremonies and occasions: the **essential** tier of the Events window, for a neighbourhood shop that takes orders by WhatsApp and delivers the same day |
 | **Mood** | A *taller de papel picado*: hot pink, forest green, marigold and turquoise, a soft chunky serif and price tags written in marker, with real market photographs. The market in Mexico is the only reference: no ivory, no peonies out of focus |
 | **Type** | Caprasimo for headlines, Familjen Grotesk for text, Permanent Marker for the tags |
 | **Palette** | <img src="docs/img/palette-malahierba.svg" alt="Hot pink, forest green, marigold, turquoise, pale pink and paper white" height="22"> |
@@ -291,7 +291,7 @@
 
 | | |
 |---|---|
-| **Archetype** | The event venue: the **evolved** tier of the Events & creatives window, for a villa or farmhouse with a hall, a garden and a cellar |
+| **Archetype** | The event venue: the **evolved** tier of the Events window, for a villa or farmhouse with a hall, a garden and a cellar |
 | **Mood** | A greenhouse at dusk: lemon, ink blue and glass, arched windows, plant-pot tags and a plan that works out the tables honestly, saying so when guests do not fit |
 | **Type** | Brygada 1918 (a variable serif with a true italic) for titles and room names, Epilogue for text and controls |
 | **Palette** | <img src="docs/img/palette-limonaia.svg" alt="Lemon, ink blue, glass blue, terracotta, leaf green and pale sky" height="22"> |
@@ -310,7 +310,7 @@
 
 | | |
 |---|---|
-| **Archetype** | The destination wedding planner: the **experience** tier of the Events & creatives window, for a studio that sells places more than services |
+| **Archetype** | The destination wedding planner: the **experience** tier of the Events window, for a studio that sells places more than services |
 | **Mood** | An enfilade of rooms in a palazzo: Pompeian red, verdigris, cold marble and wine, tall condensed titles, no gold. The knot of the logo is the thread of the whole page |
 | **Type** | Imbue (a narrow high-contrast display serif with an optical-size axis) for titles, Great Vibes for the place names, Commissioner for text |
 | **Palette** | <img src="docs/img/palette-marrowknot.svg" alt="Pompeian red, verdigris, wine, cold marble, carmine and dusty pink" height="22"> |
@@ -321,12 +321,33 @@
 
 <br>
 
+### 16 · Chioma Saracena
+
+<a href="https://vetrine.theloopstudio.org/ecommerce/olio/"><img src="docs/img/card-chioma.jpg" alt="Chioma Saracena on desktop and mobile: a monumental olive tree across the whole page with the headline behind a sheet of reeded glass and the word Chioma huge in red, and on the phone the blue and red three-litre tin in the checkout, with price and instalments." width="100%"></a>
+
+*Olio nuovo da ulivi alti quindici metri.* A one-product shop for new olive oil in a tin, in Italian.
+
+| | |
+|---|---|
+| **Archetype** | The single-product online shop: the **essential** tier of the E-commerce window, for a mill, a farm or a maker who sells one thing well and needs a page that sells, not an empty catalogue |
+| **Mood** | A 1950s lithographed olive-oil tin: tin red, silver and printer's blue, two inks slightly out of register, real photographs of the harvest and the mill behind reeded glass. No cream, no rustic wood, no gold |
+| **Type** | Kwokwi (public domain, used on two layers: the letter and a shadow with an outline that slides into register as it scrolls into view) for titles, Funnel Sans for text and interface |
+| **Palette** | <img src="docs/img/palette-chioma.svg" alt="Tin red, tin silver, lithographic blue, oil gold, olive black and enamel white" height="22"> |
+| **Signature moves** | **One object, three shapes, one gesture**: an olive leaves the crown of the tree in the hero, falls into the crate at the mill, becomes a drop where the oil leaves the spout, falls into the tin, and the tin turns as you read and lands next to the buy button. One small script writes the scroll progress into a CSS variable; everything else (falls, turns, the stop at each quarter) is CSS with `round()`, `mod()` and `cos()`, and reduced motion freezes one state per stop. Every stop is a **photographic plate** with its text behind **reeded glass** that refracts the picture (an SVG filter in `backdrop-filter`, Chromium only, a plain frosted pane elsewhere). The **tin is an offline 3D render** (36 frames per turn for each of the 1, 3 and 5 litre tins, with the real legal label on the back) that the visitor can drag around in the checkout. A **real shop flow**: formats, price per litre, three interest-free instalments, a cart drawer with a free-shipping bar, address with clear errors, courier or pickup, seven Italian payment methods and a test order. The shipping date of the new oil is computed from today. On phones a fixed bar with one call to action and the cart, no menu: the page is the shop |
+| **Lighthouse** | 83 performance on mobile in local Lighthouse (the LCP is the hero photograph), 100 on accessibility and best practices, no layout shift. Photographs from Unsplash and Pexels, declared as illustrative; payment marks are shown because a real shop shows them, but no payment is real (Apple Pay and Google Pay icons by Icons8). Logo generated with AI and vectorised |
+
+[**Open Chioma Saracena →**](https://vetrine.theloopstudio.org/ecommerce/olio/)
+
+<br>
+
 ### Next on the street
 
 | Category | Archetype | Status |
 |---|---|---|
-| Legal & professional | to be decided | Planned |
-| Local shop / e-commerce | to be decided | Planned |
+| E-commerce | A drop / limited-edition shop (evolved) and an editorial "shoppable" magazine (experience) | In progress |
+| Hospitality | Hotels, B&Bs and holiday homes | Planned |
+| Pets | Grooming, boarding and pet shops | Planned |
+| Legal | Law firms | Planned |
 
 No deadlines: one window at a time, with the care each one needs.
 
@@ -355,6 +376,9 @@ flowchart TB
     infra --> P["<b>Obra Fina</b><br/>own markup · CSS · JS · fonts"]
     infra --> V["<b>Scala Vera</b><br/>own markup · CSS · JS · fonts"]
     infra --> M["<b>Mala Hierba Flores</b><br/>own markup · CSS · JS · fonts"]
+    infra --> LA["<b>Limonaia Aurelia</b><br/>own markup · CSS · JS · fonts"]
+    infra --> K["<b>Marrow & Knot</b><br/>own markup · CSS · JS · fonts"]
+    infra --> C["<b>Chioma Saracena</b><br/>own markup · CSS · JS · fonts"]
     infra --> N["<b>next concept…</b>"]
     T -.-|nothing shared| O
     O -.-|nothing shared| B
@@ -369,15 +393,15 @@ A piece of code is reused between two concepts only when it is the *exact same t
 
 Before a concept goes on the street, it has to clear the same gate:
 
-| Gate | What it means | Trattoria | Ossidiana | Luppolo & Watt | Tre Rasoi | Lumen | Aeterna | FIXLAB | Hot Swap | Ordito | Sifone | Obra Fina | Scala Vera | Mala Hierba |
-|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| **Builds** | `astro build` is clean | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Accessible** | `axe-core`: zero violations | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Menu on phones** | A real menu with its own open/close effect, keyboard and Escape friendly (a curtain for Ossidiana, an unrolling card for the Trattoria, a pour of beer for Luppolo & Watt, a hot towel for Tre Rasoi, curtains for Lumen, a laser scan for Aeterna, a screwed-on back panel for FIXLAB, a tray with an LED for Hot Swap, a dark room whose lights come on one by one for Ordito, a rolling shutter for Sifone, three trowel passes for Obra Fina, a fan deck of material samples for Scala Vera, a curtain of papel picado for Mala Hierba) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Gate | What it means | Trattoria | Ossidiana | Luppolo & Watt | Tre Rasoi | Lumen | Aeterna | FIXLAB | Hot Swap | Ordito | Sifone | Obra Fina | Scala Vera | Mala Hierba | Limonaia | Marrow & Knot | Chioma |
+|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| **Builds** | `astro build` is clean | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Accessible** | `axe-core`: zero violations | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Menu on phones** | A real menu with its own open/close effect, keyboard and Escape friendly (a curtain for Ossidiana, an unrolling card for the Trattoria, a pour of beer for Luppolo & Watt, a hot towel for Tre Rasoi, curtains for Lumen, a laser scan for Aeterna, a screwed-on back panel for FIXLAB, a tray with an LED for Hot Swap, a dark room whose lights come on one by one for Ordito, a rolling shutter for Sifone, three trowel passes for Obra Fina, a fan deck of material samples for Scala Vera, a curtain of papel picado for Mala Hierba, a tablecloth with place cards for Limonaia, black and white stripes rising from the bottom for Marrow & Knot; Chioma has no menu by design, only a fixed bar with one call to action and the cart) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | — |
+| **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ```text
  LIGHTHOUSE · mobile            Trattoria                Ossidiana
@@ -406,10 +430,14 @@ src/
 │  │  ├─ barbiere/index.astro
 │  │  ├─ estetica/index.astro
 │  │  └─ longevity/index.astro
-│  └─ tech/
-│     ├─ riparazioni/index.astro
-│     ├─ pc-gaming/index.astro
-│     └─ studio/index.astro
+│  ├─ tech/
+│  │  ├─ riparazioni/index.astro
+│  │  ├─ pc-gaming/index.astro
+│  │  └─ studio/index.astro
+│  ├─ casa/                            idraulico, ristrutturazioni, interior
+│  ├─ eventi/                          fiorista, location, wedding
+│  └─ ecommerce/
+│     └─ olio/index.astro              (every concept also has an info.astro next to it)
 ├─ hub/                                data, styles and sections of the hub page
 ├─ concepts/
 │  ├─ trattoria/                       one component per section + base.css
@@ -420,10 +448,15 @@ src/
 │  ├─ aeterna/                         and again, with WebGL
 │  ├─ fixlab/                          and again, with no photos at all
 │  ├─ hotswap/                         and again, in English
-│  └─ ordito/                          and again, with a 3D house
+│  ├─ ordito/                          and again, with a 3D house
+│  ├─ sifone/, obrafina/, scalavera/   and again, three times (Spanish for Obra Fina, WebGL watercolour for Scala Vera)
+│  ├─ malahierba/, limonaia/           and again (Mexican Spanish, then a page that changes light with the hour)
+│  ├─ marrowknot/                      and again, in English, with photographs woven in WebGL
+│  └─ chioma/                          and again, a one-product shop with a cart and checkout
 └─ assets/<concept>/ and hub/          local images only, no hotlinking
 public/images/<concept>/               fixed URLs: og:image, favicon
 docs/img/                              the pictures you are looking at
+tools/                                 test tools (screenshots, axe, Lighthouse, PSI) and the offline 3D render of the olive-oil tin; not part of the site
 ```
 
 **Conventions**
@@ -452,7 +485,8 @@ Node 22.12 or newer.
 - 🎭 **Everything is fictional.** Names, addresses, phone numbers, chefs, producers and reviews are invented and labelled as examples. Review widgets carry no third-party branding.
 - 🔒 **Nothing leaves the page.** Booking forms are demonstrations: no data is sent or stored.
 - 🙈 **Concepts stay out of search engines.** Every concept page is `noindex, nofollow`; only the entrance page is indexable.
-- 📷 **Photos** are from [Unsplash](https://unsplash.com) and used under its licence. Brand marks and emblems are AI-assisted concepts created for these demos.
+- 📷 **Photos** are from [Unsplash](https://unsplash.com) and [Pexels](https://www.pexels.com) and used under their licences; credits sit next to the images in each concept. Brand marks and emblems are AI-assisted concepts created for these demos.
+- 💳 **Payment marks** (cards, PayPal, Klarna, Scalapay, Satispay, Apple Pay, Google Pay, MyBank) appear in the e-commerce concepts because a real shop shows them; the buttons are fake and no payment ever starts.
 
 <br>
 
