@@ -1,0 +1,1164 @@
+---
+// Sesta tappa: la bottega. La latta del palco si posa nel posto vuoto [data-approdo] e lì si gira (trascinamento, frecce,
+// miniature): è la galleria del prodotto. A destra la scheda come in un negozio vero: prezzo, rate, formato sullo
+// scaffale, quantità, "Aggiungi al carrello" a fascetta e i pagamenti rapidi. Il carrello è un cassetto con il checkout.
+// Tutto finto e dichiarato: nessun pagamento parte.
+import { Image } from 'astro:assets';
+import l1 from '../../assets/chioma/latta/scatto-1.png';
+import l3 from '../../assets/chioma/latta/scatto-3.png';
+import l5 from '../../assets/chioma/latta/scatto-5.png';
+import Marchio from './Marchio.astro';
+import { FORMATI, METODI, GRATIS_DA, SPEDIZIONE, MAX_LATTE, eur, rate, partenza } from './dati';
+const foto: Record<string, ImageMetadata> = { '1': l1, '3': l3, '5': l5 };
+const iniziale = FORMATI[1];
+const r = rate(iniziale.prezzo);
+const p = partenza();
+const viste = [
+	{ gradi: 0, nome: 'Davanti' },
+	{ gradi: 90, nome: 'Fianco' },
+	{ gradi: 180, nome: 'Retro' },
+	{ gradi: 270, nome: 'Altro fianco' },
+];
+const eurC = (n: number) => n.toLocaleString('it-IT', { style: 'currency', currency: 'EUR' });
+---
+
+<section class="tappa cassa" id="cassa" data-tappa aria-labelledby="cassa-titolo">
+	<p class="parola cassa__parola" aria-hidden="true">Nuovo</p>
+	<div class="bottega">
+		<div class="galleria">
+			<div
+				class="approdo"
+				data-approdo
+				tabindex="0"
+				role="slider"
+				aria-label="Gira la latta"
+				aria-valuemin="0"
+				aria-valuemax="350"
+				aria-valuenow="0"
+				aria-valuetext="Davanti"
+			>
+			</div>
+			<div class="viste" role="group" aria-label="Lati della latta">
+				{viste.map((v, i) => <button type="button" class="goffrato" data-vista={v.gradi} aria-pressed={i === 0 ? 'true' : 'false'}>{v.nome}</button>)}
+			</div>
+			<p class="galleria__nota">Trascinala per girarla. Le foto sono un render della latta: in un negozio vero qui va la foto del prodotto.</p>
+		</div>
+
+		<form class="scheda" data-banco novalidate>
+			<h2 id="cassa-titolo">Olio extravergine di oliva, Ottobratica 2026/27</h2>
+			<p class="prezzo">
+				<span class="prezzo__cifra" data-prezzo>{eur(iniziale.prezzo)}</span>
+				<span class="prezzo__litro" data-al-litro>{eurC(iniziale.prezzo / iniziale.litri)} al litro, IVA inclusa</span>
+			</p>
+			<p class="rate" data-rate>
+				Oppure 3 rate da <strong data-quota>{eurC(r.quota)}</strong> senza interessi con
+				<span class="rate__marchi"><Marchio nome="paypal" /><Marchio nome="klarna" /><Marchio nome="scalapay" /></span>
+			</p>
+
+			<fieldset class="scaffale">
+				<legend>Formato</legend>
+				<div class="scaffale__ripiano">
+					{
+						FORMATI.map((f) => (
+							<label class="latta-scelta" style={`--s:${f.scala}`}>
+								<input type="radio" name="formato" value={f.id} checked={f.id === iniziale.id} data-prezzo={f.prezzo} data-scala={f.scala} data-litri={f.litri} data-misure={f.misure} data-peso={f.peso} data-nota={f.nota} />
+								<span class="cartellino" aria-hidden="true">{eur(f.prezzo)}</span>
+								<Image src={foto[f.id]} alt="" height={360} densities={[1, 2]} class="latta-scelta__img" />
+								<span class="latta-scelta__nome">{f.litri === 1 ? '1 litro' : `${f.litri} litri`}</span>
+								<span class="sr-only">, {eur(f.prezzo)}</span>
+							</label>
+						))
+					}
+				</div>
+			</fieldset>
+			<p class="formato__dati" data-dati>{iniziale.nota}. {iniziale.misure}, pesa {iniziale.peso}.</p>
+
+			<div class="acquisto">
+				<div class="passo" role="group" aria-labelledby="quante-label">
+					<span class="sr-only" id="quante-label">Quante latte</span>
+					<button type="button" class="goffrato" data-meno aria-label="Una latta in meno">−</button>
+					<output data-quante aria-live="polite">1</output>
+					<button type="button" class="goffrato" data-piu aria-label="Una latta in più">+</button>
+				</div>
+				<button class="fascetta" type="submit" data-aggiungi>
+					<span class="fascetta__linguetta" aria-hidden="true"></span>
+					<span class="fascetta__testo">Aggiungi al carrello</span>
+					<span class="fascetta__fatto" aria-hidden="true">Nel carrello</span>
+				</button>
+			</div>
+			<p class="sr-only" role="status" data-annuncio></p>
+
+			<div class="rapidi">
+				<p class="rapidi__titolo">Oppure paga subito</p>
+				<div class="rapidi__bottoni">
+					<button type="button" class="rapido rapido--apple" data-rapido="applepay" aria-label="Paga con Apple Pay"><Marchio nome="applepay" class="rapido__marchio" /></button>
+					<button type="button" class="rapido rapido--google" data-rapido="googlepay" aria-label="Paga con Google Pay"><Marchio nome="googlepay" class="rapido__marchio" /></button>
+					<button type="button" class="rapido rapido--paypal" data-rapido="paypal" aria-label="Paga con PayPal"><Marchio nome="paypal" class="rapido__marchio" /></button>
+				</div>
+			</div>
+
+			<ul class="garanzie">
+				<li data-partenza>{p.prenotazione ? `L'olio nuovo parte ${p.testo}: chi prenota ora lo riceve per primo.` : `Se ordini oggi, la latta parte ${p.testo}.`}</li>
+				<li>Spedizione {eur(SPEDIZIONE)}, gratis da {eur(GRATIS_DA)}. Corriere in 48 ore in tutta Italia.</li>
+				<li>Se arriva ammaccata, mandaci una foto: te la cambiamo.</li>
+			</ul>
+			<p class="avviso">Vetrina dimostrativa: i pagamenti sono finti e non parte niente.</p>
+		</form>
+	</div>
+
+	<dialog class="carrello" data-carrello aria-labelledby="carrello-titolo">
+		<div class="carrello__testa">
+			<h2 id="carrello-titolo" data-titolo-carrello>Il tuo carrello</h2>
+			<button type="button" class="goffrato carrello__chiudi" data-chiudi aria-label="Chiudi il carrello">Chiudi</button>
+		</div>
+
+		<div class="passo-c" data-passo="carrello">
+			<ul class="righe" data-righe></ul>
+			<p class="vuoto" data-vuoto>Il carrello è vuoto. Scegli un formato e aggiungi una latta.</p>
+			<div class="soglia" data-soglia>
+				<p data-soglia-testo></p>
+				<div class="soglia__barra"><span data-soglia-barra></span></div>
+			</div>
+			<dl class="totali">
+				<div><dt>Olio</dt><dd data-c-merce>0 €</dd></div>
+				<div><dt>Spedizione</dt><dd data-c-sped>—</dd></div>
+				<div class="totali__tot"><dt>Totale</dt><dd data-c-tot>0 €</dd></div>
+			</dl>
+			<p class="rate rate--piccolo" data-c-rate></p>
+			<div class="carrello__azioni">
+				<button type="button" class="registro" data-vai-cassa><span>Vai alla cassa</span></button>
+				<button type="button" class="goffrato" data-chiudi>Continua a guardare</button>
+			</div>
+		</div>
+
+		<form class="passo-c checkout" data-passo="cassa" hidden novalidate>
+			<fieldset class="campi">
+				<legend>Dove spediamo</legend>
+				<label class="campo campo--largo"><span>Email</span><input type="email" name="email" autocomplete="email" required /></label>
+				<label class="campo campo--largo"><span>Nome e cognome</span><input type="text" name="nome" autocomplete="name" required /></label>
+				<label class="campo campo--largo"><span>Indirizzo</span><input type="text" name="via" autocomplete="street-address" required /></label>
+				<label class="campo"><span>CAP</span><input type="text" name="cap" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{5}" maxlength="5" required /></label>
+				<label class="campo"><span>Città</span><input type="text" name="citta" autocomplete="address-level2" required /></label>
+			</fieldset>
+			<fieldset class="consegna">
+				<legend>Consegna</legend>
+				<label class="opzione"><input type="radio" name="consegna" value="corriere" checked /><span>Corriere in 48 ore</span><b data-c-corriere>{eur(SPEDIZIONE)}</b></label>
+				<label class="opzione"><input type="radio" name="consegna" value="ritiro" /><span>Ritiro al frantoio, Piana di Gioia Tauro</span><b>gratis</b></label>
+			</fieldset>
+			<fieldset class="metodi">
+				<legend>Pagamento</legend>
+				{
+					METODI.map((m, i) => (
+						<label class="metodo">
+							<input type="radio" name="metodo" value={m.id} checked={i === 0} />
+							<span class="metodo__nome">{m.nome}</span>
+							<span class="metodo__marchi">{m.marchi.map((n) => <Marchio nome={n} />)}</span>
+							<span class="metodo__nota" data-nota-metodo={m.id}>{m.nota}</span>
+						</label>
+					))
+				}
+			</fieldset>
+			<p class="errore" data-errore role="alert"></p>
+			<dl class="totali totali--fine">
+				<div class="totali__tot"><dt>Da pagare</dt><dd data-f-tot>0 €</dd></div>
+			</dl>
+			<div class="carrello__azioni">
+				<button type="submit" class="registro" data-paga><span>Paga</span></button>
+				<button type="button" class="goffrato" data-indietro>Torna al carrello</button>
+			</div>
+			<p class="avviso">Pagamento di prova: nessun addebito, nessun dato salvato.</p>
+		</form>
+
+		<div class="passo-c fatto" data-passo="fatto" hidden>
+			<p class="fatto__numero" data-numero></p>
+			<p data-riepilogo></p>
+			<p>In un negozio vero ora arriverebbe la mail di conferma, poi il numero di spedizione. Qui non parte niente e non è stato addebitato niente.</p>
+			<div class="carrello__azioni">
+				<button type="button" class="goffrato" data-chiudi data-svuota>Chiudi</button>
+			</div>
+		</div>
+	</dialog>
+</section>
+
+<style>
+	.cassa {
+		--fondo: var(--latta);
+		padding: clamp(96px, 14svh, 150px) var(--gutter) clamp(88px, 16svh, 180px);
+	}
+	.cassa__parola {
+		left: -0.05em;
+		bottom: -0.16em;
+		/* goffrata, come le scritte a rilievo sui coperchi: luce sopra, ombra sotto */
+		color: var(--latta);
+		text-shadow:
+			-2px -2px 0 var(--smalto),
+			3px 3px 0 var(--latta-2);
+	}
+	.bottega {
+		position: relative;
+		z-index: 6;
+		max-width: var(--max);
+		margin-inline: auto;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 32rem);
+		gap: clamp(28px, 5vw, 88px);
+		align-items: start;
+	}
+	.galleria {
+		display: grid;
+		justify-items: center;
+		gap: 18px;
+	}
+	.approdo {
+		width: calc(var(--lw) * 1.7);
+		height: calc(var(--lh) * 1.3);
+		cursor: grab;
+		touch-action: pan-y;
+	}
+	.approdo:active {
+		cursor: grabbing;
+	}
+	.viste {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 8px;
+	}
+	.viste .goffrato {
+		min-height: 40px;
+		font-size: 0.875rem;
+	}
+	.galleria__nota {
+		max-width: 38ch;
+		text-align: center;
+		font-size: 0.875rem;
+	}
+
+	.scheda {
+		color: var(--oliva);
+	}
+	h2 {
+		font-size: clamp(2rem, 3.2vw, 3rem);
+		color: var(--blu);
+	}
+	.prezzo {
+		margin-top: 16px;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 4px 14px;
+	}
+	.prezzo__cifra {
+		font-family: var(--titoli);
+		font-size: 2.6rem;
+		line-height: 1;
+		color: var(--blu);
+	}
+	.prezzo__litro {
+		font-size: 0.9375rem;
+	}
+	.rate {
+		margin-top: 10px;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 6px;
+		font-size: 0.9375rem;
+	}
+	.rate__marchi {
+		display: inline-flex;
+		gap: 4px;
+	}
+
+	.scaffale {
+		border: 0;
+		margin-top: 26px;
+	}
+	legend {
+		font-weight: 720;
+		color: var(--blu);
+		margin-bottom: 6px;
+	}
+	/* le tre latte in fila su un ripiano, in scala: si sceglie toccando la latta */
+	.scaffale__ripiano {
+		display: flex;
+		align-items: flex-end;
+		gap: clamp(10px, 2vw, 24px);
+		padding: 30px 6px 0;
+		border-bottom: 6px solid var(--blu);
+		box-shadow: 0 3px 0 var(--latta-2);
+	}
+	.latta-scelta {
+		position: relative;
+		flex: 1;
+		display: grid;
+		justify-items: center;
+		cursor: pointer;
+		padding-bottom: 8px;
+	}
+	.latta-scelta input {
+		position: absolute;
+		inset: 0;
+		opacity: 0;
+		cursor: pointer;
+	}
+	.latta-scelta :global(.latta-scelta__img) {
+		height: calc(150px * var(--s));
+		width: auto;
+		transition: translate 200ms var(--ease);
+	}
+	.latta-scelta__nome {
+		margin-top: 8px;
+		font-weight: 650;
+		font-size: 0.9375rem;
+		color: var(--blu);
+	}
+	@media (hover: hover) and (pointer: fine) {
+		.latta-scelta:hover :global(.latta-scelta__img) {
+			translate: 0 -3px;
+		}
+	}
+	/* il cartellino del prezzo, appeso alla latta scelta */
+	.cartellino {
+		position: absolute;
+		top: -26px;
+		left: 50%;
+		translate: -50% -6px;
+		opacity: 0;
+		padding: 4px 10px 5px;
+		background: var(--rosso);
+		color: var(--smalto);
+		font-weight: 760;
+		font-size: 0.9375rem;
+		white-space: nowrap;
+		border-radius: 3px;
+		clip-path: polygon(10px 0, 100% 0, 100% 100%, 10px 100%, 0 50%);
+		padding-left: 16px;
+		transition:
+			opacity 200ms var(--ease),
+			translate 200ms var(--ease);
+		pointer-events: none;
+	}
+	.latta-scelta:has(input:checked) .cartellino {
+		opacity: 1;
+		translate: -50% 0;
+	}
+	.latta-scelta:has(input:checked) .latta-scelta__nome {
+		text-decoration: underline 3px var(--rosso);
+		text-underline-offset: 5px;
+	}
+	.latta-scelta:has(input:focus-visible) {
+		outline: 3px solid var(--blu);
+		outline-offset: 4px;
+	}
+	.formato__dati {
+		margin-top: 12px;
+		font-size: 0.9375rem;
+	}
+
+	.acquisto {
+		margin-top: 24px;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px;
+		align-items: stretch;
+	}
+	.passo {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+	}
+	.passo .goffrato {
+		width: 46px;
+		min-height: 56px;
+		padding: 0;
+		font-size: 1.4rem;
+	}
+	.passo output {
+		min-width: 2.2rem;
+		text-align: center;
+		font-family: var(--titoli);
+		font-size: 1.7rem;
+		color: var(--blu);
+	}
+
+	/* la fascetta: il sigillo rosso del tappo. A sinistra la linguetta, staccata da una perforazione: aggiungendo
+	   al carrello si strappa. */
+	.fascetta {
+		position: relative;
+		flex: 1;
+		min-width: 14rem;
+		min-height: 56px;
+		display: grid;
+		grid-template-columns: 44px minmax(0, 1fr);
+		align-items: center;
+		border: 0;
+		padding: 0;
+		background: none;
+		color: var(--smalto);
+		font-weight: 740;
+		font-size: 1.0625rem;
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+		transition: transform 140ms var(--ease);
+	}
+	.fascetta::before {
+		content: '';
+		position: absolute;
+		inset: 0 0 0 44px;
+		background: var(--rosso);
+		border-radius: 0 6px 6px 0;
+	}
+	.fascetta__linguetta {
+		position: relative;
+		height: 100%;
+		background:
+			repeating-linear-gradient(90deg, transparent 0 6px, rgb(247 248 246 / 0.35) 6px 8px) 9px 50% / 22px 40% no-repeat,
+			var(--rosso);
+		border-radius: 6px 0 0 6px;
+		/* la perforazione */
+		box-shadow: inset -2px 0 0 transparent;
+		transform-origin: 100% 0;
+		transition:
+			transform 260ms var(--ease),
+			opacity 260ms var(--ease);
+	}
+	.fascetta__linguetta::after {
+		content: '';
+		position: absolute;
+		right: -1px;
+		top: 4px;
+		bottom: 4px;
+		border-right: 2px dotted var(--smalto);
+	}
+	.fascetta__testo,
+	.fascetta__fatto {
+		position: relative;
+		grid-column: 2;
+		grid-row: 1;
+		transition: opacity 160ms var(--ease);
+	}
+	.fascetta__fatto {
+		opacity: 0;
+	}
+	.fascetta:active {
+		transform: scale(0.98);
+	}
+	.fascetta[data-strappata] .fascetta__linguetta {
+		transform: translate(-10px, 14px) rotate(-18deg);
+		opacity: 0;
+	}
+	.fascetta[data-strappata] .fascetta__testo {
+		opacity: 0;
+	}
+	.fascetta[data-strappata] .fascetta__fatto {
+		opacity: 1;
+	}
+	.fascetta:focus-visible {
+		outline: 3px solid var(--blu);
+		outline-offset: 3px;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.fascetta[data-strappata] .fascetta__linguetta {
+			transform: none;
+		}
+	}
+
+	.rapidi {
+		margin-top: 22px;
+	}
+	.rapidi__titolo {
+		font-size: 0.875rem;
+		font-weight: 600;
+		margin-bottom: 8px;
+	}
+	.rapidi__bottoni {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 8px;
+	}
+	.rapido {
+		min-height: 48px;
+		border: 0;
+		border-radius: 6px;
+		display: grid;
+		place-items: center;
+		cursor: pointer;
+		transition: transform 120ms var(--ease);
+	}
+	.rapido:active {
+		transform: scale(0.97);
+	}
+	.rapido--apple,
+	.rapido--google {
+		background: #fff;
+		box-shadow: inset 0 0 0 1px rgb(28 42 107 / 0.25);
+	}
+	.rapido :global(.rapido__marchio img) {
+		height: 24px;
+	}
+	.rapido--google :global(.rapido__marchio img) {
+		height: 42px;
+	}
+	.rapido--paypal {
+		background: #ffc439;
+	}
+	.rapido :global(.rapido__marchio) {
+		background: none;
+		box-shadow: none;
+		height: 30px;
+	}
+	.rapido :global(.rapido__marchio svg) {
+		height: auto;
+		width: 58px;
+	}
+	.rapido--paypal :global(.rapido__marchio) {
+		font-size: 17px;
+	}
+
+	.garanzie {
+		margin-top: 24px;
+		display: grid;
+		gap: 8px;
+		font-size: 0.9375rem;
+		padding-top: 16px;
+		border-top: 2px solid var(--blu);
+	}
+	.garanzie li {
+		padding-left: 20px;
+		position: relative;
+	}
+	.garanzie li::before {
+		content: '';
+		position: absolute;
+		left: 2px;
+		top: 0.5em;
+		width: 9px;
+		height: 9px;
+		background: var(--olio);
+		border-radius: 0 50% 50% 50%;
+		rotate: 45deg;
+		box-shadow: 1px 1px 0 var(--blu);
+	}
+	.avviso {
+		margin-top: 14px;
+		font-size: 0.875rem;
+	}
+
+	/* ---------- il cassetto del carrello ---------- */
+	.carrello {
+		position: fixed;
+		inset: 0 0 0 auto;
+		width: min(30rem, 100vw);
+		max-width: none;
+		height: 100dvh;
+		max-height: none;
+		margin: 0;
+		padding: 0 24px 24px;
+		border: 0;
+		background: var(--latta);
+		color: var(--oliva);
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		box-shadow: -1px 0 0 var(--latta-2);
+		translate: 100% 0;
+		transition:
+			translate 400ms var(--ease-drawer),
+			overlay 400ms allow-discrete,
+			display 400ms allow-discrete;
+	}
+	.carrello[open] {
+		translate: 0 0;
+	}
+	@starting-style {
+		.carrello[open] {
+			translate: 100% 0;
+		}
+	}
+	.carrello::backdrop {
+		background: rgb(28 42 107 / 0.45);
+		opacity: 0;
+		transition:
+			opacity 400ms var(--ease-drawer),
+			overlay 400ms allow-discrete,
+			display 400ms allow-discrete;
+	}
+	.carrello[open]::backdrop {
+		opacity: 1;
+	}
+	@starting-style {
+		.carrello[open]::backdrop {
+			opacity: 0;
+		}
+	}
+	.carrello__testa {
+		position: sticky;
+		top: 0;
+		z-index: 2;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
+		padding: 18px 0 14px;
+		background: var(--latta);
+		border-bottom: 2px solid var(--blu);
+	}
+	.carrello h2 {
+		font-size: 1.9rem;
+	}
+	.passo-c {
+		padding-top: 18px;
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.passo-c {
+			animation: entra 220ms var(--ease) both;
+		}
+	}
+	@keyframes entra {
+		from {
+			opacity: 0;
+			translate: 0 8px;
+		}
+	}
+	.righe {
+		display: grid;
+		gap: 2px;
+	}
+	.righe :global(.riga) {
+		display: grid;
+		grid-template-columns: 56px minmax(0, 1fr) auto;
+		gap: 4px 14px;
+		align-items: center;
+		padding: 12px 0;
+		border-bottom: 1px solid var(--latta-2);
+	}
+	.righe :global(.riga img) {
+		grid-row: span 2;
+		height: 72px;
+		width: auto;
+		justify-self: center;
+	}
+	.righe :global(.riga__nome) {
+		font-weight: 680;
+		color: var(--blu);
+	}
+	.righe :global(.riga__prezzo) {
+		font-weight: 650;
+		font-variant-numeric: tabular-nums;
+	}
+	.righe :global(.riga__comandi) {
+		grid-column: 2 / -1;
+		display: flex;
+		align-items: center;
+		gap: 6px;
+	}
+	.righe :global(.riga__comandi .goffrato) {
+		min-height: 36px;
+		min-width: 36px;
+		padding: 0 10px;
+		font-size: 0.875rem;
+	}
+	.righe :global(.riga__comandi output) {
+		min-width: 1.6rem;
+		text-align: center;
+		font-weight: 700;
+	}
+	.righe :global(.riga__togli) {
+		margin-left: auto;
+	}
+	.vuoto {
+		padding: 20px 0;
+	}
+	.soglia {
+		margin-top: 16px;
+		font-size: 0.9375rem;
+	}
+	.soglia__barra {
+		margin-top: 6px;
+		height: 8px;
+		background: var(--smalto);
+		box-shadow: inset 0 0 0 1px var(--latta-2);
+		overflow: hidden;
+	}
+	.soglia__barra span {
+		display: block;
+		height: 100%;
+		width: 100%;
+		background: var(--olio);
+		transform-origin: 0 50%;
+		transform: scaleX(var(--pieno, 0));
+		transition: transform 300ms var(--ease);
+	}
+	.totali {
+		margin-top: 18px;
+		border-top: 2px solid var(--blu);
+	}
+	.totali div {
+		display: flex;
+		justify-content: space-between;
+		padding: 8px 0;
+		border-bottom: 1px solid var(--latta-2);
+	}
+	.totali dd {
+		font-variant-numeric: tabular-nums;
+		font-weight: 600;
+	}
+	.totali__tot dt,
+	.totali__tot dd {
+		font-family: var(--titoli);
+		font-weight: 400;
+		font-size: 1.6rem;
+		color: var(--blu);
+	}
+	.rate--piccolo {
+		font-size: 0.875rem;
+	}
+	.carrello__azioni {
+		margin-top: 20px;
+		display: grid;
+		gap: 10px;
+	}
+	.carrello__azioni .registro {
+		width: 100%;
+	}
+
+	.checkout fieldset {
+		border: 0;
+		margin-bottom: 22px;
+	}
+	.campi {
+		display: grid;
+		grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr);
+		gap: 10px;
+	}
+	.campi legend {
+		grid-column: 1 / -1;
+	}
+	.campo {
+		display: grid;
+		gap: 4px;
+		font-size: 0.875rem;
+		font-weight: 600;
+	}
+	.campo--largo {
+		grid-column: 1 / -1;
+	}
+	.campo input {
+		min-height: 46px;
+		padding: 0 12px;
+		border: 0;
+		border-radius: 6px;
+		background: var(--smalto);
+		box-shadow: inset 0 0 0 1.5px var(--latta-2);
+		font-size: 1rem;
+		font-weight: 450;
+	}
+	.campo input:focus-visible {
+		outline: 3px solid var(--blu);
+		outline-offset: 1px;
+	}
+	.campo input[aria-invalid='true'] {
+		box-shadow: inset 0 0 0 2px var(--errore);
+	}
+	.opzione,
+	.metodo {
+		position: relative;
+		display: grid;
+		grid-template-columns: 22px minmax(0, 1fr) auto;
+		gap: 2px 10px;
+		align-items: center;
+		padding: 12px 4px;
+		border-bottom: 1px solid var(--latta-2);
+		cursor: pointer;
+	}
+	.opzione input,
+	.metodo input {
+		width: 18px;
+		height: 18px;
+		accent-color: var(--blu);
+		margin: 0;
+	}
+	.metodo__nome {
+		font-weight: 640;
+		color: var(--blu);
+	}
+	.metodo__marchi {
+		display: flex;
+		gap: 4px;
+	}
+	.metodo__nota {
+		grid-column: 2 / -1;
+		font-size: 0.875rem;
+	}
+	.metodo:has(input:checked) {
+		background: linear-gradient(90deg, rgb(194 176 42 / 0.18), transparent 70%);
+	}
+	.errore:empty {
+		display: none;
+	}
+	.errore {
+		margin-bottom: 12px;
+		color: var(--errore);
+		font-weight: 650;
+	}
+	.fatto__numero {
+		font-family: var(--titoli);
+		font-size: 2rem;
+		line-height: 1.05;
+		color: var(--blu);
+		margin-bottom: 12px;
+	}
+	.fatto p + p {
+		margin-top: 10px;
+	}
+
+	@media (max-width: 899px) {
+		.cassa {
+			padding-top: 64px;
+		}
+		.bottega {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.cassa__parola {
+			font-size: 38vw;
+			bottom: auto;
+			top: 8svh;
+		}
+		/* sul telefono il carrello sale dal basso */
+		.carrello {
+			inset: auto 0 0 0;
+			width: 100%;
+			height: auto;
+			max-height: 92dvh;
+			border-radius: 14px 14px 0 0;
+			translate: 0 100%;
+			padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+		}
+		.carrello[open] {
+			translate: 0 0;
+		}
+		@starting-style {
+			.carrello[open] {
+				translate: 0 100%;
+			}
+		}
+	}
+	@media (max-width: 420px) {
+		.rapidi__bottoni {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.carrello,
+		.carrello[open] {
+			translate: 0 0;
+			transition:
+				opacity 200ms ease,
+				overlay 200ms allow-discrete,
+				display 200ms allow-discrete;
+			opacity: 0;
+		}
+		.carrello[open] {
+			opacity: 1;
+		}
+		@starting-style {
+			.carrello[open] {
+				opacity: 0;
+				translate: 0 0;
+			}
+		}
+	}
+</style>
+
+<script>
+	import { FORMATI, METODI, MAX_LATTE, conto, eur, rate, partenza, numeroOrdine } from './dati';
+	const banco = document.querySelector<HTMLFormElement>('[data-banco]');
+	const dlg = document.querySelector<HTMLDialogElement>('[data-carrello]');
+	if (banco && dlg) {
+		const q = <T extends HTMLElement = HTMLElement>(s: string, d: ParentNode = document) => d.querySelector<T>(s)!;
+		const eurC = (n: number) => n.toLocaleString('it-IT', { style: 'currency', currency: 'EUR' });
+		const litri = (n: number) => (n === 1 ? '1 litro' : `${n} litri`);
+		const p = partenza();
+		const frase = p.prenotazione ? `L'olio nuovo parte ${p.testo}: chi prenota ora lo riceve per primo.` : `Se ordini oggi, la latta parte ${p.testo}.`;
+		q('[data-partenza]', banco).textContent = frase;
+		const breve = document.querySelector('[data-partenza-breve]');
+		if (breve) breve.textContent = p.prenotazione ? `L'olio nuovo parte ${p.testo}` : `Spediamo ${p.testo}`;
+		const hero = document.querySelector('[data-partenza-hero]');
+		if (hero) hero.textContent = p.testo;
+
+		// le immagini delle tre latte (già ottimizzate da astro:assets) servono anche alle righe del carrello
+		const foto: Record<string, string> = {};
+		banco.querySelectorAll<HTMLInputElement>('input[name="formato"]').forEach((i) => {
+			foto[i.value] = i.parentElement!.querySelector('img')!.currentSrc || i.parentElement!.querySelector('img')!.src;
+		});
+
+		// ---------- scheda ----------
+		let quante = 1;
+		const out = q('[data-quante]', banco);
+		const meno = q<HTMLButtonElement>('[data-meno]', banco);
+		const piu = q<HTMLButtonElement>('[data-piu]', banco);
+		const scelto = () => banco.querySelector<HTMLInputElement>('input[name="formato"]:checked')!;
+		const scheda = () => {
+			const f = scelto();
+			const prezzo = Number(f.dataset.prezzo);
+			out.textContent = String(quante);
+			meno.disabled = quante <= 1;
+			piu.disabled = quante >= MAX_LATTE;
+			q('[data-prezzo]', banco).textContent = eur(prezzo);
+			q('[data-al-litro]', banco).textContent = `${eurC(prezzo / Number(f.dataset.litri))} al litro, IVA inclusa`;
+			q('[data-quota]', banco).textContent = eurC(rate(prezzo * quante).quota);
+			q('[data-dati]', banco).textContent = `${f.dataset.nota}. ${f.dataset.misure}, pesa ${f.dataset.peso}.`;
+			dispatchEvent(new CustomEvent('chioma:formato', { detail: { id: f.value, scala: Number(f.dataset.scala) } }));
+		};
+		banco.addEventListener('change', (e) => {
+			if ((e.target as HTMLInputElement).name === 'formato') scheda();
+		});
+		meno.addEventListener('click', () => ((quante = Math.max(1, quante - 1)), scheda()));
+		piu.addEventListener('click', () => ((quante = Math.min(MAX_LATTE, quante + 1)), scheda()));
+
+		// ---------- la latta posata: si gira trascinando, con le frecce o con le miniature ----------
+		const posto = q('[data-approdo]');
+		const viste = [...document.querySelectorAll<HTMLButtonElement>('[data-vista]')];
+		const nomi: Record<number, string> = { 0: 'Davanti', 90: 'Fianco', 180: 'Retro', 270: 'Altro fianco' };
+		let giro = 0;
+		let anim = 0;
+		const ridotto = matchMedia('(prefers-reduced-motion: reduce)');
+		const imposta = (g: number) => {
+			giro = g;
+			const norm = (((Math.round(g / 10) * 10) % 360) + 360) % 360;
+			posto.setAttribute('aria-valuenow', String(norm));
+			const vicina = Math.round(norm / 90) * 90 % 360;
+			posto.setAttribute('aria-valuetext', Math.abs(norm - vicina) < 20 || Math.abs(norm - vicina) > 340 ? nomi[vicina] : `${norm} gradi`);
+			viste.forEach((v) => v.setAttribute('aria-pressed', String(Number(v.dataset.vista) === norm)));
+			dispatchEvent(new CustomEvent('chioma:giro', { detail: g }));
+		};
+		// dalle miniature: gira per la via più breve, 320 ms ease-in-out (curva --ease-in-out della skill)
+		const curva = (x: number) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+		const vaiA = (meta: number) => {
+			cancelAnimationFrame(anim);
+			let d = (((meta - giro) % 360) + 540) % 360 - 180;
+			if (ridotto.matches) return imposta(giro + d);
+			const da = giro;
+			const t0 = performance.now();
+			const passo = (ora: number) => {
+				const k = Math.min(1, (ora - t0) / 320);
+				imposta(da + d * curva(k));
+				if (k < 1) anim = requestAnimationFrame(passo);
+			};
+			anim = requestAnimationFrame(passo);
+		};
+		viste.forEach((v) => v.addEventListener('click', () => vaiA(Number(v.dataset.vista))));
+		let trascina: { x: number; g: number } | null = null;
+		posto.addEventListener('pointerdown', (e) => {
+			cancelAnimationFrame(anim);
+			trascina = { x: e.clientX, g: giro };
+			posto.setPointerCapture(e.pointerId);
+		});
+		posto.addEventListener('pointermove', (e) => {
+			if (!trascina) return;
+			imposta(trascina.g - (e.clientX - trascina.x) * 0.9);
+		});
+		const lascia = () => (trascina = null);
+		posto.addEventListener('pointerup', lascia);
+		posto.addEventListener('pointercancel', lascia);
+		posto.addEventListener('keydown', (e) => {
+			const passi: Record<string, number> = { ArrowRight: 10, ArrowLeft: -10, ArrowUp: 10, ArrowDown: -10, PageUp: 90, PageDown: -90 };
+			if (e.key in passi) {
+				e.preventDefault();
+				imposta(giro + passi[e.key]);
+			} else if (e.key === 'Home') {
+				e.preventDefault();
+				vaiA(0);
+			}
+		});
+
+		// ---------- carrello ----------
+		type Riga = { id: string; quante: number };
+		let righe: Riga[] = [];
+		let metodo = 'carta';
+		const formato = (id: string) => FORMATI.find((f) => f.id === id)!;
+		const merce = () => righe.reduce((s, r) => s + formato(r.id).prezzo * r.quante, 0);
+		const pezzi = () => righe.reduce((s, r) => s + r.quante, 0);
+		const ritiro = () => (q<HTMLInputElement>('input[name="consegna"]:checked', dlg)?.value ?? 'corriere') === 'ritiro';
+		const totaleFinale = () => {
+			const c = conto(merce(), 1);
+			return ritiro() ? c.merce : c.totale;
+		};
+		const conta = [...document.querySelectorAll<HTMLElement>('[data-conta]')];
+		const annuncio = q('[data-annuncio]', banco);
+
+		const disegnaCarrello = () => {
+			const lista = q('[data-righe]', dlg);
+			lista.replaceChildren(
+				...righe.map((r) => {
+					const f = formato(r.id);
+					const li = document.createElement('li');
+					li.className = 'riga';
+					li.innerHTML = `<img src="${foto[r.id]}" alt="" height="72">
+						<span class="riga__nome">Chioma Saracena, ${litri(f.litri)}</span>
+						<span class="riga__prezzo">${eur(f.prezzo * r.quante)}</span>
+						<span class="riga__comandi">
+							<button type="button" class="goffrato" data-r-meno aria-label="Una latta da ${litri(f.litri)} in meno">−</button>
+							<output aria-live="polite">${r.quante}</output>
+							<button type="button" class="goffrato" data-r-piu aria-label="Una latta da ${litri(f.litri)} in più" ${r.quante >= MAX_LATTE ? 'disabled' : ''}>+</button>
+							<button type="button" class="goffrato riga__togli" data-r-togli>Togli</button>
+						</span>`;
+					li.querySelector('[data-r-meno]')!.addEventListener('click', () => cambia(r.id, -1));
+					li.querySelector('[data-r-piu]')!.addEventListener('click', () => cambia(r.id, 1));
+					li.querySelector('[data-r-togli]')!.addEventListener('click', () => cambia(r.id, -99));
+					return li;
+				}),
+			);
+			const m = merce();
+			const c = conto(m, 1);
+			q('[data-vuoto]', dlg).hidden = righe.length > 0;
+			q<HTMLButtonElement>('[data-vai-cassa]', dlg).disabled = righe.length === 0;
+			q('[data-c-merce]', dlg).textContent = eur(m);
+			q('[data-c-sped]', dlg).textContent = !m ? '—' : c.spedizione ? eur(c.spedizione) : 'gratis';
+			q('[data-c-tot]', dlg).textContent = eur(m ? c.totale : 0);
+			const manca = Math.max(0, 60 - m);
+			q('[data-soglia]', dlg).hidden = righe.length === 0;
+			q('[data-soglia-testo]', dlg).textContent = manca ? `Mancano ${eur(manca)} alla spedizione gratis.` : 'La spedizione è gratis.';
+			q('[data-soglia-barra]', dlg).style.setProperty('--pieno', String(Math.min(1, m / 60)));
+			const r3 = rate(c.totale);
+			q('[data-c-rate]', dlg).textContent = m ? `Oppure in 3 rate da ${eurC(r3.quota)} senza interessi con PayPal, Klarna o Scalapay.` : '';
+			conta.forEach((el) => {
+				el.textContent = String(pezzi());
+				el.hidden = pezzi() === 0;
+			});
+		};
+		const cambia = (id: string, d: number) => {
+			const r = righe.find((x) => x.id === id);
+			if (!r) return;
+			r.quante = Math.max(0, Math.min(MAX_LATTE, r.quante + d));
+			righe = righe.filter((x) => x.quante > 0);
+			disegnaCarrello();
+			aggiornaCheckout();
+		};
+		const aggiungi = (id: string, n: number) => {
+			const r = righe.find((x) => x.id === id);
+			if (r) r.quante = Math.min(MAX_LATTE, r.quante + n);
+			else righe.push({ id, quante: n });
+			disegnaCarrello();
+		};
+
+		// ---------- i tre passi del cassetto ----------
+		const passi = [...dlg.querySelectorAll<HTMLElement>('[data-passo]')];
+		const titoli: Record<string, string> = { carrello: 'Il tuo carrello', cassa: 'Spedizione e pagamento', fatto: 'Ordine ricevuto' };
+		const mostra = (nome: string) => {
+			passi.forEach((el) => (el.hidden = el.dataset.passo !== nome));
+			q('[data-titolo-carrello]', dlg).textContent = titoli[nome];
+			dlg.scrollTop = 0;
+		};
+		let opener: HTMLElement | null = null;
+		const apri = (passo = 'carrello') => {
+			opener = document.activeElement as HTMLElement;
+			disegnaCarrello();
+			aggiornaCheckout();
+			mostra(passo);
+			if (!dlg.open) dlg.showModal();
+		};
+		document.querySelectorAll('[data-apri-carrello]').forEach((b) => b.addEventListener('click', () => apri()));
+		dlg.querySelectorAll('[data-chiudi]').forEach((b) =>
+			b.addEventListener('click', () => {
+				if ((b as HTMLElement).dataset.svuota !== undefined) {
+					righe = [];
+					disegnaCarrello();
+					(q('[data-passo="cassa"]', dlg) as HTMLFormElement).reset();
+				}
+				dlg.close();
+			}),
+		);
+		dlg.addEventListener('close', () => opener?.focus());
+		dlg.addEventListener('click', (e) => {
+			if (e.target === dlg) dlg.close(); // clic sullo sfondo
+		});
+		q('[data-vai-cassa]', dlg).addEventListener('click', () => mostra('cassa'));
+		q('[data-indietro]', dlg).addEventListener('click', () => mostra('carrello'));
+
+		// la fascetta: si strappa, poi dopo un attimo torna intera per un'altra aggiunta
+		const fascetta = q('[data-aggiungi]', banco);
+		let richiudi = 0;
+		banco.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const f = scelto();
+			aggiungi(f.value, quante);
+			fascetta.dataset.strappata = '';
+			clearTimeout(richiudi);
+			richiudi = window.setTimeout(() => delete fascetta.dataset.strappata, 1800);
+			const n = quante === 1 ? 'una latta' : `${quante} latte`;
+			annuncio.textContent = `Aggiunt${quante === 1 ? 'a' : 'e'} al carrello ${n} da ${litri(Number(f.dataset.litri))}. Nel carrello: ${pezzi()}.`;
+		});
+		// i pagamenti rapidi portano dritti alla cassa con il metodo scelto
+		banco.querySelectorAll<HTMLButtonElement>('[data-rapido]').forEach((b) =>
+			b.addEventListener('click', () => {
+				if (!righe.length) aggiungi(scelto().value, quante);
+				const m = b.dataset.rapido === 'paypal' ? 'paypal' : 'carta';
+				const r = dlg.querySelector<HTMLInputElement>(`input[name="metodo"][value="${m}"]`);
+				if (r) r.checked = true;
+				apri('cassa');
+				if (b.dataset.rapido !== 'paypal') {
+					q('[data-errore]', dlg).textContent = `${b.dataset.rapido === 'applepay' ? 'Apple Pay' : 'Google Pay'} si aprirebbe qui con i dati del telefono. In questa vetrina scegli un metodo qui sotto.`;
+				}
+			}),
+		);
+
+		// ---------- checkout ----------
+		const form = q<HTMLFormElement>('[data-passo="cassa"]', dlg);
+		const paga = q('[data-paga]', dlg);
+		const etichette: Record<string, (t: string) => string> = {
+			carta: (t) => `Paga ${t}`,
+			paypal: () => 'Continua con PayPal',
+			'paypal-3': () => 'Continua con PayPal in 3 rate',
+			klarna: () => 'Continua con Klarna',
+			scalapay: () => 'Continua con Scalapay',
+			satispay: () => 'Paga con Satispay',
+			bonifico: () => 'Conferma e paga con bonifico',
+		};
+		function aggiornaCheckout() {
+			metodo = q<HTMLInputElement>('input[name="metodo"]:checked', dlg).value;
+			const tot = totaleFinale();
+			const c = conto(merce(), 1);
+			q('[data-c-corriere]', dlg).textContent = c.spedizione ? eur(c.spedizione) : 'gratis';
+			q('[data-f-tot]', dlg).textContent = eur(tot);
+			q('span', paga).textContent = etichette[metodo](eur(tot));
+			const r3 = rate(tot);
+			const conRate: Record<string, string> = {
+				'paypal-3': `3 rate da ${eurC(r3.quota)} senza interessi, la prima oggi.`,
+				klarna: `3 rate da ${eurC(r3.quota)} senza interessi, oppure paghi tutto tra 30 giorni.`,
+				scalapay: `3 rate da ${eurC(r3.quota)} senza interessi, la prima oggi.`,
+			};
+			for (const id of Object.keys(conRate)) {
+				q(`[data-nota-metodo="${id}"]`, dlg).textContent = tot >= 20 ? conRate[id] : METODI.find((m) => m.id === id)!.nota;
+			}
+		}
+		form.addEventListener('change', () => {
+			q('[data-errore]', dlg).textContent = '';
+			aggiornaCheckout();
+		});
+		form.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const campi = [...form.querySelectorAll<HTMLInputElement>('.campo input')];
+			let primo: HTMLInputElement | null = null;
+			campi.forEach((c) => {
+				const ok = c.checkValidity();
+				c.setAttribute('aria-invalid', String(!ok));
+				if (!ok && !primo) primo = c;
+			});
+			if (primo) {
+				q('[data-errore]', dlg).textContent = 'Mancano dei dati per la spedizione: controlla i campi segnati in rosso (il CAP ha cinque cifre).';
+				(primo as HTMLInputElement).focus();
+				return;
+			}
+			const nomeMetodo = METODI.find((m) => m.id === metodo)!.nome;
+			q('[data-numero]', dlg).textContent = `Ordine di prova ${numeroOrdine()}`;
+			const n = pezzi() === 1 ? 'Una latta' : `${pezzi()} latte`;
+			q('[data-riepilogo]', dlg).textContent = `${n}, ${eur(totaleFinale())} con ${nomeMetodo}. ${ritiro() ? 'Ritiro al frantoio' : 'Spedizione con corriere'}: ${p.testo}.`;
+			mostra('fatto');
+			q<HTMLElement>('[data-passo="fatto"] [data-chiudi]', dlg).focus();
+		});
+
+		scheda();
+		disegnaCarrello();
+	}
+</script>

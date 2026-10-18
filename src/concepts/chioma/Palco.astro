@@ -1,0 +1,340 @@
+---
+// Il palco: l'unico oggetto della pagina. Scende con lo scroll e cambia forma tre volte:
+// oliva (si stacca dall'ulivo della prima foto) → cade nella cassetta del frantoio → goccia (nasce dal filo d'olio della
+// foto del beccuccio) → latta che gira (fotogrammi di un render, disegnati in un canvas) e si posa nella cassa.
+// Uno script solo scrive --t (0 = chioma, 1 = raccolta, … 5 = cassa) e le posizioni delle foto; il resto è CSS.
+import { Image } from 'astro:assets';
+import oliva from '../../assets/chioma/foto/oliva.png';
+import goccia from '../../assets/chioma/foto/goccia.png';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<div class="binario" data-binario aria-hidden="true">
+	<div class="palco" data-palco data-giro={`${base}/images/chioma/giro/`}>
+		<div class="oliva">
+			<div class="oliva__in">
+				<Image src={oliva} alt="" width={110} densities={[1, 2]} loading="eager" />
+			</div>
+		</div>
+		<div class="goccia">
+			<Image src={goccia} alt="" width={80} densities={[1, 2]} />
+		</div>
+		<div class="latta" data-latta>
+			<img class="latta__prima" src={`${base}/images/chioma/giro/02.webp`} alt="" width="342" height="730" decoding="async" loading="lazy" />
+			<canvas width="342" height="730" data-tela></canvas>
+		</div>
+	</div>
+</div>
+
+<style>
+	.binario {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: var(--binario-h, 100%);
+		z-index: 5;
+		pointer-events: none;
+	}
+	.palco {
+		--t: 0;
+		position: sticky;
+		top: 0;
+		height: 100svh;
+		overflow: hidden;
+		transition: --fs 450ms var(--ease);
+		--ow: clamp(24px, 2.2vw, 34px); /* oliva */
+		--stage-x: 50vw; /* al centro: la goccia cade dritta dal beccuccio, la latta gira fra i pannelli */
+		--stage-y: 55svh;
+
+		/* avanzamenti, tutti da --t */
+		--cade: clamp(0, var(--t) / 1.95, 1);
+		--dentro: clamp(0, (var(--t) - 1.95) / 0.16, 1);
+		--g-on: clamp(0, (var(--t) - 2.16) / 0.12, 1);
+		--g-cade: clamp(0, (var(--t) - 2.32) / 0.7, 1);
+		--g-via: clamp(0, (var(--t) - 3.01) / 0.04, 1);
+		--l-in: clamp(0, (var(--t) - 2.5) / 0.48, 1);
+		--l-ap: clamp(0, (var(--t) - 4.5) / 0.48, 1);
+	}
+
+	/* ---- oliva: parte dal ramo dell'ulivo e cade fino alla cassetta del frantoio, poi la segue mentre sparisce ---- */
+	.oliva {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: var(--ow);
+		--x1: var(--o1x, 60vw);
+		--y1: var(--o1y, 60svh);
+		/* quando è arrivata (cade = 1) resta attaccata alla cassetta, che intanto scorre */
+		--dopo: clamp(0, (var(--t) - 1.95) * 1000, 1);
+		--x: calc(var(--o0x, 80vw) + (var(--x1) - var(--o0x, 80vw)) * var(--cade));
+		--y: calc(var(--o0y, 40svh) + (var(--y1) - var(--o0y, 40svh)) * var(--cade) * var(--cade));
+		transform: translate(
+				calc(var(--x) * (1 - var(--dopo)) + var(--cx, 0px) * var(--dopo) - 50%),
+				calc(var(--y) * (1 - var(--dopo)) + var(--cy, 0px) * var(--dopo) - 22%)
+			)
+			rotate(calc(var(--cade) * 340deg)) scale(calc(1 - var(--dentro) * 0.5));
+		opacity: calc(1 - var(--dentro));
+		filter: drop-shadow(0 6px 8px rgb(0 0 0 / 0.25));
+	}
+	.oliva :global(img) {
+		width: 100%;
+		height: auto;
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.oliva__in {
+			animation: pende 700ms var(--ease) 500ms both;
+		}
+	}
+	@keyframes pende {
+		from {
+			opacity: 0;
+			translate: 0 -10px;
+		}
+		to {
+			opacity: 1;
+			translate: 0 0;
+		}
+	}
+
+	/* ---- goccia: nasce dove il filo d'olio esce dalla foto e cade nel tappo della latta ---- */
+	.goccia {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: calc(var(--ow) * 0.62);
+		--cadendo: clamp(0, (var(--t) - 2.32) * 1000, 1);
+		--x0: var(--g0x, 60vw);
+		--y0: var(--g0y, 60svh);
+		--x1: calc(var(--stage-x) + var(--lw) * 0.24);
+		--y1: calc(var(--stage-y) - var(--lh) * 0.47);
+		--xc: calc(var(--x0) + (var(--x1) - var(--x0)) * var(--g-cade));
+		--yc: calc(var(--y0) + (var(--y1) - var(--y0)) * var(--g-cade) * var(--g-cade));
+		transform: translate(
+				calc(var(--bx, 0px) * (1 - var(--cadendo)) + var(--xc) * var(--cadendo) - 50%),
+				calc(var(--by, 0px) * (1 - var(--cadendo)) + var(--yc) * var(--cadendo) - 85%)
+			)
+			scale(calc(0.3 + var(--g-on) * 0.7), calc((0.3 + var(--g-on) * 0.7) * (1 - var(--g-via) * 0.7)));
+		transform-origin: 50% 100%;
+		opacity: calc(var(--g-on) * (1 - var(--g-via)));
+	}
+	.goccia :global(img) {
+		width: 100%;
+		height: auto;
+	}
+
+	/* ---- latta: sale dal basso, gira (fotogrammi), si posa nel posto vuoto della cassa ---- */
+	.latta {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: var(--lw);
+		height: var(--lh);
+		--ap-e: calc(var(--l-ap) * var(--l-ap) * (3 - 2 * var(--l-ap)));
+		--x: calc(var(--stage-x) + (var(--ax, 30vw) - var(--stage-x)) * var(--ap-e));
+		--y: calc(var(--stage-y) + (var(--ay, 50svh) - var(--stage-y)) * var(--ap-e) + (1 - var(--l-in)) * 85svh);
+		transform: translate(calc(var(--x) - 50%), calc(var(--y) - 50%)) scale(calc(1 + (var(--ak, 1) * var(--fs) - 1) * var(--ap-e)));
+		transform-origin: 50% 100%;
+		filter: drop-shadow(0 18px 18px rgb(28 42 107 / 0.28));
+	}
+	.latta img,
+	.latta canvas {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+	}
+	.latta[data-pronta] .latta__prima {
+		visibility: hidden;
+	}
+
+	@media (max-width: 899px) {
+		.palco {
+			--ow: 26px;
+			--stage-x: 50vw;
+			--stage-y: 30svh;
+		}
+	}
+</style>
+
+<script>
+	// Il motore: una sola variabile, --t, dalla posizione dello scroll rispetto alle tappe.
+	// t = i quando la tappa i arriva sotto la barra; tra due tappe si interpola.
+	const palco = document.querySelector<HTMLElement>('[data-palco]');
+	const binario = document.querySelector<HTMLElement>('[data-binario]');
+	const latta = document.querySelector<HTMLElement>('[data-latta]');
+	const tela = document.querySelector<HTMLCanvasElement>('[data-tela]');
+	const tappe = [...document.querySelectorAll<HTMLElement>('[data-tappa]')];
+	const punti = [...document.querySelectorAll<HTMLElement>('[data-t]')];
+	const ancora = document.querySelector<HTMLElement>('[data-ancora]');
+	const cassetta = document.querySelector<HTMLElement>('[data-cassetta]');
+	const beccuccio = document.querySelector<HTMLElement>('[data-beccuccio]');
+	const posto = document.querySelector<HTMLElement>('[data-approdo]');
+	const ridotto = matchMedia('(prefers-reduced-motion: reduce)');
+	const N = 36; // fotogrammi del giro, uno ogni 10°
+	const SFASO = 2; // la latta ferma sta un filo di tre quarti (20°), non piatta
+
+	if (palco && binario && latta && tela && tappe.length === 6 && posto) {
+		let ancore: { t: number; y: number }[] = [];
+		let attesa = false;
+		let t = 0;
+		let giroUtente = 0; // nella cassa la latta si gira a mano
+		let disegnato = '';
+		const pagina = { cassetta: { x: 0, y: 0 }, beccuccio: { x: 0, y: 0 } };
+		const centro = (el: HTMLElement) => {
+			const r = el.getBoundingClientRect();
+			return { x: r.left + r.width / 2 + scrollX, y: r.top + r.height / 2 + scrollY };
+		};
+
+		// --- i fotogrammi: una serie per formato (la 3 L si scarica quando la pagina arriva alla raccolta, le altre
+		// solo se le scegli nella cassa); si disegnano nel canvas
+		const serie: Record<string, HTMLImageElement[]> = {};
+		let formato = '3';
+		const cartella = (f: string) => palco.dataset.giro!.replace(/giro\/$/, f === '3' ? 'giro/' : `giro-${f}/`);
+		const carica = (f = formato) => {
+			if (serie[f]) return;
+			serie[f] = [];
+			for (let i = 0; i < N; i++) {
+				const img = new Image();
+				img.decoding = 'async';
+				img.src = `${cartella(f)}${String(i).padStart(2, '0')}.webp`;
+				img.onload = () => {
+					if (f === formato && i === indice()) disegna(true);
+				};
+				serie[f][i] = img;
+			}
+		};
+		const ctx = tela.getContext('2d');
+		const giroDa = (t: number) => {
+			// fermo per più di metà di ogni quarto, poi gira di 90° (come sulla v1, ma in JS: serve l'indice)
+			const u = Math.max(0, Math.min(4, (t - 3.2) / 0.15 + 0.25));
+			return 90 * (Math.floor(u) + Math.max(0, Math.min(1, (u % 1 - 0.5) / 0.5)));
+		};
+		const indice = () => (((Math.round((giroDa(t) + giroUtente) / 10) + SFASO) % N) + N) % N;
+		const disegna = (forza = false) => {
+			const i = indice();
+			const img = serie[formato]?.[i];
+			const chiave = `${formato}-${i}`;
+			if (!ctx || !img?.complete || !img.naturalWidth || (chiave === disegnato && !forza)) return;
+			ctx.clearRect(0, 0, tela.width, tela.height);
+			ctx.drawImage(img, 0, 0, tela.width, tela.height);
+			disegnato = chiave;
+			latta.dataset.pronta = '';
+		};
+
+		// y della pagina in cui t vale un certo valore (l'inverso di calcolaT)
+		const scrollPer = (tt: number) => {
+			for (let i = 0; i < ancore.length - 1; i++) {
+				const a = ancore[i];
+				const b = ancore[i + 1];
+				if (tt <= b.t) return a.y + ((tt - a.t) / (b.t - a.t || 1)) * (b.y - a.y);
+			}
+			return ancore[ancore.length - 1].y;
+		};
+
+		const misura = () => {
+			const barra = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--barra-h')) || 56;
+			const mezzo = innerWidth < 900 ? 0.72 : 0.5;
+			const soglie = tappe.map((el, i) => (i === 0 ? 0 : el.getBoundingClientRect().top + scrollY - barra));
+			const fine = soglie[5];
+			ancore = [
+				...soglie.map((y, t) => ({ t, y })),
+				...punti.map((el) => {
+					const r = el.getBoundingClientRect();
+					// data-ty: a che altezza dello schermo l'elemento vale t (di base metà, o 72% sul telefono)
+					const ty = Number((innerWidth < 900 && el.dataset.tyMob) || el.dataset.ty) || mezzo;
+					return { t: Number(el.dataset.t), y: r.top + scrollY + r.height / 2 - innerHeight * ty };
+				}),
+			].sort((a, b) => a.t - b.t);
+			binario.style.setProperty('--binario-h', `${fine + palco.offsetHeight}px`);
+			const imposta = (n: string, v: number) => palco.style.setProperty(n, `${v.toFixed(1)}px`);
+			if (ancora) {
+				const a = centro(ancora);
+				imposta('--o0x', a.x);
+				imposta('--o0y', a.y);
+			}
+			if (cassetta) {
+				pagina.cassetta = centro(cassetta);
+				imposta('--o1x', pagina.cassetta.x);
+				imposta('--o1y', pagina.cassetta.y - scrollPer(1.95));
+			}
+			if (beccuccio) {
+				pagina.beccuccio = centro(beccuccio);
+				imposta('--g0x', pagina.beccuccio.x);
+				imposta('--g0y', pagina.beccuccio.y - scrollPer(2.32));
+			}
+			const p = posto.getBoundingClientRect();
+			imposta('--ax', p.left + p.width / 2);
+			// la latta posata cresce verso l'alto (transform-origin in basso): si allinea la base, non il centro
+			imposta('--ay', p.top + scrollY - fine + p.height - latta.offsetHeight / 2);
+			palco.style.setProperty('--ak', String(p.height / latta.offsetHeight || 1));
+			aggiorna();
+		};
+
+		const calcolaT = (y: number) => {
+			const ultimo = ancore[ancore.length - 1];
+			if (y >= ultimo.y) return ultimo.t;
+			let i = 0;
+			while (i < ancore.length - 2 && y >= ancore[i + 1].y) i++;
+			const a = ancore[i];
+			const b = ancore[i + 1];
+			return a.t + Math.max(0, Math.min(1, (y - a.y) / (b.y - a.y))) * (b.t - a.t);
+		};
+
+		// Movimento ridotto: uno stato fermo per tappa, senza passaggi intermedi.
+		const fermo = (t: number) => {
+			if (t < 0.5) return 0;
+			if (t < 1.5) return 1;
+			if (t < 2.5) return 2.24;
+			if (t < 3.8) return 3.2 + 0.15 * Math.max(0, Math.min(3, Math.round((t - 3.2) / 0.15)));
+			if (t < 4.5) return 4.2;
+			return 5;
+		};
+
+		const aggiorna = () => {
+			attesa = false;
+			t = calcolaT(scrollY);
+			if (ridotto.matches) t = fermo(t);
+			palco.style.setProperty('--t', t.toFixed(4));
+			// le foto scorrono: l'oliva arrivata e la goccia che nasce le seguono
+			palco.style.setProperty('--cx', `${pagina.cassetta.x.toFixed(1)}px`);
+			palco.style.setProperty('--cy', `${(pagina.cassetta.y - scrollY).toFixed(1)}px`);
+			palco.style.setProperty('--bx', `${pagina.beccuccio.x.toFixed(1)}px`);
+			palco.style.setProperty('--by', `${(pagina.beccuccio.y - scrollY).toFixed(1)}px`);
+			if (t > 0.6) carica();
+			disegna();
+		};
+
+		addEventListener(
+			'scroll',
+			() => {
+				if (!attesa) {
+					attesa = true;
+					requestAnimationFrame(aggiorna);
+				}
+			},
+			{ passive: true },
+		);
+		new ResizeObserver(() => misura()).observe(document.body);
+		ridotto.addEventListener('change', aggiorna);
+		document.fonts?.ready.then(misura);
+		addEventListener('load', misura);
+		misura();
+
+		// La cassa chiede di girare la latta posata (miniature, trascinamento, tastiera) o di cambiarne il formato.
+		addEventListener('chioma:giro', (e) => {
+			giroUtente = (e as CustomEvent<number>).detail;
+			carica();
+			disegna();
+		});
+		// nei fotogrammi della 1 L e della 5 L la latta non riempie tutta l'altezza: si compensa la scala
+		const FRAZIONE: Record<string, number> = { '1': 0.928, '3': 1, '5': 0.855 };
+		addEventListener('chioma:formato', (e) => {
+			const { id, scala } = (e as CustomEvent<{ id: string; scala: number }>).detail;
+			formato = id;
+			carica(id);
+			palco.style.setProperty('--fs', String(scala / FRAZIONE[id]));
+			disegna(true);
+		});
+	}
+</script>

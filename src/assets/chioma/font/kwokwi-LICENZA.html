@@ -1,0 +1,2634 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#335df5">
+  <title>Typodermic Fonts — Public-Domain Font Guide</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --blue: #335df5;
+      --charcoal: #3c3c43;
+      --text: #515157;
+      --muted: #73737b;
+      --control: #f1f1f3;
+      --line: #e7e7e9;
+      --white: #ffffff;
+      --soft-blue: #eef2ff;
+      --radius: 2px;
+      --shell: min(calc(100% - 48px), 1080px);
+      --reading: 72ch;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--white);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    a {
+      color: var(--blue);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.18em;
+    }
+
+    a:hover {
+      text-decoration-thickness: 2px;
+    }
+
+    a:focus-visible,
+    summary:focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 3px;
+    }
+
+    .site-header {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .header-inner,
+    .language-inner,
+    main,
+    .footer-inner {
+      width: var(--shell);
+      margin-inline: auto;
+    }
+
+    .header-inner {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .wordmark {
+      color: var(--charcoal);
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      line-height: 1;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .wordmark:hover {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    .header-note {
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+
+    .language-bar {
+      border-bottom: 1px solid var(--line);
+      background: #fafafa;
+    }
+
+    .language-inner {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 15px 0;
+    }
+
+    .language-label {
+      flex: 0 0 auto;
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .language-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .language-button {
+      min-height: 30px;
+      padding: 5px 9px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--white);
+      color: var(--charcoal);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 650;
+      line-height: 1.2;
+      cursor: pointer;
+    }
+
+    .language-button:hover,
+    .language-button:focus-visible,
+    .language-button[aria-pressed="true"] {
+      border-color: var(--blue);
+      background: var(--blue);
+      color: var(--white);
+    }
+
+    .language-button:focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 2px;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .hero {
+      padding: 72px 0 52px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      margin: 0 0 14px;
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 750;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3 {
+      color: var(--charcoal);
+      line-height: 1.2;
+      text-wrap: balance;
+    }
+
+    h1 {
+      max-width: 820px;
+      margin: 0;
+      font-size: clamp(36px, 5.8vw, 68px);
+      font-weight: 450;
+      letter-spacing: -0.04em;
+    }
+
+    .intro {
+      max-width: var(--reading);
+      margin: 24px 0 0;
+      color: var(--charcoal);
+      font-size: clamp(18px, 2.2vw, 22px);
+      line-height: 1.5;
+    }
+
+    .legal-notice {
+      max-width: 880px;
+      margin-top: 30px;
+      padding: 18px 20px;
+      background: var(--soft-blue);
+      border-inline-start: 4px solid var(--blue);
+      color: var(--charcoal);
+      font-size: 14px;
+    }
+
+    .legal-notice strong {
+      font-weight: 750;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .button {
+      display: inline-flex;
+      min-height: 44px;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 15px;
+      border: 1px solid var(--charcoal);
+      border-radius: var(--radius);
+      background: var(--charcoal);
+      color: var(--white);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.2;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .button.secondary {
+      border-color: var(--control);
+      background: var(--control);
+      color: var(--charcoal);
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      border-color: var(--blue);
+      background: var(--blue);
+      color: var(--white);
+      text-decoration: none;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1px;
+      margin-top: 48px;
+      background: var(--line);
+      border: 1px solid var(--line);
+    }
+
+    .summary-card {
+      min-width: 0;
+      padding: 24px;
+      background: var(--white);
+    }
+
+    .summary-card h2 {
+      margin: 0 0 10px;
+      font-size: 16px;
+      font-weight: 750;
+    }
+
+    .summary-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .section {
+      display: grid;
+      grid-template-columns: minmax(180px, 0.34fr) minmax(0, 0.66fr);
+      gap: clamp(36px, 8vw, 110px);
+      padding: 64px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: clamp(23px, 3vw, 32px);
+      font-weight: 500;
+      letter-spacing: -0.025em;
+    }
+
+    .section-heading p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .section-body > :first-child {
+      margin-top: 0;
+    }
+
+    .section-body > :last-child {
+      margin-bottom: 0;
+    }
+
+    .section-body h3 {
+      margin: 32px 0 8px;
+      font-size: 17px;
+      font-weight: 750;
+    }
+
+    .section-body p {
+      max-width: var(--reading);
+      margin: 0 0 18px;
+    }
+
+    .plain-list,
+    .cross-list {
+      display: grid;
+      gap: 10px;
+      max-width: var(--reading);
+      margin: 20px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .plain-list li,
+    .cross-list li {
+      position: relative;
+      padding-inline-start: 28px;
+    }
+
+    .plain-list li::before,
+    .cross-list li::before {
+      position: absolute;
+      inset-inline-start: 0;
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    .plain-list li::before {
+      content: "✓";
+    }
+
+    .cross-list li::before {
+      content: "—";
+    }
+
+    .callout {
+      max-width: var(--reading);
+      margin: 26px 0;
+      padding: 20px;
+      border: 1px solid var(--line);
+      background: #fafafa;
+    }
+
+    .callout strong {
+      color: var(--charcoal);
+    }
+
+    .license-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .license-item {
+      padding: 18px;
+      border: 1px solid var(--line);
+    }
+
+    .license-item h3 {
+      margin: 0 0 5px;
+      font-size: 15px;
+    }
+
+    .license-item p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    details {
+      max-width: var(--reading);
+      border-top: 1px solid var(--line);
+    }
+
+    details:last-of-type {
+      border-bottom: 1px solid var(--line);
+    }
+
+    summary {
+      padding: 16px 4px;
+      color: var(--charcoal);
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    details p {
+      margin: 0;
+      padding: 0 4px 18px;
+      font-size: 14px;
+    }
+
+    .help-panel {
+      margin: 64px 0;
+      padding: clamp(26px, 5vw, 48px);
+      background: var(--charcoal);
+      color: var(--white);
+    }
+
+    .help-panel h2 {
+      margin: 0;
+      color: var(--white);
+      font-size: clamp(27px, 4vw, 42px);
+      font-weight: 450;
+      letter-spacing: -0.025em;
+    }
+
+    .help-panel p {
+      max-width: 62ch;
+      margin: 14px 0 0;
+      color: #e0e0e3;
+    }
+
+    .help-panel .button {
+      border-color: var(--white);
+      background: var(--white);
+      color: var(--charcoal);
+    }
+
+    .help-panel .button.secondary {
+      border-color: #67676e;
+      background: #525259;
+      color: var(--white);
+    }
+
+    .help-panel .button:hover,
+    .help-panel .button:focus-visible {
+      border-color: var(--blue);
+      background: var(--blue);
+      color: var(--white);
+    }
+
+    .site-footer {
+      border-top: 1px solid var(--line);
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 32px;
+      padding: 28px 0 40px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .footer-inner p {
+      max-width: 70ch;
+      margin: 0;
+    }
+
+    .footer-inner a {
+      white-space: nowrap;
+    }
+
+    @media (max-width: 760px) {
+      :root {
+        --shell: min(calc(100% - 32px), 1080px);
+      }
+
+      .header-inner {
+        min-height: 64px;
+      }
+
+      .header-note {
+        display: none;
+      }
+
+      .language-inner {
+        flex-direction: column;
+        gap: 9px;
+      }
+
+      .language-label {
+        margin-top: 0;
+      }
+
+      .hero {
+        padding: 48px 0 36px;
+      }
+
+      .summary-grid,
+      .section,
+      .license-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section {
+        gap: 24px;
+        padding: 46px 0;
+      }
+
+      .summary-card {
+        padding: 20px;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        gap: 14px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+    }
+
+    @media print {
+      :root {
+        --shell: 100%;
+      }
+
+      body {
+        color: #000;
+        font-size: 11pt;
+      }
+
+      .site-header,
+      .actions,
+      .help-panel,
+      .footer-link {
+        display: none;
+      }
+
+      .hero,
+      .section {
+        padding: 24px 0;
+      }
+
+      .summary-grid,
+      .license-grid {
+        break-inside: avoid;
+      }
+
+      a {
+        color: inherit;
+      }
+    }
+  
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="wordmark" href="https://typodermicfonts.com/">TYPODERMIC FONTS</a>
+      <div class="header-note" data-i18n="headerNote">Public-domain font guide</div>
+    </div>
+  </header>
+
+  <nav class="language-bar" aria-label="Language" dir="ltr">
+    <div class="language-inner">
+      <p class="language-label" data-i18n="languageLabel">Language</p>
+      <div class="language-buttons">
+        <button class="language-button" type="button" data-lang="en" aria-pressed="true">English</button>
+        <button class="language-button" type="button" data-lang="de" aria-pressed="false">Deutsch</button>
+        <button class="language-button" type="button" data-lang="es" aria-pressed="false">Español</button>
+        <button class="language-button" type="button" data-lang="fr" aria-pressed="false">Français</button>
+        <button class="language-button" type="button" data-lang="ar" aria-pressed="false">العربية</button>
+        <button class="language-button" type="button" data-lang="zh-Hans" aria-pressed="false">简体中文</button>
+        <button class="language-button" type="button" data-lang="zh-Hant" aria-pressed="false">繁體中文</button>
+        <button class="language-button" type="button" data-lang="cs" aria-pressed="false">Čeština</button>
+        <button class="language-button" type="button" data-lang="el" aria-pressed="false">Ελληνικά</button>
+        <button class="language-button" type="button" data-lang="he" aria-pressed="false">עברית</button>
+        <button class="language-button" type="button" data-lang="hi" aria-pressed="false">हिन्दी</button>
+        <button class="language-button" type="button" data-lang="hu" aria-pressed="false">Magyar</button>
+        <button class="language-button" type="button" data-lang="is" aria-pressed="false">Íslenska</button>
+        <button class="language-button" type="button" data-lang="id" aria-pressed="false">Bahasa Indonesia</button>
+        <button class="language-button" type="button" data-lang="it" aria-pressed="false">Italiano</button>
+        <button class="language-button" type="button" data-lang="ko" aria-pressed="false">한국어</button>
+        <button class="language-button" type="button" data-lang="ja" aria-pressed="false">日本語</button>
+        <button class="language-button" type="button" data-lang="no" aria-pressed="false">Norsk</button>
+        <button class="language-button" type="button" data-lang="pl" aria-pressed="false">Polski</button>
+        <button class="language-button" type="button" data-lang="pt" aria-pressed="false">Português</button>
+        <button class="language-button" type="button" data-lang="pa" aria-pressed="false">ਪੰਜਾਬੀ</button>
+        <button class="language-button" type="button" data-lang="ro" aria-pressed="false">Română</button>
+        <button class="language-button" type="button" data-lang="ru" aria-pressed="false">Русский</button>
+        <button class="language-button" type="button" data-lang="sv" aria-pressed="false">Svenska</button>
+        <button class="language-button" type="button" data-lang="ta" aria-pressed="false">தமிழ்</button>
+        <button class="language-button" type="button" data-lang="th" aria-pressed="false">ไทย</button>
+        <button class="language-button" type="button" data-lang="tr" aria-pressed="false">Türkçe</button>
+        <button class="language-button" type="button" data-lang="uk" aria-pressed="false">Українська</button>
+        <button class="language-button" type="button" data-lang="vi" aria-pressed="false">Tiếng Việt</button>
+      </div>
+      <span class="sr-only" id="language-status" aria-live="polite"></span>
+    </div>
+  </nav>
+
+  <noscript><p class="legal-notice">Language switching requires JavaScript. The English guide remains available below.</p></noscript>
+
+  <main id="guide-content">
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow" data-i18n="eyebrow">Public-domain font · personal and commercial use</p>
+      <h1 id="page-title" data-i18n="pageHeading">This font is free for any use.</h1>
+      <p class="intro"><span data-i18n="introBefore">This Typodermic font has been released under </span><a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0 Universal</a><span data-i18n="introAfter">, a public-domain dedication. You may use it for personal or commercial work without buying a license, paying a fee, or asking permission.</span></p>
+
+      <div class="legal-notice" role="note">
+        <strong data-i18n="noticeLead">No separate Typodermic license is required.</strong> <span data-i18n="noticeText">The official CC0 terms apply to the font files in this package.</span>
+      </div>
+
+      <div class="actions">
+        <a class="button" href="https://creativecommons.org/publicdomain/zero/1.0/" data-i18n="cc0Button">Read the official CC0 summary</a>
+        <a class="button secondary" href="https://typodermicfonts.com/font-help/" data-i18n="guideButton">Open the beginner font guide</a>
+      </div>
+
+      <div class="summary-grid">
+        <article class="summary-card">
+          <h2 data-i18n="commercialTitle">Commercial use is allowed</h2>
+          <p data-i18n="commercialText">Use the font in paid work, products, client projects, or your own business.</p>
+        </article>
+        <article class="summary-card">
+          <h2 data-i18n="permissionTitle">No permission or payment</h2>
+          <p data-i18n="permissionText">You do not need to contact Typodermic before using the font.</p>
+        </article>
+        <article class="summary-card">
+          <h2 data-i18n="attributionTitle">No attribution required</h2>
+          <p data-i18n="attributionText">You may credit Typodermic, but you do not have to.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="permissions-heading">
+      <div class="section-heading">
+        <h2 id="permissions-heading" data-i18n="permissionsHeading">What you can do</h2>
+        <p data-i18n="permissionsSubheading">Personal, commercial, editable, embedded, or redistributed.</p>
+      </div>
+      <div class="section-body">
+        <p data-i18n="permissionsIntro">You can:</p>
+        <ul class="plain-list">
+          <li data-i18n="permission1">Use the font in logos, documents, images, print, presentations, and videos.</li>
+          <li data-i18n="permission2">Embed the font in websites, apps, games, ebooks, PDFs, and other products.</li>
+          <li data-i18n="permission3">Upload the font to Canva or another cloud design service, provided that the service accepts custom fonts.</li>
+          <li data-i18n="permission4">Modify the font, convert it to another format, or rename it.</li>
+          <li data-i18n="permission5">Give away, bundle, redistribute, or sell the original or modified font files.</li>
+          <li data-i18n="permission6">Let clients, coworkers, customers, and other people use the font.</li>
+        </ul>
+        <div class="callout"><strong data-i18n="attributionCalloutLead">Attribution is not required.</strong> <span data-i18n="attributionCalloutText">If you choose to credit Typodermic, do not suggest that Typodermic endorses you or your work.</span></div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="start-heading">
+      <div class="section-heading">
+        <h2 id="start-heading" data-i18n="startHeading">Getting started</h2>
+        <p data-i18n="startSubheading">Extract the ZIP file before installing the font.</p>
+      </div>
+      <div class="section-body">
+        <p data-i18n="zipIntro">A ZIP file is a container. Extract it before trying to install the font.</p>
+        <details>
+          <summary>Windows</summary>
+          <p data-i18n="windowsText">Right-click the ZIP file and select Extract All. Then right-click the OTF font file and select Install or Install for all users.</p>
+        </details>
+        <details>
+          <summary>macOS</summary>
+          <p data-i18n="macText">Double-click the ZIP file to extract it. Then double-click the OTF font file and select Install Font.</p>
+        </details>
+        <details>
+          <summary data-i18n="mobileLabel">Phones and tablets</summary>
+          <p data-i18n="mobileText">Downloading a ZIP file on a phone or tablet does not automatically install the font. Mobile installation varies by device and may require a font-management app or configuration profile.</p>
+        </details>
+        <p class="callout" data-i18n="restartText">If the font does not appear in your software, close and reopen the software after installing it.</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="files-heading">
+      <div class="section-heading">
+        <h2 id="files-heading" data-i18n="filesHeading">Choosing the right file</h2>
+        <p data-i18n="filesSubheading">Different font formats have different jobs.</p>
+      </div>
+      <div class="section-body">
+        <div class="license-grid">
+          <article class="license-item">
+            <h3>OTF</h3>
+            <p data-i18n="otfText">Install on Windows or macOS for use in ordinary design, writing, presentation, and video software.</p>
+          </article>
+          <article class="license-item">
+            <h3>WOFF2</h3>
+            <p data-i18n="woff2Text">Use for live, selectable text on websites. WOFF2 files are available in the public-domain webfont package.</p>
+          </article>
+          <article class="license-item">
+            <h3>VFC</h3>
+            <p data-i18n="vfcText">Open in FontLab to inspect or modify the font itself. These are source files for font development.</p>
+          </article>
+        </div>
+        <p class="callout" data-i18n="fileNote">Not every download package contains every file type.</p>
+        <div class="actions">
+          <a class="button" href="https://typodermicfonts.com/public-domain/" data-i18n="downloadsButton">View all public-domain downloads</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="online-heading">
+      <div class="section-heading">
+        <h2 id="online-heading" data-i18n="onlineHeading">Websites and editable templates</h2>
+        <p data-i18n="onlineSubheading">CC0 also permits these uses.</p>
+      </div>
+      <div class="section-body">
+        <div class="license-grid">
+          <article class="license-item">
+            <h3 data-i18n="websiteTitle">Live website text</h3>
+            <p data-i18n="websiteText">For live, selectable website text, use the supplied WOFF2 version when available.</p>
+          </article>
+          <article class="license-item">
+            <h3 data-i18n="templatesTitle">Canva and editable templates</h3>
+            <p data-i18n="templatesText">You may upload this font to Canva or another design platform and create editable templates.</p>
+          </article>
+        </div>
+        <div class="callout"><strong data-i18n="platformNoteLead">Platform rules still apply.</strong> <span data-i18n="platformNoteText">The service must accept custom fonts, and you must follow its rules and technical requirements.</span></div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="important-heading">
+      <div class="section-heading">
+        <h2 id="important-heading" data-i18n="importantHeading">Important information</h2>
+        <p data-i18n="importantSubheading">A few legal details still matter.</p>
+      </div>
+      <div class="section-body">
+        <p data-i18n="asIsText">The font is provided as-is, without warranties.</p>
+        <p data-i18n="otherRightsText">CC0 does not affect patent or trademark rights, or other rights such as privacy and publicity rights.</p>
+        <p data-i18n="endorsementText">Do not suggest that Typodermic Fonts endorses you, your organization, or your work.</p>
+        <p class="callout" data-i18n="summaryText">This page is a plain-language introduction. Read the official CC0 summary and legal code for complete details.</p>
+        <div class="actions">
+          <a class="button" href="https://creativecommons.org/publicdomain/zero/1.0/legalcode.en" data-i18n="legalCodeButton">Read the full CC0 legal code</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="help-panel" aria-labelledby="help-heading">
+      <h2 id="help-heading" data-i18n="helpHeading">Need help using the font?</h2>
+      <p data-i18n="helpText">The Typodermic beginner guide explains ZIP files, font installation, websites, and file formats.</p>
+      <div class="actions">
+        <a class="button" href="https://typodermicfonts.com/font-help/" data-i18n="helpGuide">Open the beginner guide</a>
+        <a class="button secondary" href="https://typodermicfonts.com/public-domain/" data-i18n="helpFonts">Browse public-domain fonts</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p data-i18n="footerText">Typodermic Fonts public-domain font guide. The official CC0 terms control.</p>
+      <a class="footer-link" href="https://typodermicfonts.com/">typodermicfonts.com</a>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const translations = {
+        "de": {
+                "pageTitle": "Typodermic Fonts — Leitfaden für gemeinfreie Schriftarten",
+                "headerNote": "Leitfaden für gemeinfreie Schriftarten",
+                "languageLabel": "Sprache",
+                "eyebrow": "Gemeinfreie Schrift · private und kommerzielle Nutzung",
+                "pageHeading": "Diese Schrift kann für jeden Zweck frei verwendet werden.",
+                "introBefore": "Diese Typodermic-Schrift wurde unter ",
+                "introAfter": ", einer Public-Domain-Freigabe, veröffentlicht. Sie dürfen sie privat oder kommerziell verwenden, ohne eine Lizenz zu kaufen, eine Gebühr zu zahlen oder um Erlaubnis zu bitten.",
+                "noticeLead": "Keine separate Typodermic-Lizenz ist erforderlich.",
+                "noticeText": "Für die Schriftdateien in diesem Paket gelten die offiziellen CC0-Bedingungen.",
+                "cc0Button": "Offizielle CC0-Zusammenfassung lesen",
+                "guideButton": "Einsteigerleitfaden für Schriftarten öffnen",
+                "commercialTitle": "Kommerzielle Nutzung erlaubt",
+                "commercialText": "Verwenden Sie die Schrift für bezahlte Arbeiten, Produkte, Kundenprojekte oder Ihr eigenes Unternehmen.",
+                "permissionTitle": "Keine Erlaubnis oder Zahlung",
+                "permissionText": "Sie müssen Typodermic vor der Verwendung der Schrift nicht kontaktieren.",
+                "attributionTitle": "Keine Namensnennung erforderlich",
+                "attributionText": "Sie dürfen Typodermic nennen, sind dazu aber nicht verpflichtet.",
+                "permissionsHeading": "Was Sie tun dürfen",
+                "permissionsSubheading": "Privat, kommerziell, bearbeitbar, eingebettet oder weitergegeben.",
+                "permissionsIntro": "Sie dürfen:",
+                "permission1": "Die Schrift in Logos, Dokumenten, Bildern, Drucksachen, Präsentationen und Videos verwenden.",
+                "permission2": "Die Schrift in Websites, Apps, Spielen, E-Books, PDFs und andere Produkte einbetten.",
+                "permission3": "Die Schrift zu Canva oder einem anderen Cloud-Designdienst hochladen, sofern der Dienst eigene Schriftarten akzeptiert.",
+                "permission4": "Die Schrift ändern, in ein anderes Format umwandeln oder umbenennen.",
+                "permission5": "Die ursprünglichen oder geänderten Schriftdateien verschenken, bündeln, weitergeben oder verkaufen.",
+                "permission6": "Kunden, Kollegen und anderen Personen die Nutzung der Schrift erlauben.",
+                "attributionCalloutLead": "Eine Namensnennung ist nicht erforderlich.",
+                "attributionCalloutText": "Wenn Sie Typodermic nennen, dürfen Sie nicht den Eindruck erwecken, Typodermic unterstütze Sie oder Ihre Arbeit.",
+                "startHeading": "Erste Schritte",
+                "startSubheading": "Entpacken Sie die ZIP-Datei, bevor Sie die Schrift installieren.",
+                "zipIntro": "Eine ZIP-Datei ist ein Container. Entpacken Sie sie, bevor Sie versuchen, die Schrift zu installieren.",
+                "windowsText": "Klicken Sie mit der rechten Maustaste auf die ZIP-Datei und wählen Sie Alle extrahieren. Klicken Sie danach mit der rechten Maustaste auf die OTF-Datei und wählen Sie Installieren oder Für alle Benutzer installieren.",
+                "macText": "Doppelklicken Sie auf die ZIP-Datei, um sie zu entpacken. Doppelklicken Sie anschließend auf die OTF-Datei und wählen Sie Schrift installieren.",
+                "mobileLabel": "Smartphones und Tablets",
+                "mobileText": "Das Herunterladen einer ZIP-Datei auf ein Smartphone oder Tablet installiert die Schrift nicht automatisch. Die Installation ist je nach Gerät unterschiedlich und kann eine Schriftverwaltungs-App oder ein Konfigurationsprofil erfordern.",
+                "restartText": "Wenn die Schrift in Ihrer Software nicht erscheint, schließen und öffnen Sie die Software nach der Installation erneut.",
+                "filesHeading": "Die richtige Datei wählen",
+                "filesSubheading": "Verschiedene Schriftformate erfüllen verschiedene Aufgaben.",
+                "otfText": "Unter Windows oder macOS installieren und in gewöhnlicher Design-, Schreib-, Präsentations- und Videosoftware verwenden.",
+                "woff2Text": "Für live auswählbaren Text auf Websites verwenden. WOFF2-Dateien sind im Public-Domain-Webfont-Paket erhältlich.",
+                "vfcText": "In FontLab öffnen, um die Schrift selbst zu untersuchen oder zu ändern. Dies sind Quelldateien für die Schriftentwicklung.",
+                "fileNote": "Nicht jedes Downloadpaket enthält jeden Dateityp.",
+                "downloadsButton": "Alle gemeinfreien Downloads anzeigen",
+                "onlineHeading": "Websites und bearbeitbare Vorlagen",
+                "onlineSubheading": "CC0 erlaubt auch diese Nutzungen.",
+                "websiteTitle": "Live-Text auf Websites",
+                "websiteText": "Verwenden Sie für live auswählbaren Website-Text nach Möglichkeit die bereitgestellte WOFF2-Version.",
+                "templatesTitle": "Canva und bearbeitbare Vorlagen",
+                "templatesText": "Sie dürfen diese Schrift zu Canva oder einer anderen Designplattform hochladen und bearbeitbare Vorlagen erstellen.",
+                "platformNoteLead": "Die Regeln der Plattform gelten weiterhin.",
+                "platformNoteText": "Der Dienst muss eigene Schriftarten akzeptieren, und Sie müssen seine Regeln und technischen Anforderungen einhalten.",
+                "importantHeading": "Wichtige Informationen",
+                "importantSubheading": "Einige rechtliche Einzelheiten sind weiterhin wichtig.",
+                "asIsText": "Die Schrift wird ohne Mängelgewähr und ohne Garantien bereitgestellt.",
+                "otherRightsText": "CC0 berührt weder Patent- oder Markenrechte noch andere Rechte wie Datenschutz- und Persönlichkeitsrechte.",
+                "endorsementText": "Erwecken Sie nicht den Eindruck, Typodermic Fonts unterstütze Sie, Ihre Organisation oder Ihre Arbeit.",
+                "summaryText": "Diese Seite ist eine Einführung in verständlicher Sprache. Vollständige Einzelheiten finden Sie in der offiziellen CC0-Zusammenfassung und im Rechtstext.",
+                "legalCodeButton": "Vollständigen CC0-Rechtstext lesen",
+                "helpHeading": "Benötigen Sie Hilfe bei der Verwendung der Schrift?",
+                "helpText": "Der Typodermic-Einsteigerleitfaden erklärt ZIP-Dateien, die Installation von Schriften, Websites und Dateiformate.",
+                "helpGuide": "Einsteigerleitfaden öffnen",
+                "helpFonts": "Gemeinfreie Schriftarten durchsuchen",
+                "footerText": "Typodermic-Leitfaden für gemeinfreie Schriftarten. Maßgeblich sind die offiziellen CC0-Bedingungen."
+        },
+        "es": {
+                "pageTitle": "Typodermic Fonts — Guía de fuentes de dominio público",
+                "headerNote": "Guía de fuentes de dominio público",
+                "languageLabel": "Idioma",
+                "eyebrow": "Fuente de dominio público · uso personal y comercial",
+                "pageHeading": "Esta fuente es gratuita para cualquier uso.",
+                "introBefore": "Esta fuente de Typodermic se ha publicado bajo ",
+                "introAfter": ", una dedicación al dominio público. Puede usarla en trabajos personales o comerciales sin comprar una licencia, pagar una tarifa ni pedir permiso.",
+                "noticeLead": "No se necesita una licencia independiente de Typodermic.",
+                "noticeText": "Las condiciones oficiales de CC0 se aplican a los archivos de fuente de este paquete.",
+                "cc0Button": "Leer el resumen oficial de CC0",
+                "guideButton": "Abrir la guía para principiantes",
+                "commercialTitle": "Se permite el uso comercial",
+                "commercialText": "Use la fuente en trabajos remunerados, productos, proyectos de clientes o su propio negocio.",
+                "permissionTitle": "Sin permiso ni pago",
+                "permissionText": "No necesita contactar con Typodermic antes de usar la fuente.",
+                "attributionTitle": "No se exige atribución",
+                "attributionText": "Puede mencionar a Typodermic, pero no es obligatorio.",
+                "permissionsHeading": "Lo que puede hacer",
+                "permissionsSubheading": "Uso personal, comercial, editable, incrustado o redistribuido.",
+                "permissionsIntro": "Puede:",
+                "permission1": "Usar la fuente en logotipos, documentos, imágenes, impresos, presentaciones y vídeos.",
+                "permission2": "Incrustar la fuente en sitios web, aplicaciones, juegos, libros electrónicos, PDF y otros productos.",
+                "permission3": "Subir la fuente a Canva u otro servicio de diseño en la nube, siempre que el servicio acepte fuentes personalizadas.",
+                "permission4": "Modificar la fuente, convertirla a otro formato o cambiarle el nombre.",
+                "permission5": "Regalar, empaquetar, redistribuir o vender los archivos de fuente originales o modificados.",
+                "permission6": "Permitir que clientes, compañeros de trabajo y otras personas usen la fuente.",
+                "attributionCalloutLead": "No se exige atribución.",
+                "attributionCalloutText": "Si decide mencionar a Typodermic, no sugiera que Typodermic le respalda a usted o a su trabajo.",
+                "startHeading": "Primeros pasos",
+                "startSubheading": "Extraiga el archivo ZIP antes de instalar la fuente.",
+                "zipIntro": "Un archivo ZIP es un contenedor. Extráigalo antes de intentar instalar la fuente.",
+                "windowsText": "Haga clic con el botón derecho en el archivo ZIP y seleccione Extraer todo. Después, haga clic con el botón derecho en el archivo OTF y seleccione Instalar o Instalar para todos los usuarios.",
+                "macText": "Haga doble clic en el archivo ZIP para extraerlo. Después, haga doble clic en el archivo OTF y seleccione Instalar tipo de letra.",
+                "mobileLabel": "Teléfonos y tabletas",
+                "mobileText": "Descargar un archivo ZIP en un teléfono o una tableta no instala automáticamente la fuente. La instalación varía según el dispositivo y puede requerir una aplicación de gestión de fuentes o un perfil de configuración.",
+                "restartText": "Si la fuente no aparece en su programa, ciérrelo y vuelva a abrirlo después de instalarla.",
+                "filesHeading": "Elegir el archivo adecuado",
+                "filesSubheading": "Los distintos formatos de fuente tienen funciones diferentes.",
+                "otfText": "Instálelo en Windows o macOS para usarlo en programas habituales de diseño, escritura, presentaciones y vídeo.",
+                "woff2Text": "Úselo para texto vivo y seleccionable en sitios web. Los archivos WOFF2 están disponibles en el paquete de fuentes web de dominio público.",
+                "vfcText": "Ábralo en FontLab para examinar o modificar la propia fuente. Son archivos fuente para el desarrollo tipográfico.",
+                "fileNote": "No todos los paquetes de descarga contienen todos los tipos de archivo.",
+                "downloadsButton": "Ver todas las descargas de dominio público",
+                "onlineHeading": "Sitios web y plantillas editables",
+                "onlineSubheading": "CC0 también permite estos usos.",
+                "websiteTitle": "Texto vivo en sitios web",
+                "websiteText": "Para texto web vivo y seleccionable, use la versión WOFF2 suministrada cuando esté disponible.",
+                "templatesTitle": "Canva y plantillas editables",
+                "templatesText": "Puede subir esta fuente a Canva u otra plataforma de diseño y crear plantillas editables.",
+                "platformNoteLead": "Las reglas de la plataforma siguen vigentes.",
+                "platformNoteText": "El servicio debe aceptar fuentes personalizadas y usted debe cumplir sus reglas y requisitos técnicos.",
+                "importantHeading": "Información importante",
+                "importantSubheading": "Algunos detalles legales siguen siendo importantes.",
+                "asIsText": "La fuente se proporciona tal cual, sin garantías.",
+                "otherRightsText": "CC0 no afecta a los derechos de patente o marca ni a otros derechos, como los de privacidad y publicidad.",
+                "endorsementText": "No sugiera que Typodermic Fonts le respalda a usted, a su organización o a su trabajo.",
+                "summaryText": "Esta página es una introducción en lenguaje sencillo. Lea el resumen oficial y el texto legal de CC0 para conocer todos los detalles.",
+                "legalCodeButton": "Leer el texto legal completo de CC0",
+                "helpHeading": "¿Necesita ayuda para usar la fuente?",
+                "helpText": "La guía para principiantes de Typodermic explica los archivos ZIP, la instalación de fuentes, los sitios web y los formatos de archivo.",
+                "helpGuide": "Abrir la guía para principiantes",
+                "helpFonts": "Explorar fuentes de dominio público",
+                "footerText": "Guía de fuentes de dominio público de Typodermic Fonts. Prevalecen las condiciones oficiales de CC0."
+        },
+        "fr": {
+                "pageTitle": "Typodermic Fonts — Guide des polices du domaine public",
+                "headerNote": "Guide des polices du domaine public",
+                "languageLabel": "Langue",
+                "eyebrow": "Police du domaine public · usage personnel et commercial",
+                "pageHeading": "Cette police est libre pour tous les usages.",
+                "introBefore": "Cette police Typodermic a été publiée sous ",
+                "introAfter": ", une mise à disposition dans le domaine public. Vous pouvez l’utiliser dans des projets personnels ou commerciaux sans acheter de licence, payer de frais ni demander d’autorisation.",
+                "noticeLead": "Aucune licence Typodermic distincte n’est nécessaire.",
+                "noticeText": "Les conditions officielles de CC0 s’appliquent aux fichiers de police de ce paquet.",
+                "cc0Button": "Lire le résumé officiel de CC0",
+                "guideButton": "Ouvrir le guide pour débutants",
+                "commercialTitle": "Usage commercial autorisé",
+                "commercialText": "Utilisez la police dans des travaux rémunérés, des produits, des projets clients ou votre propre entreprise.",
+                "permissionTitle": "Aucune autorisation ni paiement",
+                "permissionText": "Vous n’avez pas besoin de contacter Typodermic avant d’utiliser la police.",
+                "attributionTitle": "Aucune attribution requise",
+                "attributionText": "Vous pouvez mentionner Typodermic, mais ce n’est pas obligatoire.",
+                "permissionsHeading": "Ce que vous pouvez faire",
+                "permissionsSubheading": "Usage personnel, commercial, modifiable, intégré ou redistribué.",
+                "permissionsIntro": "Vous pouvez :",
+                "permission1": "Utiliser la police dans des logos, documents, images, imprimés, présentations et vidéos.",
+                "permission2": "Intégrer la police dans des sites web, applications, jeux, livres numériques, PDF et autres produits.",
+                "permission3": "Téléverser la police dans Canva ou un autre service de conception en nuage, à condition qu’il accepte les polices personnalisées.",
+                "permission4": "Modifier la police, la convertir dans un autre format ou la renommer.",
+                "permission5": "Donner, regrouper, redistribuer ou vendre les fichiers de police originaux ou modifiés.",
+                "permission6": "Permettre aux clients, collègues et autres personnes d’utiliser la police.",
+                "attributionCalloutLead": "L’attribution n’est pas obligatoire.",
+                "attributionCalloutText": "Si vous choisissez de mentionner Typodermic, ne laissez pas entendre que Typodermic vous soutient ou approuve votre travail.",
+                "startHeading": "Premiers pas",
+                "startSubheading": "Extrayez le fichier ZIP avant d’installer la police.",
+                "zipIntro": "Un fichier ZIP est un conteneur. Extrayez-le avant d’essayer d’installer la police.",
+                "windowsText": "Faites un clic droit sur le fichier ZIP et choisissez Extraire tout. Faites ensuite un clic droit sur le fichier OTF et choisissez Installer ou Installer pour tous les utilisateurs.",
+                "macText": "Double-cliquez sur le fichier ZIP pour l’extraire. Double-cliquez ensuite sur le fichier OTF et choisissez Installer la police.",
+                "mobileLabel": "Téléphones et tablettes",
+                "mobileText": "Télécharger un fichier ZIP sur un téléphone ou une tablette n’installe pas automatiquement la police. L’installation varie selon l’appareil et peut nécessiter une application de gestion des polices ou un profil de configuration.",
+                "restartText": "Si la police n’apparaît pas dans votre logiciel, fermez puis rouvrez celui-ci après l’installation.",
+                "filesHeading": "Choisir le bon fichier",
+                "filesSubheading": "Les différents formats de police ont des fonctions différentes.",
+                "otfText": "À installer sous Windows ou macOS pour une utilisation dans les logiciels courants de conception, rédaction, présentation et vidéo.",
+                "woff2Text": "À utiliser pour du texte dynamique et sélectionnable sur les sites web. Les fichiers WOFF2 figurent dans le paquet de polices web du domaine public.",
+                "vfcText": "À ouvrir dans FontLab pour examiner ou modifier la police elle-même. Il s’agit de fichiers sources destinés au développement de polices.",
+                "fileNote": "Tous les paquets de téléchargement ne contiennent pas tous les types de fichiers.",
+                "downloadsButton": "Voir tous les téléchargements du domaine public",
+                "onlineHeading": "Sites web et modèles modifiables",
+                "onlineSubheading": "CC0 autorise également ces usages.",
+                "websiteTitle": "Texte dynamique sur un site web",
+                "websiteText": "Pour du texte web dynamique et sélectionnable, utilisez la version WOFF2 fournie lorsqu’elle est disponible.",
+                "templatesTitle": "Canva et modèles modifiables",
+                "templatesText": "Vous pouvez téléverser cette police dans Canva ou une autre plateforme de conception et créer des modèles modifiables.",
+                "platformNoteLead": "Les règles de la plateforme s’appliquent toujours.",
+                "platformNoteText": "Le service doit accepter les polices personnalisées et vous devez respecter ses règles et exigences techniques.",
+                "importantHeading": "Informations importantes",
+                "importantSubheading": "Quelques détails juridiques restent importants.",
+                "asIsText": "La police est fournie en l’état, sans aucune garantie.",
+                "otherRightsText": "CC0 n’affecte pas les droits de brevet ou de marque, ni d’autres droits tels que le droit à la vie privée ou le droit à l’image.",
+                "endorsementText": "Ne laissez pas entendre que Typodermic Fonts vous soutient, soutient votre organisation ou approuve votre travail.",
+                "summaryText": "Cette page est une introduction en langage clair. Consultez le résumé officiel et le texte juridique de CC0 pour connaître tous les détails.",
+                "legalCodeButton": "Lire le texte juridique complet de CC0",
+                "helpHeading": "Besoin d’aide pour utiliser la police ?",
+                "helpText": "Le guide Typodermic pour débutants explique les fichiers ZIP, l’installation des polices, les sites web et les formats de fichiers.",
+                "helpGuide": "Ouvrir le guide pour débutants",
+                "helpFonts": "Parcourir les polices du domaine public",
+                "footerText": "Guide Typodermic Fonts des polices du domaine public. Les conditions officielles de CC0 prévalent."
+        },
+        "it": {
+                "pageTitle": "Typodermic Fonts — Guida ai font di pubblico dominio",
+                "headerNote": "Guida ai font di pubblico dominio",
+                "languageLabel": "Lingua",
+                "eyebrow": "Font di pubblico dominio · uso personale e commerciale",
+                "pageHeading": "Questo font è libero per qualsiasi uso.",
+                "introBefore": "Questo font Typodermic è stato pubblicato sotto ",
+                "introAfter": ", una dichiarazione di pubblico dominio. Puoi usarlo per lavori personali o commerciali senza acquistare una licenza, pagare una tariffa o chiedere il permesso.",
+                "noticeLead": "Non è necessaria una licenza Typodermic separata.",
+                "noticeText": "Ai file del font contenuti in questo pacchetto si applicano i termini ufficiali di CC0.",
+                "cc0Button": "Leggi il riepilogo ufficiale di CC0",
+                "guideButton": "Apri la guida per principianti",
+                "commercialTitle": "L’uso commerciale è consentito",
+                "commercialText": "Usa il font in lavori retribuiti, prodotti, progetti per clienti o nella tua attività.",
+                "permissionTitle": "Nessun permesso o pagamento",
+                "permissionText": "Non devi contattare Typodermic prima di usare il font.",
+                "attributionTitle": "Attribuzione non richiesta",
+                "attributionText": "Puoi citare Typodermic, ma non sei obbligato.",
+                "permissionsHeading": "Cosa puoi fare",
+                "permissionsSubheading": "Uso personale, commerciale, modificabile, incorporato o ridistribuito.",
+                "permissionsIntro": "Puoi:",
+                "permission1": "Usare il font in loghi, documenti, immagini, stampati, presentazioni e video.",
+                "permission2": "Incorporare il font in siti web, app, giochi, ebook, PDF e altri prodotti.",
+                "permission3": "Caricare il font su Canva o su un altro servizio di progettazione cloud, purché accetti font personalizzati.",
+                "permission4": "Modificare il font, convertirlo in un altro formato o rinominarlo.",
+                "permission5": "Regalare, raggruppare, ridistribuire o vendere i file del font originali o modificati.",
+                "permission6": "Consentire a clienti, colleghi e altre persone di usare il font.",
+                "attributionCalloutLead": "L’attribuzione non è richiesta.",
+                "attributionCalloutText": "Se scegli di citare Typodermic, non lasciare intendere che Typodermic sostenga te o il tuo lavoro.",
+                "startHeading": "Per iniziare",
+                "startSubheading": "Estrai il file ZIP prima di installare il font.",
+                "zipIntro": "Un file ZIP è un contenitore. Estrailo prima di provare a installare il font.",
+                "windowsText": "Fai clic con il pulsante destro sul file ZIP e scegli Estrai tutto. Poi fai clic con il pulsante destro sul file OTF e scegli Installa o Installa per tutti gli utenti.",
+                "macText": "Fai doppio clic sul file ZIP per estrarlo. Poi fai doppio clic sul file OTF e scegli Installa font.",
+                "mobileLabel": "Telefoni e tablet",
+                "mobileText": "Scaricare un file ZIP su un telefono o tablet non installa automaticamente il font. L’installazione varia in base al dispositivo e può richiedere un’app di gestione dei font o un profilo di configurazione.",
+                "restartText": "Se il font non appare nel software, chiudi e riapri il programma dopo l’installazione.",
+                "filesHeading": "Scegliere il file giusto",
+                "filesSubheading": "I diversi formati di font svolgono funzioni diverse.",
+                "otfText": "Installa su Windows o macOS per l’uso nei comuni software di progettazione, scrittura, presentazione e video.",
+                "woff2Text": "Usa per testo dinamico e selezionabile sui siti web. I file WOFF2 sono disponibili nel pacchetto di webfont di pubblico dominio.",
+                "vfcText": "Apri in FontLab per esaminare o modificare il font stesso. Sono file sorgente per lo sviluppo di font.",
+                "fileNote": "Non tutti i pacchetti di download contengono ogni tipo di file.",
+                "downloadsButton": "Visualizza tutti i download di pubblico dominio",
+                "onlineHeading": "Siti web e modelli modificabili",
+                "onlineSubheading": "CC0 consente anche questi usi.",
+                "websiteTitle": "Testo dinamico sui siti web",
+                "websiteText": "Per testo web dinamico e selezionabile, usa la versione WOFF2 fornita quando disponibile.",
+                "templatesTitle": "Canva e modelli modificabili",
+                "templatesText": "Puoi caricare questo font su Canva o su un’altra piattaforma di progettazione e creare modelli modificabili.",
+                "platformNoteLead": "Le regole della piattaforma continuano ad applicarsi.",
+                "platformNoteText": "Il servizio deve accettare font personalizzati e devi rispettarne le regole e i requisiti tecnici.",
+                "importantHeading": "Informazioni importanti",
+                "importantSubheading": "Alcuni dettagli legali restano importanti.",
+                "asIsText": "Il font viene fornito così com’è, senza garanzie.",
+                "otherRightsText": "CC0 non influisce sui diritti di brevetto o marchio né su altri diritti, come quelli alla privacy e all’immagine.",
+                "endorsementText": "Non lasciare intendere che Typodermic Fonts sostenga te, la tua organizzazione o il tuo lavoro.",
+                "summaryText": "Questa pagina è un’introduzione in linguaggio semplice. Leggi il riepilogo ufficiale e il testo legale di CC0 per tutti i dettagli.",
+                "legalCodeButton": "Leggi il testo legale completo di CC0",
+                "helpHeading": "Hai bisogno di aiuto per usare il font?",
+                "helpText": "La guida Typodermic per principianti spiega i file ZIP, l’installazione dei font, i siti web e i formati di file.",
+                "helpGuide": "Apri la guida per principianti",
+                "helpFonts": "Sfoglia i font di pubblico dominio",
+                "footerText": "Guida Typodermic Fonts ai font di pubblico dominio. Prevalgono i termini ufficiali di CC0."
+        },
+        "pt": {
+                "pageTitle": "Typodermic Fonts — Guia de fontes de domínio público",
+                "headerNote": "Guia de fontes de domínio público",
+                "languageLabel": "Idioma",
+                "eyebrow": "Fonte de domínio público · uso pessoal e comercial",
+                "pageHeading": "Esta fonte é livre para qualquer uso.",
+                "introBefore": "Esta fonte da Typodermic foi disponibilizada sob ",
+                "introAfter": ", uma dedicação ao domínio público. Você pode usá-la em trabalhos pessoais ou comerciais sem comprar uma licença, pagar uma taxa ou pedir permissão.",
+                "noticeLead": "Não é necessária uma licença separada da Typodermic.",
+                "noticeText": "Os termos oficiais da CC0 aplicam-se aos arquivos de fonte deste pacote.",
+                "cc0Button": "Ler o resumo oficial da CC0",
+                "guideButton": "Abrir o guia para iniciantes",
+                "commercialTitle": "O uso comercial é permitido",
+                "commercialText": "Use a fonte em trabalhos pagos, produtos, projetos de clientes ou no seu próprio negócio.",
+                "permissionTitle": "Sem permissão ou pagamento",
+                "permissionText": "Você não precisa entrar em contato com a Typodermic antes de usar a fonte.",
+                "attributionTitle": "Atribuição não obrigatória",
+                "attributionText": "Você pode dar crédito à Typodermic, mas não é obrigado.",
+                "permissionsHeading": "O que você pode fazer",
+                "permissionsSubheading": "Uso pessoal, comercial, editável, incorporado ou redistribuído.",
+                "permissionsIntro": "Você pode:",
+                "permission1": "Usar a fonte em logotipos, documentos, imagens, impressos, apresentações e vídeos.",
+                "permission2": "Incorporar a fonte em sites, aplicativos, jogos, ebooks, PDFs e outros produtos.",
+                "permission3": "Enviar a fonte ao Canva ou a outro serviço de design em nuvem, desde que o serviço aceite fontes personalizadas.",
+                "permission4": "Modificar a fonte, convertê-la para outro formato ou renomeá-la.",
+                "permission5": "Doar, agrupar, redistribuir ou vender os arquivos de fonte originais ou modificados.",
+                "permission6": "Permitir que clientes, colegas de trabalho e outras pessoas usem a fonte.",
+                "attributionCalloutLead": "A atribuição não é obrigatória.",
+                "attributionCalloutText": "Se decidir dar crédito à Typodermic, não sugira que a Typodermic apoia você ou o seu trabalho.",
+                "startHeading": "Primeiros passos",
+                "startSubheading": "Extraia o arquivo ZIP antes de instalar a fonte.",
+                "zipIntro": "Um arquivo ZIP é um contêiner. Extraia-o antes de tentar instalar a fonte.",
+                "windowsText": "Clique com o botão direito no arquivo ZIP e selecione Extrair tudo. Depois, clique com o botão direito no arquivo OTF e selecione Instalar ou Instalar para todos os usuários.",
+                "macText": "Clique duas vezes no arquivo ZIP para extraí-lo. Depois, clique duas vezes no arquivo OTF e selecione Instalar Fonte.",
+                "mobileLabel": "Telefones e tablets",
+                "mobileText": "Baixar um arquivo ZIP em um telefone ou tablet não instala a fonte automaticamente. A instalação varia conforme o dispositivo e pode exigir um aplicativo de gerenciamento de fontes ou um perfil de configuração.",
+                "restartText": "Se a fonte não aparecer no software, feche e abra novamente o programa após a instalação.",
+                "filesHeading": "Escolher o arquivo certo",
+                "filesSubheading": "Formatos de fonte diferentes têm funções diferentes.",
+                "otfText": "Instale no Windows ou macOS para usar em programas comuns de design, escrita, apresentação e vídeo.",
+                "woff2Text": "Use para texto dinâmico e selecionável em sites. Os arquivos WOFF2 estão disponíveis no pacote de fontes web de domínio público.",
+                "vfcText": "Abra no FontLab para examinar ou modificar a própria fonte. São arquivos-fonte para desenvolvimento de fontes.",
+                "fileNote": "Nem todo pacote de download contém todos os tipos de arquivo.",
+                "downloadsButton": "Ver todos os downloads de domínio público",
+                "onlineHeading": "Sites e modelos editáveis",
+                "onlineSubheading": "A CC0 também permite esses usos.",
+                "websiteTitle": "Texto dinâmico em sites",
+                "websiteText": "Para texto dinâmico e selecionável em sites, use a versão WOFF2 fornecida quando disponível.",
+                "templatesTitle": "Canva e modelos editáveis",
+                "templatesText": "Você pode enviar esta fonte ao Canva ou a outra plataforma de design e criar modelos editáveis.",
+                "platformNoteLead": "As regras da plataforma continuam valendo.",
+                "platformNoteText": "O serviço deve aceitar fontes personalizadas, e você deve seguir suas regras e requisitos técnicos.",
+                "importantHeading": "Informações importantes",
+                "importantSubheading": "Alguns detalhes legais ainda são importantes.",
+                "asIsText": "A fonte é fornecida no estado em que se encontra, sem garantias.",
+                "otherRightsText": "A CC0 não afeta direitos de patente ou marca, nem outros direitos, como privacidade e direitos de imagem.",
+                "endorsementText": "Não sugira que a Typodermic Fonts apoia você, sua organização ou seu trabalho.",
+                "summaryText": "Esta página é uma introdução em linguagem simples. Leia o resumo oficial e o texto legal da CC0 para obter todos os detalhes.",
+                "legalCodeButton": "Ler o texto legal completo da CC0",
+                "helpHeading": "Precisa de ajuda para usar a fonte?",
+                "helpText": "O guia para iniciantes da Typodermic explica arquivos ZIP, instalação de fontes, sites e formatos de arquivo.",
+                "helpGuide": "Abrir o guia para iniciantes",
+                "helpFonts": "Explorar fontes de domínio público",
+                "footerText": "Guia de fontes de domínio público da Typodermic Fonts. Os termos oficiais da CC0 prevalecem."
+        },
+        "zh-Hans": {
+                "pageTitle": "Typodermic Fonts — 公有领域字体指南",
+                "headerNote": "公有领域字体指南",
+                "languageLabel": "语言",
+                "eyebrow": "公有领域字体 · 个人与商业用途",
+                "pageHeading": "此字体可免费用于任何用途。",
+                "introBefore": "此 Typodermic 字体已依据 ",
+                "introAfter": "（一种公有领域贡献声明）发布。您可以将其用于个人或商业作品，无需购买许可、支付费用或请求授权。",
+                "noticeLead": "无需另行取得 Typodermic 许可。",
+                "noticeText": "本压缩包中的字体文件适用 CC0 官方条款。",
+                "cc0Button": "阅读 CC0 官方摘要",
+                "guideButton": "打开字体入门指南",
+                "commercialTitle": "允许商业使用",
+                "commercialText": "可将字体用于有偿工作、产品、客户项目或您自己的业务。",
+                "permissionTitle": "无需许可或付费",
+                "permissionText": "使用字体前无需联系 Typodermic。",
+                "attributionTitle": "无需署名",
+                "attributionText": "您可以注明 Typodermic，但并非必须。",
+                "permissionsHeading": "您可以做什么",
+                "permissionsSubheading": "可用于个人、商业、可编辑、嵌入或再分发用途。",
+                "permissionsIntro": "您可以：",
+                "permission1": "在徽标、文档、图像、印刷品、演示文稿和视频中使用此字体。",
+                "permission2": "将字体嵌入网站、应用、游戏、电子书、PDF 和其他产品。",
+                "permission3": "将字体上传到 Canva 或其他云端设计服务，前提是该服务接受自定义字体。",
+                "permission4": "修改字体、转换为其他格式或更改名称。",
+                "permission5": "赠送、打包、再分发或销售原始或修改后的字体文件。",
+                "permission6": "允许客户、同事、顾客和其他人使用此字体。",
+                "attributionCalloutLead": "无需署名。",
+                "attributionCalloutText": "如果您选择注明 Typodermic，请勿暗示 Typodermic 为您或您的作品背书。",
+                "startHeading": "开始使用",
+                "startSubheading": "安装字体前请先解压 ZIP 文件。",
+                "zipIntro": "ZIP 文件是一种容器。尝试安装字体前请先将其解压。",
+                "windowsText": "右键单击 ZIP 文件并选择“全部解压缩”。然后右键单击 OTF 字体文件，选择“安装”或“为所有用户安装”。",
+                "macText": "双击 ZIP 文件将其解压。然后双击 OTF 字体文件并选择“安装字体”。",
+                "mobileLabel": "手机和平板电脑",
+                "mobileText": "在手机或平板电脑上下载 ZIP 文件不会自动安装字体。移动设备的安装方式因设备而异，可能需要字体管理应用或配置描述文件。",
+                "restartText": "如果软件中没有显示字体，请在安装后关闭并重新打开该软件。",
+                "filesHeading": "选择正确的文件",
+                "filesSubheading": "不同字体格式有不同用途。",
+                "otfText": "安装在 Windows 或 macOS 上，用于常见的设计、写作、演示和视频软件。",
+                "woff2Text": "用于网站上的实时可选文本。公有领域网页字体包中提供 WOFF2 文件。",
+                "vfcText": "在 FontLab 中打开，以检查或修改字体本身。这些是用于字体开发的源文件。",
+                "fileNote": "并非每个下载包都包含所有文件类型。",
+                "downloadsButton": "查看所有公有领域下载",
+                "onlineHeading": "网站和可编辑模板",
+                "onlineSubheading": "CC0 也允许这些用途。",
+                "websiteTitle": "网站实时文本",
+                "websiteText": "对于网站上的实时可选文本，请尽量使用提供的 WOFF2 版本。",
+                "templatesTitle": "Canva 和可编辑模板",
+                "templatesText": "您可以将此字体上传到 Canva 或其他设计平台，并创建可编辑模板。",
+                "platformNoteLead": "平台规则仍然适用。",
+                "platformNoteText": "该服务必须接受自定义字体，并且您必须遵守其规则和技术要求。",
+                "importantHeading": "重要信息",
+                "importantSubheading": "仍需注意一些法律细节。",
+                "asIsText": "字体按现状提供，不附带任何保证。",
+                "otherRightsText": "CC0 不影响专利权、商标权，也不影响隐私权、公开权等其他权利。",
+                "endorsementText": "请勿暗示 Typodermic Fonts 为您、您的组织或您的作品背书。",
+                "summaryText": "本页是通俗易懂的简介。完整详情请阅读 CC0 官方摘要和法律文本。",
+                "legalCodeButton": "阅读完整的 CC0 法律文本",
+                "helpHeading": "需要字体使用帮助吗？",
+                "helpText": "Typodermic 入门指南介绍 ZIP 文件、字体安装、网站和文件格式。",
+                "helpGuide": "打开入门指南",
+                "helpFonts": "浏览公有领域字体",
+                "footerText": "Typodermic Fonts 公有领域字体指南。以 CC0 官方条款为准。"
+        },
+        "zh-Hant": {
+                "pageTitle": "Typodermic Fonts — 公有領域字型指南",
+                "headerNote": "公有領域字型指南",
+                "languageLabel": "語言",
+                "eyebrow": "公有領域字型 · 個人與商業用途",
+                "pageHeading": "此字型可免費用於任何用途。",
+                "introBefore": "此 Typodermic 字型已依據 ",
+                "introAfter": "（一種公有領域貢獻聲明）發布。您可以將其用於個人或商業作品，無需購買授權、支付費用或請求許可。",
+                "noticeLead": "無需另行取得 Typodermic 授權。",
+                "noticeText": "本壓縮包中的字型檔案適用 CC0 官方條款。",
+                "cc0Button": "閱讀 CC0 官方摘要",
+                "guideButton": "開啟字型入門指南",
+                "commercialTitle": "允許商業使用",
+                "commercialText": "可將字型用於有償工作、產品、客戶專案或您自己的業務。",
+                "permissionTitle": "無需許可或付費",
+                "permissionText": "使用字型前無需聯絡 Typodermic。",
+                "attributionTitle": "無需標示出處",
+                "attributionText": "您可以註明 Typodermic，但並非必要。",
+                "permissionsHeading": "您可以做什麼",
+                "permissionsSubheading": "可用於個人、商業、可編輯、嵌入或再散布用途。",
+                "permissionsIntro": "您可以：",
+                "permission1": "在標誌、文件、影像、印刷品、簡報和影片中使用此字型。",
+                "permission2": "將字型嵌入網站、應用程式、遊戲、電子書、PDF 和其他產品。",
+                "permission3": "將字型上傳至 Canva 或其他雲端設計服務，前提是該服務接受自訂字型。",
+                "permission4": "修改字型、轉換成其他格式或更改名稱。",
+                "permission5": "贈送、打包、再散布或銷售原始或修改後的字型檔案。",
+                "permission6": "允許客戶、同事、顧客和其他人使用此字型。",
+                "attributionCalloutLead": "無需標示出處。",
+                "attributionCalloutText": "如果您選擇註明 Typodermic，請勿暗示 Typodermic 為您或您的作品背書。",
+                "startHeading": "開始使用",
+                "startSubheading": "安裝字型前請先解壓縮 ZIP 檔案。",
+                "zipIntro": "ZIP 檔案是一種容器。嘗試安裝字型前請先將其解壓縮。",
+                "windowsText": "在 ZIP 檔案上按一下滑鼠右鍵並選擇「全部解壓縮」。然後在 OTF 字型檔案上按一下滑鼠右鍵，選擇「安裝」或「為所有使用者安裝」。",
+                "macText": "按兩下 ZIP 檔案將其解壓縮。然後按兩下 OTF 字型檔案並選擇「安裝字型」。",
+                "mobileLabel": "手機和平板電腦",
+                "mobileText": "在手機或平板電腦上下載 ZIP 檔案不會自動安裝字型。行動裝置的安裝方式因裝置而異，可能需要字型管理應用程式或設定描述檔。",
+                "restartText": "如果軟體中沒有顯示字型，請在安裝後關閉並重新開啟該軟體。",
+                "filesHeading": "選擇正確的檔案",
+                "filesSubheading": "不同字型格式有不同用途。",
+                "otfText": "安裝在 Windows 或 macOS 上，用於一般的設計、寫作、簡報和影片軟體。",
+                "woff2Text": "用於網站上的即時可選取文字。公有領域網頁字型包中提供 WOFF2 檔案。",
+                "vfcText": "在 FontLab 中開啟，以檢查或修改字型本身。這些是用於字型開發的原始檔。",
+                "fileNote": "並非每個下載包都包含所有檔案類型。",
+                "downloadsButton": "查看所有公有領域下載",
+                "onlineHeading": "網站和可編輯範本",
+                "onlineSubheading": "CC0 也允許這些用途。",
+                "websiteTitle": "網站即時文字",
+                "websiteText": "對於網站上的即時可選取文字，請盡量使用提供的 WOFF2 版本。",
+                "templatesTitle": "Canva 和可編輯範本",
+                "templatesText": "您可以將此字型上傳至 Canva 或其他設計平台，並建立可編輯範本。",
+                "platformNoteLead": "平台規則仍然適用。",
+                "platformNoteText": "該服務必須接受自訂字型，並且您必須遵守其規則和技術要求。",
+                "importantHeading": "重要資訊",
+                "importantSubheading": "仍需注意一些法律細節。",
+                "asIsText": "字型按現狀提供，不附帶任何保證。",
+                "otherRightsText": "CC0 不影響專利權、商標權，也不影響隱私權、公開權等其他權利。",
+                "endorsementText": "請勿暗示 Typodermic Fonts 為您、您的組織或您的作品背書。",
+                "summaryText": "本頁是淺白易懂的簡介。完整詳情請閱讀 CC0 官方摘要和法律文本。",
+                "legalCodeButton": "閱讀完整的 CC0 法律文本",
+                "helpHeading": "需要字型使用協助嗎？",
+                "helpText": "Typodermic 入門指南介紹 ZIP 檔案、字型安裝、網站和檔案格式。",
+                "helpGuide": "開啟入門指南",
+                "helpFonts": "瀏覽公有領域字型",
+                "footerText": "Typodermic Fonts 公有領域字型指南。以 CC0 官方條款為準。"
+        },
+        "ja": {
+                "pageTitle": "Typodermic Fonts — パブリックドメインフォントガイド",
+                "headerNote": "パブリックドメインフォントガイド",
+                "languageLabel": "言語",
+                "eyebrow": "パブリックドメインフォント · 個人利用・商用利用",
+                "pageHeading": "このフォントはあらゆる用途に無料で使えます。",
+                "introBefore": "この Typodermic フォントは、パブリックドメイン提供である ",
+                "introAfter": " の下で公開されています。ライセンスの購入、料金の支払い、許可の申請をせずに、個人または商用の制作物に使用できます。",
+                "noticeLead": "Typodermic の別途ライセンスは必要ありません。",
+                "noticeText": "このパッケージ内のフォントファイルには、CC0 の正式な条件が適用されます。",
+                "cc0Button": "CC0 の公式概要を読む",
+                "guideButton": "初心者向けフォントガイドを開く",
+                "commercialTitle": "商用利用できます",
+                "commercialText": "有償の仕事、製品、クライアント案件、ご自身の事業でフォントを使用できます。",
+                "permissionTitle": "許可も支払いも不要",
+                "permissionText": "フォントを使用する前に Typodermic へ連絡する必要はありません。",
+                "attributionTitle": "クレジット表記は不要",
+                "attributionText": "Typodermic をクレジットしても構いませんが、必須ではありません。",
+                "permissionsHeading": "できること",
+                "permissionsSubheading": "個人、商用、編集可能、埋め込み、再配布の用途に使用できます。",
+                "permissionsIntro": "次のことができます。",
+                "permission1": "ロゴ、文書、画像、印刷物、プレゼンテーション、動画でフォントを使用する。",
+                "permission2": "ウェブサイト、アプリ、ゲーム、電子書籍、PDF、その他の製品にフォントを埋め込む。",
+                "permission3": "カスタムフォントに対応する Canva または他のクラウドデザインサービスにフォントをアップロードする。",
+                "permission4": "フォントを変更し、別の形式に変換し、または名前を変更する。",
+                "permission5": "元のフォントファイルまたは変更したフォントファイルを無償提供、同梱、再配布、販売する。",
+                "permission6": "クライアント、同僚、顧客、その他の人にフォントを使用してもらう。",
+                "attributionCalloutLead": "クレジット表記は必要ありません。",
+                "attributionCalloutText": "Typodermic をクレジットする場合も、Typodermic があなたや作品を推奨しているかのような表現はしないでください。",
+                "startHeading": "使い始める",
+                "startSubheading": "フォントをインストールする前に ZIP ファイルを展開してください。",
+                "zipIntro": "ZIP ファイルはファイルをまとめた容器です。フォントをインストールする前に展開してください。",
+                "windowsText": "ZIP ファイルを右クリックして「すべて展開」を選びます。次に OTF フォントファイルを右クリックし、「インストール」または「すべてのユーザーに対してインストール」を選びます。",
+                "macText": "ZIP ファイルをダブルクリックして展開します。次に OTF フォントファイルをダブルクリックし、「フォントをインストール」を選びます。",
+                "mobileLabel": "スマートフォンとタブレット",
+                "mobileText": "スマートフォンやタブレットに ZIP ファイルをダウンロードしても、フォントは自動的にはインストールされません。方法は端末によって異なり、フォント管理アプリや構成プロファイルが必要な場合があります。",
+                "restartText": "ソフトウェアにフォントが表示されない場合は、インストール後にソフトウェアを終了して再度開いてください。",
+                "filesHeading": "適切なファイルを選ぶ",
+                "filesSubheading": "フォント形式によって用途が異なります。",
+                "otfText": "Windows または macOS にインストールし、一般的なデザイン、文章作成、プレゼンテーション、動画ソフトで使用します。",
+                "woff2Text": "ウェブサイト上の選択可能なライブテキストに使用します。WOFF2 ファイルはパブリックドメインのウェブフォントパッケージに含まれています。",
+                "vfcText": "FontLab で開き、フォント自体を確認または変更します。フォント開発用のソースファイルです。",
+                "fileNote": "すべてのダウンロードパッケージに、すべてのファイル形式が含まれるわけではありません。",
+                "downloadsButton": "パブリックドメインの全ダウンロードを見る",
+                "onlineHeading": "ウェブサイトと編集可能なテンプレート",
+                "onlineSubheading": "CC0 ではこれらの用途も認められています。",
+                "websiteTitle": "ウェブサイトのライブテキスト",
+                "websiteText": "ウェブサイトの選択可能なライブテキストには、利用できる場合は提供された WOFF2 版を使用してください。",
+                "templatesTitle": "Canva と編集可能なテンプレート",
+                "templatesText": "このフォントを Canva または他のデザインプラットフォームにアップロードし、編集可能なテンプレートを作成できます。",
+                "platformNoteLead": "プラットフォームの規則には従う必要があります。",
+                "platformNoteText": "サービスがカスタムフォントに対応していることを確認し、その規則と技術要件に従ってください。",
+                "importantHeading": "重要な情報",
+                "importantSubheading": "注意すべき法的事項があります。",
+                "asIsText": "フォントは現状のまま提供され、保証はありません。",
+                "otherRightsText": "CC0 は、特許権や商標権、プライバシー権、パブリシティ権などのその他の権利には影響しません。",
+                "endorsementText": "Typodermic Fonts があなた、あなたの組織、または作品を推奨しているかのような表現はしないでください。",
+                "summaryText": "このページは平易な言葉による入門説明です。詳しくは CC0 の公式概要と法的条文をお読みください。",
+                "legalCodeButton": "CC0 の法的条文全文を読む",
+                "helpHeading": "フォントの使い方でお困りですか？",
+                "helpText": "Typodermic の初心者向けガイドでは、ZIP ファイル、フォントのインストール、ウェブサイト、ファイル形式について説明しています。",
+                "helpGuide": "初心者向けガイドを開く",
+                "helpFonts": "パブリックドメインフォントを見る",
+                "footerText": "Typodermic Fonts パブリックドメインフォントガイド。CC0 の正式な条件が優先されます。"
+        },
+        "ko": {
+                "pageTitle": "Typodermic Fonts — 퍼블릭 도메인 글꼴 안내",
+                "headerNote": "퍼블릭 도메인 글꼴 안내",
+                "languageLabel": "언어",
+                "eyebrow": "퍼블릭 도메인 글꼴 · 개인 및 상업적 사용",
+                "pageHeading": "이 글꼴은 모든 용도로 무료로 사용할 수 있습니다.",
+                "introBefore": "이 Typodermic 글꼴은 퍼블릭 도메인 기증인 ",
+                "introAfter": "에 따라 공개되었습니다. 라이선스를 구입하거나 비용을 지불하거나 허가를 요청하지 않고 개인 또는 상업적 작업에 사용할 수 있습니다.",
+                "noticeLead": "별도의 Typodermic 라이선스가 필요하지 않습니다.",
+                "noticeText": "이 패키지의 글꼴 파일에는 공식 CC0 조건이 적용됩니다.",
+                "cc0Button": "공식 CC0 요약 읽기",
+                "guideButton": "초보자용 글꼴 안내 열기",
+                "commercialTitle": "상업적 사용 가능",
+                "commercialText": "유료 작업, 제품, 고객 프로젝트 또는 본인의 사업에 글꼴을 사용할 수 있습니다.",
+                "permissionTitle": "허가나 결제 불필요",
+                "permissionText": "글꼴을 사용하기 전에 Typodermic에 연락할 필요가 없습니다.",
+                "attributionTitle": "저작자 표시 불필요",
+                "attributionText": "Typodermic을 표시할 수 있지만 의무는 아닙니다.",
+                "permissionsHeading": "할 수 있는 일",
+                "permissionsSubheading": "개인, 상업, 편집 가능, 임베딩 또는 재배포 용도로 사용할 수 있습니다.",
+                "permissionsIntro": "다음과 같이 사용할 수 있습니다.",
+                "permission1": "로고, 문서, 이미지, 인쇄물, 프레젠테이션 및 동영상에 글꼴을 사용합니다.",
+                "permission2": "웹사이트, 앱, 게임, 전자책, PDF 및 기타 제품에 글꼴을 임베드합니다.",
+                "permission3": "사용자 지정 글꼴을 허용하는 Canva 또는 다른 클라우드 디자인 서비스에 글꼴을 업로드합니다.",
+                "permission4": "글꼴을 수정하거나 다른 형식으로 변환하거나 이름을 변경합니다.",
+                "permission5": "원본 또는 수정한 글꼴 파일을 무료 제공, 번들, 재배포 또는 판매합니다.",
+                "permission6": "고객, 동료 및 다른 사람이 글꼴을 사용하도록 허용합니다.",
+                "attributionCalloutLead": "저작자 표시는 필요하지 않습니다.",
+                "attributionCalloutText": "Typodermic을 표시하는 경우에도 Typodermic이 본인이나 작업을 보증한다고 암시하지 마십시오.",
+                "startHeading": "시작하기",
+                "startSubheading": "글꼴을 설치하기 전에 ZIP 파일의 압축을 푸십시오.",
+                "zipIntro": "ZIP 파일은 여러 파일을 담는 컨테이너입니다. 글꼴을 설치하기 전에 압축을 푸십시오.",
+                "windowsText": "ZIP 파일을 마우스 오른쪽 버튼으로 클릭하고 모두 압축 풀기를 선택합니다. 그런 다음 OTF 글꼴 파일을 마우스 오른쪽 버튼으로 클릭하고 설치 또는 모든 사용자용으로 설치를 선택합니다.",
+                "macText": "ZIP 파일을 이중 클릭하여 압축을 풉니다. 그런 다음 OTF 글꼴 파일을 이중 클릭하고 서체 설치를 선택합니다.",
+                "mobileLabel": "휴대전화 및 태블릿",
+                "mobileText": "휴대전화나 태블릿에서 ZIP 파일을 다운로드해도 글꼴이 자동으로 설치되지는 않습니다. 설치 방법은 기기마다 다르며 글꼴 관리 앱이나 구성 프로파일이 필요할 수 있습니다.",
+                "restartText": "소프트웨어에 글꼴이 표시되지 않으면 설치 후 소프트웨어를 닫았다가 다시 여십시오.",
+                "filesHeading": "올바른 파일 선택",
+                "filesSubheading": "글꼴 형식마다 용도가 다릅니다.",
+                "otfText": "Windows 또는 macOS에 설치하여 일반 디자인, 작성, 프레젠테이션 및 동영상 소프트웨어에서 사용합니다.",
+                "woff2Text": "웹사이트의 실시간 선택 가능 텍스트에 사용합니다. WOFF2 파일은 퍼블릭 도메인 웹글꼴 패키지에서 받을 수 있습니다.",
+                "vfcText": "FontLab에서 열어 글꼴 자체를 검사하거나 수정합니다. 글꼴 개발용 소스 파일입니다.",
+                "fileNote": "모든 다운로드 패키지에 모든 파일 형식이 포함되는 것은 아닙니다.",
+                "downloadsButton": "모든 퍼블릭 도메인 다운로드 보기",
+                "onlineHeading": "웹사이트 및 편집 가능한 템플릿",
+                "onlineSubheading": "CC0는 이러한 사용도 허용합니다.",
+                "websiteTitle": "웹사이트 실시간 텍스트",
+                "websiteText": "웹사이트의 실시간 선택 가능 텍스트에는 가능하면 제공된 WOFF2 버전을 사용하십시오.",
+                "templatesTitle": "Canva 및 편집 가능한 템플릿",
+                "templatesText": "이 글꼴을 Canva 또는 다른 디자인 플랫폼에 업로드하여 편집 가능한 템플릿을 만들 수 있습니다.",
+                "platformNoteLead": "플랫폼 규칙은 계속 적용됩니다.",
+                "platformNoteText": "서비스에서 사용자 지정 글꼴을 허용해야 하며 해당 규칙과 기술 요구 사항을 따라야 합니다.",
+                "importantHeading": "중요 정보",
+                "importantSubheading": "몇 가지 법적 세부 사항은 여전히 중요합니다.",
+                "asIsText": "글꼴은 보증 없이 있는 그대로 제공됩니다.",
+                "otherRightsText": "CC0는 특허권이나 상표권 또는 개인정보 보호권 및 퍼블리시티권과 같은 기타 권리에 영향을 주지 않습니다.",
+                "endorsementText": "Typodermic Fonts가 본인, 조직 또는 작업을 보증한다고 암시하지 마십시오.",
+                "summaryText": "이 페이지는 쉬운 말로 작성한 소개입니다. 전체 내용은 공식 CC0 요약과 법적 조항을 읽어 보십시오.",
+                "legalCodeButton": "CC0 법적 조항 전문 읽기",
+                "helpHeading": "글꼴 사용에 도움이 필요하신가요?",
+                "helpText": "Typodermic 초보자 안내에서는 ZIP 파일, 글꼴 설치, 웹사이트 및 파일 형식을 설명합니다.",
+                "helpGuide": "초보자 안내 열기",
+                "helpFonts": "퍼블릭 도메인 글꼴 둘러보기",
+                "footerText": "Typodermic Fonts 퍼블릭 도메인 글꼴 안내. 공식 CC0 조건이 우선합니다."
+        },
+        "id": {
+                "pageTitle": "Typodermic Fonts — Panduan font domain publik",
+                "headerNote": "Panduan font domain publik",
+                "languageLabel": "Bahasa",
+                "eyebrow": "Font domain publik · penggunaan pribadi dan komersial",
+                "pageHeading": "Font ini bebas digunakan untuk tujuan apa pun.",
+                "introBefore": "Font Typodermic ini telah dirilis berdasarkan ",
+                "introAfter": ", suatu dedikasi domain publik. Anda dapat menggunakannya untuk karya pribadi atau komersial tanpa membeli lisensi, membayar biaya, atau meminta izin.",
+                "noticeLead": "Tidak diperlukan lisensi Typodermic terpisah.",
+                "noticeText": "Ketentuan resmi CC0 berlaku untuk file font dalam paket ini.",
+                "cc0Button": "Baca ringkasan resmi CC0",
+                "guideButton": "Buka panduan font untuk pemula",
+                "commercialTitle": "Penggunaan komersial diizinkan",
+                "commercialText": "Gunakan font dalam pekerjaan berbayar, produk, proyek klien, atau bisnis Anda sendiri.",
+                "permissionTitle": "Tanpa izin atau pembayaran",
+                "permissionText": "Anda tidak perlu menghubungi Typodermic sebelum menggunakan font.",
+                "attributionTitle": "Atribusi tidak diwajibkan",
+                "attributionText": "Anda boleh mencantumkan Typodermic, tetapi tidak wajib.",
+                "permissionsHeading": "Yang dapat Anda lakukan",
+                "permissionsSubheading": "Penggunaan pribadi, komersial, dapat diedit, disematkan, atau didistribusikan ulang.",
+                "permissionsIntro": "Anda dapat:",
+                "permission1": "Menggunakan font dalam logo, dokumen, gambar, cetakan, presentasi, dan video.",
+                "permission2": "Menyematkan font dalam situs web, aplikasi, gim, buku elektronik, PDF, dan produk lainnya.",
+                "permission3": "Mengunggah font ke Canva atau layanan desain awan lainnya, asalkan layanan tersebut menerima font khusus.",
+                "permission4": "Mengubah font, mengonversinya ke format lain, atau mengganti namanya.",
+                "permission5": "Memberikan, membundel, mendistribusikan ulang, atau menjual file font asli atau yang telah diubah.",
+                "permission6": "Mengizinkan klien, rekan kerja, pelanggan, dan orang lain menggunakan font.",
+                "attributionCalloutLead": "Atribusi tidak diwajibkan.",
+                "attributionCalloutText": "Jika Anda memilih mencantumkan Typodermic, jangan menyiratkan bahwa Typodermic mendukung Anda atau karya Anda.",
+                "startHeading": "Memulai",
+                "startSubheading": "Ekstrak file ZIP sebelum memasang font.",
+                "zipIntro": "File ZIP adalah wadah. Ekstrak file tersebut sebelum mencoba memasang font.",
+                "windowsText": "Klik kanan file ZIP lalu pilih Ekstrak Semua. Setelah itu, klik kanan file font OTF lalu pilih Instal atau Instal untuk semua pengguna.",
+                "macText": "Klik dua kali file ZIP untuk mengekstraknya. Setelah itu, klik dua kali file font OTF lalu pilih Instal Font.",
+                "mobileLabel": "Ponsel dan tablet",
+                "mobileText": "Mengunduh file ZIP di ponsel atau tablet tidak otomatis memasang font. Cara pemasangan berbeda menurut perangkat dan mungkin memerlukan aplikasi pengelola font atau profil konfigurasi.",
+                "restartText": "Jika font tidak muncul di perangkat lunak Anda, tutup lalu buka kembali perangkat lunak setelah memasangnya.",
+                "filesHeading": "Memilih file yang tepat",
+                "filesSubheading": "Format font yang berbeda memiliki fungsi yang berbeda.",
+                "otfText": "Pasang di Windows atau macOS untuk digunakan dalam perangkat lunak desain, penulisan, presentasi, dan video biasa.",
+                "woff2Text": "Gunakan untuk teks langsung yang dapat dipilih di situs web. File WOFF2 tersedia dalam paket webfont domain publik.",
+                "vfcText": "Buka di FontLab untuk memeriksa atau mengubah font itu sendiri. Ini adalah file sumber untuk pengembangan font.",
+                "fileNote": "Tidak setiap paket unduhan berisi semua jenis file.",
+                "downloadsButton": "Lihat semua unduhan domain publik",
+                "onlineHeading": "Situs web dan templat yang dapat diedit",
+                "onlineSubheading": "CC0 juga mengizinkan penggunaan ini.",
+                "websiteTitle": "Teks langsung di situs web",
+                "websiteText": "Untuk teks situs web langsung yang dapat dipilih, gunakan versi WOFF2 yang disediakan jika tersedia.",
+                "templatesTitle": "Canva dan templat yang dapat diedit",
+                "templatesText": "Anda dapat mengunggah font ini ke Canva atau platform desain lain dan membuat templat yang dapat diedit.",
+                "platformNoteLead": "Aturan platform tetap berlaku.",
+                "platformNoteText": "Layanan harus menerima font khusus, dan Anda harus mengikuti aturan serta persyaratan teknisnya.",
+                "importantHeading": "Informasi penting",
+                "importantSubheading": "Beberapa rincian hukum tetap penting.",
+                "asIsText": "Font diberikan sebagaimana adanya, tanpa jaminan.",
+                "otherRightsText": "CC0 tidak memengaruhi hak paten atau merek dagang, maupun hak lain seperti hak privasi dan publisitas.",
+                "endorsementText": "Jangan menyiratkan bahwa Typodermic Fonts mendukung Anda, organisasi Anda, atau karya Anda.",
+                "summaryText": "Halaman ini adalah pengantar dalam bahasa sederhana. Bacalah ringkasan resmi dan naskah hukum CC0 untuk rincian lengkap.",
+                "legalCodeButton": "Baca naskah hukum CC0 lengkap",
+                "helpHeading": "Perlu bantuan menggunakan font?",
+                "helpText": "Panduan pemula Typodermic menjelaskan file ZIP, pemasangan font, situs web, dan format file.",
+                "helpGuide": "Buka panduan pemula",
+                "helpFonts": "Jelajahi font domain publik",
+                "footerText": "Panduan font domain publik Typodermic Fonts. Ketentuan resmi CC0 yang berlaku."
+        },
+        "cs": {
+                "pageTitle": "Typodermic Fonts — Průvodce písmem ve veřejné doméně",
+                "headerNote": "Průvodce písmem ve veřejné doméně",
+                "languageLabel": "Jazyk",
+                "eyebrow": "Písmo ve veřejné doméně · osobní a komerční použití",
+                "pageHeading": "Toto písmo lze zdarma použít k jakémukoli účelu.",
+                "introBefore": "Toto písmo Typodermic bylo zveřejněno pod ",
+                "introAfter": ", nástrojem pro věnování díla do veřejné domény. Můžete je používat pro osobní i komerční práci bez nákupu licence, placení poplatku nebo žádosti o svolení.",
+                "noticeLead": "Samostatná licence Typodermic není nutná.",
+                "noticeText": "Na soubory písem v tomto balíčku se vztahují oficiální podmínky CC0.",
+                "cc0Button": "Přečíst oficiální shrnutí CC0",
+                "guideButton": "Otevřít průvodce písmem pro začátečníky",
+                "commercialTitle": "Komerční použití je povoleno",
+                "commercialText": "Písmo můžete použít v placené práci, produktech, projektech pro klienty nebo ve vlastním podnikání.",
+                "permissionTitle": "Bez svolení a bez platby",
+                "permissionText": "Před použitím písma nemusíte kontaktovat Typodermic.",
+                "attributionTitle": "Uvedení autora není vyžadováno",
+                "attributionText": "Typodermic můžete uvést, ale nemusíte.",
+                "permissionsHeading": "Co můžete dělat",
+                "permissionsSubheading": "Osobní, komerční, upravitelné, vložené nebo dále šířené použití.",
+                "permissionsIntro": "Můžete:",
+                "permission1": "Používat písmo v logách, dokumentech, obrázcích, tisku, prezentacích a videích.",
+                "permission2": "Vložit písmo do webů, aplikací, her, elektronických knih, PDF a dalších produktů.",
+                "permission3": "Nahrát písmo do Canvy nebo jiné cloudové návrhářské služby, pokud tato služba přijímá vlastní písma.",
+                "permission4": "Písmo upravit, převést do jiného formátu nebo přejmenovat.",
+                "permission5": "Původní nebo upravené soubory písem darovat, přibalit, dále šířit nebo prodávat.",
+                "permission6": "Umožnit klientům, kolegům, zákazníkům a dalším lidem písmo používat.",
+                "attributionCalloutLead": "Uvedení autora není vyžadováno.",
+                "attributionCalloutText": "Pokud Typodermic uvedete, nenaznačujte, že Typodermic podporuje vás nebo vaši práci.",
+                "startHeading": "Začínáme",
+                "startSubheading": "Před instalací písma rozbalte soubor ZIP.",
+                "zipIntro": "Soubor ZIP je kontejner. Než se pokusíte písmo nainstalovat, rozbalte jej.",
+                "windowsText": "Klikněte pravým tlačítkem na soubor ZIP a vyberte Extrahovat vše. Poté klikněte pravým tlačítkem na soubor písma OTF a vyberte Nainstalovat nebo Nainstalovat pro všechny uživatele.",
+                "macText": "Dvojitým kliknutím soubor ZIP rozbalte. Poté dvakrát klikněte na soubor písma OTF a vyberte Instalovat písmo.",
+                "mobileLabel": "Telefony a tablety",
+                "mobileText": "Stažení souboru ZIP do telefonu nebo tabletu písmo automaticky nenainstaluje. Instalace se liší podle zařízení a může vyžadovat aplikaci pro správu písem nebo konfigurační profil.",
+                "restartText": "Pokud se písmo v programu nezobrazí, po instalaci program zavřete a znovu otevřete.",
+                "filesHeading": "Výběr správného souboru",
+                "filesSubheading": "Různé formáty písem slouží k různým účelům.",
+                "otfText": "Nainstalujte ve Windows nebo macOS pro použití v běžných programech pro návrhy, psaní, prezentace a video.",
+                "woff2Text": "Použijte pro živý, označitelný text na webech. Soubory WOFF2 jsou dostupné v balíčku webových písem ve veřejné doméně.",
+                "vfcText": "Otevřete ve FontLabu, chcete-li prohlížet nebo upravovat samotné písmo. Jde o zdrojové soubory pro vývoj písem.",
+                "fileNote": "Ne každý balíček ke stažení obsahuje všechny typy souborů.",
+                "downloadsButton": "Zobrazit všechna písma ve veřejné doméně",
+                "onlineHeading": "Weby a upravitelné šablony",
+                "onlineSubheading": "CC0 povoluje i tato použití.",
+                "websiteTitle": "Živý text na webu",
+                "websiteText": "Pro živý, označitelný text na webu použijte dodanou verzi WOFF2, pokud je k dispozici.",
+                "templatesTitle": "Canva a upravitelné šablony",
+                "templatesText": "Toto písmo můžete nahrát do Canvy nebo jiné návrhářské platformy a vytvářet upravitelné šablony.",
+                "platformNoteLead": "Pravidla platformy platí i nadále.",
+                "platformNoteText": "Služba musí přijímat vlastní písma a vy musíte dodržovat její pravidla a technické požadavky.",
+                "importantHeading": "Důležité informace",
+                "importantSubheading": "Některé právní podrobnosti jsou stále důležité.",
+                "asIsText": "Písmo je poskytováno tak, jak je, bez záruk.",
+                "otherRightsText": "CC0 se nedotýká patentových ani známkových práv ani dalších práv, například práva na soukromí a osobnostních práv.",
+                "endorsementText": "Nenaznačujte, že Typodermic Fonts podporuje vás, vaši organizaci nebo vaši práci.",
+                "summaryText": "Tato stránka je úvodem v jednoduchém jazyce. Úplné podrobnosti naleznete v oficiálním shrnutí a právním textu CC0.",
+                "legalCodeButton": "Přečíst úplný právní text CC0",
+                "helpHeading": "Potřebujete pomoci s používáním písma?",
+                "helpText": "Průvodce Typodermic pro začátečníky vysvětluje soubory ZIP, instalaci písem, weby a formáty souborů.",
+                "helpGuide": "Otevřít průvodce pro začátečníky",
+                "helpFonts": "Procházet písma ve veřejné doméně",
+                "footerText": "Průvodce Typodermic Fonts písmem ve veřejné doméně. Rozhodující jsou oficiální podmínky CC0."
+        },
+        "hu": {
+                "pageTitle": "Typodermic Fonts — Közkincs betűtípus útmutató",
+                "headerNote": "Közkincs betűtípus útmutató",
+                "languageLabel": "Nyelv",
+                "eyebrow": "Közkincs betűtípus · személyes és kereskedelmi használat",
+                "pageHeading": "Ez a betűtípus bármilyen célra szabadon használható.",
+                "introBefore": "Ez a Typodermic betűtípus a ",
+                "introAfter": " közkincs-felajánlás alatt jelent meg. Személyes vagy kereskedelmi munkához is használhatja licencvásárlás, díjfizetés vagy engedélykérés nélkül.",
+                "noticeLead": "Külön Typodermic-licenc nem szükséges.",
+                "noticeText": "A csomagban található betűfájlokra a hivatalos CC0-feltételek vonatkoznak.",
+                "cc0Button": "A hivatalos CC0-összefoglaló elolvasása",
+                "guideButton": "A kezdő betűtípus-útmutató megnyitása",
+                "commercialTitle": "A kereskedelmi használat megengedett",
+                "commercialText": "Használja a betűtípust fizetett munkában, termékekben, ügyfélprojektekben vagy saját vállalkozásában.",
+                "permissionTitle": "Nincs szükség engedélyre vagy fizetésre",
+                "permissionText": "A betűtípus használata előtt nem kell kapcsolatba lépnie a Typodermic céggel.",
+                "attributionTitle": "Nincs szükség névfeltüntetésre",
+                "attributionText": "Feltüntetheti a Typodermic nevét, de nem kötelező.",
+                "permissionsHeading": "Mit tehet",
+                "permissionsSubheading": "Személyes, kereskedelmi, szerkeszthető, beágyazott vagy továbbterjesztett felhasználás.",
+                "permissionsIntro": "A következőket teheti:",
+                "permission1": "Használhatja a betűtípust logókban, dokumentumokban, képeken, nyomtatványokon, prezentációkban és videókban.",
+                "permission2": "Beágyazhatja a betűtípust webhelyekbe, alkalmazásokba, játékokba, e-könyvekbe, PDF-ekbe és más termékekbe.",
+                "permission3": "Feltöltheti a betűtípust a Canvába vagy más felhőalapú tervezőszolgáltatásba, ha az elfogad egyéni betűtípusokat.",
+                "permission4": "Módosíthatja a betűtípust, más formátumba alakíthatja vagy átnevezheti.",
+                "permission5": "Elajándékozhatja, csomagba foglalhatja, továbbterjesztheti vagy eladhatja az eredeti vagy módosított betűfájlokat.",
+                "permission6": "Megengedheti ügyfeleinek, munkatársainak, vásárlóinak és másoknak a betűtípus használatát.",
+                "attributionCalloutLead": "A névfeltüntetés nem kötelező.",
+                "attributionCalloutText": "Ha feltünteti a Typodermic nevét, ne sugallja, hogy a Typodermic támogatja Önt vagy a munkáját.",
+                "startHeading": "Első lépések",
+                "startSubheading": "A betűtípus telepítése előtt bontsa ki a ZIP-fájlt.",
+                "zipIntro": "A ZIP-fájl egy tároló. Bontsa ki, mielőtt megpróbálja telepíteni a betűtípust.",
+                "windowsText": "Kattintson jobb gombbal a ZIP-fájlra, és válassza az Összes kibontása lehetőséget. Ezután kattintson jobb gombbal az OTF betűfájlra, és válassza a Telepítés vagy a Telepítés minden felhasználó számára lehetőséget.",
+                "macText": "Kattintson duplán a ZIP-fájlra a kibontáshoz. Ezután kattintson duplán az OTF betűfájlra, és válassza a Betűtípus telepítése lehetőséget.",
+                "mobileLabel": "Telefonok és táblagépek",
+                "mobileText": "A ZIP-fájl telefonra vagy táblagépre történő letöltése nem telepíti automatikusan a betűtípust. A telepítés eszközönként eltér, és betűkezelő alkalmazást vagy konfigurációs profilt igényelhet.",
+                "restartText": "Ha a betűtípus nem jelenik meg a programban, a telepítés után zárja be, majd nyissa meg újra a programot.",
+                "filesHeading": "A megfelelő fájl kiválasztása",
+                "filesSubheading": "A különböző betűformátumok különböző feladatokra valók.",
+                "otfText": "Telepítse Windowsra vagy macOS-re a szokásos tervező-, szövegíró-, prezentációs és videószoftverekben való használathoz.",
+                "woff2Text": "Webhelyeken megjelenő élő, kijelölhető szöveghez használja. A WOFF2-fájlok a közkincs webfontcsomagban érhetők el.",
+                "vfcText": "Nyissa meg FontLabban a betűtípus vizsgálatához vagy módosításához. Ezek betűfejlesztési forrásfájlok.",
+                "fileNote": "Nem minden letöltési csomag tartalmaz minden fájltípust.",
+                "downloadsButton": "Az összes közkincs letöltés megtekintése",
+                "onlineHeading": "Webhelyek és szerkeszthető sablonok",
+                "onlineSubheading": "A CC0 ezeket a felhasználásokat is megengedi.",
+                "websiteTitle": "Élő webhelyszöveg",
+                "websiteText": "Élő, kijelölhető webhelyszöveghez használja a mellékelt WOFF2-változatot, ha elérhető.",
+                "templatesTitle": "Canva és szerkeszthető sablonok",
+                "templatesText": "Feltöltheti ezt a betűtípust a Canvába vagy más tervezőplatformra, és szerkeszthető sablonokat készíthet.",
+                "platformNoteLead": "A platform szabályai továbbra is érvényesek.",
+                "platformNoteText": "A szolgáltatásnak el kell fogadnia az egyéni betűtípusokat, Önnek pedig be kell tartania a szabályait és műszaki követelményeit.",
+                "importantHeading": "Fontos tudnivalók",
+                "importantSubheading": "Néhány jogi részlet továbbra is fontos.",
+                "asIsText": "A betűtípus jelen állapotában, garancia nélkül kerül átadásra.",
+                "otherRightsText": "A CC0 nem érinti a szabadalmi vagy védjegyjogokat, illetve más jogokat, például a magánélethez és a nyilvánossághoz fűződő jogokat.",
+                "endorsementText": "Ne sugallja, hogy a Typodermic Fonts támogatja Önt, szervezetét vagy munkáját.",
+                "summaryText": "Ez az oldal közérthető bevezető. A teljes részletekért olvassa el a hivatalos CC0-összefoglalót és jogi szöveget.",
+                "legalCodeButton": "A teljes CC0 jogi szöveg elolvasása",
+                "helpHeading": "Segítségre van szüksége a betűtípus használatához?",
+                "helpText": "A Typodermic kezdő útmutatója bemutatja a ZIP-fájlokat, a betűtípusok telepítését, a webhelyeket és a fájlformátumokat.",
+                "helpGuide": "Kezdő útmutató megnyitása",
+                "helpFonts": "Közkincs betűtípusok böngészése",
+                "footerText": "Typodermic Fonts közkincs betűtípus-útmutató. A hivatalos CC0-feltételek az irányadók."
+        },
+        "is": {
+                "pageTitle": "Typodermic Fonts — Leiðbeiningar um letur í almenningseigu",
+                "headerNote": "Leiðbeiningar um letur í almenningseigu",
+                "languageLabel": "Tungumál",
+                "eyebrow": "Letur í almenningseigu · einkanot og viðskiptanot",
+                "pageHeading": "Þetta letur má nota ókeypis í hvaða tilgangi sem er.",
+                "introBefore": "Þetta Typodermic-letur hefur verið gefið út samkvæmt ",
+                "introAfter": ", yfirlýsingu um afhendingu í almenningseigu. Þú mátt nota það í einka- eða atvinnuskyni án þess að kaupa leyfi, greiða gjald eða biðja um heimild.",
+                "noticeLead": "Ekki þarf sérstakt leyfi frá Typodermic.",
+                "noticeText": "Opinberir CC0-skilmálar gilda um leturskrárnar í þessum pakka.",
+                "cc0Button": "Lesa opinbert yfirlit CC0",
+                "guideButton": "Opna byrjendaleiðbeiningar um letur",
+                "commercialTitle": "Viðskiptanot eru leyfð",
+                "commercialText": "Notaðu letrið í greiddri vinnu, vörum, verkefnum fyrir viðskiptavini eða eigin rekstri.",
+                "permissionTitle": "Hvorki þarf leyfi né greiðslu",
+                "permissionText": "Þú þarft ekki að hafa samband við Typodermic áður en þú notar letrið.",
+                "attributionTitle": "Ekki þarf að geta höfundar",
+                "attributionText": "Þú mátt nefna Typodermic, en þess er ekki krafist.",
+                "permissionsHeading": "Það sem þú mátt gera",
+                "permissionsSubheading": "Einkanot, viðskiptanot, breytanleg notkun, innfelling eða endurdreifing.",
+                "permissionsIntro": "Þú mátt:",
+                "permission1": "Nota letrið í merkjum, skjölum, myndum, prentefni, kynningum og myndskeiðum.",
+                "permission2": "Fella letrið inn í vefsíður, forrit, leiki, rafbækur, PDF-skrár og aðrar vörur.",
+                "permission3": "Hlaða letrinu inn í Canva eða aðra skýjaþjónustu fyrir hönnun, ef þjónustan tekur við sérsniðnu letri.",
+                "permission4": "Breyta letrinu, umbreyta því í annað snið eða endurnefna það.",
+                "permission5": "Gefa, setja í pakka, endurdreifa eða selja upprunalegar eða breyttar leturskrár.",
+                "permission6": "Leyfa viðskiptavinum, samstarfsfólki og öðrum að nota letrið.",
+                "attributionCalloutLead": "Ekki þarf að geta höfundar.",
+                "attributionCalloutText": "Ef þú nefnir Typodermic skaltu ekki gefa í skyn að Typodermic styðji þig eða verk þín.",
+                "startHeading": "Hafist handa",
+                "startSubheading": "Afþjappaðu ZIP-skránni áður en letrið er sett upp.",
+                "zipIntro": "ZIP-skrá er ílát. Afþjappaðu henni áður en þú reynir að setja letrið upp.",
+                "windowsText": "Hægrismelltu á ZIP-skrána og veldu Extract All. Hægrismelltu síðan á OTF-leturskrána og veldu Install eða Install for all users.",
+                "macText": "Tvísmelltu á ZIP-skrána til að afþjappa henni. Tvísmelltu síðan á OTF-leturskrána og veldu Install Font.",
+                "mobileLabel": "Símar og spjaldtölvur",
+                "mobileText": "Niðurhal ZIP-skrár í síma eða spjaldtölvu setur letrið ekki sjálfkrafa upp. Uppsetning er mismunandi eftir tæki og getur krafist leturstjórnunarforrits eða stillingasniðs.",
+                "restartText": "Ef letrið birtist ekki í hugbúnaðinum skaltu loka honum og opna aftur eftir uppsetningu.",
+                "filesHeading": "Veldu rétta skrá",
+                "filesSubheading": "Mismunandi letursnið gegna mismunandi hlutverkum.",
+                "otfText": "Settu upp í Windows eða macOS til notkunar í venjulegum hönnunar-, ritvinnslu-, kynningar- og myndskeiðaforritum.",
+                "woff2Text": "Notaðu fyrir lifandi, valanlegan texta á vefsíðum. WOFF2-skrár eru í vefleturspakka fyrir almenningseigu.",
+                "vfcText": "Opnaðu í FontLab til að skoða eða breyta letrinu sjálfu. Þetta eru frumskrár fyrir leturþróun.",
+                "fileNote": "Ekki eru allar skráargerðir í öllum niðurhalspökkum.",
+                "downloadsButton": "Skoða allt letur í almenningseigu",
+                "onlineHeading": "Vefsíður og breytanleg sniðmát",
+                "onlineSubheading": "CC0 heimilar einnig þessa notkun.",
+                "websiteTitle": "Lifandi texti á vefsíðu",
+                "websiteText": "Notaðu WOFF2-útgáfuna þegar hún er til staðar fyrir lifandi, valanlegan texta á vefsíðu.",
+                "templatesTitle": "Canva og breytanleg sniðmát",
+                "templatesText": "Þú mátt hlaða letrinu inn í Canva eða annan hönnunarvettvang og búa til breytanleg sniðmát.",
+                "platformNoteLead": "Reglur vettvangsins gilda áfram.",
+                "platformNoteText": "Þjónustan verður að taka við sérsniðnu letri og þú verður að fylgja reglum hennar og tæknilegum kröfum.",
+                "importantHeading": "Mikilvægar upplýsingar",
+                "importantSubheading": "Nokkur lagaleg atriði skipta enn máli.",
+                "asIsText": "Letrið er afhent eins og það er, án ábyrgðar.",
+                "otherRightsText": "CC0 hefur ekki áhrif á einkaleyfis- eða vörumerkjarétt né önnur réttindi, svo sem friðhelgi einkalífs og rétt til eigin ímyndar.",
+                "endorsementText": "Ekki gefa í skyn að Typodermic Fonts styðji þig, fyrirtæki þitt eða verk þín.",
+                "summaryText": "Þessi síða er einföld kynning. Lestu opinbert yfirlit CC0 og lagatextann til að fá allar upplýsingar.",
+                "legalCodeButton": "Lesa allan lagatexta CC0",
+                "helpHeading": "Þarftu hjálp við að nota letrið?",
+                "helpText": "Byrjendaleiðbeiningar Typodermic útskýra ZIP-skrár, uppsetningu leturs, vefsíður og skráarsnið.",
+                "helpGuide": "Opna byrjendaleiðbeiningar",
+                "helpFonts": "Skoða letur í almenningseigu",
+                "footerText": "Leiðbeiningar Typodermic Fonts um letur í almenningseigu. Opinberir CC0-skilmálar ráða."
+        },
+        "no": {
+                "pageTitle": "Typodermic Fonts — Veiledning for skrifter i det fri",
+                "headerNote": "Veiledning for skrifter i det fri",
+                "languageLabel": "Språk",
+                "eyebrow": "Skrift i det fri · personlig og kommersiell bruk",
+                "pageHeading": "Denne skriften kan brukes fritt til alle formål.",
+                "introBefore": "Denne Typodermic-skriften er utgitt under ",
+                "introAfter": ", en fristatus-erklæring. Du kan bruke den i personlig eller kommersielt arbeid uten å kjøpe lisens, betale gebyr eller be om tillatelse.",
+                "noticeLead": "Ingen separat Typodermic-lisens er nødvendig.",
+                "noticeText": "De offisielle CC0-vilkårene gjelder for skriftfilene i denne pakken.",
+                "cc0Button": "Les det offisielle CC0-sammendraget",
+                "guideButton": "Åpne nybegynnerveiledningen for skrifter",
+                "commercialTitle": "Kommersiell bruk er tillatt",
+                "commercialText": "Bruk skriften i betalt arbeid, produkter, kundeprosjekter eller din egen virksomhet.",
+                "permissionTitle": "Ingen tillatelse eller betaling",
+                "permissionText": "Du trenger ikke kontakte Typodermic før du bruker skriften.",
+                "attributionTitle": "Kreditering er ikke påkrevd",
+                "attributionText": "Du kan kreditere Typodermic, men du må ikke.",
+                "permissionsHeading": "Dette kan du gjøre",
+                "permissionsSubheading": "Personlig, kommersiell, redigerbar, innebygd eller videredistribuert bruk.",
+                "permissionsIntro": "Du kan:",
+                "permission1": "Bruke skriften i logoer, dokumenter, bilder, trykksaker, presentasjoner og videoer.",
+                "permission2": "Bygge inn skriften i nettsteder, apper, spill, e-bøker, PDF-er og andre produkter.",
+                "permission3": "Laste opp skriften til Canva eller en annen skybasert designtjeneste, forutsatt at tjenesten godtar egendefinerte skrifter.",
+                "permission4": "Endre skriften, konvertere den til et annet format eller gi den nytt navn.",
+                "permission5": "Gi bort, pakke sammen, videredistribuere eller selge de opprinnelige eller endrede skriftfilene.",
+                "permission6": "La kunder, kolleger og andre bruke skriften.",
+                "attributionCalloutLead": "Kreditering er ikke påkrevd.",
+                "attributionCalloutText": "Hvis du krediterer Typodermic, må du ikke antyde at Typodermic støtter deg eller arbeidet ditt.",
+                "startHeading": "Kom i gang",
+                "startSubheading": "Pakk ut ZIP-filen før du installerer skriften.",
+                "zipIntro": "En ZIP-fil er en beholder. Pakk den ut før du prøver å installere skriften.",
+                "windowsText": "Høyreklikk ZIP-filen og velg Pakk ut alle. Høyreklikk deretter OTF-skriftfilen og velg Installer eller Installer for alle brukere.",
+                "macText": "Dobbeltklikk ZIP-filen for å pakke den ut. Dobbeltklikk deretter OTF-skriftfilen og velg Installer skrift.",
+                "mobileLabel": "Telefoner og nettbrett",
+                "mobileText": "Når du laster ned en ZIP-fil på en telefon eller et nettbrett, installeres ikke skriften automatisk. Installasjonen varierer fra enhet til enhet og kan kreve en app for skrifthåndtering eller en konfigurasjonsprofil.",
+                "restartText": "Hvis skriften ikke vises i programmet, lukker og åpner du programmet på nytt etter installasjonen.",
+                "filesHeading": "Velg riktig fil",
+                "filesSubheading": "Ulike skriftformater har ulike oppgaver.",
+                "otfText": "Installer i Windows eller macOS for bruk i vanlige programmer for design, skriving, presentasjoner og video.",
+                "woff2Text": "Bruk til levende, markerbar tekst på nettsteder. WOFF2-filer finnes i webfontpakken for skrifter i det fri.",
+                "vfcText": "Åpne i FontLab for å undersøke eller endre selve skriften. Dette er kildefiler for skriftutvikling.",
+                "fileNote": "Ikke alle nedlastingspakker inneholder alle filtyper.",
+                "downloadsButton": "Vis alle nedlastinger av skrifter i det fri",
+                "onlineHeading": "Nettsteder og redigerbare maler",
+                "onlineSubheading": "CC0 tillater også denne bruken.",
+                "websiteTitle": "Levende tekst på nettsted",
+                "websiteText": "For levende, markerbar nettstedstekst bør du bruke den medfølgende WOFF2-versjonen når den finnes.",
+                "templatesTitle": "Canva og redigerbare maler",
+                "templatesText": "Du kan laste opp denne skriften til Canva eller en annen designplattform og lage redigerbare maler.",
+                "platformNoteLead": "Plattformens regler gjelder fortsatt.",
+                "platformNoteText": "Tjenesten må godta egendefinerte skrifter, og du må følge dens regler og tekniske krav.",
+                "importantHeading": "Viktig informasjon",
+                "importantSubheading": "Noen juridiske detaljer er fortsatt viktige.",
+                "asIsText": "Skriften leveres som den er, uten garantier.",
+                "otherRightsText": "CC0 påvirker ikke patent- eller varemerkerettigheter eller andre rettigheter, for eksempel personvern- og publisitetsrettigheter.",
+                "endorsementText": "Ikke antyd at Typodermic Fonts støtter deg, organisasjonen din eller arbeidet ditt.",
+                "summaryText": "Denne siden er en innføring i klart språk. Les det offisielle CC0-sammendraget og den juridiske teksten for fullstendige opplysninger.",
+                "legalCodeButton": "Les hele den juridiske CC0-teksten",
+                "helpHeading": "Trenger du hjelp med å bruke skriften?",
+                "helpText": "Typodermics nybegynnerveiledning forklarer ZIP-filer, skriftinstallasjon, nettsteder og filformater.",
+                "helpGuide": "Åpne nybegynnerveiledningen",
+                "helpFonts": "Bla gjennom skrifter i det fri",
+                "footerText": "Typodermic Fonts-veiledning for skrifter i det fri. De offisielle CC0-vilkårene gjelder."
+        },
+        "pl": {
+                "pageTitle": "Typodermic Fonts — Przewodnik po fontach w domenie publicznej",
+                "headerNote": "Przewodnik po fontach w domenie publicznej",
+                "languageLabel": "Język",
+                "eyebrow": "Font w domenie publicznej · użytek osobisty i komercyjny",
+                "pageHeading": "Ten font jest bezpłatny do dowolnego użytku.",
+                "introBefore": "Ten font Typodermic został udostępniony na zasadach ",
+                "introAfter": ", czyli poprzez przekazanie do domeny publicznej. Można go używać w pracach osobistych i komercyjnych bez kupowania licencji, opłaty ani pytania o zgodę.",
+                "noticeLead": "Oddzielna licencja Typodermic nie jest wymagana.",
+                "noticeText": "Do plików fontu w tym pakiecie mają zastosowanie oficjalne warunki CC0.",
+                "cc0Button": "Przeczytaj oficjalne podsumowanie CC0",
+                "guideButton": "Otwórz przewodnik po fontach dla początkujących",
+                "commercialTitle": "Użytek komercyjny jest dozwolony",
+                "commercialText": "Używaj fontu w płatnych pracach, produktach, projektach klientów lub we własnej działalności.",
+                "permissionTitle": "Bez zgody i opłat",
+                "permissionText": "Nie trzeba kontaktować się z Typodermic przed użyciem fontu.",
+                "attributionTitle": "Podanie autorstwa nie jest wymagane",
+                "attributionText": "Można podać Typodermic jako autora, ale nie jest to obowiązkowe.",
+                "permissionsHeading": "Co wolno zrobić",
+                "permissionsSubheading": "Użytek osobisty, komercyjny, edytowalny, osadzony lub redystrybuowany.",
+                "permissionsIntro": "Można:",
+                "permission1": "Używać fontu w logo, dokumentach, obrazach, druku, prezentacjach i filmach.",
+                "permission2": "Osadzać font w witrynach, aplikacjach, grach, e-bookach, plikach PDF i innych produktach.",
+                "permission3": "Przesyłać font do serwisu Canva lub innej chmurowej usługi projektowej, jeśli przyjmuje ona własne fonty.",
+                "permission4": "Modyfikować font, konwertować go na inny format lub zmieniać jego nazwę.",
+                "permission5": "Oddawać, dołączać, redystrybuować lub sprzedawać oryginalne albo zmodyfikowane pliki fontu.",
+                "permission6": "Pozwalać klientom, współpracownikom i innym osobom używać fontu.",
+                "attributionCalloutLead": "Podanie autorstwa nie jest wymagane.",
+                "attributionCalloutText": "Jeśli podasz Typodermic, nie sugeruj, że firma wspiera Ciebie lub Twoją pracę.",
+                "startHeading": "Pierwsze kroki",
+                "startSubheading": "Rozpakuj plik ZIP przed zainstalowaniem fontu.",
+                "zipIntro": "Plik ZIP jest kontenerem. Rozpakuj go przed próbą zainstalowania fontu.",
+                "windowsText": "Kliknij plik ZIP prawym przyciskiem i wybierz Wyodrębnij wszystkie. Następnie kliknij prawym przyciskiem plik fontu OTF i wybierz Zainstaluj lub Zainstaluj dla wszystkich użytkowników.",
+                "macText": "Kliknij dwukrotnie plik ZIP, aby go rozpakować. Następnie kliknij dwukrotnie plik fontu OTF i wybierz Zainstaluj font.",
+                "mobileLabel": "Telefony i tablety",
+                "mobileText": "Pobranie pliku ZIP na telefon lub tablet nie instaluje fontu automatycznie. Instalacja zależy od urządzenia i może wymagać aplikacji do zarządzania fontami lub profilu konfiguracyjnego.",
+                "restartText": "Jeśli font nie pojawi się w programie, zamknij go i otwórz ponownie po instalacji.",
+                "filesHeading": "Wybór właściwego pliku",
+                "filesSubheading": "Różne formaty fontów służą do różnych zadań.",
+                "otfText": "Zainstaluj w systemie Windows lub macOS, aby używać w typowych programach do projektowania, pisania, prezentacji i wideo.",
+                "woff2Text": "Używaj do aktywnego, zaznaczalnego tekstu na stronach internetowych. Pliki WOFF2 są dostępne w pakiecie webfontów z domeny publicznej.",
+                "vfcText": "Otwórz w programie FontLab, aby zbadać lub zmodyfikować sam font. Są to pliki źródłowe do projektowania fontów.",
+                "fileNote": "Nie każdy pakiet do pobrania zawiera wszystkie rodzaje plików.",
+                "downloadsButton": "Zobacz wszystkie pliki z domeny publicznej",
+                "onlineHeading": "Witryny i edytowalne szablony",
+                "onlineSubheading": "CC0 zezwala również na takie użycie.",
+                "websiteTitle": "Aktywny tekst na stronie",
+                "websiteText": "Do aktywnego, zaznaczalnego tekstu na stronie użyj dostarczonej wersji WOFF2, jeśli jest dostępna.",
+                "templatesTitle": "Canva i edytowalne szablony",
+                "templatesText": "Możesz przesłać ten font do serwisu Canva lub innej platformy projektowej i tworzyć edytowalne szablony.",
+                "platformNoteLead": "Zasady platformy nadal obowiązują.",
+                "platformNoteText": "Usługa musi przyjmować własne fonty, a Ty musisz przestrzegać jej zasad i wymagań technicznych.",
+                "importantHeading": "Ważne informacje",
+                "importantSubheading": "Niektóre szczegóły prawne nadal mają znaczenie.",
+                "asIsText": "Font jest udostępniany w stanie takim, w jakim jest, bez gwarancji.",
+                "otherRightsText": "CC0 nie wpływa na prawa patentowe ani do znaków towarowych, ani na inne prawa, takie jak prawo do prywatności i wizerunku.",
+                "endorsementText": "Nie sugeruj, że Typodermic Fonts wspiera Ciebie, Twoją organizację lub Twoją pracę.",
+                "summaryText": "Ta strona jest prostym wprowadzeniem. Pełne informacje znajdują się w oficjalnym podsumowaniu i tekście prawnym CC0.",
+                "legalCodeButton": "Przeczytaj pełny tekst prawny CC0",
+                "helpHeading": "Potrzebujesz pomocy przy używaniu fontu?",
+                "helpText": "Przewodnik Typodermic dla początkujących wyjaśnia pliki ZIP, instalację fontów, witryny i formaty plików.",
+                "helpGuide": "Otwórz przewodnik dla początkujących",
+                "helpFonts": "Przeglądaj fonty w domenie publicznej",
+                "footerText": "Przewodnik Typodermic Fonts po fontach w domenie publicznej. Obowiązują oficjalne warunki CC0."
+        },
+        "ro": {
+                "pageTitle": "Typodermic Fonts — Ghid pentru fonturi din domeniul public",
+                "headerNote": "Ghid pentru fonturi din domeniul public",
+                "languageLabel": "Limbă",
+                "eyebrow": "Font din domeniul public · utilizare personală și comercială",
+                "pageHeading": "Acest font poate fi folosit gratuit în orice scop.",
+                "introBefore": "Acest font Typodermic a fost publicat sub ",
+                "introAfter": ", o declarație de dedicare domeniului public. Îl puteți folosi în lucrări personale sau comerciale fără să cumpărați o licență, să plătiți o taxă sau să cereți permisiunea.",
+                "noticeLead": "Nu este necesară o licență Typodermic separată.",
+                "noticeText": "Fișierelor de font din acest pachet li se aplică termenii oficiali CC0.",
+                "cc0Button": "Citiți rezumatul oficial CC0",
+                "guideButton": "Deschideți ghidul pentru începători",
+                "commercialTitle": "Utilizarea comercială este permisă",
+                "commercialText": "Folosiți fontul în lucrări plătite, produse, proiecte pentru clienți sau propria afacere.",
+                "permissionTitle": "Fără permisiune sau plată",
+                "permissionText": "Nu trebuie să contactați Typodermic înainte de a folosi fontul.",
+                "attributionTitle": "Atribuirea nu este obligatorie",
+                "attributionText": "Puteți menționa Typodermic, dar nu sunteți obligat.",
+                "permissionsHeading": "Ce puteți face",
+                "permissionsSubheading": "Utilizare personală, comercială, editabilă, încorporată sau redistribuită.",
+                "permissionsIntro": "Puteți:",
+                "permission1": "Folosi fontul în sigle, documente, imagini, materiale tipărite, prezentări și videoclipuri.",
+                "permission2": "Încorpora fontul în site-uri, aplicații, jocuri, cărți electronice, PDF-uri și alte produse.",
+                "permission3": "Încărca fontul în Canva sau într-un alt serviciu de design în cloud, dacă serviciul acceptă fonturi personalizate.",
+                "permission4": "Modifica fontul, îl puteți converti în alt format sau îl puteți redenumi.",
+                "permission5": "Dărui, grupa, redistribui sau vinde fișierele de font originale ori modificate.",
+                "permission6": "Permite clienților, colegilor și altor persoane să folosească fontul.",
+                "attributionCalloutLead": "Atribuirea nu este obligatorie.",
+                "attributionCalloutText": "Dacă menționați Typodermic, nu sugerați că Typodermic vă susține pe dumneavoastră sau lucrarea dumneavoastră.",
+                "startHeading": "Primii pași",
+                "startSubheading": "Extrageți fișierul ZIP înainte de instalarea fontului.",
+                "zipIntro": "Un fișier ZIP este un container. Extrageți-l înainte de a încerca să instalați fontul.",
+                "windowsText": "Faceți clic dreapta pe fișierul ZIP și selectați Extragere totală. Apoi faceți clic dreapta pe fișierul OTF și selectați Instalare sau Instalare pentru toți utilizatorii.",
+                "macText": "Faceți dublu clic pe fișierul ZIP pentru a-l extrage. Apoi faceți dublu clic pe fișierul OTF și selectați Instalare font.",
+                "mobileLabel": "Telefoane și tablete",
+                "mobileText": "Descărcarea unui fișier ZIP pe un telefon sau o tabletă nu instalează automat fontul. Instalarea diferă în funcție de dispozitiv și poate necesita o aplicație de gestionare a fonturilor sau un profil de configurare.",
+                "restartText": "Dacă fontul nu apare în program, închideți și redeschideți programul după instalare.",
+                "filesHeading": "Alegerea fișierului potrivit",
+                "filesSubheading": "Formatele de font diferite au roluri diferite.",
+                "otfText": "Instalați în Windows sau macOS pentru utilizare în programe obișnuite de design, scriere, prezentări și video.",
+                "woff2Text": "Folosiți pentru text activ, selectabil, pe site-uri. Fișierele WOFF2 sunt disponibile în pachetul de fonturi web din domeniul public.",
+                "vfcText": "Deschideți în FontLab pentru a examina sau modifica fontul. Acestea sunt fișiere sursă pentru dezvoltarea fonturilor.",
+                "fileNote": "Nu toate pachetele de descărcare conțin toate tipurile de fișiere.",
+                "downloadsButton": "Vedeți toate descărcările din domeniul public",
+                "onlineHeading": "Site-uri și șabloane editabile",
+                "onlineSubheading": "CC0 permite și aceste utilizări.",
+                "websiteTitle": "Text activ pe site",
+                "websiteText": "Pentru text activ și selectabil pe site, folosiți versiunea WOFF2 furnizată atunci când este disponibilă.",
+                "templatesTitle": "Canva și șabloane editabile",
+                "templatesText": "Puteți încărca acest font în Canva sau într-o altă platformă de design și puteți crea șabloane editabile.",
+                "platformNoteLead": "Regulile platformei se aplică în continuare.",
+                "platformNoteText": "Serviciul trebuie să accepte fonturi personalizate, iar dumneavoastră trebuie să respectați regulile și cerințele tehnice ale acestuia.",
+                "importantHeading": "Informații importante",
+                "importantSubheading": "Câteva detalii juridice rămân importante.",
+                "asIsText": "Fontul este furnizat ca atare, fără garanții.",
+                "otherRightsText": "CC0 nu afectează drepturile de brevet sau de marcă și nici alte drepturi, cum ar fi drepturile la viață privată și la imagine.",
+                "endorsementText": "Nu sugerați că Typodermic Fonts vă susține pe dumneavoastră, organizația sau lucrarea dumneavoastră.",
+                "summaryText": "Această pagină este o introducere în limbaj simplu. Pentru detalii complete, citiți rezumatul oficial și textul juridic CC0.",
+                "legalCodeButton": "Citiți textul juridic CC0 integral",
+                "helpHeading": "Aveți nevoie de ajutor pentru folosirea fontului?",
+                "helpText": "Ghidul Typodermic pentru începători explică fișierele ZIP, instalarea fonturilor, site-urile și formatele de fișiere.",
+                "helpGuide": "Deschideți ghidul pentru începători",
+                "helpFonts": "Răsfoiți fonturile din domeniul public",
+                "footerText": "Ghid Typodermic Fonts pentru fonturi din domeniul public. Termenii oficiali CC0 prevalează."
+        },
+        "ru": {
+                "pageTitle": "Typodermic Fonts — Руководство по шрифтам общественного достояния",
+                "headerNote": "Руководство по шрифтам общественного достояния",
+                "languageLabel": "Язык",
+                "eyebrow": "Шрифт общественного достояния · личное и коммерческое использование",
+                "pageHeading": "Этот шрифт можно бесплатно использовать для любых целей.",
+                "introBefore": "Этот шрифт Typodermic опубликован на условиях ",
+                "introAfter": " — инструмента передачи в общественное достояние. Его можно использовать в личных и коммерческих работах без покупки лицензии, оплаты или запроса разрешения.",
+                "noticeLead": "Отдельная лицензия Typodermic не требуется.",
+                "noticeText": "К файлам шрифта в этом пакете применяются официальные условия CC0.",
+                "cc0Button": "Прочитать официальное описание CC0",
+                "guideButton": "Открыть руководство для начинающих",
+                "commercialTitle": "Коммерческое использование разрешено",
+                "commercialText": "Используйте шрифт в оплачиваемых работах, товарах, проектах клиентов или собственном бизнесе.",
+                "permissionTitle": "Без разрешения и оплаты",
+                "permissionText": "Перед использованием шрифта не нужно обращаться в Typodermic.",
+                "attributionTitle": "Указание авторства не требуется",
+                "attributionText": "Вы можете указать Typodermic, но это не обязательно.",
+                "permissionsHeading": "Что разрешено",
+                "permissionsSubheading": "Личное, коммерческое, редактируемое, встроенное или повторно распространяемое использование.",
+                "permissionsIntro": "Вы можете:",
+                "permission1": "Использовать шрифт в логотипах, документах, изображениях, печатных материалах, презентациях и видео.",
+                "permission2": "Встраивать шрифт в сайты, приложения, игры, электронные книги, PDF и другие продукты.",
+                "permission3": "Загружать шрифт в Canva или другой облачный сервис дизайна, если он принимает пользовательские шрифты.",
+                "permission4": "Изменять шрифт, преобразовывать его в другой формат или переименовывать.",
+                "permission5": "Дарить, включать в комплекты, повторно распространять или продавать исходные или изменённые файлы шрифта.",
+                "permission6": "Разрешать клиентам, коллегам, заказчикам и другим людям пользоваться шрифтом.",
+                "attributionCalloutLead": "Указание авторства не требуется.",
+                "attributionCalloutText": "Если вы указываете Typodermic, не создавайте впечатление, что Typodermic поддерживает вас или вашу работу.",
+                "startHeading": "Начало работы",
+                "startSubheading": "Распакуйте ZIP-файл перед установкой шрифта.",
+                "zipIntro": "ZIP-файл — это контейнер. Распакуйте его, прежде чем устанавливать шрифт.",
+                "windowsText": "Щёлкните ZIP-файл правой кнопкой мыши и выберите Извлечь всё. Затем щёлкните правой кнопкой файл шрифта OTF и выберите Установить или Установить для всех пользователей.",
+                "macText": "Дважды щёлкните ZIP-файл, чтобы распаковать его. Затем дважды щёлкните файл шрифта OTF и выберите Установить шрифт.",
+                "mobileLabel": "Телефоны и планшеты",
+                "mobileText": "Загрузка ZIP-файла на телефон или планшет не устанавливает шрифт автоматически. Способ установки зависит от устройства; может потребоваться приложение для управления шрифтами или профиль конфигурации.",
+                "restartText": "Если шрифт не появился в программе, после установки закройте и снова откройте её.",
+                "filesHeading": "Выбор нужного файла",
+                "filesSubheading": "Разные форматы шрифтов предназначены для разных задач.",
+                "otfText": "Устанавливайте в Windows или macOS для использования в обычных программах для дизайна, письма, презентаций и видео.",
+                "woff2Text": "Используйте для живого выделяемого текста на сайтах. Файлы WOFF2 доступны в пакете веб-шрифтов общественного достояния.",
+                "vfcText": "Открывайте в FontLab, чтобы изучить или изменить сам шрифт. Это исходные файлы для разработки шрифтов.",
+                "fileNote": "Не каждый пакет загрузки содержит все типы файлов.",
+                "downloadsButton": "Посмотреть все загрузки общественного достояния",
+                "onlineHeading": "Сайты и редактируемые шаблоны",
+                "onlineSubheading": "CC0 разрешает и такое использование.",
+                "websiteTitle": "Живой текст на сайте",
+                "websiteText": "Для живого выделяемого текста на сайте используйте предоставленную версию WOFF2, если она доступна.",
+                "templatesTitle": "Canva и редактируемые шаблоны",
+                "templatesText": "Вы можете загрузить этот шрифт в Canva или другую платформу дизайна и создавать редактируемые шаблоны.",
+                "platformNoteLead": "Правила платформы продолжают действовать.",
+                "platformNoteText": "Сервис должен принимать пользовательские шрифты, а вы должны соблюдать его правила и технические требования.",
+                "importantHeading": "Важная информация",
+                "importantSubheading": "Некоторые юридические детали всё равно важны.",
+                "asIsText": "Шрифт предоставляется как есть, без гарантий.",
+                "otherRightsText": "CC0 не затрагивает патентные права, права на товарные знаки и другие права, например право на частную жизнь и право на использование образа.",
+                "endorsementText": "Не создавайте впечатление, что Typodermic Fonts поддерживает вас, вашу организацию или вашу работу.",
+                "summaryText": "Эта страница — введение простым языком. Полные сведения приведены в официальном описании и юридическом тексте CC0.",
+                "legalCodeButton": "Прочитать полный юридический текст CC0",
+                "helpHeading": "Нужна помощь с использованием шрифта?",
+                "helpText": "Руководство Typodermic для начинающих объясняет ZIP-файлы, установку шрифтов, сайты и форматы файлов.",
+                "helpGuide": "Открыть руководство для начинающих",
+                "helpFonts": "Просмотреть шрифты общественного достояния",
+                "footerText": "Руководство Typodermic Fonts по шрифтам общественного достояния. Официальные условия CC0 имеют преимущественную силу."
+        },
+        "sv": {
+                "pageTitle": "Typodermic Fonts — Guide för typsnitt i allmän egendom",
+                "headerNote": "Guide för typsnitt i allmän egendom",
+                "languageLabel": "Språk",
+                "eyebrow": "Typsnitt i allmän egendom · personligt och kommersiellt bruk",
+                "pageHeading": "Det här typsnittet får användas fritt för alla ändamål.",
+                "introBefore": "Det här Typodermic-typsnittet har publicerats under ",
+                "introAfter": ", ett verktyg för överlåtelse till allmän egendom. Du får använda det i personliga eller kommersiella arbeten utan att köpa en licens, betala en avgift eller be om lov.",
+                "noticeLead": "Ingen separat Typodermic-licens krävs.",
+                "noticeText": "De officiella CC0-villkoren gäller för typsnittsfilerna i det här paketet.",
+                "cc0Button": "Läs den officiella CC0-sammanfattningen",
+                "guideButton": "Öppna nybörjarguiden för typsnitt",
+                "commercialTitle": "Kommersiell användning är tillåten",
+                "commercialText": "Använd typsnittet i betalda arbeten, produkter, kundprojekt eller din egen verksamhet.",
+                "permissionTitle": "Inget tillstånd eller betalning",
+                "permissionText": "Du behöver inte kontakta Typodermic innan du använder typsnittet.",
+                "attributionTitle": "Erkännande krävs inte",
+                "attributionText": "Du får ange Typodermic, men du måste inte göra det.",
+                "permissionsHeading": "Det här får du göra",
+                "permissionsSubheading": "Personlig, kommersiell, redigerbar, inbäddad eller vidareförmedlad användning.",
+                "permissionsIntro": "Du får:",
+                "permission1": "Använda typsnittet i logotyper, dokument, bilder, trycksaker, presentationer och videor.",
+                "permission2": "Bädda in typsnittet i webbplatser, appar, spel, e-böcker, PDF-filer och andra produkter.",
+                "permission3": "Ladda upp typsnittet till Canva eller en annan molnbaserad designtjänst, förutsatt att tjänsten tar emot egna typsnitt.",
+                "permission4": "Ändra typsnittet, konvertera det till ett annat format eller byta namn på det.",
+                "permission5": "Ge bort, paketera, vidareförmedla eller sälja ursprungliga eller ändrade typsnittsfiler.",
+                "permission6": "Låta kunder, kollegor och andra personer använda typsnittet.",
+                "attributionCalloutLead": "Erkännande krävs inte.",
+                "attributionCalloutText": "Om du anger Typodermic får du inte antyda att Typodermic stöder dig eller ditt arbete.",
+                "startHeading": "Kom igång",
+                "startSubheading": "Packa upp ZIP-filen innan du installerar typsnittet.",
+                "zipIntro": "En ZIP-fil är en behållare. Packa upp den innan du försöker installera typsnittet.",
+                "windowsText": "Högerklicka på ZIP-filen och välj Extrahera alla. Högerklicka sedan på OTF-filen och välj Installera eller Installera för alla användare.",
+                "macText": "Dubbelklicka på ZIP-filen för att packa upp den. Dubbelklicka sedan på OTF-filen och välj Installera typsnitt.",
+                "mobileLabel": "Telefoner och surfplattor",
+                "mobileText": "När du laddar ner en ZIP-fil på en telefon eller surfplatta installeras inte typsnittet automatiskt. Installationen varierar mellan enheter och kan kräva en app för typsnittshantering eller en konfigurationsprofil.",
+                "restartText": "Om typsnittet inte visas i programmet stänger du programmet och öppnar det igen efter installationen.",
+                "filesHeading": "Välj rätt fil",
+                "filesSubheading": "Olika typsnittsformat har olika uppgifter.",
+                "otfText": "Installera i Windows eller macOS för användning i vanliga program för design, text, presentationer och video.",
+                "woff2Text": "Använd för levande, markerbar text på webbplatser. WOFF2-filer finns i webfontpaketet för allmän egendom.",
+                "vfcText": "Öppna i FontLab för att granska eller ändra själva typsnittet. Det här är källfiler för typsnittsutveckling.",
+                "fileNote": "Alla filtyper finns inte i varje nedladdningspaket.",
+                "downloadsButton": "Visa alla nedladdningar i allmän egendom",
+                "onlineHeading": "Webbplatser och redigerbara mallar",
+                "onlineSubheading": "CC0 tillåter även denna användning.",
+                "websiteTitle": "Levande webbplatstext",
+                "websiteText": "Använd den medföljande WOFF2-versionen när den finns för levande, markerbar text på en webbplats.",
+                "templatesTitle": "Canva och redigerbara mallar",
+                "templatesText": "Du får ladda upp det här typsnittet till Canva eller en annan designplattform och skapa redigerbara mallar.",
+                "platformNoteLead": "Plattformens regler gäller fortfarande.",
+                "platformNoteText": "Tjänsten måste ta emot egna typsnitt och du måste följa dess regler och tekniska krav.",
+                "importantHeading": "Viktig information",
+                "importantSubheading": "Några juridiska detaljer är fortfarande viktiga.",
+                "asIsText": "Typsnittet tillhandahålls i befintligt skick, utan garantier.",
+                "otherRightsText": "CC0 påverkar inte patent- eller varumärkesrättigheter eller andra rättigheter, exempelvis integritets- och publicitetsrättigheter.",
+                "endorsementText": "Antyd inte att Typodermic Fonts stöder dig, din organisation eller ditt arbete.",
+                "summaryText": "Den här sidan är en lättläst introduktion. Läs den officiella CC0-sammanfattningen och den juridiska texten för fullständig information.",
+                "legalCodeButton": "Läs hela den juridiska CC0-texten",
+                "helpHeading": "Behöver du hjälp med att använda typsnittet?",
+                "helpText": "Typodermics nybörjarguide förklarar ZIP-filer, installation av typsnitt, webbplatser och filformat.",
+                "helpGuide": "Öppna nybörjarguiden",
+                "helpFonts": "Bläddra bland typsnitt i allmän egendom",
+                "footerText": "Typodermic Fonts-guide för typsnitt i allmän egendom. De officiella CC0-villkoren gäller."
+        },
+        "tr": {
+                "pageTitle": "Typodermic Fonts — Kamu malı yazı tipi rehberi",
+                "headerNote": "Kamu malı yazı tipi rehberi",
+                "languageLabel": "Dil",
+                "eyebrow": "Kamu malı yazı tipi · kişisel ve ticari kullanım",
+                "pageHeading": "Bu yazı tipi her amaç için ücretsizdir.",
+                "introBefore": "Bu Typodermic yazı tipi, kamu malına adama aracı olan ",
+                "introAfter": " kapsamında yayımlanmıştır. Lisans satın almadan, ücret ödemeden veya izin istemeden kişisel ya da ticari çalışmalarınızda kullanabilirsiniz.",
+                "noticeLead": "Ayrı bir Typodermic lisansı gerekmez.",
+                "noticeText": "Bu paketteki yazı tipi dosyaları için resmi CC0 koşulları geçerlidir.",
+                "cc0Button": "Resmi CC0 özetini okuyun",
+                "guideButton": "Başlangıç yazı tipi rehberini açın",
+                "commercialTitle": "Ticari kullanıma izin verilir",
+                "commercialText": "Yazı tipini ücretli işlerde, ürünlerde, müşteri projelerinde veya kendi işletmenizde kullanın.",
+                "permissionTitle": "İzin veya ödeme gerekmez",
+                "permissionText": "Yazı tipini kullanmadan önce Typodermic ile iletişime geçmeniz gerekmez.",
+                "attributionTitle": "Atıf gerekli değildir",
+                "attributionText": "Typodermic’i belirtebilirsiniz, ancak zorunlu değildir.",
+                "permissionsHeading": "Neler yapabilirsiniz",
+                "permissionsSubheading": "Kişisel, ticari, düzenlenebilir, gömülü veya yeniden dağıtılan kullanım.",
+                "permissionsIntro": "Şunları yapabilirsiniz:",
+                "permission1": "Yazı tipini logolarda, belgelerde, görsellerde, basılı işlerde, sunumlarda ve videolarda kullanmak.",
+                "permission2": "Yazı tipini web sitelerine, uygulamalara, oyunlara, e-kitaplara, PDF’lere ve diğer ürünlere gömmek.",
+                "permission3": "Hizmet özel yazı tiplerini kabul ediyorsa yazı tipini Canva’ya veya başka bir bulut tasarım hizmetine yüklemek.",
+                "permission4": "Yazı tipini değiştirmek, başka bir biçime dönüştürmek veya yeniden adlandırmak.",
+                "permission5": "Özgün veya değiştirilmiş yazı tipi dosyalarını vermek, paketlemek, yeniden dağıtmak veya satmak.",
+                "permission6": "Müşterilerin, iş arkadaşlarının ve diğer kişilerin yazı tipini kullanmasına izin vermek.",
+                "attributionCalloutLead": "Atıf gerekli değildir.",
+                "attributionCalloutText": "Typodermic’i belirtirseniz Typodermic’in sizi veya çalışmanızı desteklediği izlenimini vermeyin.",
+                "startHeading": "Başlarken",
+                "startSubheading": "Yazı tipini kurmadan önce ZIP dosyasını çıkarın.",
+                "zipIntro": "ZIP dosyası bir kapsayıcıdır. Yazı tipini kurmaya çalışmadan önce dosyayı çıkarın.",
+                "windowsText": "ZIP dosyasına sağ tıklayın ve Tümünü ayıkla seçeneğini belirleyin. Ardından OTF yazı tipi dosyasına sağ tıklayın ve Yükle ya da Tüm kullanıcılar için yükle seçeneğini belirleyin.",
+                "macText": "ZIP dosyasını çıkarmak için çift tıklayın. Ardından OTF yazı tipi dosyasına çift tıklayın ve Fontu Yükle seçeneğini belirleyin.",
+                "mobileLabel": "Telefonlar ve tabletler",
+                "mobileText": "Bir telefona veya tablete ZIP dosyası indirmek yazı tipini otomatik olarak kurmaz. Kurulum cihaza göre değişir ve bir yazı tipi yönetim uygulaması veya yapılandırma profili gerektirebilir.",
+                "restartText": "Yazı tipi yazılımınızda görünmezse kurulumdan sonra yazılımı kapatıp yeniden açın.",
+                "filesHeading": "Doğru dosyayı seçme",
+                "filesSubheading": "Farklı yazı tipi biçimleri farklı işlere yarar.",
+                "otfText": "Normal tasarım, yazma, sunum ve video yazılımlarında kullanmak için Windows veya macOS’a kurun.",
+                "woff2Text": "Web sitelerindeki canlı, seçilebilir metin için kullanın. WOFF2 dosyaları kamu malı webfont paketinde bulunur.",
+                "vfcText": "Yazı tipinin kendisini incelemek veya değiştirmek için FontLab’da açın. Bunlar yazı tipi geliştirme kaynak dosyalarıdır.",
+                "fileNote": "Her indirme paketi her dosya türünü içermez.",
+                "downloadsButton": "Tüm kamu malı indirmelerini görüntüleyin",
+                "onlineHeading": "Web siteleri ve düzenlenebilir şablonlar",
+                "onlineSubheading": "CC0 bu kullanımlara da izin verir.",
+                "websiteTitle": "Canlı web sitesi metni",
+                "websiteText": "Canlı, seçilebilir web sitesi metni için varsa sağlanan WOFF2 sürümünü kullanın.",
+                "templatesTitle": "Canva ve düzenlenebilir şablonlar",
+                "templatesText": "Bu yazı tipini Canva’ya veya başka bir tasarım platformuna yükleyebilir ve düzenlenebilir şablonlar oluşturabilirsiniz.",
+                "platformNoteLead": "Platform kuralları yine geçerlidir.",
+                "platformNoteText": "Hizmet özel yazı tiplerini kabul etmeli ve siz de hizmetin kurallarına ve teknik gereksinimlerine uymalısınız.",
+                "importantHeading": "Önemli bilgiler",
+                "importantSubheading": "Bazı hukuki ayrıntılar önemini korur.",
+                "asIsText": "Yazı tipi olduğu gibi ve hiçbir garanti olmaksızın sunulur.",
+                "otherRightsText": "CC0; patent veya ticari marka haklarını ya da gizlilik ve tanıtım hakları gibi diğer hakları etkilemez.",
+                "endorsementText": "Typodermic Fonts’un sizi, kuruluşunuzu veya çalışmanızı desteklediğini öne sürmeyin.",
+                "summaryText": "Bu sayfa sade dille hazırlanmış bir giriş niteliğindedir. Tüm ayrıntılar için resmi CC0 özetini ve hukuki metni okuyun.",
+                "legalCodeButton": "CC0 hukuki metninin tamamını okuyun",
+                "helpHeading": "Yazı tipini kullanma konusunda yardıma mı ihtiyacınız var?",
+                "helpText": "Typodermic başlangıç rehberi ZIP dosyalarını, yazı tipi kurulumunu, web sitelerini ve dosya biçimlerini açıklar.",
+                "helpGuide": "Başlangıç rehberini açın",
+                "helpFonts": "Kamu malı yazı tiplerine göz atın",
+                "footerText": "Typodermic Fonts kamu malı yazı tipi rehberi. Resmi CC0 koşulları geçerlidir."
+        },
+        "uk": {
+                "pageTitle": "Typodermic Fonts — Посібник зі шрифтів суспільного надбання",
+                "headerNote": "Посібник зі шрифтів суспільного надбання",
+                "languageLabel": "Мова",
+                "eyebrow": "Шрифт суспільного надбання · особисте й комерційне використання",
+                "pageHeading": "Цей шрифт можна безкоштовно використовувати для будь-яких цілей.",
+                "introBefore": "Цей шрифт Typodermic опубліковано на умовах ",
+                "introAfter": " — інструмента передачі в суспільне надбання. Його можна використовувати в особистих і комерційних роботах без придбання ліцензії, оплати чи запиту дозволу.",
+                "noticeLead": "Окрема ліцензія Typodermic не потрібна.",
+                "noticeText": "До файлів шрифту в цьому пакеті застосовуються офіційні умови CC0.",
+                "cc0Button": "Прочитати офіційний опис CC0",
+                "guideButton": "Відкрити посібник для початківців",
+                "commercialTitle": "Комерційне використання дозволено",
+                "commercialText": "Використовуйте шрифт у платних роботах, продуктах, клієнтських проєктах або власному бізнесі.",
+                "permissionTitle": "Без дозволу й оплати",
+                "permissionText": "Перед використанням шрифту не потрібно звертатися до Typodermic.",
+                "attributionTitle": "Зазначення авторства не потрібне",
+                "attributionText": "Ви можете зазначити Typodermic, але це не обов’язково.",
+                "permissionsHeading": "Що дозволено",
+                "permissionsSubheading": "Особисте, комерційне, редаговане, вбудоване або повторно поширюване використання.",
+                "permissionsIntro": "Ви можете:",
+                "permission1": "Використовувати шрифт у логотипах, документах, зображеннях, друці, презентаціях і відео.",
+                "permission2": "Вбудовувати шрифт у сайти, застосунки, ігри, електронні книги, PDF та інші продукти.",
+                "permission3": "Завантажувати шрифт у Canva або інший хмарний сервіс дизайну, якщо він приймає власні шрифти.",
+                "permission4": "Змінювати шрифт, перетворювати його на інший формат або перейменовувати.",
+                "permission5": "Дарувати, додавати до комплектів, повторно поширювати або продавати оригінальні чи змінені файли шрифту.",
+                "permission6": "Дозволяти клієнтам, колегам, замовникам та іншим людям користуватися шрифтом.",
+                "attributionCalloutLead": "Зазначення авторства не потрібне.",
+                "attributionCalloutText": "Якщо ви зазначаєте Typodermic, не створюйте враження, що Typodermic підтримує вас або вашу роботу.",
+                "startHeading": "Початок роботи",
+                "startSubheading": "Розпакуйте ZIP-файл перед установленням шрифту.",
+                "zipIntro": "ZIP-файл — це контейнер. Розпакуйте його, перш ніж установлювати шрифт.",
+                "windowsText": "Клацніть ZIP-файл правою кнопкою миші й виберіть Видобути все. Потім клацніть правою кнопкою файл шрифту OTF і виберіть Установити або Установити для всіх користувачів.",
+                "macText": "Двічі клацніть ZIP-файл, щоб розпакувати його. Потім двічі клацніть файл шрифту OTF і виберіть Установити шрифт.",
+                "mobileLabel": "Телефони й планшети",
+                "mobileText": "Завантаження ZIP-файлу на телефон або планшет не встановлює шрифт автоматично. Спосіб установлення залежить від пристрою; може знадобитися програма для керування шрифтами або профіль конфігурації.",
+                "restartText": "Якщо шрифт не з’явився в програмі, після встановлення закрийте й знову відкрийте її.",
+                "filesHeading": "Вибір потрібного файлу",
+                "filesSubheading": "Різні формати шрифтів призначені для різних завдань.",
+                "otfText": "Установлюйте у Windows або macOS для використання у звичайних програмах для дизайну, письма, презентацій і відео.",
+                "woff2Text": "Використовуйте для живого тексту на сайтах, який можна виділяти. Файли WOFF2 доступні в пакеті вебшрифтів суспільного надбання.",
+                "vfcText": "Відкривайте у FontLab, щоб дослідити або змінити сам шрифт. Це вихідні файли для розробки шрифтів.",
+                "fileNote": "Не кожен пакет завантаження містить усі типи файлів.",
+                "downloadsButton": "Переглянути всі завантаження суспільного надбання",
+                "onlineHeading": "Сайти й редаговані шаблони",
+                "onlineSubheading": "CC0 дозволяє й таке використання.",
+                "websiteTitle": "Живий текст на сайті",
+                "websiteText": "Для живого тексту на сайті, який можна виділяти, використовуйте надану версію WOFF2, якщо вона доступна.",
+                "templatesTitle": "Canva й редаговані шаблони",
+                "templatesText": "Ви можете завантажити цей шрифт у Canva або іншу платформу дизайну й створювати редаговані шаблони.",
+                "platformNoteLead": "Правила платформи продовжують діяти.",
+                "platformNoteText": "Сервіс має приймати власні шрифти, а ви повинні дотримуватися його правил і технічних вимог.",
+                "importantHeading": "Важлива інформація",
+                "importantSubheading": "Деякі юридичні деталі все одно важливі.",
+                "asIsText": "Шрифт надається як є, без гарантій.",
+                "otherRightsText": "CC0 не впливає на патентні права, права на торговельні марки та інші права, як-от право на приватність і право на використання образу.",
+                "endorsementText": "Не створюйте враження, що Typodermic Fonts підтримує вас, вашу організацію або вашу роботу.",
+                "summaryText": "Ця сторінка — вступ простою мовою. Повні відомості наведено в офіційному описі та юридичному тексті CC0.",
+                "legalCodeButton": "Прочитати повний юридичний текст CC0",
+                "helpHeading": "Потрібна допомога з використанням шрифту?",
+                "helpText": "Посібник Typodermic для початківців пояснює ZIP-файли, установлення шрифтів, сайти й формати файлів.",
+                "helpGuide": "Відкрити посібник для початківців",
+                "helpFonts": "Переглянути шрифти суспільного надбання",
+                "footerText": "Посібник Typodermic Fonts зі шрифтів суспільного надбання. Офіційні умови CC0 мають переважну силу."
+        },
+        "el": {
+                "pageTitle": "Typodermic Fonts — Οδηγός γραμματοσειρών κοινόχρηστου κτήματος",
+                "headerNote": "Οδηγός γραμματοσειρών κοινόχρηστου κτήματος",
+                "languageLabel": "Γλώσσα",
+                "eyebrow": "Γραμματοσειρά κοινόχρηστου κτήματος · προσωπική και εμπορική χρήση",
+                "pageHeading": "Αυτή η γραμματοσειρά είναι ελεύθερη για κάθε χρήση.",
+                "introBefore": "Αυτή η γραμματοσειρά Typodermic διατίθεται με το ",
+                "introAfter": ", μια παραχώρηση στο κοινό κτήμα. Μπορείτε να τη χρησιμοποιήσετε σε προσωπική ή εμπορική εργασία χωρίς αγορά άδειας, καταβολή τέλους ή αίτηση άδειας.",
+                "noticeLead": "Δεν απαιτείται ξεχωριστή άδεια Typodermic.",
+                "noticeText": "Οι επίσημοι όροι CC0 ισχύουν για τα αρχεία γραμματοσειράς αυτού του πακέτου.",
+                "cc0Button": "Διαβάστε την επίσημη σύνοψη CC0",
+                "guideButton": "Ανοίξτε τον οδηγό γραμματοσειρών για αρχάριους",
+                "commercialTitle": "Επιτρέπεται η εμπορική χρήση",
+                "commercialText": "Χρησιμοποιήστε τη γραμματοσειρά σε αμειβόμενη εργασία, προϊόντα, έργα πελατών ή τη δική σας επιχείρηση.",
+                "permissionTitle": "Χωρίς άδεια ή πληρωμή",
+                "permissionText": "Δεν χρειάζεται να επικοινωνήσετε με την Typodermic πριν χρησιμοποιήσετε τη γραμματοσειρά.",
+                "attributionTitle": "Δεν απαιτείται αναφορά",
+                "attributionText": "Μπορείτε να αναφέρετε την Typodermic, αλλά δεν είστε υποχρεωμένοι.",
+                "permissionsHeading": "Τι μπορείτε να κάνετε",
+                "permissionsSubheading": "Προσωπική, εμπορική, επεξεργάσιμη, ενσωματωμένη ή αναδιανεμόμενη χρήση.",
+                "permissionsIntro": "Μπορείτε:",
+                "permission1": "Να χρησιμοποιήσετε τη γραμματοσειρά σε λογότυπα, έγγραφα, εικόνες, έντυπα, παρουσιάσεις και βίντεο.",
+                "permission2": "Να ενσωματώσετε τη γραμματοσειρά σε ιστοτόπους, εφαρμογές, παιχνίδια, ηλεκτρονικά βιβλία, PDF και άλλα προϊόντα.",
+                "permission3": "Να ανεβάσετε τη γραμματοσειρά στο Canva ή σε άλλη υπηρεσία σχεδίασης στο νέφος, εφόσον δέχεται προσαρμοσμένες γραμματοσειρές.",
+                "permission4": "Να τροποποιήσετε τη γραμματοσειρά, να τη μετατρέψετε σε άλλη μορφή ή να τη μετονομάσετε.",
+                "permission5": "Να χαρίσετε, να συμπεριλάβετε σε πακέτο, να αναδιανείμετε ή να πουλήσετε τα αρχικά ή τροποποιημένα αρχεία γραμματοσειράς.",
+                "permission6": "Να επιτρέψετε σε πελάτες, συνεργάτες και άλλους να χρησιμοποιήσουν τη γραμματοσειρά.",
+                "attributionCalloutLead": "Δεν απαιτείται αναφορά.",
+                "attributionCalloutText": "Αν αναφέρετε την Typodermic, μην υπονοείτε ότι η Typodermic υποστηρίζει εσάς ή το έργο σας.",
+                "startHeading": "Ξεκινώντας",
+                "startSubheading": "Αποσυμπιέστε το αρχείο ZIP πριν εγκαταστήσετε τη γραμματοσειρά.",
+                "zipIntro": "Το αρχείο ZIP είναι ένας περιέκτης. Αποσυμπιέστε το πριν προσπαθήσετε να εγκαταστήσετε τη γραμματοσειρά.",
+                "windowsText": "Κάντε δεξί κλικ στο αρχείο ZIP και επιλέξτε Εξαγωγή όλων. Στη συνέχεια, κάντε δεξί κλικ στο αρχείο OTF και επιλέξτε Εγκατάσταση ή Εγκατάσταση για όλους τους χρήστες.",
+                "macText": "Κάντε διπλό κλικ στο αρχείο ZIP για να το αποσυμπιέσετε. Στη συνέχεια, κάντε διπλό κλικ στο αρχείο OTF και επιλέξτε Εγκατάσταση γραμματοσειράς.",
+                "mobileLabel": "Τηλέφωνα και tablet",
+                "mobileText": "Η λήψη ενός αρχείου ZIP σε τηλέφωνο ή tablet δεν εγκαθιστά αυτόματα τη γραμματοσειρά. Η εγκατάσταση διαφέρει ανά συσκευή και μπορεί να απαιτεί εφαρμογή διαχείρισης γραμματοσειρών ή προφίλ διαμόρφωσης.",
+                "restartText": "Αν η γραμματοσειρά δεν εμφανίζεται στο λογισμικό σας, κλείστε και ανοίξτε ξανά το λογισμικό μετά την εγκατάσταση.",
+                "filesHeading": "Επιλογή του σωστού αρχείου",
+                "filesSubheading": "Οι διαφορετικές μορφές γραμματοσειράς έχουν διαφορετικές χρήσεις.",
+                "otfText": "Εγκαταστήστε σε Windows ή macOS για χρήση σε συνηθισμένο λογισμικό σχεδίασης, γραφής, παρουσιάσεων και βίντεο.",
+                "woff2Text": "Χρησιμοποιήστε για ζωντανό, επιλέξιμο κείμενο σε ιστοτόπους. Τα αρχεία WOFF2 διατίθενται στο πακέτο webfont κοινόχρηστου κτήματος.",
+                "vfcText": "Ανοίξτε στο FontLab για να εξετάσετε ή να τροποποιήσετε την ίδια τη γραμματοσειρά. Πρόκειται για πηγαία αρχεία ανάπτυξης γραμματοσειρών.",
+                "fileNote": "Δεν περιέχουν όλα τα πακέτα λήψης κάθε τύπο αρχείου.",
+                "downloadsButton": "Προβολή όλων των λήψεων κοινόχρηστου κτήματος",
+                "onlineHeading": "Ιστότοποι και επεξεργάσιμα πρότυπα",
+                "onlineSubheading": "Το CC0 επιτρέπει και αυτές τις χρήσεις.",
+                "websiteTitle": "Ζωντανό κείμενο ιστοτόπου",
+                "websiteText": "Για ζωντανό, επιλέξιμο κείμενο ιστοτόπου, χρησιμοποιήστε την παρεχόμενη έκδοση WOFF2 όταν είναι διαθέσιμη.",
+                "templatesTitle": "Canva και επεξεργάσιμα πρότυπα",
+                "templatesText": "Μπορείτε να ανεβάσετε αυτή τη γραμματοσειρά στο Canva ή σε άλλη πλατφόρμα σχεδίασης και να δημιουργήσετε επεξεργάσιμα πρότυπα.",
+                "platformNoteLead": "Οι κανόνες της πλατφόρμας εξακολουθούν να ισχύουν.",
+                "platformNoteText": "Η υπηρεσία πρέπει να δέχεται προσαρμοσμένες γραμματοσειρές και εσείς πρέπει να τηρείτε τους κανόνες και τις τεχνικές απαιτήσεις της.",
+                "importantHeading": "Σημαντικές πληροφορίες",
+                "importantSubheading": "Ορισμένες νομικές λεπτομέρειες εξακολουθούν να έχουν σημασία.",
+                "asIsText": "Η γραμματοσειρά παρέχεται ως έχει, χωρίς εγγυήσεις.",
+                "otherRightsText": "Το CC0 δεν επηρεάζει δικαιώματα ευρεσιτεχνίας ή εμπορικού σήματος ούτε άλλα δικαιώματα, όπως τα δικαιώματα ιδιωτικότητας και δημοσιότητας.",
+                "endorsementText": "Μην υπονοείτε ότι η Typodermic Fonts υποστηρίζει εσάς, τον οργανισμό σας ή το έργο σας.",
+                "summaryText": "Αυτή η σελίδα είναι μια εισαγωγή σε απλή γλώσσα. Διαβάστε την επίσημη σύνοψη και το νομικό κείμενο του CC0 για όλες τις λεπτομέρειες.",
+                "legalCodeButton": "Διαβάστε ολόκληρο το νομικό κείμενο CC0",
+                "helpHeading": "Χρειάζεστε βοήθεια για τη χρήση της γραμματοσειράς;",
+                "helpText": "Ο οδηγός Typodermic για αρχάριους εξηγεί τα αρχεία ZIP, την εγκατάσταση γραμματοσειρών, τους ιστοτόπους και τις μορφές αρχείων.",
+                "helpGuide": "Ανοίξτε τον οδηγό για αρχάριους",
+                "helpFonts": "Περιήγηση σε γραμματοσειρές κοινόχρηστου κτήματος",
+                "footerText": "Οδηγός Typodermic Fonts για γραμματοσειρές κοινόχρηστου κτήματος. Ισχύουν οι επίσημοι όροι CC0."
+        },
+        "vi": {
+                "pageTitle": "Typodermic Fonts — Hướng dẫn phông chữ thuộc phạm vi công cộng",
+                "headerNote": "Hướng dẫn phông chữ thuộc phạm vi công cộng",
+                "languageLabel": "Ngôn ngữ",
+                "eyebrow": "Phông chữ thuộc phạm vi công cộng · sử dụng cá nhân và thương mại",
+                "pageHeading": "Phông chữ này được sử dụng miễn phí cho mọi mục đích.",
+                "introBefore": "Phông chữ Typodermic này được phát hành theo ",
+                "introAfter": ", một tuyên bố hiến tặng vào phạm vi công cộng. Bạn có thể dùng cho công việc cá nhân hoặc thương mại mà không cần mua giấy phép, trả phí hay xin phép.",
+                "noticeLead": "Không cần giấy phép Typodermic riêng.",
+                "noticeText": "Các điều khoản CC0 chính thức áp dụng cho các tệp phông chữ trong gói này.",
+                "cc0Button": "Đọc bản tóm tắt CC0 chính thức",
+                "guideButton": "Mở hướng dẫn phông chữ cho người mới",
+                "commercialTitle": "Được phép sử dụng thương mại",
+                "commercialText": "Dùng phông chữ trong công việc có trả phí, sản phẩm, dự án khách hàng hoặc doanh nghiệp của bạn.",
+                "permissionTitle": "Không cần xin phép hoặc thanh toán",
+                "permissionText": "Bạn không cần liên hệ Typodermic trước khi dùng phông chữ.",
+                "attributionTitle": "Không bắt buộc ghi công",
+                "attributionText": "Bạn có thể ghi công Typodermic, nhưng không bắt buộc.",
+                "permissionsHeading": "Bạn có thể làm gì",
+                "permissionsSubheading": "Sử dụng cá nhân, thương mại, có thể chỉnh sửa, nhúng hoặc phân phối lại.",
+                "permissionsIntro": "Bạn có thể:",
+                "permission1": "Dùng phông chữ trong biểu trưng, tài liệu, hình ảnh, ấn phẩm, bài thuyết trình và video.",
+                "permission2": "Nhúng phông chữ vào trang web, ứng dụng, trò chơi, sách điện tử, PDF và các sản phẩm khác.",
+                "permission3": "Tải phông chữ lên Canva hoặc dịch vụ thiết kế đám mây khác, miễn là dịch vụ chấp nhận phông chữ tùy chỉnh.",
+                "permission4": "Sửa đổi phông chữ, chuyển đổi sang định dạng khác hoặc đổi tên.",
+                "permission5": "Tặng, đóng gói, phân phối lại hoặc bán các tệp phông chữ gốc hay đã sửa đổi.",
+                "permission6": "Cho phép khách hàng, đồng nghiệp và người khác sử dụng phông chữ.",
+                "attributionCalloutLead": "Không bắt buộc ghi công.",
+                "attributionCalloutText": "Nếu ghi công Typodermic, đừng ngụ ý rằng Typodermic chứng thực bạn hoặc tác phẩm của bạn.",
+                "startHeading": "Bắt đầu",
+                "startSubheading": "Giải nén tệp ZIP trước khi cài đặt phông chữ.",
+                "zipIntro": "Tệp ZIP là một vùng chứa. Hãy giải nén trước khi cố gắng cài đặt phông chữ.",
+                "windowsText": "Nhấp chuột phải vào tệp ZIP và chọn Extract All. Sau đó nhấp chuột phải vào tệp phông chữ OTF và chọn Install hoặc Install for all users.",
+                "macText": "Nhấp đúp vào tệp ZIP để giải nén. Sau đó nhấp đúp vào tệp phông chữ OTF và chọn Install Font.",
+                "mobileLabel": "Điện thoại và máy tính bảng",
+                "mobileText": "Tải tệp ZIP xuống điện thoại hoặc máy tính bảng không tự động cài đặt phông chữ. Cách cài đặt tùy theo thiết bị và có thể cần ứng dụng quản lý phông chữ hoặc hồ sơ cấu hình.",
+                "restartText": "Nếu phông chữ không xuất hiện trong phần mềm, hãy đóng rồi mở lại phần mềm sau khi cài đặt.",
+                "filesHeading": "Chọn đúng tệp",
+                "filesSubheading": "Các định dạng phông chữ khác nhau có nhiệm vụ khác nhau.",
+                "otfText": "Cài đặt trên Windows hoặc macOS để dùng trong phần mềm thiết kế, soạn thảo, thuyết trình và video thông thường.",
+                "woff2Text": "Dùng cho văn bản trực tiếp, có thể chọn trên trang web. Tệp WOFF2 có trong gói webfont thuộc phạm vi công cộng.",
+                "vfcText": "Mở trong FontLab để xem xét hoặc sửa đổi chính phông chữ. Đây là các tệp nguồn để phát triển phông chữ.",
+                "fileNote": "Không phải mọi gói tải xuống đều chứa tất cả loại tệp.",
+                "downloadsButton": "Xem tất cả tệp tải xuống thuộc phạm vi công cộng",
+                "onlineHeading": "Trang web và mẫu có thể chỉnh sửa",
+                "onlineSubheading": "CC0 cũng cho phép các cách sử dụng này.",
+                "websiteTitle": "Văn bản trực tiếp trên trang web",
+                "websiteText": "Đối với văn bản trực tiếp, có thể chọn trên trang web, hãy dùng phiên bản WOFF2 được cung cấp nếu có.",
+                "templatesTitle": "Canva và mẫu có thể chỉnh sửa",
+                "templatesText": "Bạn có thể tải phông chữ này lên Canva hoặc nền tảng thiết kế khác và tạo các mẫu có thể chỉnh sửa.",
+                "platformNoteLead": "Quy tắc của nền tảng vẫn được áp dụng.",
+                "platformNoteText": "Dịch vụ phải chấp nhận phông chữ tùy chỉnh và bạn phải tuân thủ các quy tắc cũng như yêu cầu kỹ thuật của dịch vụ.",
+                "importantHeading": "Thông tin quan trọng",
+                "importantSubheading": "Một số chi tiết pháp lý vẫn quan trọng.",
+                "asIsText": "Phông chữ được cung cấp theo hiện trạng, không có bảo đảm.",
+                "otherRightsText": "CC0 không ảnh hưởng đến quyền sáng chế hoặc nhãn hiệu, hay các quyền khác như quyền riêng tư và quyền công khai hình ảnh.",
+                "endorsementText": "Đừng ngụ ý rằng Typodermic Fonts chứng thực bạn, tổ chức hoặc tác phẩm của bạn.",
+                "summaryText": "Trang này là phần giới thiệu bằng ngôn ngữ đơn giản. Hãy đọc bản tóm tắt và văn bản pháp lý CC0 chính thức để biết đầy đủ chi tiết.",
+                "legalCodeButton": "Đọc toàn bộ văn bản pháp lý CC0",
+                "helpHeading": "Bạn cần trợ giúp sử dụng phông chữ?",
+                "helpText": "Hướng dẫn Typodermic cho người mới giải thích tệp ZIP, cách cài đặt phông chữ, trang web và định dạng tệp.",
+                "helpGuide": "Mở hướng dẫn cho người mới",
+                "helpFonts": "Duyệt phông chữ thuộc phạm vi công cộng",
+                "footerText": "Hướng dẫn phông chữ thuộc phạm vi công cộng của Typodermic Fonts. Các điều khoản CC0 chính thức được ưu tiên."
+        },
+        "ar": {
+                "pageTitle": "Typodermic Fonts — دليل خطوط الملكية العامة",
+                "headerNote": "دليل خطوط الملكية العامة",
+                "languageLabel": "اللغة",
+                "eyebrow": "خط من الملكية العامة · للاستخدام الشخصي والتجاري",
+                "pageHeading": "هذا الخط مجاني لأي استخدام.",
+                "introBefore": "أُصدر خط Typodermic هذا بموجب ",
+                "introAfter": "، وهو إهداء إلى الملكية العامة. يمكنك استخدامه في الأعمال الشخصية أو التجارية دون شراء ترخيص أو دفع رسوم أو طلب إذن.",
+                "noticeLead": "لا يلزم ترخيص منفصل من Typodermic.",
+                "noticeText": "تنطبق شروط CC0 الرسمية على ملفات الخط في هذه الحزمة.",
+                "cc0Button": "اقرأ ملخص CC0 الرسمي",
+                "guideButton": "افتح دليل الخطوط للمبتدئين",
+                "commercialTitle": "الاستخدام التجاري مسموح",
+                "commercialText": "استخدم الخط في الأعمال المدفوعة أو المنتجات أو مشروعات العملاء أو نشاطك التجاري.",
+                "permissionTitle": "لا إذن ولا دفع",
+                "permissionText": "لا تحتاج إلى الاتصال بـ Typodermic قبل استخدام الخط.",
+                "attributionTitle": "لا يلزم ذكر المصدر",
+                "attributionText": "يمكنك ذكر Typodermic، لكن ذلك غير مطلوب.",
+                "permissionsHeading": "ما يمكنك فعله",
+                "permissionsSubheading": "استخدام شخصي أو تجاري أو قابل للتحرير أو مضمن أو معاد التوزيع.",
+                "permissionsIntro": "يمكنك:",
+                "permission1": "استخدام الخط في الشعارات والمستندات والصور والمطبوعات والعروض التقديمية ومقاطع الفيديو.",
+                "permission2": "تضمين الخط في مواقع الويب والتطبيقات والألعاب والكتب الإلكترونية وملفات PDF وغيرها من المنتجات.",
+                "permission3": "رفع الخط إلى Canva أو خدمة تصميم سحابية أخرى، بشرط أن تقبل الخدمة الخطوط المخصصة.",
+                "permission4": "تعديل الخط أو تحويله إلى تنسيق آخر أو تغيير اسمه.",
+                "permission5": "إهداء ملفات الخط الأصلية أو المعدلة أو تجميعها أو إعادة توزيعها أو بيعها.",
+                "permission6": "السماح للعملاء والزملاء وغيرهم باستخدام الخط.",
+                "attributionCalloutLead": "لا يلزم ذكر المصدر.",
+                "attributionCalloutText": "إذا اخترت ذكر Typodermic، فلا توحِ بأن Typodermic تؤيدك أو تؤيد عملك.",
+                "startHeading": "البدء",
+                "startSubheading": "استخرج ملف ZIP قبل تثبيت الخط.",
+                "zipIntro": "ملف ZIP عبارة عن حاوية. استخرجه قبل محاولة تثبيت الخط.",
+                "windowsText": "انقر بزر الماوس الأيمن على ملف ZIP واختر استخراج الكل. ثم انقر بزر الماوس الأيمن على ملف الخط OTF واختر تثبيت أو تثبيت لجميع المستخدمين.",
+                "macText": "انقر نقراً مزدوجاً على ملف ZIP لاستخراجه. ثم انقر نقراً مزدوجاً على ملف الخط OTF واختر تثبيت الخط.",
+                "mobileLabel": "الهواتف والأجهزة اللوحية",
+                "mobileText": "لا يؤدي تنزيل ملف ZIP على هاتف أو جهاز لوحي إلى تثبيت الخط تلقائياً. تختلف طريقة التثبيت حسب الجهاز وقد تتطلب تطبيقاً لإدارة الخطوط أو ملف تعريف إعداد.",
+                "restartText": "إذا لم يظهر الخط في برنامجك، فأغلق البرنامج وافتحه من جديد بعد التثبيت.",
+                "filesHeading": "اختيار الملف المناسب",
+                "filesSubheading": "لتنسيقات الخطوط المختلفة وظائف مختلفة.",
+                "otfText": "ثبّته على Windows أو macOS لاستخدامه في برامج التصميم والكتابة والعروض التقديمية والفيديو المعتادة.",
+                "woff2Text": "استخدمه للنص الحي القابل للتحديد على مواقع الويب. تتوفر ملفات WOFF2 في حزمة خطوط الويب التابعة للملكية العامة.",
+                "vfcText": "افتحه في FontLab لفحص الخط نفسه أو تعديله. هذه ملفات مصدر لتطوير الخطوط.",
+                "fileNote": "لا تحتوي كل حزمة تنزيل على جميع أنواع الملفات.",
+                "downloadsButton": "عرض جميع تنزيلات الملكية العامة",
+                "onlineHeading": "مواقع الويب والقوالب القابلة للتحرير",
+                "onlineSubheading": "يسمح CC0 بهذه الاستخدامات أيضاً.",
+                "websiteTitle": "نص حي على موقع ويب",
+                "websiteText": "للنص الحي القابل للتحديد على موقع ويب، استخدم إصدار WOFF2 المرفق عندما يكون متاحاً.",
+                "templatesTitle": "Canva والقوالب القابلة للتحرير",
+                "templatesText": "يمكنك رفع هذا الخط إلى Canva أو منصة تصميم أخرى وإنشاء قوالب قابلة للتحرير.",
+                "platformNoteLead": "تظل قواعد المنصة سارية.",
+                "platformNoteText": "يجب أن تقبل الخدمة الخطوط المخصصة، وعليك اتباع قواعدها ومتطلباتها التقنية.",
+                "importantHeading": "معلومات مهمة",
+                "importantSubheading": "لا تزال بعض التفاصيل القانونية مهمة.",
+                "asIsText": "يُقدم الخط كما هو، من دون ضمانات.",
+                "otherRightsText": "لا يؤثر CC0 في حقوق براءات الاختراع أو العلامات التجارية، ولا في الحقوق الأخرى مثل حقوق الخصوصية والدعاية.",
+                "endorsementText": "لا توحِ بأن Typodermic Fonts تؤيدك أو تؤيد مؤسستك أو عملك.",
+                "summaryText": "هذه الصفحة مقدمة بلغة مبسطة. اقرأ ملخص CC0 الرسمي ونصه القانوني للاطلاع على التفاصيل الكاملة.",
+                "legalCodeButton": "اقرأ النص القانوني الكامل لـ CC0",
+                "helpHeading": "هل تحتاج إلى مساعدة في استخدام الخط؟",
+                "helpText": "يشرح دليل Typodermic للمبتدئين ملفات ZIP وتثبيت الخطوط ومواقع الويب وتنسيقات الملفات.",
+                "helpGuide": "افتح دليل المبتدئين",
+                "helpFonts": "تصفح خطوط الملكية العامة",
+                "footerText": "دليل Typodermic Fonts لخطوط الملكية العامة. شروط CC0 الرسمية هي الحاكمة."
+        },
+        "he": {
+                "pageTitle": "Typodermic Fonts — מדריך לגופנים בנחלת הכלל",
+                "headerNote": "מדריך לגופנים בנחלת הכלל",
+                "languageLabel": "שפה",
+                "eyebrow": "גופן בנחלת הכלל · שימוש אישי ומסחרי",
+                "pageHeading": "הגופן הזה חופשי לכל שימוש.",
+                "introBefore": "גופן זה של Typodermic פורסם תחת ",
+                "introAfter": ", הקדשה לנחלת הכלל. אפשר להשתמש בו בעבודה אישית או מסחרית בלי לקנות רישיון, לשלם עמלה או לבקש רשות.",
+                "noticeLead": "אין צורך ברישיון נפרד של Typodermic.",
+                "noticeText": "התנאים הרשמיים של CC0 חלים על קובצי הגופן בחבילה זו.",
+                "cc0Button": "לקריאת התקציר הרשמי של CC0",
+                "guideButton": "פתיחת מדריך הגופנים למתחילים",
+                "commercialTitle": "שימוש מסחרי מותר",
+                "commercialText": "אפשר להשתמש בגופן בעבודה בתשלום, במוצרים, בפרויקטים ללקוחות או בעסק שלך.",
+                "permissionTitle": "ללא רשות או תשלום",
+                "permissionText": "אין צורך לפנות ל-Typodermic לפני השימוש בגופן.",
+                "attributionTitle": "אין חובת מתן קרדיט",
+                "attributionText": "אפשר לתת קרדיט ל-Typodermic, אך אין חובה לעשות זאת.",
+                "permissionsHeading": "מה מותר לעשות",
+                "permissionsSubheading": "שימוש אישי, מסחרי, ניתן לעריכה, מוטמע או מופץ מחדש.",
+                "permissionsIntro": "אפשר:",
+                "permission1": "להשתמש בגופן בסמלים, מסמכים, תמונות, דפוס, מצגות וסרטונים.",
+                "permission2": "להטמיע את הגופן באתרי אינטרנט, יישומים, משחקים, ספרים אלקטרוניים, קובצי PDF ומוצרים אחרים.",
+                "permission3": "להעלות את הגופן ל-Canva או לשירות עיצוב ענן אחר, בתנאי שהשירות מקבל גופנים מותאמים אישית.",
+                "permission4": "לשנות את הגופן, להמיר אותו לפורמט אחר או לשנות את שמו.",
+                "permission5": "לתת, לאגד, להפיץ מחדש או למכור את קובצי הגופן המקוריים או ששונו.",
+                "permission6": "לאפשר ללקוחות, עמיתים ואנשים אחרים להשתמש בגופן.",
+                "attributionCalloutLead": "אין חובת מתן קרדיט.",
+                "attributionCalloutText": "אם בחרת לתת קרדיט ל-Typodermic, אין לרמוז ש-Typodermic תומכת בך או בעבודה שלך.",
+                "startHeading": "מתחילים",
+                "startSubheading": "יש לחלץ את קובץ ה-ZIP לפני התקנת הגופן.",
+                "zipIntro": "קובץ ZIP הוא מכל. יש לחלץ אותו לפני שמנסים להתקין את הגופן.",
+                "windowsText": "יש ללחוץ לחיצה ימנית על קובץ ה-ZIP ולבחור חילוץ הכול. לאחר מכן יש ללחוץ לחיצה ימנית על קובץ הגופן OTF ולבחור התקנה או התקנה עבור כל המשתמשים.",
+                "macText": "יש ללחוץ פעמיים על קובץ ה-ZIP כדי לחלץ אותו. לאחר מכן יש ללחוץ פעמיים על קובץ הגופן OTF ולבחור התקנת גופן.",
+                "mobileLabel": "טלפונים וטאבלטים",
+                "mobileText": "הורדת קובץ ZIP לטלפון או לטאבלט אינה מתקינה את הגופן באופן אוטומטי. ההתקנה משתנה לפי המכשיר ועשויה לדרוש יישום לניהול גופנים או פרופיל תצורה.",
+                "restartText": "אם הגופן אינו מופיע בתוכנה, יש לסגור ולפתוח מחדש את התוכנה לאחר ההתקנה.",
+                "filesHeading": "בחירת הקובץ הנכון",
+                "filesSubheading": "לפורמטים שונים של גופנים יש תפקידים שונים.",
+                "otfText": "יש להתקין ב-Windows או ב-macOS לשימוש בתוכנות רגילות לעיצוב, כתיבה, מצגות ווידאו.",
+                "woff2Text": "מיועד לטקסט חי שניתן לבחור באתרי אינטרנט. קובצי WOFF2 זמינים בחבילת גופני האינטרנט של נחלת הכלל.",
+                "vfcText": "יש לפתוח ב-FontLab כדי לבדוק או לשנות את הגופן עצמו. אלה קובצי מקור לפיתוח גופנים.",
+                "fileNote": "לא כל חבילת הורדה כוללת את כל סוגי הקבצים.",
+                "downloadsButton": "הצגת כל ההורדות מנחלת הכלל",
+                "onlineHeading": "אתרי אינטרנט ותבניות ניתנות לעריכה",
+                "onlineSubheading": "CC0 מתיר גם שימושים אלה.",
+                "websiteTitle": "טקסט חי באתר",
+                "websiteText": "לטקסט חי שניתן לבחור באתר, יש להשתמש בגרסת WOFF2 שסופקה כאשר היא זמינה.",
+                "templatesTitle": "Canva ותבניות ניתנות לעריכה",
+                "templatesText": "אפשר להעלות את הגופן הזה ל-Canva או לפלטפורמת עיצוב אחרת וליצור תבניות ניתנות לעריכה.",
+                "platformNoteLead": "כללי הפלטפורמה עדיין חלים.",
+                "platformNoteText": "השירות חייב לקבל גופנים מותאמים אישית, ויש לציית לכללים ולדרישות הטכניות שלו.",
+                "importantHeading": "מידע חשוב",
+                "importantSubheading": "יש עדיין כמה פרטים משפטיים חשובים.",
+                "asIsText": "הגופן מסופק כפי שהוא, ללא אחריות.",
+                "otherRightsText": "CC0 אינו משפיע על זכויות פטנטים או סימני מסחר, או על זכויות אחרות כגון פרטיות וזכות הפרסום.",
+                "endorsementText": "אין לרמוז ש-Typodermic Fonts תומכת בך, בארגון שלך או בעבודה שלך.",
+                "summaryText": "דף זה הוא מבוא בשפה פשוטה. לפרטים מלאים יש לקרוא את התקציר הרשמי ואת הנוסח המשפטי של CC0.",
+                "legalCodeButton": "לקריאת הנוסח המשפטי המלא של CC0",
+                "helpHeading": "צריכים עזרה בשימוש בגופן?",
+                "helpText": "מדריך Typodermic למתחילים מסביר על קובצי ZIP, התקנת גופנים, אתרי אינטרנט ופורמטים של קבצים.",
+                "helpGuide": "פתיחת המדריך למתחילים",
+                "helpFonts": "עיון בגופנים בנחלת הכלל",
+                "footerText": "מדריך Typodermic Fonts לגופנים בנחלת הכלל. התנאים הרשמיים של CC0 הם הקובעים."
+        },
+        "hi": {
+                "pageTitle": "Typodermic Fonts — सार्वजनिक डोमेन फ़ॉन्ट मार्गदर्शिका",
+                "headerNote": "सार्वजनिक डोमेन फ़ॉन्ट मार्गदर्शिका",
+                "languageLabel": "भाषा",
+                "eyebrow": "सार्वजनिक डोमेन फ़ॉन्ट · व्यक्तिगत और व्यावसायिक उपयोग",
+                "pageHeading": "यह फ़ॉन्ट किसी भी उपयोग के लिए मुफ़्त है।",
+                "introBefore": "यह Typodermic फ़ॉन्ट सार्वजनिक डोमेन समर्पण ",
+                "introAfter": " के अंतर्गत जारी किया गया है। आप लाइसेंस खरीदे बिना, शुल्क दिए बिना या अनुमति माँगे बिना इसे व्यक्तिगत या व्यावसायिक काम में उपयोग कर सकते हैं।",
+                "noticeLead": "Typodermic के अलग लाइसेंस की आवश्यकता नहीं है।",
+                "noticeText": "इस पैकेज की फ़ॉन्ट फ़ाइलों पर आधिकारिक CC0 शर्तें लागू होती हैं।",
+                "cc0Button": "आधिकारिक CC0 सारांश पढ़ें",
+                "guideButton": "शुरुआती फ़ॉन्ट मार्गदर्शिका खोलें",
+                "commercialTitle": "व्यावसायिक उपयोग की अनुमति है",
+                "commercialText": "फ़ॉन्ट का उपयोग भुगतान वाले काम, उत्पादों, ग्राहक परियोजनाओं या अपने व्यवसाय में करें।",
+                "permissionTitle": "न अनुमति चाहिए, न भुगतान",
+                "permissionText": "फ़ॉन्ट उपयोग करने से पहले आपको Typodermic से संपर्क करने की आवश्यकता नहीं है।",
+                "attributionTitle": "श्रेय देना आवश्यक नहीं",
+                "attributionText": "आप Typodermic को श्रेय दे सकते हैं, लेकिन यह अनिवार्य नहीं है।",
+                "permissionsHeading": "आप क्या कर सकते हैं",
+                "permissionsSubheading": "व्यक्तिगत, व्यावसायिक, संपादन योग्य, एम्बेड किया हुआ या पुनर्वितरित उपयोग।",
+                "permissionsIntro": "आप यह कर सकते हैं:",
+                "permission1": "लोगो, दस्तावेज़ों, चित्रों, मुद्रित सामग्री, प्रस्तुतियों और वीडियो में फ़ॉन्ट का उपयोग करें।",
+                "permission2": "फ़ॉन्ट को वेबसाइट, ऐप, गेम, ईबुक, PDF और अन्य उत्पादों में एम्बेड करें।",
+                "permission3": "फ़ॉन्ट को Canva या किसी अन्य क्लाउड डिज़ाइन सेवा पर अपलोड करें, बशर्ते वह सेवा कस्टम फ़ॉन्ट स्वीकार करती हो।",
+                "permission4": "फ़ॉन्ट को संशोधित करें, दूसरे फ़ॉर्मेट में बदलें या उसका नाम बदलें।",
+                "permission5": "मूल या संशोधित फ़ॉन्ट फ़ाइलें मुफ़्त दें, बंडल करें, पुनर्वितरित करें या बेचें।",
+                "permission6": "ग्राहकों, सहकर्मियों और अन्य लोगों को फ़ॉन्ट का उपयोग करने दें।",
+                "attributionCalloutLead": "श्रेय देना आवश्यक नहीं है।",
+                "attributionCalloutText": "यदि आप Typodermic को श्रेय देते हैं, तो ऐसा न दर्शाएँ कि Typodermic आपका या आपके काम का समर्थन करता है।",
+                "startHeading": "शुरुआत करें",
+                "startSubheading": "फ़ॉन्ट इंस्टॉल करने से पहले ZIP फ़ाइल निकालें।",
+                "zipIntro": "ZIP फ़ाइल एक कंटेनर है। फ़ॉन्ट इंस्टॉल करने का प्रयास करने से पहले इसे निकालें।",
+                "windowsText": "ZIP फ़ाइल पर दायाँ-क्लिक करें और Extract All चुनें। फिर OTF फ़ॉन्ट फ़ाइल पर दायाँ-क्लिक करें और Install या Install for all users चुनें।",
+                "macText": "ZIP फ़ाइल निकालने के लिए उस पर डबल-क्लिक करें। फिर OTF फ़ॉन्ट फ़ाइल पर डबल-क्लिक करें और Install Font चुनें।",
+                "mobileLabel": "फ़ोन और टैबलेट",
+                "mobileText": "फ़ोन या टैबलेट पर ZIP फ़ाइल डाउनलोड करने से फ़ॉन्ट अपने आप इंस्टॉल नहीं होता। इंस्टॉलेशन डिवाइस के अनुसार अलग होता है और इसके लिए फ़ॉन्ट प्रबंधन ऐप या कॉन्फ़िगरेशन प्रोफ़ाइल की आवश्यकता हो सकती है।",
+                "restartText": "यदि फ़ॉन्ट आपके सॉफ़्टवेयर में दिखाई नहीं देता, तो इंस्टॉल करने के बाद सॉफ़्टवेयर बंद करके फिर खोलें।",
+                "filesHeading": "सही फ़ाइल चुनें",
+                "filesSubheading": "अलग-अलग फ़ॉन्ट फ़ॉर्मेट अलग-अलग काम के लिए होते हैं।",
+                "otfText": "सामान्य डिज़ाइन, लेखन, प्रस्तुति और वीडियो सॉफ़्टवेयर में उपयोग के लिए Windows या macOS पर इंस्टॉल करें।",
+                "woff2Text": "वेबसाइट पर लाइव, चुने जा सकने वाले टेक्स्ट के लिए उपयोग करें। WOFF2 फ़ाइलें सार्वजनिक डोमेन वेबफ़ॉन्ट पैकेज में उपलब्ध हैं।",
+                "vfcText": "फ़ॉन्ट को जाँचने या संशोधित करने के लिए FontLab में खोलें। ये फ़ॉन्ट विकास की स्रोत फ़ाइलें हैं।",
+                "fileNote": "हर डाउनलोड पैकेज में हर प्रकार की फ़ाइल नहीं होती।",
+                "downloadsButton": "सभी सार्वजनिक डोमेन डाउनलोड देखें",
+                "onlineHeading": "वेबसाइट और संपादन योग्य टेम्पलेट",
+                "onlineSubheading": "CC0 इन उपयोगों की भी अनुमति देता है।",
+                "websiteTitle": "वेबसाइट पर लाइव टेक्स्ट",
+                "websiteText": "वेबसाइट के लाइव, चुने जा सकने वाले टेक्स्ट के लिए उपलब्ध होने पर दी गई WOFF2 फ़ाइल का उपयोग करें।",
+                "templatesTitle": "Canva और संपादन योग्य टेम्पलेट",
+                "templatesText": "आप इस फ़ॉन्ट को Canva या किसी अन्य डिज़ाइन प्लेटफ़ॉर्म पर अपलोड करके संपादन योग्य टेम्पलेट बना सकते हैं।",
+                "platformNoteLead": "प्लेटफ़ॉर्म के नियम फिर भी लागू होते हैं।",
+                "platformNoteText": "सेवा को कस्टम फ़ॉन्ट स्वीकार करने चाहिए और आपको उसके नियमों और तकनीकी आवश्यकताओं का पालन करना चाहिए।",
+                "importantHeading": "महत्वपूर्ण जानकारी",
+                "importantSubheading": "कुछ कानूनी बातें अब भी महत्वपूर्ण हैं।",
+                "asIsText": "फ़ॉन्ट जैसा है वैसा ही, बिना किसी वारंटी के दिया जाता है।",
+                "otherRightsText": "CC0 पेटेंट या ट्रेडमार्क अधिकारों अथवा गोपनीयता और प्रचार अधिकारों जैसे अन्य अधिकारों को प्रभावित नहीं करता।",
+                "endorsementText": "ऐसा न दर्शाएँ कि Typodermic Fonts आपका, आपके संगठन का या आपके काम का समर्थन करता है।",
+                "summaryText": "यह पृष्ठ सरल भाषा में परिचय है। पूरी जानकारी के लिए आधिकारिक CC0 सारांश और कानूनी पाठ पढ़ें।",
+                "legalCodeButton": "पूरा CC0 कानूनी पाठ पढ़ें",
+                "helpHeading": "फ़ॉन्ट उपयोग करने में सहायता चाहिए?",
+                "helpText": "Typodermic की शुरुआती मार्गदर्शिका ZIP फ़ाइलें, फ़ॉन्ट इंस्टॉलेशन, वेबसाइट और फ़ाइल फ़ॉर्मेट समझाती है।",
+                "helpGuide": "शुरुआती मार्गदर्शिका खोलें",
+                "helpFonts": "सार्वजनिक डोमेन फ़ॉन्ट देखें",
+                "footerText": "Typodermic Fonts सार्वजनिक डोमेन फ़ॉन्ट मार्गदर्शिका। आधिकारिक CC0 शर्तें मान्य हैं।"
+        },
+        "pa": {
+                "pageTitle": "Typodermic Fonts — ਪਬਲਿਕ ਡੋਮੇਨ ਫ਼ੌਂਟ ਗਾਈਡ",
+                "headerNote": "ਪਬਲਿਕ ਡੋਮੇਨ ਫ਼ੌਂਟ ਗਾਈਡ",
+                "languageLabel": "ਭਾਸ਼ਾ",
+                "eyebrow": "ਪਬਲਿਕ ਡੋਮੇਨ ਫ਼ੌਂਟ · ਨਿੱਜੀ ਅਤੇ ਵਪਾਰਕ ਵਰਤੋਂ",
+                "pageHeading": "ਇਹ ਫ਼ੌਂਟ ਕਿਸੇ ਵੀ ਵਰਤੋਂ ਲਈ ਮੁਫ਼ਤ ਹੈ।",
+                "introBefore": "ਇਹ Typodermic ਫ਼ੌਂਟ ਪਬਲਿਕ ਡੋਮੇਨ ਸਮਰਪਣ ",
+                "introAfter": " ਅਧੀਨ ਜਾਰੀ ਕੀਤਾ ਗਿਆ ਹੈ। ਤੁਸੀਂ ਲਾਇਸੈਂਸ ਖਰੀਦੇ, ਫ਼ੀਸ ਦਿੱਤੇ ਜਾਂ ਇਜਾਜ਼ਤ ਮੰਗੇ ਬਿਨਾਂ ਇਸਨੂੰ ਨਿੱਜੀ ਜਾਂ ਵਪਾਰਕ ਕੰਮ ਲਈ ਵਰਤ ਸਕਦੇ ਹੋ।",
+                "noticeLead": "Typodermic ਦੇ ਵੱਖਰੇ ਲਾਇਸੈਂਸ ਦੀ ਲੋੜ ਨਹੀਂ ਹੈ।",
+                "noticeText": "ਇਸ ਪੈਕੇਜ ਦੀਆਂ ਫ਼ੌਂਟ ਫ਼ਾਈਲਾਂ ਉੱਤੇ ਸਰਕਾਰੀ CC0 ਸ਼ਰਤਾਂ ਲਾਗੂ ਹੁੰਦੀਆਂ ਹਨ।",
+                "cc0Button": "ਸਰਕਾਰੀ CC0 ਸਾਰ ਪੜ੍ਹੋ",
+                "guideButton": "ਸ਼ੁਰੂਆਤੀ ਫ਼ੌਂਟ ਗਾਈਡ ਖੋਲ੍ਹੋ",
+                "commercialTitle": "ਵਪਾਰਕ ਵਰਤੋਂ ਦੀ ਇਜਾਜ਼ਤ ਹੈ",
+                "commercialText": "ਫ਼ੌਂਟ ਨੂੰ ਭੁਗਤਾਨ ਵਾਲੇ ਕੰਮ, ਉਤਪਾਦਾਂ, ਗਾਹਕ ਪ੍ਰੋਜੈਕਟਾਂ ਜਾਂ ਆਪਣੇ ਕਾਰੋਬਾਰ ਵਿੱਚ ਵਰਤੋ।",
+                "permissionTitle": "ਨਾ ਇਜਾਜ਼ਤ, ਨਾ ਭੁਗਤਾਨ",
+                "permissionText": "ਫ਼ੌਂਟ ਵਰਤਣ ਤੋਂ ਪਹਿਲਾਂ Typodermic ਨਾਲ ਸੰਪਰਕ ਕਰਨ ਦੀ ਲੋੜ ਨਹੀਂ ਹੈ।",
+                "attributionTitle": "ਸਿਹਰਾ ਦੇਣਾ ਲਾਜ਼ਮੀ ਨਹੀਂ",
+                "attributionText": "ਤੁਸੀਂ Typodermic ਨੂੰ ਸਿਹਰਾ ਦੇ ਸਕਦੇ ਹੋ, ਪਰ ਇਹ ਲਾਜ਼ਮੀ ਨਹੀਂ।",
+                "permissionsHeading": "ਤੁਸੀਂ ਕੀ ਕਰ ਸਕਦੇ ਹੋ",
+                "permissionsSubheading": "ਨਿੱਜੀ, ਵਪਾਰਕ, ਸੋਧਯੋਗ, ਐਂਬੈੱਡ ਕੀਤੀ ਜਾਂ ਮੁੜ ਵੰਡੀ ਵਰਤੋਂ।",
+                "permissionsIntro": "ਤੁਸੀਂ ਇਹ ਕਰ ਸਕਦੇ ਹੋ:",
+                "permission1": "ਲੋਗੋ, ਦਸਤਾਵੇਜ਼ਾਂ, ਚਿੱਤਰਾਂ, ਪ੍ਰਿੰਟ, ਪ੍ਰਸਤੁਤੀਆਂ ਅਤੇ ਵੀਡੀਓ ਵਿੱਚ ਫ਼ੌਂਟ ਵਰਤੋ।",
+                "permission2": "ਫ਼ੌਂਟ ਨੂੰ ਵੈੱਬਸਾਈਟਾਂ, ਐਪਾਂ, ਗੇਮਾਂ, ਈ-ਕਿਤਾਬਾਂ, PDF ਅਤੇ ਹੋਰ ਉਤਪਾਦਾਂ ਵਿੱਚ ਐਂਬੈੱਡ ਕਰੋ।",
+                "permission3": "ਫ਼ੌਂਟ ਨੂੰ Canva ਜਾਂ ਕਿਸੇ ਹੋਰ ਕਲਾਉਡ ਡਿਜ਼ਾਈਨ ਸੇਵਾ ਉੱਤੇ ਅੱਪਲੋਡ ਕਰੋ, ਜੇ ਸੇਵਾ ਕਸਟਮ ਫ਼ੌਂਟ ਸਵੀਕਾਰ ਕਰਦੀ ਹੈ।",
+                "permission4": "ਫ਼ੌਂਟ ਨੂੰ ਸੋਧੋ, ਕਿਸੇ ਹੋਰ ਫ਼ਾਰਮੈਟ ਵਿੱਚ ਬਦਲੋ ਜਾਂ ਨਾਮ ਬਦਲੋ।",
+                "permission5": "ਅਸਲ ਜਾਂ ਸੋਧੀਆਂ ਫ਼ੌਂਟ ਫ਼ਾਈਲਾਂ ਮੁਫ਼ਤ ਦਿਓ, ਬੰਡਲ ਕਰੋ, ਮੁੜ ਵੰਡੋ ਜਾਂ ਵੇਚੋ।",
+                "permission6": "ਗਾਹਕਾਂ, ਸਹਿਕਰਮੀਆਂ ਅਤੇ ਹੋਰ ਲੋਕਾਂ ਨੂੰ ਫ਼ੌਂਟ ਵਰਤਣ ਦਿਓ।",
+                "attributionCalloutLead": "ਸਿਹਰਾ ਦੇਣਾ ਲਾਜ਼ਮੀ ਨਹੀਂ ਹੈ।",
+                "attributionCalloutText": "ਜੇ ਤੁਸੀਂ Typodermic ਨੂੰ ਸਿਹਰਾ ਦਿੰਦੇ ਹੋ, ਤਾਂ ਇਹ ਸੰਕੇਤ ਨਾ ਦਿਓ ਕਿ Typodermic ਤੁਹਾਡਾ ਜਾਂ ਤੁਹਾਡੇ ਕੰਮ ਦਾ ਸਮਰਥਨ ਕਰਦਾ ਹੈ।",
+                "startHeading": "ਸ਼ੁਰੂ ਕਰੋ",
+                "startSubheading": "ਫ਼ੌਂਟ ਇੰਸਟਾਲ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ZIP ਫ਼ਾਈਲ ਕੱਢੋ।",
+                "zipIntro": "ZIP ਫ਼ਾਈਲ ਇੱਕ ਕੰਟੇਨਰ ਹੈ। ਫ਼ੌਂਟ ਇੰਸਟਾਲ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ਼ ਤੋਂ ਪਹਿਲਾਂ ਇਸਨੂੰ ਕੱਢੋ।",
+                "windowsText": "ZIP ਫ਼ਾਈਲ ਉੱਤੇ ਸੱਜਾ-ਕਲਿੱਕ ਕਰੋ ਅਤੇ Extract All ਚੁਣੋ। ਫਿਰ OTF ਫ਼ੌਂਟ ਫ਼ਾਈਲ ਉੱਤੇ ਸੱਜਾ-ਕਲਿੱਕ ਕਰੋ ਅਤੇ Install ਜਾਂ Install for all users ਚੁਣੋ।",
+                "macText": "ZIP ਫ਼ਾਈਲ ਕੱਢਣ ਲਈ ਇਸ ਉੱਤੇ ਦੋ ਵਾਰ ਕਲਿੱਕ ਕਰੋ। ਫਿਰ OTF ਫ਼ੌਂਟ ਫ਼ਾਈਲ ਉੱਤੇ ਦੋ ਵਾਰ ਕਲਿੱਕ ਕਰੋ ਅਤੇ Install Font ਚੁਣੋ।",
+                "mobileLabel": "ਫ਼ੋਨ ਅਤੇ ਟੈਬਲੈੱਟ",
+                "mobileText": "ਫ਼ੋਨ ਜਾਂ ਟੈਬਲੈੱਟ ਉੱਤੇ ZIP ਫ਼ਾਈਲ ਡਾਊਨਲੋਡ ਕਰਨ ਨਾਲ ਫ਼ੌਂਟ ਆਪਣੇ ਆਪ ਇੰਸਟਾਲ ਨਹੀਂ ਹੁੰਦਾ। ਇੰਸਟਾਲੇਸ਼ਨ ਡਿਵਾਈਸ ਅਨੁਸਾਰ ਵੱਖਰੀ ਹੁੰਦੀ ਹੈ ਅਤੇ ਫ਼ੌਂਟ-ਪ੍ਰਬੰਧਨ ਐਪ ਜਾਂ ਕਨਫ਼ਿਗਰੇਸ਼ਨ ਪ੍ਰੋਫ਼ਾਈਲ ਦੀ ਲੋੜ ਹੋ ਸਕਦੀ ਹੈ।",
+                "restartText": "ਜੇ ਫ਼ੌਂਟ ਤੁਹਾਡੇ ਸਾਫ਼ਟਵੇਅਰ ਵਿੱਚ ਨਹੀਂ ਦਿਖਦਾ, ਤਾਂ ਇੰਸਟਾਲ ਕਰਨ ਤੋਂ ਬਾਅਦ ਸਾਫ਼ਟਵੇਅਰ ਬੰਦ ਕਰਕੇ ਮੁੜ ਖੋਲ੍ਹੋ।",
+                "filesHeading": "ਸਹੀ ਫ਼ਾਈਲ ਚੁਣੋ",
+                "filesSubheading": "ਵੱਖ-ਵੱਖ ਫ਼ੌਂਟ ਫ਼ਾਰਮੈਟਾਂ ਦੇ ਕੰਮ ਵੱਖਰੇ ਹਨ।",
+                "otfText": "ਆਮ ਡਿਜ਼ਾਈਨ, ਲਿਖਤ, ਪ੍ਰਸਤੁਤੀ ਅਤੇ ਵੀਡੀਓ ਸਾਫ਼ਟਵੇਅਰ ਵਿੱਚ ਵਰਤਣ ਲਈ Windows ਜਾਂ macOS ਉੱਤੇ ਇੰਸਟਾਲ ਕਰੋ।",
+                "woff2Text": "ਵੈੱਬਸਾਈਟ ਉੱਤੇ ਲਾਈਵ, ਚੁਣੇ ਜਾ ਸਕਣ ਵਾਲੇ ਟੈਕਸਟ ਲਈ ਵਰਤੋ। WOFF2 ਫ਼ਾਈਲਾਂ ਪਬਲਿਕ ਡੋਮੇਨ ਵੈੱਬਫ਼ੌਂਟ ਪੈਕੇਜ ਵਿੱਚ ਮਿਲਦੀਆਂ ਹਨ।",
+                "vfcText": "ਫ਼ੌਂਟ ਨੂੰ ਜਾਂਚਣ ਜਾਂ ਸੋਧਣ ਲਈ FontLab ਵਿੱਚ ਖੋਲ੍ਹੋ। ਇਹ ਫ਼ੌਂਟ ਵਿਕਾਸ ਦੀਆਂ ਸਰੋਤ ਫ਼ਾਈਲਾਂ ਹਨ।",
+                "fileNote": "ਹਰ ਡਾਊਨਲੋਡ ਪੈਕੇਜ ਵਿੱਚ ਹਰ ਕਿਸਮ ਦੀ ਫ਼ਾਈਲ ਨਹੀਂ ਹੁੰਦੀ।",
+                "downloadsButton": "ਸਾਰੇ ਪਬਲਿਕ ਡੋਮੇਨ ਡਾਊਨਲੋਡ ਵੇਖੋ",
+                "onlineHeading": "ਵੈੱਬਸਾਈਟਾਂ ਅਤੇ ਸੋਧਯੋਗ ਟੈਂਪਲੇਟ",
+                "onlineSubheading": "CC0 ਇਨ੍ਹਾਂ ਵਰਤੋਂ ਦੀ ਵੀ ਇਜਾਜ਼ਤ ਦਿੰਦਾ ਹੈ।",
+                "websiteTitle": "ਵੈੱਬਸਾਈਟ ਉੱਤੇ ਲਾਈਵ ਟੈਕਸਟ",
+                "websiteText": "ਵੈੱਬਸਾਈਟ ਦੇ ਲਾਈਵ, ਚੁਣੇ ਜਾ ਸਕਣ ਵਾਲੇ ਟੈਕਸਟ ਲਈ, ਜੇ ਉਪਲਬਧ ਹੋਵੇ ਤਾਂ ਦਿੱਤਾ WOFF2 ਸੰਸਕਰਣ ਵਰਤੋ।",
+                "templatesTitle": "Canva ਅਤੇ ਸੋਧਯੋਗ ਟੈਂਪਲੇਟ",
+                "templatesText": "ਤੁਸੀਂ ਇਹ ਫ਼ੌਂਟ Canva ਜਾਂ ਕਿਸੇ ਹੋਰ ਡਿਜ਼ਾਈਨ ਪਲੇਟਫ਼ਾਰਮ ਉੱਤੇ ਅੱਪਲੋਡ ਕਰਕੇ ਸੋਧਯੋਗ ਟੈਂਪਲੇਟ ਬਣਾ ਸਕਦੇ ਹੋ।",
+                "platformNoteLead": "ਪਲੇਟਫ਼ਾਰਮ ਦੇ ਨਿਯਮ ਫਿਰ ਵੀ ਲਾਗੂ ਹੁੰਦੇ ਹਨ।",
+                "platformNoteText": "ਸੇਵਾ ਨੂੰ ਕਸਟਮ ਫ਼ੌਂਟ ਸਵੀਕਾਰ ਕਰਨੇ ਚਾਹੀਦੇ ਹਨ ਅਤੇ ਤੁਹਾਨੂੰ ਉਸਦੇ ਨਿਯਮਾਂ ਅਤੇ ਤਕਨੀਕੀ ਲੋੜਾਂ ਦੀ ਪਾਲਣਾ ਕਰਨੀ ਚਾਹੀਦੀ ਹੈ।",
+                "importantHeading": "ਮਹੱਤਵਪੂਰਨ ਜਾਣਕਾਰੀ",
+                "importantSubheading": "ਕੁਝ ਕਾਨੂੰਨੀ ਵੇਰਵੇ ਅਜੇ ਵੀ ਮਹੱਤਵਪੂਰਨ ਹਨ।",
+                "asIsText": "ਫ਼ੌਂਟ ਜਿਵੇਂ ਹੈ ਤਿਵੇਂ, ਬਿਨਾਂ ਕਿਸੇ ਵਾਰੰਟੀ ਦੇ ਦਿੱਤਾ ਜਾਂਦਾ ਹੈ।",
+                "otherRightsText": "CC0 ਪੇਟੈਂਟ ਜਾਂ ਟ੍ਰੇਡਮਾਰਕ ਅਧਿਕਾਰਾਂ, ਜਾਂ ਨਿੱਜਤਾ ਅਤੇ ਪ੍ਰਚਾਰ ਅਧਿਕਾਰਾਂ ਵਰਗੇ ਹੋਰ ਅਧਿਕਾਰਾਂ ਨੂੰ ਪ੍ਰਭਾਵਿਤ ਨਹੀਂ ਕਰਦਾ।",
+                "endorsementText": "ਇਹ ਸੰਕੇਤ ਨਾ ਦਿਓ ਕਿ Typodermic Fonts ਤੁਹਾਡਾ, ਤੁਹਾਡੀ ਸੰਸਥਾ ਜਾਂ ਤੁਹਾਡੇ ਕੰਮ ਦਾ ਸਮਰਥਨ ਕਰਦਾ ਹੈ।",
+                "summaryText": "ਇਹ ਪੰਨਾ ਸੌਖੀ ਭਾਸ਼ਾ ਵਿੱਚ ਜਾਣ-ਪਛਾਣ ਹੈ। ਪੂਰੀ ਜਾਣਕਾਰੀ ਲਈ ਸਰਕਾਰੀ CC0 ਸਾਰ ਅਤੇ ਕਾਨੂੰਨੀ ਪਾਠ ਪੜ੍ਹੋ।",
+                "legalCodeButton": "ਪੂਰਾ CC0 ਕਾਨੂੰਨੀ ਪਾਠ ਪੜ੍ਹੋ",
+                "helpHeading": "ਫ਼ੌਂਟ ਵਰਤਣ ਵਿੱਚ ਮਦਦ ਚਾਹੀਦੀ ਹੈ?",
+                "helpText": "Typodermic ਦੀ ਸ਼ੁਰੂਆਤੀ ਗਾਈਡ ZIP ਫ਼ਾਈਲਾਂ, ਫ਼ੌਂਟ ਇੰਸਟਾਲੇਸ਼ਨ, ਵੈੱਬਸਾਈਟਾਂ ਅਤੇ ਫ਼ਾਈਲ ਫ਼ਾਰਮੈਟ ਸਮਝਾਉਂਦੀ ਹੈ।",
+                "helpGuide": "ਸ਼ੁਰੂਆਤੀ ਗਾਈਡ ਖੋਲ੍ਹੋ",
+                "helpFonts": "ਪਬਲਿਕ ਡੋਮੇਨ ਫ਼ੌਂਟ ਵੇਖੋ",
+                "footerText": "Typodermic Fonts ਪਬਲਿਕ ਡੋਮੇਨ ਫ਼ੌਂਟ ਗਾਈਡ। ਸਰਕਾਰੀ CC0 ਸ਼ਰਤਾਂ ਲਾਗੂ ਹਨ।"
+        },
+        "ta": {
+                "pageTitle": "Typodermic Fonts — பொதுக் கள எழுத்துரு வழிகாட்டி",
+                "headerNote": "பொதுக் கள எழுத்துரு வழிகாட்டி",
+                "languageLabel": "மொழி",
+                "eyebrow": "பொதுக் கள எழுத்துரு · தனிப்பட்ட மற்றும் வணிகப் பயன்பாடு",
+                "pageHeading": "இந்த எழுத்துரு எந்தப் பயன்பாட்டிற்கும் இலவசம்.",
+                "introBefore": "இந்த Typodermic எழுத்துரு பொதுக் கள அர்ப்பணிப்பான ",
+                "introAfter": " கீழ் வெளியிடப்பட்டுள்ளது. உரிமம் வாங்காமலும், கட்டணம் செலுத்தாமலும், அனுமதி கேட்காமலும் தனிப்பட்ட அல்லது வணிகப் பணிகளில் இதைப் பயன்படுத்தலாம்.",
+                "noticeLead": "தனி Typodermic உரிமம் தேவையில்லை.",
+                "noticeText": "இந்தத் தொகுப்பிலுள்ள எழுத்துருக் கோப்புகளுக்கு அதிகாரப்பூர்வ CC0 விதிமுறைகள் பொருந்தும்.",
+                "cc0Button": "அதிகாரப்பூர்வ CC0 சுருக்கத்தைப் படிக்கவும்",
+                "guideButton": "தொடக்கநிலை எழுத்துரு வழிகாட்டியைத் திறக்கவும்",
+                "commercialTitle": "வணிகப் பயன்பாடு அனுமதிக்கப்படுகிறது",
+                "commercialText": "ஊதியம் பெறும் பணி, தயாரிப்புகள், வாடிக்கையாளர் திட்டங்கள் அல்லது உங்கள் சொந்த வணிகத்தில் எழுத்துருவைப் பயன்படுத்தலாம்.",
+                "permissionTitle": "அனுமதியோ கட்டணமோ தேவையில்லை",
+                "permissionText": "எழுத்துருவைப் பயன்படுத்துவதற்கு முன் Typodermic-ஐத் தொடர்புகொள்ளத் தேவையில்லை.",
+                "attributionTitle": "பெயர்க்குறிப்பு தேவையில்லை",
+                "attributionText": "Typodermic-க்கு நன்றி தெரிவிக்கலாம்; ஆனால் அது கட்டாயமில்லை.",
+                "permissionsHeading": "நீங்கள் செய்யக்கூடியவை",
+                "permissionsSubheading": "தனிப்பட்ட, வணிக, திருத்தக்கூடிய, உட்பொதிக்கப்பட்ட அல்லது மறுவிநியோகப் பயன்பாடு.",
+                "permissionsIntro": "நீங்கள் செய்யலாம்:",
+                "permission1": "லோகோக்கள், ஆவணங்கள், படங்கள், அச்சுப் பொருட்கள், விளக்கக்காட்சிகள் மற்றும் வீடியோக்களில் எழுத்துருவைப் பயன்படுத்தலாம்.",
+                "permission2": "இணையதளங்கள், செயலிகள், விளையாட்டுகள், மின்னூல்கள், PDF-கள் மற்றும் பிற தயாரிப்புகளில் எழுத்துருவை உட்பொதிக்கலாம்.",
+                "permission3": "தனிப்பயன் எழுத்துருக்களை ஏற்கும் Canva அல்லது வேறு மேக வடிவமைப்புச் சேவையில் எழுத்துருவைப் பதிவேற்றலாம்.",
+                "permission4": "எழுத்துருவை மாற்றலாம், வேறு வடிவத்திற்கு மாற்றலாம் அல்லது மறுபெயரிடலாம்.",
+                "permission5": "அசல் அல்லது மாற்றிய எழுத்துருக் கோப்புகளை இலவசமாக வழங்கலாம், தொகுக்கலாம், மறுவிநியோகிக்கலாம் அல்லது விற்கலாம்.",
+                "permission6": "வாடிக்கையாளர்கள், உடன் பணியாளர்கள் மற்றும் பிறர் எழுத்துருவைப் பயன்படுத்த அனுமதிக்கலாம்.",
+                "attributionCalloutLead": "பெயர்க்குறிப்பு தேவையில்லை.",
+                "attributionCalloutText": "Typodermic-ஐக் குறிப்பிட விரும்பினால், Typodermic உங்களையோ உங்கள் பணியையோ ஆதரிக்கிறது என்று கூறாதீர்கள்.",
+                "startHeading": "தொடங்குவது",
+                "startSubheading": "எழுத்துருவை நிறுவுவதற்கு முன் ZIP கோப்பைப் பிரித்தெடுக்கவும்.",
+                "zipIntro": "ZIP கோப்பு ஒரு கொள்கலன். எழுத்துருவை நிறுவ முயல்வதற்கு முன் அதைப் பிரித்தெடுக்கவும்.",
+                "windowsText": "ZIP கோப்பில் வலது கிளிக் செய்து Extract All என்பதைத் தேர்ந்தெடுக்கவும். பின்னர் OTF எழுத்துருக் கோப்பில் வலது கிளிக் செய்து Install அல்லது Install for all users என்பதைத் தேர்ந்தெடுக்கவும்.",
+                "macText": "ZIP கோப்பைப் பிரித்தெடுக்க அதில் இருமுறை கிளிக் செய்யவும். பின்னர் OTF எழுத்துருக் கோப்பில் இருமுறை கிளிக் செய்து Install Font என்பதைத் தேர்ந்தெடுக்கவும்.",
+                "mobileLabel": "தொலைபேசிகளும் டேப்லெட்டுகளும்",
+                "mobileText": "தொலைபேசி அல்லது டேப்லெட்டில் ZIP கோப்பைப் பதிவிறக்குவது எழுத்துருவைத் தானாக நிறுவாது. நிறுவல் சாதனத்தைப் பொறுத்து மாறும்; எழுத்துரு மேலாண்மை செயலி அல்லது அமைவுச் சுயவிவரம் தேவைப்படலாம்.",
+                "restartText": "உங்கள் மென்பொருளில் எழுத்துரு தெரியவில்லை என்றால், நிறுவிய பிறகு மென்பொருளை மூடித் திறக்கவும்.",
+                "filesHeading": "சரியான கோப்பைத் தேர்வுசெய்தல்",
+                "filesSubheading": "வெவ்வேறு எழுத்துரு வடிவங்கள் வெவ்வேறு பணிகளுக்கானவை.",
+                "otfText": "வழக்கமான வடிவமைப்பு, எழுத்து, விளக்கக்காட்சி மற்றும் வீடியோ மென்பொருளில் பயன்படுத்த Windows அல்லது macOS-ல் நிறுவவும்.",
+                "woff2Text": "இணையதளங்களில் நேரடி, தேர்ந்தெடுக்கக்கூடிய உரைக்கு பயன்படுத்தவும். WOFF2 கோப்புகள் பொதுக் கள வலை எழுத்துருத் தொகுப்பில் கிடைக்கும்.",
+                "vfcText": "எழுத்துருவையே ஆய்வு செய்ய அல்லது மாற்ற FontLab-ல் திறக்கவும். இவை எழுத்துரு உருவாக்கத்திற்கான மூலக் கோப்புகள்.",
+                "fileNote": "ஒவ்வொரு பதிவிறக்கத் தொகுப்பிலும் எல்லா கோப்பு வகைகளும் இருப்பதில்லை.",
+                "downloadsButton": "அனைத்து பொதுக் கள பதிவிறக்கங்களையும் காண்க",
+                "onlineHeading": "இணையதளங்களும் திருத்தக்கூடிய வார்ப்புருக்களும்",
+                "onlineSubheading": "CC0 இந்தப் பயன்பாடுகளையும் அனுமதிக்கிறது.",
+                "websiteTitle": "இணையதளத்தில் நேரடி உரை",
+                "websiteText": "இணையதளத்தின் நேரடி, தேர்ந்தெடுக்கக்கூடிய உரைக்கு, கிடைத்தால் வழங்கப்பட்ட WOFF2 பதிப்பைப் பயன்படுத்தவும்.",
+                "templatesTitle": "Canva மற்றும் திருத்தக்கூடிய வார்ப்புருக்கள்",
+                "templatesText": "இந்த எழுத்துருவை Canva அல்லது வேறு வடிவமைப்புத் தளத்தில் பதிவேற்றி, திருத்தக்கூடிய வார்ப்புருக்களை உருவாக்கலாம்.",
+                "platformNoteLead": "தளத்தின் விதிகள் தொடர்ந்து பொருந்தும்.",
+                "platformNoteText": "சேவை தனிப்பயன் எழுத்துருக்களை ஏற்க வேண்டும்; அதன் விதிகளையும் தொழில்நுட்பத் தேவைகளையும் நீங்கள் பின்பற்ற வேண்டும்.",
+                "importantHeading": "முக்கியத் தகவல்",
+                "importantSubheading": "சில சட்ட விவரங்கள் இன்னும் முக்கியமானவை.",
+                "asIsText": "எழுத்துரு எந்த உத்தரவாதமும் இன்றி உள்ளபடியே வழங்கப்படுகிறது.",
+                "otherRightsText": "CC0 காப்புரிமை அல்லது வர்த்தகமுத்திரை உரிமைகளையோ, தனியுரிமை மற்றும் விளம்பர உரிமைகள் போன்ற பிற உரிமைகளையோ பாதிக்காது.",
+                "endorsementText": "Typodermic Fonts உங்களையோ, உங்கள் நிறுவனத்தையோ அல்லது உங்கள் பணியையோ ஆதரிக்கிறது என்று கூறாதீர்கள்.",
+                "summaryText": "இந்தப் பக்கம் எளிய மொழியில் ஒரு அறிமுகம். முழு விவரங்களுக்கு அதிகாரப்பூர்வ CC0 சுருக்கத்தையும் சட்ட உரையையும் படிக்கவும்.",
+                "legalCodeButton": "முழு CC0 சட்ட உரையைப் படிக்கவும்",
+                "helpHeading": "எழுத்துருவைப் பயன்படுத்த உதவி வேண்டுமா?",
+                "helpText": "Typodermic தொடக்கநிலை வழிகாட்டி ZIP கோப்புகள், எழுத்துரு நிறுவல், இணையதளங்கள் மற்றும் கோப்பு வடிவங்களை விளக்குகிறது.",
+                "helpGuide": "தொடக்கநிலை வழிகாட்டியைத் திறக்கவும்",
+                "helpFonts": "பொதுக் கள எழுத்துருக்களைப் பார்க்கவும்",
+                "footerText": "Typodermic Fonts பொதுக் கள எழுத்துரு வழிகாட்டி. அதிகாரப்பூர்வ CC0 விதிமுறைகளே பொருந்தும்."
+        },
+        "th": {
+                "pageTitle": "Typodermic Fonts — คู่มือฟอนต์สาธารณสมบัติ",
+                "headerNote": "คู่มือฟอนต์สาธารณสมบัติ",
+                "languageLabel": "ภาษา",
+                "eyebrow": "ฟอนต์สาธารณสมบัติ · ใช้ส่วนตัวและเชิงพาณิชย์",
+                "pageHeading": "ฟอนต์นี้ใช้ฟรีได้ทุกวัตถุประสงค์",
+                "introBefore": "ฟอนต์ Typodermic นี้เผยแพร่ภายใต้ ",
+                "introAfter": " ซึ่งเป็นการอุทิศให้เป็นสาธารณสมบัติ คุณใช้ในงานส่วนตัวหรือเชิงพาณิชย์ได้โดยไม่ต้องซื้อใบอนุญาต จ่ายค่าธรรมเนียม หรือขออนุญาต",
+                "noticeLead": "ไม่ต้องมีใบอนุญาตแยกจาก Typodermic",
+                "noticeText": "ข้อกำหนด CC0 อย่างเป็นทางการใช้กับไฟล์ฟอนต์ในแพ็กเกจนี้",
+                "cc0Button": "อ่านสรุป CC0 อย่างเป็นทางการ",
+                "guideButton": "เปิดคู่มือฟอนต์สำหรับผู้เริ่มต้น",
+                "commercialTitle": "อนุญาตให้ใช้เชิงพาณิชย์",
+                "commercialText": "ใช้ฟอนต์ในงานที่ได้รับค่าจ้าง ผลิตภัณฑ์ โครงการของลูกค้า หรือธุรกิจของคุณเองได้",
+                "permissionTitle": "ไม่ต้องขออนุญาตหรือชำระเงิน",
+                "permissionText": "คุณไม่ต้องติดต่อ Typodermic ก่อนใช้ฟอนต์",
+                "attributionTitle": "ไม่จำเป็นต้องให้เครดิต",
+                "attributionText": "คุณจะให้เครดิต Typodermic ก็ได้ แต่ไม่บังคับ",
+                "permissionsHeading": "สิ่งที่คุณทำได้",
+                "permissionsSubheading": "ใช้ส่วนตัว เชิงพาณิชย์ แก้ไขได้ ฝัง หรือแจกจ่ายต่อได้",
+                "permissionsIntro": "คุณสามารถ:",
+                "permission1": "ใช้ฟอนต์ในโลโก้ เอกสาร รูปภาพ สิ่งพิมพ์ งานนำเสนอ และวิดีโอ",
+                "permission2": "ฝังฟอนต์ในเว็บไซต์ แอป เกม อีบุ๊ก PDF และผลิตภัณฑ์อื่น",
+                "permission3": "อัปโหลดฟอนต์ไปยัง Canva หรือบริการออกแบบบนคลาวด์อื่น หากบริการนั้นรับฟอนต์แบบกำหนดเอง",
+                "permission4": "แก้ไขฟอนต์ แปลงเป็นรูปแบบอื่น หรือเปลี่ยนชื่อ",
+                "permission5": "ให้ฟรี รวมในแพ็กเกจ แจกจ่ายต่อ หรือขายไฟล์ฟอนต์ต้นฉบับหรือที่แก้ไขแล้ว",
+                "permission6": "อนุญาตให้ลูกค้า เพื่อนร่วมงาน และบุคคลอื่นใช้ฟอนต์",
+                "attributionCalloutLead": "ไม่จำเป็นต้องให้เครดิต",
+                "attributionCalloutText": "หากให้เครดิต Typodermic อย่าสื่อว่า Typodermic รับรองคุณหรือผลงานของคุณ",
+                "startHeading": "เริ่มต้นใช้งาน",
+                "startSubheading": "แตกไฟล์ ZIP ก่อนติดตั้งฟอนต์",
+                "zipIntro": "ไฟล์ ZIP เป็นไฟล์บรรจุ โปรดแตกไฟล์ก่อนพยายามติดตั้งฟอนต์",
+                "windowsText": "คลิกขวาที่ไฟล์ ZIP แล้วเลือก Extract All จากนั้นคลิกขวาที่ไฟล์ฟอนต์ OTF แล้วเลือก Install หรือ Install for all users",
+                "macText": "ดับเบิลคลิกไฟล์ ZIP เพื่อแตกไฟล์ จากนั้นดับเบิลคลิกไฟล์ฟอนต์ OTF แล้วเลือก Install Font",
+                "mobileLabel": "โทรศัพท์และแท็บเล็ต",
+                "mobileText": "การดาวน์โหลดไฟล์ ZIP บนโทรศัพท์หรือแท็บเล็ตไม่ได้ติดตั้งฟอนต์โดยอัตโนมัติ วิธีติดตั้งแตกต่างกันไปตามอุปกรณ์ และอาจต้องใช้แอปจัดการฟอนต์หรือโปรไฟล์การกำหนดค่า",
+                "restartText": "หากฟอนต์ไม่ปรากฏในซอฟต์แวร์ ให้ปิดแล้วเปิดซอฟต์แวร์อีกครั้งหลังติดตั้ง",
+                "filesHeading": "เลือกไฟล์ที่ถูกต้อง",
+                "filesSubheading": "รูปแบบฟอนต์แต่ละแบบมีหน้าที่ต่างกัน",
+                "otfText": "ติดตั้งบน Windows หรือ macOS เพื่อใช้ในซอฟต์แวร์ออกแบบ เขียน งานนำเสนอ และวิดีโอทั่วไป",
+                "woff2Text": "ใช้สำหรับข้อความสดที่เลือกได้บนเว็บไซต์ ไฟล์ WOFF2 มีอยู่ในแพ็กเกจเว็บฟอนต์สาธารณสมบัติ",
+                "vfcText": "เปิดใน FontLab เพื่อตรวจสอบหรือแก้ไขตัวฟอนต์เอง ไฟล์เหล่านี้เป็นไฟล์ต้นฉบับสำหรับพัฒนาฟอนต์",
+                "fileNote": "แพ็กเกจดาวน์โหลดแต่ละชุดอาจไม่มีไฟล์ครบทุกประเภท",
+                "downloadsButton": "ดูไฟล์สาธารณสมบัติทั้งหมด",
+                "onlineHeading": "เว็บไซต์และแม่แบบที่แก้ไขได้",
+                "onlineSubheading": "CC0 อนุญาตการใช้งานเหล่านี้ด้วย",
+                "websiteTitle": "ข้อความสดบนเว็บไซต์",
+                "websiteText": "สำหรับข้อความสดที่เลือกได้บนเว็บไซต์ ให้ใช้เวอร์ชัน WOFF2 ที่ให้มาเมื่อมี",
+                "templatesTitle": "Canva และแม่แบบที่แก้ไขได้",
+                "templatesText": "คุณสามารถอัปโหลดฟอนต์นี้ไปยัง Canva หรือแพลตฟอร์มออกแบบอื่นและสร้างแม่แบบที่แก้ไขได้",
+                "platformNoteLead": "กฎของแพลตฟอร์มยังคงมีผล",
+                "platformNoteText": "บริการต้องรับฟอนต์แบบกำหนดเอง และคุณต้องปฏิบัติตามกฎและข้อกำหนดทางเทคนิคของบริการ",
+                "importantHeading": "ข้อมูลสำคัญ",
+                "importantSubheading": "รายละเอียดทางกฎหมายบางอย่างยังมีความสำคัญ",
+                "asIsText": "ฟอนต์ให้บริการตามสภาพโดยไม่มีการรับประกัน",
+                "otherRightsText": "CC0 ไม่กระทบสิทธิในสิทธิบัตรหรือเครื่องหมายการค้า หรือสิทธิอื่น เช่น สิทธิความเป็นส่วนตัวและสิทธิในการเผยแพร่",
+                "endorsementText": "อย่าสื่อว่า Typodermic Fonts รับรองคุณ องค์กรของคุณ หรือผลงานของคุณ",
+                "summaryText": "หน้านี้เป็นคำแนะนำเบื้องต้นในภาษาที่เข้าใจง่าย โปรดอ่านสรุปและข้อความทางกฎหมาย CC0 อย่างเป็นทางการเพื่อดูรายละเอียดทั้งหมด",
+                "legalCodeButton": "อ่านข้อความทางกฎหมาย CC0 ฉบับเต็ม",
+                "helpHeading": "ต้องการความช่วยเหลือในการใช้ฟอนต์หรือไม่",
+                "helpText": "คู่มือ Typodermic สำหรับผู้เริ่มต้นอธิบายไฟล์ ZIP การติดตั้งฟอนต์ เว็บไซต์ และรูปแบบไฟล์",
+                "helpGuide": "เปิดคู่มือสำหรับผู้เริ่มต้น",
+                "helpFonts": "เรียกดูฟอนต์สาธารณสมบัติ",
+                "footerText": "คู่มือฟอนต์สาธารณสมบัติของ Typodermic Fonts ให้ยึดข้อกำหนด CC0 อย่างเป็นทางการเป็นหลัก"
+        }
+};
+      const textTargets = Array.from(document.querySelectorAll("[data-i18n]"));
+      const buttons = Array.from(document.querySelectorAll(".language-button"));
+      const status = document.getElementById("language-status");
+      const languageNav = document.querySelector(".language-bar");
+      const originalTitle = document.title;
+      const englishText = Object.fromEntries(textTargets.map((element) => [element.dataset.i18n, element.textContent]));
+      const rtlLanguages = new Set(["ar", "he"]);
+      const directionalAreas = [
+        document.getElementById("guide-content"),
+        document.querySelector(".header-note"),
+        document.querySelector(".footer-inner")
+      ].filter(Boolean);
+
+      function selectLanguage(language) {
+        const dictionary = language === "en" ? null : translations[language];
+        if (language !== "en" && !dictionary) return;
+
+        textTargets.forEach((element) => {
+          const key = element.dataset.i18n;
+          element.textContent = dictionary?.[key] ?? englishText[key];
+        });
+
+        buttons.forEach((button) => {
+          button.setAttribute("aria-pressed", String(button.dataset.lang === language));
+        });
+
+        document.documentElement.lang = language;
+        document.documentElement.dir = "ltr";
+        directionalAreas.forEach((element) => {
+          element.dir = rtlLanguages.has(language) ? "rtl" : "ltr";
+        });
+        languageNav.setAttribute("aria-label", dictionary?.languageLabel ?? englishText.languageLabel);
+        document.title = dictionary?.pageTitle ?? originalTitle;
+
+        const selectedButton = buttons.find((button) => button.dataset.lang === language);
+        if (selectedButton) status.textContent = selectedButton.textContent;
+      }
+
+      buttons.forEach((button) => {
+        button.addEventListener("click", () => selectLanguage(button.dataset.lang));
+      });
+    })();
+  </script>
+</body>
+</html>

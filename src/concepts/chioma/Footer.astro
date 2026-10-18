@@ -1,0 +1,201 @@
+---
+// Il footer è il foglio di banda stagnata appena uscito dalla macchina, non ancora tagliato: crocini di registro
+// agli angoli, barra di controllo dei colori sul margine e il nome in grande, stampato in latta sul blu.
+import logo from '../../assets/hub/loop-logo-on-dark.svg';
+import { FRANTOIO } from './dati';
+import Marchio from './Marchio.astro';
+const accettati = ['visa', 'mastercard', 'americanexpress', 'paypal', 'applepay', 'googlepay', 'klarna', 'scalapay', 'satispay', 'mybank'];
+const tinte = [
+	{ c: 'var(--rosso)' },
+	{ c: 'var(--blu)' },
+	{ c: 'var(--latta)' },
+	{ c: 'var(--olio)' },
+	{ c: 'var(--smalto)' },
+];
+---
+
+<footer class="foglio su-scuro">
+	<svg class="crocino crocino--1" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="9"></circle><path d="M20 0v40M0 20h40"></path></svg>
+	<svg class="crocino crocino--2" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="9"></circle><path d="M20 0v40M0 20h40"></path></svg>
+	<div class="barra-colori" aria-hidden="true">
+		{tinte.map((t) => <span style={`--c:${t.c}`} />)}
+		<span class="retino retino--20"></span>
+		<span class="retino retino--50"></span>
+		<span class="retino retino--80"></span>
+	</div>
+
+	<div class="foglio__in">
+		<div class="foglio__colonna">
+			<p class="foglio__titolo">Chioma Saracena</p>
+			<p>Olio extravergine di Ottobratica, {FRANTOIO.luogo}. In latta da 1, 3 e 5 litri.</p>
+		</div>
+		<div class="foglio__colonna">
+			<p class="foglio__titolo">Scrivici</p>
+			<p>{FRANTOIO.email}<br />{FRANTOIO.telefono}</p>
+		</div>
+		<div class="foglio__colonna">
+			<p class="foglio__titolo">In pagina</p>
+			<p><a href="#cassa">Prenota l'olio nuovo</a><br /><a href="#domande-titolo">Domande</a></p>
+		</div>
+	</div>
+
+	<div class="foglio__pagamenti">
+		<p>Paghi con</p>
+		<div class="foglio__marchi">{accettati.map((n) => <Marchio nome={n} />)}</div>
+	</div>
+	<p class="foglio__nota">
+		Frantoio di fantasia: concept dimostrativo di Loop Studio. Il frantoio, i valori di analisi, i prezzi, l'indirizzo email e il telefono non
+		esistono. Il nome non è un marchio registrato. Le foto sono di archivio (Unsplash, Pexels) e illustrative; la latta è un render.
+		I marchi dei metodi di pagamento appartengono ai loro proprietari e qui mostrano solo cosa si può attivare: nessun pagamento è reale. Icone Apple Pay e Google Pay di
+		<a href="https://icons8.com" target="_blank" rel="noopener">Icons8<span class="sr-only"> (si apre in una nuova scheda)</span></a>.
+		In un negozio vero qui andrebbero condizioni di vendita, diritto di recesso e privacy.
+	</p>
+	<a class="foglio__credito" href="https://theloopstudio.org/" target="_blank" rel="noopener">
+		<span>Sito ideato da</span>
+		<img src={logo.src} width="84" height="44" alt="Loop Studio" />
+		<span class="sr-only">(si apre in una nuova scheda)</span>
+	</a>
+	<p class="parola foglio__parola" aria-hidden="true">Saracena</p>
+</footer>
+
+<style>
+	.foglio {
+		position: relative;
+		overflow: clip;
+		background: var(--blu);
+		padding: 88px var(--gutter) clamp(140px, 22vw, 340px);
+		color: var(--smalto);
+	}
+	.crocino {
+		position: absolute;
+		width: 34px;
+		height: 34px;
+		fill: none;
+		stroke: var(--latta);
+		stroke-width: 1.5;
+	}
+	.crocino--1 {
+		top: 22px;
+		left: 22px;
+	}
+	.crocino--2 {
+		top: 22px;
+		right: 22px;
+	}
+	.barra-colori {
+		position: absolute;
+		top: 30px;
+		left: 50%;
+		translate: -50% 0;
+		display: flex;
+		gap: 4px;
+	}
+	.barra-colori span {
+		width: 18px;
+		height: 18px;
+		background: var(--c);
+		box-shadow: 0 0 0 1px rgb(207 213 216 / 0.4);
+	}
+	.barra-colori .retino {
+		background: radial-gradient(circle, var(--latta) 0 var(--r), transparent calc(var(--r) + 3%)) 0 0 / 4px 4px;
+	}
+	.retino--20 {
+		--r: 22%;
+	}
+	.retino--50 {
+		--r: 36%;
+	}
+	.retino--80 {
+		--r: 52%;
+	}
+	.foglio__in {
+		position: relative;
+		z-index: 1;
+		max-width: var(--max);
+		margin-inline: auto;
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 32px;
+	}
+	.foglio__titolo {
+		font-family: var(--titoli);
+		font-size: 1.6rem;
+		line-height: 1.1;
+		margin-bottom: 8px;
+	}
+	.foglio__colonna p:not(.foglio__titolo) {
+		color: var(--latta);
+		max-width: 32ch;
+	}
+	.foglio a {
+		display: inline-block;
+		padding: 4px 0;
+		text-underline-offset: 3px;
+	}
+	.foglio a:hover {
+		color: var(--smalto);
+	}
+	.foglio__nota {
+		position: relative;
+		z-index: 1;
+		max-width: var(--max);
+		margin: 48px auto 0;
+		font-size: 0.875rem;
+		color: var(--latta);
+	}
+	.foglio__nota {
+		max-width: min(var(--max), 75ch);
+		margin-left: max(0px, calc((100% - var(--max)) / 2));
+	}
+	.foglio__credito {
+		position: relative;
+		z-index: 1;
+		display: inline-flex !important;
+		align-items: center;
+		gap: 10px;
+		margin-top: 20px;
+		margin-left: max(0px, calc((100% - var(--max)) / 2));
+		font-size: 0.875rem;
+		text-decoration: none;
+	}
+	.foglio__parola {
+		left: 50%;
+		translate: -50% 0;
+		bottom: -0.17em;
+		font-size: clamp(6rem, 24vw, 24rem);
+		color: var(--latta);
+		--ombra: var(--rosso);
+	}
+	@media (max-width: 760px) {
+		.foglio__in {
+			grid-template-columns: minmax(0, 1fr);
+			gap: 24px;
+		}
+		.barra-colori {
+			left: auto;
+			right: 70px;
+			translate: none;
+		}
+		.barra-colori span {
+			width: 13px;
+			height: 13px;
+		}
+	}
+	.foglio__pagamenti {
+		position: relative;
+		z-index: 1;
+		max-width: var(--max);
+		margin: 32px auto 0;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 10px 16px;
+		font-size: 0.875rem;
+		font-weight: 600;
+	}
+	.foglio__marchi {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+	}
+</style>

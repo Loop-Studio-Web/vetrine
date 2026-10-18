@@ -1,0 +1,110 @@
+---
+import '@fontsource-variable/funnel-sans';
+import '../../../concepts/chioma/base.css';
+import frontUrl from '../../../assets/chioma/font/kwokwi-front.woff2?url';
+import backUrl from '../../../assets/chioma/font/kwokwi-back.woff2?url';
+import funnelUrl from '@fontsource-variable/funnel-sans/files/funnel-sans-latin-wght-normal.woff2?url';
+import Fascia from '../../../concepts/chioma/Fascia.astro';
+import Barra from '../../../concepts/chioma/Barra.astro';
+import Palco from '../../../concepts/chioma/Palco.astro';
+import Chioma from '../../../concepts/chioma/Chioma.astro';
+import Raccolta from '../../../concepts/chioma/Raccolta.astro';
+import Frantoio from '../../../concepts/chioma/Frantoio.astro';
+import Latta from '../../../concepts/chioma/Latta.astro';
+import Assaggio from '../../../concepts/chioma/Assaggio.astro';
+import Cassa from '../../../concepts/chioma/Cassa.astro';
+import Domande from '../../../concepts/chioma/Domande.astro';
+import Footer from '../../../concepts/chioma/Footer.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const title = 'Chioma Saracena — Olio nuovo della Piana, in latta';
+const description =
+	'Frantoio di fantasia nella Piana di Gioia Tauro: olio extravergine di Ottobratica, raccolto dalla pianta a ottobre e venduto solo in latta. Vetrina dimostrativa.';
+const ogImage = new URL(`${base}/images/chioma/og.jpg`, Astro.site).href;
+const pageUrl = new URL(`${base}/ecommerce/olio/`, Astro.site).href;
+---
+
+<html lang="it">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href={`${base}/images/chioma/favicon.svg`} />
+		<link rel="preload" as="font" type="font/woff2" href={frontUrl} crossorigin />
+		<link rel="preload" as="font" type="font/woff2" href={backUrl} crossorigin />
+		<link rel="preload" as="font" type="font/woff2" href={funnelUrl} crossorigin />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<meta name="robots" content="noindex, nofollow" />
+		<meta name="theme-color" content="#c8231b" />
+		<meta property="og:type" content="website" />
+		<meta property="og:locale" content="it_IT" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={pageUrl} />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<script is:inline>
+			document.documentElement.classList.add('js');
+			// le coste del vetro rifrangono solo dove backdrop-filter accetta un filtro SVG (Chrome, Edge)
+			if (navigator.userAgentData) document.documentElement.classList.add('rifrange');
+		</script>
+	</head>
+	<body>
+		<a href="#main" class="skip-link">Vai al contenuto</a>
+		<!-- il vetro cannettato: una costa ogni 14 px, ognuna sposta la foto dietro come una lente stretta -->
+		<svg class="sr-only" width="0" height="0" aria-hidden="true" focusable="false">
+			<filter id="cs-coste" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+				<feImage
+					href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3ClinearGradient id='g'%3E%3Cstop offset='0' stop-color='%23008000'/%3E%3Cstop offset='1' stop-color='%23ff8000'/%3E%3C/linearGradient%3E%3Crect width='14' height='14' fill='url(%23g)'/%3E%3C/svg%3E"
+					x="0"
+					y="0"
+					width="14"
+					height="14"
+					result="costa"></feImage>
+				<feTile in="costa" result="coste"></feTile>
+				<feDisplacementMap in="SourceGraphic" in2="coste" scale="16" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
+			</filter>
+		</svg>
+		<Fascia />
+		<Barra />
+		<main id="main">
+			<div class="percorso">
+				<Palco />
+				<Chioma />
+				<Raccolta />
+				<Frantoio />
+				<Latta />
+				<Assaggio />
+				<Cassa />
+			</div>
+			<Domande />
+		</main>
+		<Footer />
+		<script>
+			// Le ancore interne si muovono via script: su Safari/iPhone lo scroll fluido nativo può atterrare storto.
+			document.addEventListener('click', (e) => {
+				const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
+				if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey) return;
+				const id = a.getAttribute('href')!.slice(1);
+				const el = id && id !== 'top' ? document.getElementById(id) : document.documentElement;
+				if (!el) return;
+				e.preventDefault();
+				const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+				requestAnimationFrame(() => el.scrollIntoView({ behavior: ridotto ? 'auto' : 'smooth', block: 'start' }));
+			});
+		</script>
+	</body>
+</html>
+
+<style is:global>
+	.percorso {
+		position: relative;
+		isolation: isolate;
+	}
+	html:not(.js) .binario {
+		display: none;
+	}
+</style>

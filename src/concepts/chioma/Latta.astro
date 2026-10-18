@@ -1,0 +1,211 @@
+---
+// Quarta tappa: la goccia entra nel tappo e la latta gira (fotogrammi del render) al centro dello schermo, con "Buio"
+// fermo alle sue spalle. I perché e i lati arrivano a sinistra e a destra, ognuno con un richiamo puntinato verso la
+// latta; il vetro dei pannelli sfoca la parola che passa dietro. data-t è il punto del giro in cui quel lato è davanti.
+const facce = [
+	{ t: 'Davanti, l’albero', d: 'Un’Ottobratica della Piana stampata a tre colori, come le latte da olio di una volta.' },
+	{ t: 'Sul fianco, da dove viene', d: 'Cultivar, raccolta, frantoio e annata. Un solo olio per campagna, niente miscele.' },
+	{
+		t: 'Dietro, come tenerla',
+		d: 'Lontano dal fornello e con il tappo chiuso. Sul retro c’è quello che chiede la legge: categoria, origine, valori nutrizionali. Lotto e scadenza sono stampati sul coperchio.',
+	},
+	{ t: 'Sull’altro fianco, dove va dopo', d: 'La latta vuota si ricicla con i metalli. Oppure resta: in molte cucine della Piana diventa il vaso del basilico.' },
+];
+const perche = [
+	{ t: 'La luce non passa.', d: 'Il vetro scuro ne ferma una parte, la latta tutta.' },
+	{ t: 'Si apre poco.', d: 'Si travasa un po’ alla volta in un’oliera: la latta resta chiusa e l’aria non entra.' },
+	{ t: 'Viaggia bene.', d: 'Non si rompe e pesa poco: per spedire l’olio è il contenitore più sicuro.' },
+];
+const titolo = "La latta tiene l'olio al buio.";
+---
+
+<section class="tappa latta-tappa" data-tappa aria-labelledby="latta-titolo">
+	<div class="fondale" aria-hidden="true">
+		<p class="parola latta__parola">Buio</p>
+	</div>
+	<div class="latta__dentro">
+		<header class="latta__testa">
+			<h2 id="latta-titolo" class="inchiostri" data-testo={titolo}>{titolo}</h2>
+			<p>
+				Luce e aria sono quello che invecchia l'olio: in pochi mesi il verde diventa giallo e il piccante sparisce. Per questo lo
+				vendiamo solo in latta, da 1, 3 e 5 litri.
+			</p>
+		</header>
+		<dl class="perche">
+			{
+				perche.map((p) => (
+					<div class="vetro vetro--blu richiamo">
+						<dt>{p.t}</dt>
+						<dd>{p.d}</dd>
+					</div>
+				))
+			}
+		</dl>
+		<ul class="facce">
+			{
+				facce.map((f, i) => (
+					<li class="vetro richiamo" data-t={(3.2 + i * 0.15).toFixed(2)}>
+						<h3>{f.t}</h3>
+						<p>{f.d}</p>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</section>
+
+<style>
+	.latta-tappa {
+		--fondo: var(--latta);
+		min-height: 240svh;
+		padding: 0 var(--gutter);
+	}
+	/* la parola resta ferma dietro la latta mentre i pannelli scorrono */
+	.fondale {
+		position: sticky;
+		top: var(--barra-h);
+		height: calc(100svh - var(--barra-h));
+		margin-bottom: calc(var(--barra-h) - 100svh);
+		margin-inline: calc(-1 * var(--gutter));
+		overflow: clip;
+	}
+	.latta__parola {
+		left: 50%;
+		top: 52%;
+		translate: -50% -50%;
+		font-size: min(38vw, 46svh);
+		color: var(--latta-2);
+		--ombra: var(--blu);
+	}
+	.latta__dentro {
+		position: relative;
+		z-index: 3;
+		max-width: var(--max);
+		margin-inline: auto;
+		padding-block: clamp(72px, 12svh, 140px) 16svh;
+		/* tre corsie: i pannelli a sinistra e a destra, la latta (nel palco) in mezzo */
+		--corsia: calc(var(--lw) * 2.1);
+	}
+	/* il titolo arriva quando la latta è già al centro: sta nella corsia di sinistra */
+	.latta__testa {
+		max-width: min(30rem, calc((100% - var(--corsia)) / 2));
+	}
+	h2 {
+		color: var(--blu);
+		--ombra: var(--rosso);
+	}
+	.latta__testa h2 {
+		font-size: clamp(2.3rem, 3.8vw, 3.8rem);
+	}
+	.perche,
+	.facce {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) var(--corsia) minmax(0, 1fr);
+	}
+	.perche {
+		margin-top: 14svh;
+		row-gap: 6svh;
+	}
+	.perche dt {
+		font-weight: 720;
+		font-size: 1.125rem;
+	}
+	.perche dd {
+		margin-top: 2px;
+		font-size: 1rem;
+		color: var(--latta);
+	}
+	.facce {
+		margin-top: 22svh;
+		row-gap: 30svh;
+	}
+	.richiamo {
+		position: relative;
+		max-width: 24rem;
+	}
+	/* a sinistra, a destra, a sinistra: ognuno si accosta alla latta */
+	.richiamo:nth-child(odd) {
+		grid-column: 1;
+		justify-self: end;
+	}
+	.richiamo:nth-child(even) {
+		grid-column: 3;
+		justify-self: start;
+	}
+	/* il richiamo puntinato che va verso la latta, con il punto d'attacco */
+	.richiamo::after {
+		content: '';
+		position: absolute;
+		top: 50%;
+		width: calc(var(--corsia) * 0.32);
+		height: 10px;
+		translate: 0 -50%;
+		background:
+			radial-gradient(circle, var(--blu) 0 3.5px, transparent 4px) right center / 10px 10px no-repeat,
+			radial-gradient(circle, var(--blu) 0 1.2px, transparent 1.6px) 0 center / 6px 6px repeat-x;
+		pointer-events: none;
+	}
+	.richiamo:nth-child(odd)::after {
+		left: 100%;
+	}
+	.richiamo:nth-child(even)::after {
+		right: 100%;
+		scale: -1 1;
+	}
+	h3 {
+		font-size: 1.6rem;
+		color: var(--blu);
+		margin-bottom: 0.3em;
+	}
+	.facce p {
+		color: var(--oliva);
+	}
+
+	@media (max-width: 899px) {
+		.latta-tappa {
+			min-height: 0;
+			padding: 0 14px;
+		}
+		.fondale {
+			margin-inline: -14px;
+		}
+		.latta__parola {
+			top: 76%;
+			font-size: 46vw;
+		}
+		.latta__dentro {
+			padding-block: 64px 10svh;
+		}
+		/* sul telefono la latta sta in alto: i pannelli le passano sopra nella metà bassa e la sfocano */
+		.latta__dentro {
+			z-index: 6;
+		}
+		.perche,
+		.facce {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.perche {
+			margin-top: 50svh;
+			row-gap: 16px;
+		}
+		.facce {
+			margin-top: 46svh;
+			row-gap: 46svh;
+		}
+		.richiamo:nth-child(n) {
+			grid-column: 1;
+			justify-self: stretch;
+			max-width: none;
+		}
+		.richiamo::after {
+			display: none;
+		}
+		/* il titolo arriva quando la latta è già in alto: lo copre con un foglio di latta */
+		.latta__testa {
+			max-width: none;
+			padding: 18px;
+			border-radius: var(--raggio);
+			background: var(--latta);
+		}
+	}
+</style>

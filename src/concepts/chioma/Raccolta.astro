@@ -1,0 +1,169 @@
+---
+// Seconda tappa: la raccolta. Una lastra con la rete stesa sotto l'ulivo: il titolo in un cartellino di vetro blu, i tre
+// momenti su tre vetrini sfalsati in fondo. Sotto, due foto affiancate. L'oliva del palco ci cade sopra.
+import { Image } from 'astro:assets';
+import rete from '../../assets/chioma/foto/raccolta-rete.jpg';
+import cassetta from '../../assets/chioma/foto/raccolta-cassetta.jpg';
+import viola from '../../assets/chioma/foto/olive-viola.jpg';
+const titolo = 'Dalla pianta, mai da terra.';
+const momenti = [
+	{
+		t: 'Reti e pettini',
+		d: 'Qui per molto tempo le olive si lasciavano cadere e si raccoglievano da terra, a fine inverno. Noi stendiamo le reti sotto la chioma e pettiniamo i rami con aste lunghe: i primi sono a otto metri.',
+	},
+	{
+		t: 'Verde, poi viola',
+		d: 'Si comincia a metà ottobre, quando l’Ottobratica cambia colore. È presto, e si sente: l’olio viene più verde, più amaro, più piccante. Rende meno, dodici litri ogni cento chili invece di diciotto.',
+	},
+	{
+		t: 'Venti chili a cassetta',
+		d: 'Un ulivo grande dà da cinquanta a ottanta chili. Le olive vanno in cassette forate, mai nei sacchi: devono respirare fino al frantoio, che è a sei chilometri.',
+	},
+];
+---
+
+<section class="tappa raccolta" data-tappa aria-labelledby="raccolta-titolo">
+	<div class="lastra lastra--ferma raccolta__lastra">
+		<Image src={rete} alt="Un raccoglitore seduto sulla rete verde sotto gli ulivi pulisce un rametto, accanto a una cassetta rossa" widths={[720, 1200, 1800, 2400]} sizes="100vw" class="lastra__foto" />
+		<p class="parola raccolta__parola" aria-hidden="true">Ottobre</p>
+		<div class="raccolta__dentro">
+			<div class="vetro vetro--blu raccolta__testa">
+				<h2 id="raccolta-titolo" class="inchiostri" data-testo={titolo}>{titolo}</h2>
+				<p>Dal 14 ottobre a fine novembre, un ulivo alla volta.</p>
+			</div>
+			<ol class="momenti">
+				{
+					momenti.map((m) => (
+						<li class="vetro">
+							<h3>{m.t}</h3>
+							<p>{m.d}</p>
+						</li>
+					))
+				}
+			</ol>
+		</div>
+	</div>
+
+	<div class="coppia">
+		<figure class="lastra coppia__foto">
+			<Image src={cassetta} alt="Mani che sistemano olive scure in una cassetta di plastica gialla" widths={[480, 800, 1200]} sizes="(max-width: 899px) 100vw, 40vw" class="lastra__foto" />
+			<figcaption class="vetro vetro--blu didascalia">Venti chili al massimo, perché sotto non si schiaccino.</figcaption>
+		</figure>
+		<figure class="lastra coppia__foto coppia__foto--larga">
+			<Image src={viola} alt="Olive scure e lucide su un ramo d'ulivo, foglie verdi argentate" widths={[640, 1200, 1800]} sizes="(max-width: 899px) 100vw, 58vw" class="lastra__foto" />
+			<figcaption class="vetro didascalia">Metà ottobre: sullo stesso ramo olive verdi, viola e nere.</figcaption>
+		</figure>
+	</div>
+</section>
+
+<style>
+	.raccolta {
+		--fondo: var(--rosso);
+	}
+	.raccolta__lastra img {
+		object-position: 50% 35%;
+	}
+	.raccolta__dentro {
+		position: relative;
+		z-index: 3;
+		min-height: inherit;
+		display: grid;
+		grid-template-rows: auto 1fr;
+		align-content: space-between;
+		gap: 32px;
+		padding: clamp(20px, 3.4vw, 52px);
+	}
+	.raccolta__testa {
+		justify-self: start;
+		max-width: 30rem;
+	}
+	.raccolta__testa h2 {
+		--ombra: var(--rosso);
+	}
+	.raccolta__testa p {
+		margin-top: 0.5em;
+		color: var(--latta);
+	}
+	/* tre vetrini in fila, ognuno un po' più in alto del precedente: la rete che sale verso la cassetta */
+	.momenti {
+		align-self: end;
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: clamp(12px, 1.6vw, 24px);
+		align-items: end;
+		margin-bottom: clamp(40px, 7vw, 120px);
+	}
+	.momenti li:nth-child(2) {
+		translate: 0 -28px;
+	}
+	.momenti li:nth-child(3) {
+		translate: 0 -56px;
+	}
+	h3 {
+		font-size: 1.6rem;
+		color: var(--blu);
+		margin-bottom: 0.3em;
+	}
+	.momenti p {
+		font-size: 1rem;
+		color: var(--oliva);
+	}
+	.raccolta__parola {
+		right: -0.05em;
+		bottom: -0.2em;
+		color: var(--smalto);
+		--ombra: var(--blu);
+	}
+
+	/* il dittico: due foto affiancate, larghe diverse */
+	.coppia {
+		display: grid;
+		grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr);
+		gap: var(--cornice);
+	}
+	.coppia__foto {
+		margin: 0;
+		min-height: min(78svh, 46vw);
+		display: flex;
+		align-items: flex-end;
+		padding: clamp(14px, 2vw, 28px);
+	}
+	.coppia__foto img {
+		object-position: 50% 45%;
+	}
+	@media (max-width: 899px) {
+		.raccolta__dentro {
+			padding: 14px;
+			gap: 40svh;
+		}
+		.momenti {
+			grid-template-columns: minmax(0, 1fr);
+			gap: 22svh;
+			margin-bottom: 30svh;
+		}
+		.momenti li:nth-child(n) {
+			translate: none;
+		}
+		.momenti li:nth-child(2) {
+			margin-left: 8%;
+		}
+		.momenti li:nth-child(3) {
+			margin-right: 8%;
+		}
+		.raccolta__parola {
+			font-size: 36vw;
+			bottom: -0.16em;
+		}
+		.coppia {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.coppia__foto {
+			min-height: 0;
+			aspect-ratio: 4 / 5;
+			padding: 12px;
+		}
+		.coppia__foto--larga {
+			aspect-ratio: 4 / 3;
+		}
+	}
+</style>

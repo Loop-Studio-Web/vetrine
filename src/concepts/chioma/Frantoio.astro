@@ -1,0 +1,186 @@
+---
+// Terza tappa: il frantoio. Prima lastra: la cassetta appena arrivata, dove cade l'oliva del palco ([data-cassetta]);
+// il racconto in un vetro chiaro, l'analisi su una striscia di vetro blu in fondo. Seconda lastra: il beccuccio, col
+// filo d'olio al centro che esce dal bordo basso: lì nasce la goccia ([data-beccuccio]) e cade dritta nella latta.
+import { Image } from 'astro:assets';
+import cassetta from '../../assets/chioma/foto/frantoio-cassetta.jpg';
+import beccuccio from '../../assets/chioma/foto/frantoio-beccuccio.jpg';
+import { ANALISI } from './dati';
+const titolo = 'In frantoio la sera stessa.';
+---
+
+<section class="tappa frantoio" data-tappa aria-labelledby="frantoio-titolo">
+	<div class="lastra lastra--ferma frantoio__lastra">
+		<Image src={cassetta} alt="Una cassetta gialla piena di olive scure appena raccolte" widths={[720, 1200, 1800, 2400]} sizes="100vw" class="lastra__foto" />
+		<span class="ancora ancora--cassetta" data-cassetta aria-hidden="true"></span>
+		<p class="parola frantoio__parola" aria-hidden="true">Freddo</p>
+		<div class="vetro frantoio__vetro">
+			<h2 id="frantoio-titolo" class="inchiostri" data-testo={titolo}>{titolo}</h2>
+			<p>
+				Le olive raccolte la mattina si frangono prima di cena. Si lavano, si macinano con il nocciolo e la pasta si gramola: si rimesta
+				piano perché le goccioline d'olio si uniscano. Sotto i 27 gradi, anche se più caldo renderebbe di più: perderebbe profumo.
+			</p>
+			<p>Poi il decanter separa l'olio dall'acqua e dalla sansa. Il primo che esce è torbido, verde, e pizzica in gola.</p>
+		</div>
+		<div class="vetro vetro--blu analisi">
+			<dl class="dati">
+				{
+					ANALISI.map((a) => (
+						<div class="dato">
+							<dt>{a.voce}</dt>
+							<dd class="dato__valore">{a.valore}</dd>
+							<dd class="dato__spiega">{a.spiega}</dd>
+						</div>
+					))
+				}
+			</dl>
+			<p class="nota">Valori di esempio di un frantoio di fantasia: in un negozio vero qui va l'analisi del lotto.</p>
+		</div>
+	</div>
+
+	<figure class="lastra beccuccio">
+		<Image src={beccuccio} alt="Olio dorato che scorre da un beccuccio d'acciaio del frantoio" widths={[720, 1200, 1800, 2400]} sizes="100vw" class="lastra__foto" />
+		<span class="ancora ancora--beccuccio" data-beccuccio data-t="2.32" data-ty="0.24" data-ty-mob="0.11" aria-hidden="true"></span>
+		<figcaption class="vetro didascalia">Il primo olio dell'annata, appena uscito dal separatore.</figcaption>
+	</figure>
+</section>
+
+<style>
+	.frantoio {
+		--fondo: var(--blu);
+	}
+	.frantoio__lastra {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 30rem);
+		grid-template-rows: 1fr auto;
+		gap: 24px;
+		padding: clamp(20px, 3.4vw, 52px);
+	}
+	.frantoio__vetro {
+		position: relative;
+		z-index: 3;
+		grid-column: 2;
+		grid-row: 1;
+		align-self: start;
+	}
+	.frantoio__vetro h2 {
+		--ombra: var(--rosso);
+	}
+	.frantoio__vetro p {
+		color: var(--oliva);
+	}
+	/* l'analisi: una striscia di vetro a tutta larghezza in fondo alla lastra */
+	.analisi {
+		position: relative;
+		z-index: 3;
+		grid-column: 1 / -1;
+		grid-row: 2;
+		padding-block: 18px 14px;
+	}
+	.dati {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+		gap: 0;
+	}
+	.dato {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		gap: 4px 12px;
+		align-content: start;
+		padding: 4px 18px 10px;
+		border-left: 1px solid rgb(207 213 216 / 0.3);
+	}
+	.dato:first-child {
+		border-left: 0;
+		padding-left: 0;
+	}
+	dt {
+		font-weight: 650;
+		color: var(--smalto);
+	}
+	.dato__valore {
+		font-family: var(--titoli);
+		font-size: 1.6rem;
+		line-height: 1;
+		color: var(--olio);
+	}
+	.dato__spiega {
+		grid-column: 1 / -1;
+		font-size: 0.875rem;
+		line-height: 1.4;
+		color: var(--latta);
+	}
+	.nota {
+		margin-top: 8px;
+		font-size: 0.8125rem;
+		color: var(--latta);
+	}
+	.frantoio__parola {
+		left: -0.04em;
+		top: -0.2em;
+		color: var(--rosso);
+		--ombra: var(--blu);
+	}
+	.ancora {
+		position: absolute;
+		width: 2px;
+		height: 2px;
+	}
+	.ancora--cassetta {
+		left: 40%;
+		top: 46%;
+	}
+
+	/* il beccuccio: il filo d'olio sta al centro e tocca il bordo basso */
+	.beccuccio {
+		margin: var(--cornice) 0 0;
+		min-height: min(82svh, 52vw);
+		padding: clamp(14px, 2vw, 28px);
+	}
+	.beccuccio img {
+		object-position: 50% 30%;
+	}
+	.ancora--beccuccio {
+		left: 50.4%;
+		bottom: 0;
+	}
+
+	@media (max-width: 899px) {
+		.frantoio__lastra {
+			grid-template-columns: minmax(0, 1fr);
+			grid-template-rows: auto;
+			padding: 14px;
+			gap: 30svh;
+		}
+		.frantoio__vetro {
+			grid-column: 1;
+			grid-row: auto;
+			margin-top: 34svh;
+		}
+		.analisi {
+			grid-row: auto;
+		}
+		.dato,
+		.dato:first-child {
+			border-left: 0;
+			padding: 12px 0;
+			border-top: 1px solid rgb(207 213 216 / 0.3);
+		}
+		.dato:first-child {
+			border-top: 0;
+		}
+		.frantoio__parola {
+			font-size: 34vw;
+		}
+		/* sopra il vetro, dove la foto si vede quando l'oliva arriva */
+		.ancora--cassetta {
+			left: 46%;
+			top: 22svh;
+		}
+		.beccuccio {
+			min-height: 0;
+			aspect-ratio: 4 / 5;
+			padding: 12px;
+		}
+	}
+</style>

@@ -1,0 +1,117 @@
+---
+// Domande brevi: si apre una alla volta (details con lo stesso name).
+const domande = [
+	{
+		q: 'Quando arriva?',
+		a: 'L’olio nuovo parte da noi il primo lunedì dopo il 4 novembre; dopo quella data spediamo dal lunedì al giovedì, così la latta non resta ferma in magazzino nel fine settimana. In Italia arriva in due o tre giorni.',
+	},
+	{
+		q: 'Quanto dura una latta aperta?',
+		a: 'Tre o quattro mesi, se resta chiusa bene e lontana dal fornello. La latta da 5 litri conviene a chi cucina tutti i giorni: per due persone bastano 3 litri a stagione.',
+	},
+	{
+		q: 'Perché non in bottiglia?',
+		a: 'Perché la luce invecchia l’olio anche attraverso il vetro scuro. La latta non la fa passare, pesa meno e in viaggio non si rompe.',
+	},
+	{
+		q: 'Come si paga?',
+		a: 'Con carta (Visa, Mastercard, American Express e prepagate), PayPal, Apple Pay, Google Pay, Satispay o bonifico. In 3 rate senza interessi con PayPal, Klarna o Scalapay, da 20 € in su. In questa vetrina i pagamenti sono finti: si vedono, non addebitano niente.',
+	},
+	{
+		q: 'E se la latta arriva ammaccata?',
+		a: 'Le latte viaggiano in una scatola con gli angoli di cartone, ma capita. Mandaci una foto entro una settimana: la cambiamo, anche se l’olio dentro è intatto.',
+	},
+	{
+		q: 'Si può venire in frantoio?',
+		a: 'Sì, da metà ottobre a dicembre, il sabato mattina, quando si frange. Scrivici prima: la Piana è grande e le indicazioni stradali non aiutano.',
+	},
+	{
+		q: 'Spedite all’estero?',
+		a: 'Nell’Unione europea sì, con un costo che si vede prima di pagare. Fuori dall’Unione per ora no.',
+	},
+];
+---
+
+<section class="domande su-scuro" aria-labelledby="domande-titolo">
+	<div class="domande__in">
+		<h2 id="domande-titolo">Domande</h2>
+		<div class="elenco">
+			{
+				domande.map((d) => (
+					<details name="domande">
+						<summary>{d.q}</summary>
+						<p>{d.a}</p>
+					</details>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<style>
+	.domande {
+		background: var(--rosso);
+		padding: clamp(72px, 12svh, 140px) var(--gutter);
+	}
+	.domande__in {
+		max-width: var(--max);
+		margin-inline: auto;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+		gap: 24px clamp(24px, 5vw, 80px);
+		align-items: start;
+	}
+	h2 {
+		font-size: clamp(2.4rem, 4.3vw, 4.1rem);
+	}
+	details {
+		border-top: 2px solid var(--smalto);
+	}
+	details:last-child {
+		border-bottom: 2px solid var(--smalto);
+	}
+	summary {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 16px;
+		min-height: 60px;
+		padding: 12px 0;
+		font-weight: 650;
+		font-size: 1.1875rem;
+		cursor: pointer;
+		list-style: none;
+	}
+	summary::-webkit-details-marker {
+		display: none;
+	}
+	/* il segno: un più che diventa meno, disegnato con due righe */
+	summary::after {
+		content: '';
+		flex: none;
+		width: 18px;
+		height: 18px;
+		background:
+			linear-gradient(currentColor, currentColor) center / 100% 2.5px no-repeat,
+			linear-gradient(currentColor, currentColor) center / 2.5px 100% no-repeat;
+		transition: background-size 200ms var(--ease);
+	}
+	details[open] summary::after {
+		background-size:
+			100% 2.5px,
+			2.5px 0;
+	}
+	summary:focus-visible {
+		outline-color: var(--smalto);
+		outline-offset: 4px;
+	}
+	details p {
+		max-width: 60ch;
+		padding-bottom: 20px;
+	}
+	@media (max-width: 760px) {
+		.domande__in {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+</style>

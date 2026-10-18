@@ -1,0 +1,504 @@
+/* Chioma Saracena — token, reset e pezzi minimi. Litografia su latta: tre inchiostri pieni, retino, lastre fuori registro. */
+:root {
+	--rosso: #c8231b; /* superficie piena: sopra solo testo smalto (5,3) */
+	--latta: #cfd5d8; /* seconda superficie, fredda: testo blu (8,9) o nero oliva (10,8) */
+	--blu: #1c2a6b; /* terza superficie e inchiostro */
+	--olio: #c2b02a; /* SOLO olio, oliva e goccia */
+	--oliva: #2b1d2e; /* nero oliva: testo su latta */
+	--smalto: #f7f8f6; /* testo su rosso e su blu, mai come fondo grande */
+	--latta-2: #b9c1c5; /* ombra della latta, solo disegno */
+	--blu-2: #2a3c8f; /* luce sul blu, solo disegno */
+	--errore: #8f1610; /* errori su latta (6,3) */
+
+	/* Kwokwi a due livelli (Typodermic, CC0): la lettera (Front) e la sua ombra (Back) si stampano con due inchiostri,
+	   come le scritte delle latte; .inchiostri e .parola mettono l'ombra sotto con ::before */
+	--titoli: 'Kwokwi Front', 'Arial Rounded MT Bold', 'Trebuchet MS', sans-serif;
+	--titoli-ombra: 'Kwokwi Back', 'Arial Rounded MT Bold', 'Trebuchet MS', sans-serif;
+	--testo: 'Funnel Sans Variable', system-ui, sans-serif;
+
+	--ease: cubic-bezier(0.23, 1, 0.32, 1);
+	--ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+	--gutter: clamp(18px, 5vw, 64px);
+	--max: 1240px;
+	--barra-h: 56px;
+	--fascia-h: 34px;
+	/* la latta (fotogrammi del render, 342 × 730): stessa misura nel palco e nel posto d'approdo della cassa */
+	--lw: min(15vw, 21svh);
+	--lh: calc(var(--lw) * 2.134);
+	/* retino: il punto di stampa che fa le mezzetinte sulla latta */
+	--retino-blu: radial-gradient(circle, var(--blu) 0 34%, transparent 36%) 0 0 / 7px 7px;
+	/* la cornice di colore che resta attorno alle foto: si vede dove finisce una sezione e comincia l'altra */
+	--cornice: clamp(12px, 2.2vw, 32px);
+	--raggio: clamp(12px, 1.4vw, 22px);
+	color-scheme: light;
+}
+@media (max-width: 899px) {
+	:root {
+		--lw: min(28vw, 14svh);
+	}
+}
+@media (max-width: 640px) {
+	:root {
+		--barra-h: 50px;
+	}
+}
+/* il formato scelto nella cassa: la latta posata cresce o cala con una transizione */
+@property --fs {
+	syntax: '<number>';
+	inherits: true;
+	initial-value: 1;
+}
+
+@font-face {
+	font-family: 'Kwokwi Front';
+	src: url('../../assets/chioma/font/kwokwi-front.woff2') format('woff2');
+	font-display: swap;
+}
+@font-face {
+	font-family: 'Kwokwi Back';
+	src: url('../../assets/chioma/font/kwokwi-back.woff2') format('woff2');
+	font-display: swap;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	scroll-padding-top: calc(var(--barra-h) + 16px);
+	-webkit-text-size-adjust: 100%;
+	scrollbar-color: var(--rosso) var(--latta);
+}
+
+body {
+	background: var(--latta);
+	color: var(--oliva);
+	font-family: var(--testo);
+	font-size: 1.125rem;
+	line-height: 1.55;
+	font-weight: 420;
+	overflow-x: clip;
+}
+
+/* Barra di scorrimento: una striscia di latta con il cursore rosso stampato */
+@supports selector(::-webkit-scrollbar) {
+	html {
+		scrollbar-color: auto;
+	}
+	::-webkit-scrollbar {
+		width: 13px;
+	}
+	::-webkit-scrollbar-track {
+		background: var(--latta);
+		box-shadow: inset 2px 0 0 var(--latta-2);
+	}
+	::-webkit-scrollbar-thumb {
+		background: var(--rosso);
+		border: 3px solid var(--latta);
+		border-left-color: var(--blu);
+	}
+}
+
+::selection {
+	background: var(--blu);
+	color: var(--smalto);
+}
+
+img,
+svg {
+	display: block;
+	max-width: 100%;
+}
+img {
+	height: auto;
+}
+button,
+input,
+select {
+	font: inherit;
+	color: inherit;
+}
+a {
+	color: inherit;
+}
+ul,
+ol {
+	list-style: none;
+}
+
+h1,
+h2,
+h3 {
+	font-family: var(--titoli);
+	font-weight: 400; /* Kwokwi ha un solo peso */
+	line-height: 1.04;
+	letter-spacing: 0;
+	text-wrap: balance;
+	font-synthesis: none;
+}
+
+p {
+	text-wrap: pretty;
+}
+
+:focus-visible {
+	outline: 3px solid var(--blu);
+	outline-offset: 3px;
+}
+.su-scuro :focus-visible {
+	outline-color: var(--smalto);
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+.skip-link {
+	position: absolute;
+	left: 12px;
+	top: -60px;
+	z-index: 400;
+	background: var(--blu);
+	color: var(--smalto);
+	padding: 10px 16px;
+	font-weight: 700;
+	text-decoration: none;
+}
+.skip-link:focus {
+	top: 12px;
+}
+
+/* Due inchiostri: la lettera e, sotto, la sua ombra in un altro colore. L'ombra va a registro quando il titolo
+   entra in vista (dove il browser ha le animazioni legate allo scroll; altrimenti resta già a registro). */
+.inchiostri {
+	position: relative;
+	isolation: isolate;
+	font-family: var(--titoli);
+	--ombra: var(--blu);
+}
+.inchiostri::before {
+	content: attr(data-testo) / '';
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	padding: inherit;
+	font-family: var(--titoli-ombra);
+	color: var(--ombra);
+	translate: 0.012em 0.006em;
+	pointer-events: none;
+}
+@supports (animation-timeline: view()) {
+	@media (prefers-reduced-motion: no-preference) {
+		.inchiostri::before {
+			animation: registro-titolo linear both;
+			animation-timeline: view();
+			animation-range: entry 0% cover 40%;
+		}
+	}
+}
+@keyframes registro-titolo {
+	from {
+		translate: 0.07em 0.045em;
+	}
+}
+
+/* La parola gigante di ogni tappa: tagliata dal bordo della foto. Solo la lettera (l'ombra di Kwokwi, così grande,
+   mostra il suo filo di contorno staccato), con il secondo inchiostro fuori registro. */
+.parola {
+	--ombra: var(--blu);
+	position: absolute;
+	z-index: 2;
+	font-family: var(--titoli);
+	text-shadow: 0.028em 0.016em 0 var(--ombra);
+	font-size: clamp(7rem, 24vw, 24rem);
+	line-height: 0.8;
+	white-space: nowrap;
+	pointer-events: none;
+	user-select: none;
+}
+
+[hidden] {
+	display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+/* Le tappe del percorso: ogni tappa è una lastra, una foto quasi a tutta sezione con la cornice di colore attorno.
+   Il testo sta sopra la foto in pannelli di vetro cannettato (vedi .vetro); la composizione cambia da tappa a tappa. */
+.tappa {
+	--fondo: var(--latta);
+	position: relative;
+	overflow: clip;
+	background: var(--fondo);
+	padding: var(--cornice);
+}
+.lastra {
+	position: relative;
+	overflow: clip;
+	border-radius: var(--raggio);
+	min-height: calc(100svh - var(--barra-h) - 2 * var(--cornice));
+	background: var(--blu);
+}
+.lastra > img,
+.lastra > picture > img {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+/* la didascalia di una foto: un vetrino piccolo nell'angolo */
+.didascalia {
+	position: relative;
+	z-index: 2;
+	max-width: 22rem;
+	padding: 12px 16px;
+	font-size: 0.9375rem;
+	line-height: 1.4;
+}
+@media (max-width: 899px) {
+	/* sul telefono una lastra alta tiene ferma la foto e i vetri le scorrono sopra */
+	.lastra--ferma > img {
+		position: sticky;
+		top: var(--barra-h);
+		height: calc(100svh - var(--barra-h));
+		margin-bottom: calc(var(--barra-h) - 100svh);
+	}
+}
+.lastra + .lastra,
+.lastra + .coppia,
+.coppia + .lastra {
+	margin-top: var(--cornice);
+}
+.tappa h2 {
+	font-size: clamp(2.3rem, 4.4vw, 4.4rem);
+}
+.su-scuro {
+	color: var(--smalto);
+}
+
+/* ---------- Vetro cannettato ----------
+   Il vetro a coste delle credenze e delle porte di cucina degli anni 50-60: sfoca la foto e la divide in coste
+   verticali. Due tinte, scelte per il contrasto e non per l'effetto: chiara (testo blu) e blu (testo smalto). La
+   tinta copre abbastanza da reggere il contrasto anche sulla parte più chiara o più scura della foto. Su Chrome
+   ed Edge le coste rifrangono davvero (filtro SVG #cs-coste in index.astro); altrove restano disegnate. */
+.vetro {
+	--tinta: rgb(232 236 238 / 0.72); /* testo blu: 5,8 anche sopra il nero */
+	--costa: rgb(255 255 255 / 0.3);
+	--costa-ombra: rgb(28 42 107 / 0.07);
+	position: relative;
+	isolation: isolate;
+	border-radius: calc(var(--raggio) * 0.8);
+	color: var(--blu);
+	background: var(--tinta);
+	-webkit-backdrop-filter: blur(8px) saturate(1.5);
+	backdrop-filter: blur(8px) saturate(1.5);
+	box-shadow:
+		inset 1px 1px 0 rgb(255 255 255 / 0.55),
+		inset -1px -1px 0 rgb(28 42 107 / 0.12),
+		0 18px 40px -18px rgb(10 14 40 / 0.45);
+	padding: clamp(18px, 2.2vw, 30px);
+}
+/* le coste: una luce stretta e un'ombra larga ogni 14 px, più forti sul bordo sinistro e quasi spente sotto il testo */
+.vetro::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	border-radius: inherit;
+	background: repeating-linear-gradient(
+		90deg,
+		var(--costa) 0 1.5px,
+		transparent 1.5px 6px,
+		var(--costa-ombra) 6px 12px,
+		transparent 12px 14px
+	);
+	mask: linear-gradient(90deg, #000, rgb(0 0 0 / 0.35) 40%, rgb(0 0 0 / 0.2));
+	pointer-events: none;
+}
+.rifrange .vetro {
+	backdrop-filter: url('#cs-coste') blur(6px) saturate(1.5);
+}
+.vetro--blu {
+	--tinta: rgb(22 33 86 / 0.78); /* testo smalto: 6,6 anche sopra il bianco */
+	--costa: rgb(255 255 255 / 0.12);
+	--costa-ombra: rgb(0 0 0 / 0.14);
+	color: var(--smalto);
+	box-shadow:
+		inset 1px 1px 0 rgb(255 255 255 / 0.22),
+		inset -1px -1px 0 rgb(0 0 0 / 0.2),
+		0 18px 40px -18px rgb(5 8 25 / 0.6);
+}
+.vetro--blu :focus-visible {
+	outline-color: var(--smalto);
+}
+.vetro > :first-child {
+	margin-top: 0;
+}
+.vetro p + p {
+	margin-top: 0.8em;
+}
+/* chi chiede meno trasparenze ha un pannello pieno */
+@media (prefers-reduced-transparency: reduce) {
+	.vetro,
+	.rifrange .vetro {
+		--tinta: #e8ecee;
+		-webkit-backdrop-filter: none;
+		backdrop-filter: none;
+	}
+	.vetro--blu {
+		--tinta: var(--blu);
+	}
+}
+
+/* ---------- Foto: stampate a tutta pagina o a riquadro, con la didascalia sotto ---------- */
+.foto {
+	position: relative;
+	margin: 0;
+}
+.foto img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+.foto figcaption {
+	margin-top: 8px;
+	max-width: 46ch;
+	font-size: 0.875rem;
+	line-height: 1.4;
+}
+
+/* ---------- Tre bottoni, dalla materia della latta ----------
+   .registro: la lastra a retino è fuori registro e va a registro sotto il dito (azioni principali).
+   .goffrato: in rilievo come le scritte del coperchio, si incava quando lo premi (azioni secondarie).
+   .fascetta: il sigillo del tappo, che si strappa quando aggiungi al carrello (vedi Bottega). */
+.registro {
+	--faccia: var(--rosso);
+	--inchiostro: var(--smalto);
+	--lastra: var(--blu);
+	position: relative;
+	isolation: isolate;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 52px;
+	padding: 0 26px;
+	border: 0;
+	background: none;
+	color: var(--inchiostro);
+	font-family: var(--testo);
+	font-weight: 720;
+	font-size: 1.0625rem;
+	text-decoration: none;
+	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
+	transition: transform 140ms var(--ease);
+}
+.registro::before,
+.registro::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	transition: translate 260ms var(--ease);
+}
+/* la faccia piena */
+.registro::after {
+	background: var(--faccia);
+}
+/* la lastra a retino, sfalsata in basso a destra */
+.registro::before {
+	z-index: -2;
+	background: radial-gradient(circle, var(--lastra) 0 38%, transparent 42%) 0 0 / 5px 5px;
+	translate: 5px 5px;
+}
+.registro > span {
+}
+@media (hover: hover) and (pointer: fine) {
+	.registro:hover::before {
+		translate: 0 0;
+	}
+}
+.registro:active {
+	transform: scale(0.97);
+}
+.registro:active::before {
+	translate: 0 0;
+}
+.registro--chiaro {
+	--faccia: var(--smalto);
+	--inchiostro: var(--blu);
+	--lastra: var(--blu);
+}
+.registro--blu {
+	--faccia: var(--blu);
+	--inchiostro: var(--smalto);
+	--lastra: var(--rosso);
+}
+
+.goffrato {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	min-height: 44px;
+	padding: 0 16px;
+	border: 0;
+	border-radius: 7px;
+	background: linear-gradient(160deg, #e6eaec, #c4cbce);
+	color: var(--blu);
+	font-family: var(--testo);
+	font-weight: 650;
+	font-size: 0.9375rem;
+	text-decoration: none;
+	cursor: pointer;
+	box-shadow:
+		inset 1px 1px 0 rgb(255 255 255 / 0.95),
+		inset -1px -1px 0 rgb(28 42 107 / 0.28),
+		0 1px 2px rgb(28 42 107 / 0.18);
+	transition:
+		box-shadow 120ms var(--ease),
+		transform 120ms var(--ease),
+		background 120ms var(--ease);
+	-webkit-tap-highlight-color: transparent;
+}
+@media (hover: hover) and (pointer: fine) {
+	.goffrato:hover {
+		background: linear-gradient(160deg, #eef1f2, #cdd3d6);
+	}
+}
+.goffrato:active,
+.goffrato[aria-pressed='true'],
+.goffrato[aria-current='true'] {
+	background: linear-gradient(160deg, #c4cbce, #dde2e4);
+	box-shadow:
+		inset 1px 1px 2px rgb(28 42 107 / 0.35),
+		inset -1px -1px 0 rgb(255 255 255 / 0.8);
+}
+.goffrato:active {
+	transform: translateY(1px);
+}
+.goffrato:disabled {
+	color: #5d6569;
+	cursor: not-allowed;
+	box-shadow: inset 0 0 0 1px rgb(28 42 107 / 0.15);
+	background: var(--latta);
+}
