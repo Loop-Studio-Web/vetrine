@@ -980,7 +980,7 @@ export const concepts: Concept[] = [
 		caratteri: 'Kwokwi e Funnel Sans',
 		palette: ['#c8231b', '#cfd5d8', '#1c2a6b', '#c2b02a', '#2b1d2e', '#f7f8f6'],
 		metriche: [
-			{ label: 'Performance', valore: '83' },
+			{ label: 'Performance', valore: '94' },
 			{ label: 'Accessibilità', valore: '100' },
 			{ label: 'Buone pratiche', valore: '100' },
 		],
