@@ -1,0 +1,365 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>Etichetta</title>
+<!-- L'etichetta litografata che gira attorno alla latta: diventa la texture della scena (render.mjs la fotografa). -->
+<style>
+	@font-face {
+		font-family: 'Rozha One';
+		src: url('/font/rozha.woff2') format('woff2');
+	}
+	@font-face {
+		font-family: 'Funnel Sans';
+		src: url('/font/funnel.woff2') format('woff2');
+		font-weight: 300 800;
+	}
+	:root {
+		--rosso: #c8231b;
+		--latta: #cfd5d8;
+		--blu: #1c2a6b;
+		--blu-2: #26378a;
+		--smalto: #f7f8f6;
+		--olio: #c2b02a;
+		--cm: 110px;
+	}
+	* {
+		box-sizing: border-box;
+		margin: 0;
+		padding: 0;
+	}
+	html,
+	body {
+		background: var(--latta);
+		overflow: hidden;
+	}
+	body {
+		position: relative;
+		font-family: 'Funnel Sans', sans-serif;
+		-webkit-font-smoothing: antialiased;
+	}
+	.pannello {
+		--a: 0px;
+		position: absolute;
+		top: 0;
+		overflow: hidden;
+	}
+	.stampa {
+		position: absolute;
+		left: 0;
+		right: 0;
+	}
+	/* il retino: le mezzetinte della litografia, puntini dello stesso inchiostro un filo più chiaro */
+	.retino {
+		background-image: radial-gradient(circle, var(--blu-2) 0 32%, transparent 36%);
+		background-size: calc(var(--cm) * 0.09) calc(var(--cm) * 0.09);
+	}
+	.fronte .stampa {
+		background-color: var(--blu);
+		color: var(--smalto);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+	}
+	.cornice {
+		position: absolute;
+		inset: calc(var(--cm) * 0.32) calc(var(--cm) * 0.32 + var(--a));
+		border: calc(var(--cm) * 0.07) solid var(--smalto);
+		box-shadow:
+			0 0 0 calc(var(--cm) * 0.1) var(--blu),
+			0 0 0 calc(var(--cm) * 0.17) var(--rosso);
+		pointer-events: none;
+	}
+	/* il rosso stampato un filo fuori registro, come sulle latte vere */
+	.fuori {
+		translate: calc(var(--cm) * 0.025) calc(var(--cm) * -0.018);
+	}
+	.sopra {
+		margin-top: calc(var(--cm) * 1.05);
+		font-weight: 650;
+		font-size: calc(var(--cm) * 0.42);
+		letter-spacing: 0.02em;
+		line-height: 1.15;
+	}
+	.sopra small {
+		display: block;
+		font-weight: 500;
+		font-size: 0.72em;
+		opacity: 0.9;
+	}
+	.ovale {
+		margin-top: calc(var(--cm) * 0.6);
+		width: 76%;
+		aspect-ratio: 0.82;
+		border-radius: 50%;
+		background: var(--smalto);
+		box-shadow:
+			0 0 0 calc(var(--cm) * 0.09) var(--rosso),
+			calc(var(--cm) * 0.05) calc(var(--cm) * -0.03) 0 calc(var(--cm) * 0.19) var(--blu-2);
+		display: grid;
+		place-items: center;
+		overflow: hidden;
+	}
+	.ovale svg {
+		height: 84%;
+		width: auto;
+	}
+	.nome {
+		margin-top: calc(var(--cm) * 0.5);
+		font-family: 'Rozha One', serif;
+		line-height: 0.92;
+	}
+	.nome span {
+		display: block;
+	}
+	.cultivar {
+		margin-top: calc(var(--cm) * 0.35);
+		font-weight: 560;
+		font-size: calc(var(--cm) * 0.36);
+		line-height: 1.25;
+	}
+	.banda {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: calc(var(--cm) * 1.1);
+		background: var(--rosso);
+		padding: calc(var(--cm) * 0.12) 0 calc(var(--cm) * 0.2);
+		font-family: 'Rozha One', serif;
+		line-height: 1;
+		text-align: center;
+		color: var(--smalto);
+	}
+	.banda::before,
+	.banda::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		height: calc(var(--cm) * 0.06);
+		background: var(--smalto);
+	}
+	.banda::before {
+		top: calc(var(--cm) * 0.1);
+	}
+	.banda::after {
+		bottom: calc(var(--cm) * 0.1);
+	}
+
+	.fianco .stampa {
+		background-color: var(--rosso);
+		color: var(--smalto);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		gap: calc(var(--cm) * 0.45);
+		text-align: center;
+		padding: 0 calc(var(--cm) * 0.7 + var(--a));
+	}
+	.fianco .grande {
+		font-family: 'Rozha One', serif;
+		font-size: calc(var(--cm) * 0.95);
+		line-height: 1;
+	}
+	.fianco p {
+		font-weight: 600;
+		font-size: calc(var(--cm) * 0.4);
+		line-height: 1.25;
+	}
+	.fianco hr {
+		width: 60%;
+		border: 0;
+		border-top: calc(var(--cm) * 0.04) solid var(--smalto);
+	}
+	.fianco--blu .stampa {
+		background-color: var(--blu);
+	}
+	.fianco--blu svg {
+		width: 78%;
+		height: auto;
+		color: var(--smalto);
+	}
+	.simboli {
+		display: flex;
+		gap: calc(var(--cm) * 0.25);
+		align-items: center;
+		justify-content: center;
+	}
+	.simboli svg {
+		width: calc(var(--cm) * 0.85);
+		height: calc(var(--cm) * 0.85);
+	}
+
+	.retro .stampa {
+		color: var(--blu);
+		padding: calc(var(--cm) * 1.2) calc(var(--cm) * 0.75 + var(--a)) 0;
+		font-size: calc(var(--cm) * 0.25);
+		line-height: 1.3;
+		font-weight: 520;
+	}
+	.retro h2 {
+		font-family: 'Rozha One', serif;
+		font-weight: 400;
+		font-size: calc(var(--cm) * 0.85);
+		line-height: 1;
+		color: var(--rosso);
+		margin-bottom: calc(var(--cm) * 0.25);
+	}
+	.retro .den {
+		font-weight: 760;
+		font-size: calc(var(--cm) * 0.34);
+		margin-bottom: calc(var(--cm) * 0.12);
+	}
+	.retro p + p {
+		margin-top: calc(var(--cm) * 0.14);
+	}
+	.retro table {
+		margin-top: calc(var(--cm) * 0.3);
+		width: 100%;
+		border-collapse: collapse;
+		border: calc(var(--cm) * 0.025) solid var(--blu);
+		font-size: calc(var(--cm) * 0.22);
+	}
+	.retro th,
+	.retro td {
+		padding: calc(var(--cm) * 0.04) calc(var(--cm) * 0.08);
+		border-top: calc(var(--cm) * 0.012) solid var(--blu);
+		text-align: left;
+		font-weight: 520;
+	}
+	.retro td:last-child {
+		text-align: right;
+	}
+	.retro th {
+		font-weight: 760;
+	}
+	.retro .rientro td:first-child {
+		padding-left: calc(var(--cm) * 0.3);
+	}
+	.piede {
+		position: absolute;
+		left: calc(var(--cm) * 0.75 + var(--a));
+		right: calc(var(--cm) * 0.75 + var(--a));
+		bottom: calc(var(--cm) * 1.6);
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		color: var(--blu);
+	}
+	.codice {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		background: var(--smalto);
+		padding: calc(var(--cm) * 0.1) calc(var(--cm) * 0.15) calc(var(--cm) * 0.04);
+	}
+	.codice svg {
+		width: calc(var(--cm) * 2.6);
+		height: calc(var(--cm) * 1.1);
+	}
+	.codice span {
+		font-size: calc(var(--cm) * 0.2);
+		letter-spacing: 0.12em;
+		color: #111;
+	}
+	.qta {
+		font-family: 'Rozha One', serif;
+		font-size: calc(var(--cm) * 0.8);
+		line-height: 1;
+	}
+</style>
+<body>
+	<script type="module">
+		import { FORMATI, PX_CM, FASCIA, giro } from './misure.js';
+		const q = new URLSearchParams(location.search);
+		const f = q.get('f') || '3';
+		const M = FORMATI[f];
+		const { tratti, perimetro } = giro(f);
+		const cm = (n) => `${n * PX_CM}px`;
+		document.body.style.width = cm(perimetro);
+		document.body.style.height = cm(M.h);
+		const [colori, mono] = await Promise.all(['/brand/simbolo-leggero.svg', '/brand/simbolo-leggero-mono.svg'].map((u) => fetch(u).then((r) => r.text())));
+		const a = tratti[1].l;
+		const corpo = M.h - 2 * FASCIA;
+		const scala = f === '1' ? 0.82 : f === '5' ? 1.08 : 1;
+
+		// ogni pannello copre il suo tratto piatto e metà degli spigoli accanto
+		const pannello = (i, cls, html) => {
+			const t = tratti[i];
+			const el = document.createElement('section');
+			el.className = `pannello ${cls}`;
+			el.style.left = cm(t.x - a / 2);
+			el.style.width = cm(t.l + a);
+			el.style.height = cm(M.h);
+			el.style.setProperty('--a', cm(a / 2));
+			el.innerHTML = `<div class="stampa" style="top:${cm(FASCIA)};height:${cm(corpo)}">${html}</div>`;
+			document.body.append(el);
+			return el;
+		};
+		const ACC = `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="20" cy="20" r="17"/><text x="20" y="25" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor" stroke="none" font-family="Funnel Sans">ACC</text></svg>`;
+		const ALIMENTI = `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 6h11l-1.5 13a4 4 0 0 1-8 0z"/><path d="M14.5 23v11M10 34h9"/><path d="M27 6v28M24 6v8a3 3 0 0 0 6 0V6"/></svg>`;
+		const RICICLO = `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9l6-4 4 7"/><path d="M28 13l3 7-6 4"/><path d="M26 31h-8l-1-8"/><path d="M20 5a15 15 0 0 1 11 15M31 20a15 15 0 0 1-13 11M18 31A15 15 0 0 1 9 12"/></svg>`;
+		// codice a barre finto (non è un EAN valido)
+		let barre = '';
+		let x = 0;
+		const seme = [3, 1, 1, 2, 1, 3, 2, 1, 1, 1, 2, 3, 1, 2, 1, 1, 3, 1, 2, 2, 1, 1, 3, 1, 1, 2, 1, 3, 1, 1, 2, 1, 2, 3, 1, 1];
+		seme.forEach((l, i) => {
+			if (i % 2 === 0) barre += `<rect x="${x}" y="0" width="${l}" height="40" fill="#111"/>`;
+			x += l;
+		});
+
+		pannello(
+			0,
+			'fronte',
+			`			<div class="retino" style="position:absolute;inset:0;opacity:.55"></div>
+			<div class="cornice fuori"></div>
+			<p class="sopra" style="position:relative">Olio extravergine di oliva<small>prima spremitura a freddo</small></p>
+			<div class="ovale" style="position:relative">${colori}</div>
+			<p class="nome" style="position:relative;font-size:${cm(1.55 * scala)}"><span>Chioma</span><span>Saracena</span></p>
+			<p class="cultivar" style="position:relative">Ottobratica<br>della Piana di Gioia Tauro</p>
+			<p class="banda fuori" style="font-size:${cm(1.5 * scala)}">${f === '1' ? '1 litro' : f + ' litri'}</p>`,
+		);
+		pannello(
+			2,
+			'fianco',
+			`<p class="grande">Ottobratica</p><hr><p>Piana di<br>Gioia Tauro</p><hr><p>Presa dalla pianta<br>a ottobre</p><p>Franta<br>in giornata</p><hr><p>Campagna<br>2026/27</p>`,
+		);
+		pannello(
+			4,
+			'retro',
+			`<h2>Tienila al buio</h2>
+			<p class="den">Olio extravergine di oliva</p>
+			<p>Olio d'oliva di categoria superiore ottenuto direttamente dalle olive e unicamente mediante procedimenti meccanici.</p>
+			<p>Origine: Italia. Olive di cultivar Ottobratica raccolte e frante nella Piana di Gioia Tauro (RC).</p>
+			<p>Conservare in luogo fresco e asciutto, al riparo dalla luce e da fonti di calore. Una volta aperta, consumare entro tre o quattro mesi.</p>
+			<p>Da consumarsi preferibilmente entro e lotto: vedi coperchio.</p>
+			<table>
+				<tr><th>Valori nutrizionali</th><th style="text-align:right">per 100 ml</th></tr>
+				<tr><td>Energia</td><td>3389 kJ / 824 kcal</td></tr>
+				<tr><td>Grassi</td><td>91,6 g</td></tr>
+				<tr class="rientro"><td>di cui saturi</td><td>13,2 g</td></tr>
+				<tr class="rientro"><td>monoinsaturi</td><td>67,8 g</td></tr>
+				<tr><td>Carboidrati</td><td>0 g</td></tr>
+				<tr><td>Proteine</td><td>0 g</td></tr>
+				<tr><td>Sale</td><td>0 g</td></tr>
+			</table>
+			<p style="margin-top:${cm(0.3)}">Frantoio Chioma Saracena, Piana di Gioia Tauro (RC). Azienda e prodotto di fantasia: vetrina dimostrativa di Loop Studio.</p>`,
+		).insertAdjacentHTML(
+			'beforeend',
+			`<div class="piede"><div class="codice"><svg viewBox="0 0 ${x} 40" preserveAspectRatio="none">${barre}</svg><span>0 000000 000000</span></div><p class="qta">${f} L ℮</p></div>`,
+		);
+		pannello(
+			6,
+			'fianco fianco--blu',
+			`${mono}<p>La latta si ricicla<br>con i metalli</p><div class="simboli">${ACC}${ALIMENTI}${RICICLO}</div><p style="font-size:${cm(0.27)};font-weight:500">Non disperdere nell'ambiente dopo l'uso</p>`,
+		);
+		// la metà sinistra dello spigolo del fronte sta in fondo al giro
+		const coda = document.createElement('section');
+		coda.className = 'pannello fronte';
+		coda.style.cssText = `left:${cm(perimetro - a / 2)};width:${cm(a / 2)};height:${cm(M.h)}`;
+		coda.innerHTML = `<div class="stampa" style="top:${cm(FASCIA)};height:${cm(corpo)}"></div>`;
+		document.body.append(coda);
+		await document.fonts.ready;
+		document.body.dataset.pronto = '1';
+	</script>
+</body>
