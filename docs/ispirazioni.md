@@ -102,9 +102,20 @@ direttamente**: aprirli prima di prenderne spunto.
 - Il giudizio dell'autore del video ("meno animazione, più fatto a mano") coincide con la regola
   "niente aspetto da AI": usarlo come conferma, non come nuova regola.
 
+## 4b. Fonte da consultare per prima: tendenze di web design (testmuai)
+
+Richiesta dell'autore (2026-10-19): **al prossimo progetto vetrina, prima di disegnare, aprire e leggere**
+https://www.testmuai.com/blog/web-design-trends/ . Contiene molte idee da cui prendere spunto.
+
+- Stato: pagina **non ancora letta né analizzata** (le immagini degli esempi non sono state estratte,
+  per scelta dell'autore: non farlo finché non lo chiede). Leggerla all'apertura del concept e
+  annotare qui sotto le direzioni utili.
+- Vale lo stesso criterio della sezione 4: prendere il principio, non copiare il layout, e
+  confrontare con la matrice della sezione 1 (struttura / materia / gesto non si ripetono).
+
 ## 5. Da fare quando si apre un nuovo concept
 
-1. Leggere questo file e la tabella della sezione 1.
+1. Leggere questo file e la tabella della sezione 1, poi aprire la pagina della sezione 4b (testmuai) per le idee.
 2. Scegliere una direzione della sezione 3, o motivare perché no.
 3. Compilare la riga struttura / materia / gesto e confrontarla con quelle esistenti.
 4. Dopo la pubblicazione: aggiungere la riga alla tabella, controllare se altre direzioni sono ora
