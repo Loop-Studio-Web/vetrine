@@ -80,6 +80,15 @@ const title = `${c.titoloSeo} | Loop Studio`;
 							{lingueNomi[c.lingua]}
 						</dd>
 					</div>
+					{c.backend && (
+						<div>
+							<dt>Dietro il negozio</dt>
+							<dd>
+								<strong>{c.backend.titolo}.</strong>
+								<span class="det__lv">{c.backend.d}</span>
+							</dd>
+						</div>
+					)}
 					<div>
 						<dt>Atmosfera</dt>
 						<dd>{c.mood}</dd>

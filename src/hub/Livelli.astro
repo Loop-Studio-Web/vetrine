@@ -29,6 +29,12 @@ import Livello from './Livello.astro';
 			}
 		</ol>
 
+		<p class="livelli__nota" data-reveal>
+			<strong>E-commerce.</strong> Qui il livello riguarda anche il motore dietro il negozio, non solo l’aspetto: si va da una cassa
+			senza canoni fino a un sistema su misura per cataloghi grandi. La scelta si fa insieme, tenendo basso il costo che il negozio
+			paga ogni anno.
+		</p>
+
 		<div class="pronto" data-reveal>
 			<div>
 				<h3>Parti da una vetrina, non da zero.</h3>
@@ -90,6 +96,15 @@ import Livello from './Livello.astro';
 	.lv-col .lv-col__per {
 		color: var(--text);
 		font-weight: 600;
+	}
+	.livelli__nota {
+		margin-top: 18px;
+		max-width: 70ch;
+		color: var(--muted);
+		font-size: 0.98rem;
+	}
+	.livelli__nota strong {
+		color: var(--text);
 	}
 	.pronto {
 		display: grid;

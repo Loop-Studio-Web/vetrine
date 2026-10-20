@@ -102,6 +102,8 @@ export type Concept = {
 	caratteri: string;
 	palette: string[];
 	metriche: { label: string; valore: string }[];
+	// Solo E-commerce: cosa c'è dietro il negozio in produzione, detto in costi ricorrenti (mai nomi di prodotto né cifre).
+	backend?: { titolo: string; d: string };
 };
 
 export const concepts: Concept[] = [
@@ -984,6 +986,10 @@ export const concepts: Concept[] = [
 			{ label: 'Accessibilità', valore: '100' },
 			{ label: 'Buone pratiche', valore: '100' },
 		],
+		backend: {
+			titolo: 'Nessun canone di piattaforma',
+			d: 'Nel sito vero la cassa si appoggia a un servizio di pagamento senza abbonamento: il negozio non paga un canone mensile, solo una commissione su ogni vendita. Niente gestionale da mantenere: ordini e incassi si seguono dal pannello del servizio di pagamento.',
+		},
 	},
 ];
 
