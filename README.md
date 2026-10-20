@@ -323,7 +323,7 @@
 
 ### 16 · Chioma Saracena
 
-<a href="https://vetrine.theloopstudio.org/ecommerce/olio/"><img src="docs/img/card-chioma.jpg" alt="Chioma Saracena on desktop and mobile: a monumental olive tree across the whole page with the headline behind a sheet of reeded glass and the word Chioma huge in red, and on the phone the blue and red three-litre tin in the checkout, with price and instalments." width="100%"></a>
+<a href="https://vetrine.theloopstudio.org/ecommerce/olio/"><img src="docs/img/card-chioma.jpg" alt="Chioma Saracena on desktop and mobile: a monumental olive tree across the whole page with the headline behind a sheet of reeded glass and the word Chioma huge in red, and on the phone the full-screen blue menu with the sections in giant Kwokwi letters." width="100%"></a>
 
 *Olio nuovo da ulivi alti quindici metri.* A one-product shop for new olive oil in a tin, in Italian.
 
@@ -398,7 +398,7 @@ Before a concept goes on the street, it has to clear the same gate:
 | **Builds** | `astro build` is clean | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | **Accessible** | `axe-core`: zero violations | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Menu on phones** | Its own open/close effect, keyboard and Escape friendly (Chioma: none by design, a fixed bar instead) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | — |
+| **Menu on phones** | Its own open/close effect, keyboard and Escape friendly (Chioma: a blue sheet that slides down under the bar) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |

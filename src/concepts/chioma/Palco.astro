@@ -152,7 +152,12 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 		.palco {
 			--ow: 26px;
 			--stage-x: 50vw;
-			--stage-y: 30svh;
+			--stage-y: 42svh;
+			/* sul telefono la latta sale per prima (t 2,3-2,8) e la goccia cade nel suo tappo subito dopo (2,4-2,9):
+			   fra la foto del beccuccio e la tappa della latta c'è lo spazio vuoto .caduta che dà lo scroll */
+			--g-cade: clamp(0, (var(--t) - 2.4) / 0.5, 1);
+			--g-via: clamp(0, (var(--t) - 2.9) / 0.05, 1);
+			--l-in: clamp(0, (var(--t) - 2.3) / 0.5, 1);
 		}
 	}
 </style>

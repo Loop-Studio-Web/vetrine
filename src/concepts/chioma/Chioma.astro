@@ -150,7 +150,8 @@ const titolo = 'Olio nuovo da ulivi alti quindici metri.';
 		.chioma__lastra {
 			min-height: calc(100svh - var(--fascia-h) - var(--barra-h) - 2 * var(--cornice));
 			grid-template-columns: minmax(0, 1fr);
-			grid-template-rows: 1fr auto auto;
+			/* sopra il vetro resta sempre una fascia di chioma libera (>= 250 px): lì pende l'oliva */
+			grid-template-rows: minmax(250px, 1fr) auto auto;
 			padding: 14px;
 			gap: 10px;
 		}
@@ -186,13 +187,13 @@ const titolo = 'Olio nuovo da ulivi alti quindici metri.';
 		}
 		.ancora {
 			left: 62%;
-			top: 16%;
+			top: 150px;
 		}
 		/* sul telefono la parola sta in alto, tagliata dal bordo superiore della foto */
 		.chioma__parola {
 			bottom: auto;
 			top: -0.16em;
-			font-size: 31vw;
+			font-size: 29vw;
 		}
 	}
 </style>

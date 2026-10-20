@@ -1,6 +1,15 @@
 ---
 // Barra sottile fissa con una sola azione, come sul fianco di una latta: il nome e il formato, niente menù.
 import simbolo from '../../assets/chioma/brand/simbolo-leggero-mono.svg?raw';
+const voci = [
+	{ href: '#top', testo: 'L’ulivo' },
+	{ href: '#raccolta', testo: 'La raccolta' },
+	{ href: '#frantoio', testo: 'Il frantoio' },
+	{ href: '#buio', testo: 'La latta' },
+	{ href: '#assaggio', testo: 'L’assaggio' },
+	{ href: '#cassa', testo: 'La bottega' },
+	{ href: '#domande', testo: 'Domande' },
+];
 const icona = simbolo.replace('<svg', '<svg aria-hidden="true" focusable="false" class="barra__simbolo"');
 ---
 
@@ -15,9 +24,20 @@ const icona = simbolo.replace('<svg', '<svg aria-hidden="true" focusable="false"
 			<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 3h10l1.2 4H5.8zM5 8h14v12.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path><path d="M9 12h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
 			<span class="barra__conta" data-conta hidden>0</span>
 		</button>
-		<a class="registro registro--chiaro barra__cta" href="#cassa"><span>Prenota l'olio nuovo</span></a>
+		<a class="registro registro--chiaro barra__cta" href="#cassa"><span>Prenota<span class="barra__resto"> l'olio nuovo</span></span></a>
+		<button type="button" class="barra__menu" data-menu-btn aria-expanded="false" aria-controls="menu-chioma" aria-label="Apri il menù">
+			<span class="barra__riga"></span><span class="barra__riga"></span><span class="barra__riga"></span>
+		</button>
 	</div>
 </header>
+<nav class="menu" id="menu-chioma" data-menu aria-label="Sezioni della pagina" hidden>
+	<ol class="menu__voci">
+		{voci.map((v, i) => (
+			<li style={`--i:${i}`}><a href={v.href}><span class="menu__n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>{v.testo}</a></li>
+		))}
+	</ol>
+	<p class="menu__nota">Vetrina dimostrativa · concept di Loop Studio</p>
+</nav>
 
 <style>
 	.barra {
@@ -107,6 +127,138 @@ const icona = simbolo.replace('<svg', '<svg aria-hidden="true" focusable="false"
 	.barra :focus-visible {
 		outline-color: var(--smalto);
 	}
+
+	/* ---- menù del telefono: un foglio di latta rossa che scende da sotto la barra, le voci in Kwokwi ---- */
+	.barra__menu {
+		display: none;
+		position: relative;
+		width: 44px;
+		height: 44px;
+		border: 0;
+		background: none;
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+	}
+	.barra__riga {
+		position: absolute;
+		left: 10px;
+		right: 10px;
+		height: 2.5px;
+		border-radius: 2px;
+		background: var(--smalto);
+		transition:
+			translate 260ms var(--ease),
+			rotate 260ms var(--ease),
+			opacity 160ms;
+	}
+	.barra__riga:nth-child(1) {
+		top: 14px;
+	}
+	.barra__riga:nth-child(2) {
+		top: 21px;
+	}
+	.barra__riga:nth-child(3) {
+		top: 28px;
+	}
+	.barra__menu[aria-expanded='true'] .barra__riga:nth-child(1) {
+		translate: 0 7px;
+		rotate: 45deg;
+	}
+	.barra__menu[aria-expanded='true'] .barra__riga:nth-child(2) {
+		opacity: 0;
+	}
+	.barra__menu[aria-expanded='true'] .barra__riga:nth-child(3) {
+		translate: 0 -7px;
+		rotate: -45deg;
+	}
+	.menu {
+		position: fixed;
+		inset: 0;
+		z-index: 110;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		padding: calc(var(--fascia, var(--fascia-h)) + var(--barra-h) + 16px) var(--gutter) 32px;
+		background: var(--blu);
+		color: var(--smalto);
+		overflow-y: auto;
+		clip-path: inset(0 0 100% 0);
+		transition: clip-path 420ms var(--ease-drawer);
+	}
+	.menu.aperto {
+		clip-path: inset(0 0 0 0);
+	}
+	.menu__voci {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	.menu__voci li {
+		border-bottom: 1px solid rgb(207 213 216 / 0.25);
+		opacity: 0;
+		translate: 0 14px;
+		transition:
+			opacity 300ms var(--ease),
+			translate 300ms var(--ease);
+	}
+	.menu.aperto .menu__voci li {
+		opacity: 1;
+		translate: 0 0;
+		transition-delay: calc(120ms + var(--i) * 40ms);
+	}
+	.menu__voci a {
+		display: flex;
+		align-items: baseline;
+		gap: 14px;
+		padding: 10px 0;
+		min-height: 44px;
+		color: var(--smalto);
+		font-family: var(--titoli);
+		font-size: clamp(2rem, 10.5vw, 3rem);
+		line-height: 1.1;
+		text-decoration: none;
+		text-shadow: 0.03em 0.02em 0 var(--rosso);
+	}
+	.menu__voci a:active {
+		color: var(--olio);
+	}
+	.menu__n {
+		font-family: var(--testo);
+		font-size: 0.8125rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		color: var(--olio);
+		text-shadow: none;
+	}
+	.menu__nota {
+		margin-top: 24px;
+		font-size: 0.8125rem;
+		color: var(--latta);
+	}
+	.menu :focus-visible {
+		outline-color: var(--smalto);
+	}
+	@media (max-width: 860px) {
+		.barra__menu {
+			display: block;
+		}
+	}
+	@media (min-width: 861px) {
+		.menu {
+			display: none;
+		}
+	}
+	@media (max-width: 520px) {
+		.barra__resto {
+			display: none;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.menu,
+		.menu__voci li {
+			transition: none;
+		}
+	}
 	@media (max-width: 860px) {
 		.barra {
 			grid-template-columns: 1fr auto;
@@ -128,3 +280,33 @@ const icona = simbolo.replace('<svg', '<svg aria-hidden="true" focusable="false"
 		}
 	}
 </style>
+
+<script>
+	const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]');
+	const menu = document.querySelector<HTMLElement>('[data-menu]');
+	if (btn && menu) {
+		const radice = document.documentElement;
+		const imposta = (aperto: boolean) => {
+			btn.setAttribute('aria-expanded', String(aperto));
+			btn.setAttribute('aria-label', aperto ? 'Chiudi il menù' : 'Apri il menù');
+			radice.style.overflow = aperto ? 'hidden' : '';
+			if (aperto) {
+				menu.hidden = false;
+				requestAnimationFrame(() => requestAnimationFrame(() => menu.classList.add('aperto')));
+			} else {
+				menu.classList.remove('aperto');
+				setTimeout(() => !menu.classList.contains('aperto') && (menu.hidden = true), 440);
+			}
+		};
+		btn.addEventListener('click', () => imposta(btn.getAttribute('aria-expanded') !== 'true'));
+		menu.addEventListener('click', (e) => (e.target as HTMLElement).closest('a') && imposta(false));
+		addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') {
+				imposta(false);
+				btn.focus();
+			}
+		});
+		// girando il telefono o allargando la finestra il menù si chiude
+		matchMedia('(min-width: 861px)').addEventListener('change', (e) => e.matches && imposta(false));
+	}
+</script>

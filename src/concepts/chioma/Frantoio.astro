@@ -9,7 +9,7 @@ import { ANALISI } from './dati';
 const titolo = 'In frantoio la sera stessa.';
 ---
 
-<section class="tappa frantoio" data-tappa aria-labelledby="frantoio-titolo">
+<section class="tappa frantoio" id="frantoio" data-tappa aria-labelledby="frantoio-titolo">
 	<div class="lastra lastra--ferma frantoio__lastra">
 		<Image src={cassetta} alt="Una cassetta gialla piena di olive scure appena raccolte" widths={[720, 1200, 1800, 2400]} sizes="100vw" class="lastra__foto" />
 		<span class="ancora ancora--cassetta" data-cassetta aria-hidden="true"></span>
@@ -40,9 +40,10 @@ const titolo = 'In frantoio la sera stessa.';
 
 	<figure class="lastra beccuccio">
 		<Image src={beccuccio} alt="Olio dorato che scorre da un beccuccio d'acciaio del frantoio" widths={[720, 1200, 1800, 2400]} sizes="100vw" class="lastra__foto" />
-		<span class="ancora ancora--beccuccio" data-beccuccio data-t="2.32" data-ty="0.24" data-ty-mob="0.11" aria-hidden="true"></span>
+		<span class="ancora ancora--beccuccio" data-beccuccio data-t="2.32" data-ty="0.24" data-ty-mob="0.09" aria-hidden="true"></span>
 		<figcaption class="vetro didascalia">Il primo olio dell'annata, appena uscito dal separatore.</figcaption>
 	</figure>
+	<div class="caduta" aria-hidden="true"></div>
 </section>
 
 <style>
@@ -170,12 +171,16 @@ const titolo = 'In frantoio la sera stessa.';
 			border-top: 0;
 		}
 		.frantoio__parola {
-			font-size: 34vw;
+			font-size: 30vw;
 		}
 		/* sopra il vetro, dove la foto si vede quando l'oliva arriva */
 		.ancora--cassetta {
 			left: 46%;
 			top: 22svh;
+		}
+		/* spazio vuoto sotto la foto del beccuccio: ci scorre la goccia che cade nella latta che sale */
+		.caduta {
+			height: 62svh;
 		}
 		.beccuccio {
 			min-height: 0;
