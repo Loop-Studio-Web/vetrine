@@ -136,6 +136,10 @@ dal nuovo concept arriva al form senza precompilare progetto e messaggio. Slug e
 anteprime (una per settore: Ossidiana, Ordito, Aeterna, Scala Vera, Luppolo & Watt, Mala Hierba Flores,
 aggiornata il 2026-10-14): non si aggiunge, al massimo si sostituisce un'anteprima e solo su decisione dell'utente.
 
+## Manutenzione di questo file (regola dell'utente, 2026-10-20)
+
+Il CLAUDE.md si carica a ogni sessione e costa token. Quando una sessione cambia qualcosa di duraturo, aggiornarlo; quando si può, snellirlo senza perdere nulla di importante: cronache, schede e dettagli lunghi vanno in `docs/` (letti solo quando servono), qui restano le regole sempre valide e i rinvii. Tolgo le note con scadenza appena superate. Stessa cura per l'indice MEMORY.md (una riga per voce, niente duplicati né voci obsolete).
+
 ## Deploy
 
 `output: 'static'`, pubblicato su GitHub Pages con dominio personalizzato:
