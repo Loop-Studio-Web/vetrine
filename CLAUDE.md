@@ -209,6 +209,8 @@ nessun nome di piattaforma, nessuna cifra; la piattaforma si sceglie in sede di 
 `backend` (solo E-commerce) racconta il costo ricorrente, `Dettaglio.astro` lo mostra come "Dietro il negozio" e
 `Livelli.astro` ha una nota sul motore. Da compilare anche per Drop ed Editoriale.
 
+**Regola sui nomi (2026-10-20)**: le piattaforme si nominano solo nei documenti interni (CLAUDE.md, memoria, preventivi), MAI nei siti pubblici (hub, vetrine, sito madre): cambiano nel tempo, si dice "template custom", "servizio di pagamento". Unica eccezione sul sito madre: i progetti del portfolio già online che usano davvero WordPress (non toccarli).
+
 - **Criterio**: il risparmio annuo del cliente nel lungo periodo (come per WordPress: mai plugin a pagamento). Il pacchetto
   assistenza è sempre facoltativo; il cliente gestisce il catalogo dal pannello (Woo, Medusa admin, Stripe), l'assistenza
   copre la parte tecnica (aggiornamenti, sicurezza, backup, errori, integrazioni).
