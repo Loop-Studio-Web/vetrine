@@ -15,9 +15,9 @@ const [foto, masc, atl] = await Promise.all([
 const sorgenti = JSON.stringify({ foto: foto.src, maschere: masc.src, atlante: atl.src });
 
 const superfici = [
-	{ nome: 'Parete', d: 'Intonaco a calce', centro: [0.3, 0.35] },
-	{ nome: 'Mensola', d: 'Pietra spaccata', centro: [0.45, 0.79] },
-	{ nome: 'Tavolini', d: 'Travertino', centro: [0.52, 0.87] },
+	{ nome: 'Parete', d: 'Intonaco a calce', centro: [0.3, 0.35], segno: [0.2, 0.33] },
+	{ nome: 'Mensola', d: 'Pietra spaccata', centro: [0.45, 0.79], segno: [0.17, 0.79] },
+	{ nome: 'Tavolini', d: 'Travertino', centro: [0.52, 0.87], segno: [0.68, 0.925] },
 ];
 const finiture = [
 	{ id: 'com-e', nome: 'Com’è', gruppo: 'Calce', f: { tipo: 0 }, css: 'linear-gradient(135deg, #8d8678, #6f695e)' },
@@ -46,31 +46,41 @@ const miniature = Object.fromEntries(mini);
 		<header class="riarreda__testa">
 			<p class="etichetta">Prova prima del cantiere</p>
 			<h2 id="riarreda-titolo">Riarreda la stanza. <em>Le ombre restano vere.</em></h2>
-			<p>Scegli una superficie, poi la finitura: la luce del render resta la stessa, cambia solo la materia. Puoi anche trascinare un campione sulla foto.</p>
+			<p>Sono tre superfici e ognuna ha la sua finitura: parete, mensola e tavolini si cambiano uno alla volta, anche in tre materie diverse. La luce del render resta la stessa, cambia solo la materia. Tocca un punto della foto o trascina un campione.</p>
 		</header>
 
 		<div class="banco-r">
 			<figure class="foto-r" data-foto-r>
 				<Image src={a2} alt="Render della parete del soggiorno: camino in intonaco, mensole in acciaio, mensola in pietra spaccata, tavolino e tavolo tondo in travertino" widths={[600, 900, 1200]} sizes="(min-width: 900px) 46vw, 100vw" class="foto-r__img" loading="lazy" />
 				<canvas aria-hidden="true" data-sorgenti={sorgenti}></canvas>
+				<div class="segni" aria-hidden="true">
+					{superfici.map((s, i) => (
+						<span class="segno" data-segno={i} style={`left:${s.segno[0] * 100}%;top:${s.segno[1] * 100}%;--r:${i * 0.5}s`}>
+							<i class="segno__punto"></i>
+							<span class="segno__nome"><b>{s.nome}</b><span data-segno-fin></span></span>
+						</span>
+					))}
+				</div>
 				<button type="button" class="foto-r__orig" data-originale aria-pressed="false">Tieni premuto: com’era</button>
 			</figure>
 
 			<div class="pannello-r">
 				<fieldset class="sup">
 					<legend class="etichetta">Superficie</legend>
+					<p class="pannello-r__aiuto">Tre da cambiare: scegline una, poi la sua finitura.</p>
 					{superfici.map((s, i) => (
 						<label class="sup__voce">
 							<input type="radio" name="superficie" value={i} checked={i === 0} data-centro={JSON.stringify(s.centro)} />
 							<span class="sup__n">0{i + 1}</span>
 							<span class="sup__nome">{s.nome}</span>
 							<span class="sup__d" data-sup-stato={i}>{s.d}</span>
+							<span class="sup__sw" data-sup-sw={i} aria-hidden="true"></span>
 						</label>
 					))}
 				</fieldset>
 
 				<fieldset class="fin">
-					<legend class="etichetta">Finitura</legend>
+					<legend class="etichetta">Finitura <span class="fin__per" data-fin-per>· Parete</span></legend>
 					<div class="fin__nastro">
 					{['Calce', 'Materia'].map((g) => (
 						<div class="fin__gruppo">
@@ -88,7 +98,10 @@ const miniature = Object.fromEntries(mini);
 					))}
 					</div>
 				</fieldset>
-				<p class="riarreda__esito" aria-live="polite" data-esito>Parete: com’è.</p>
+				<p class="riarreda__esito" aria-live="polite">
+						<span class="tacche" aria-hidden="true" data-tacche><i></i><i></i><i></i></span>
+						<span data-esito>Ancora nessuna superficie cambiata: ne hai tre a disposizione.</span>
+					</p>
 			</div>
 		</div>
 	</div>
@@ -192,7 +205,7 @@ const miniature = Object.fromEntries(mini);
 	}
 	.sup__voce {
 		display: grid;
-		grid-template-columns: 2.4rem 1fr auto;
+		grid-template-columns: 2.4rem 1fr auto 26px;
 		align-items: baseline;
 		gap: 0.6rem;
 		padding: 0.85rem 0.4rem;
@@ -274,9 +287,146 @@ const miniature = Object.fromEntries(mini);
 	}
 	.riarreda__esito {
 		margin: 0;
+		display: flex;
+		align-items: baseline;
+		gap: 0.8rem;
 		font-family: var(--titoli);
 		font-style: italic;
 		font-size: 1.15rem;
+	}
+	/* Tre tacche: una per superficie, si colorano di giallo metro man mano che le cambi. */
+	.tacche {
+		display: inline-flex;
+		gap: 4px;
+		flex: none;
+	}
+	.tacche i {
+		width: 16px;
+		height: 8px;
+		border: 1px solid var(--inchiostro);
+		transition: background 0.3s ease;
+	}
+	.tacche i.fatta {
+		background: var(--metro);
+	}
+	.pannello-r__aiuto {
+		grid-column: 1 / -1;
+		margin: -0.2rem 0 0.7rem;
+		font-size: 0.86rem;
+		color: var(--inchiostro-2);
+	}
+	.fin__per {
+		letter-spacing: 0.12em;
+		color: var(--inchiostro);
+	}
+	/* Il campione a destra di ogni superficie: un + finché è com'è, poi la finitura scelta. */
+	.sup__sw {
+		position: relative;
+		width: 26px;
+		height: 26px;
+		align-self: center;
+		background-size: cover;
+		border: 1px dashed color-mix(in oklch, var(--inchiostro) 55%, transparent);
+		transition: border-color 0.2s ease;
+	}
+	.sup__sw::before {
+		content: '+';
+		position: absolute;
+		inset: 0;
+		display: grid;
+		place-items: center;
+		font-size: 1rem;
+		line-height: 1;
+		color: var(--inchiostro-2);
+	}
+	.sup__sw.fatta {
+		border: 1px solid var(--inchiostro);
+	}
+	.sup__sw.fatta::before {
+		content: none;
+	}
+	.sup__voce:hover .sup__sw:not(.fatta),
+	.sup__voce:has(input:checked) .sup__sw:not(.fatta) {
+		border-color: var(--inchiostro);
+	}
+	/* Segni sulla foto: un punto che pulsa su ciascuna superficie, con il suo nome. */
+	.segni {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		opacity: 0;
+		transition: opacity 0.6s ease 0.3s;
+	}
+	.foto-r.pronta .segni {
+		opacity: 1;
+	}
+	.segno {
+		position: absolute;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		translate: -0.55rem -50%;
+	}
+	.segno__punto {
+		position: relative;
+		width: 1.1rem;
+		height: 1.1rem;
+		flex: none;
+		border-radius: 50%;
+		background: var(--metro);
+		box-shadow: 0 0 0 2px oklch(0.15 0.01 200 / 0.85);
+	}
+	.segno__punto::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: 50%;
+		border: 2px solid var(--metro);
+		animation: segno-eco 2.4s ease-out var(--r) infinite;
+	}
+	.segno__nome {
+		display: inline-flex;
+		flex-direction: column;
+		padding: 0.25rem 0.6rem;
+		background: oklch(0.15 0.01 200 / 0.8);
+		color: #f1f3f1;
+		font-size: 0.72rem;
+		line-height: 1.25;
+		backdrop-filter: blur(6px);
+		-webkit-backdrop-filter: blur(6px);
+	}
+	.segno__nome b {
+		font-weight: 650;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+	.segno__nome span:empty {
+		display: none;
+	}
+	.segno.attiva .segno__nome {
+		background: var(--metro);
+		color: var(--basalto);
+	}
+	.foto-r.usata .segno__punto::after {
+		animation: none;
+		opacity: 0;
+	}
+	@keyframes segno-eco {
+		0% {
+			transform: scale(1);
+			opacity: 0.9;
+		}
+		80%,
+		100% {
+			transform: scale(2.6);
+			opacity: 0;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.segno__punto::after {
+			animation: none;
+			opacity: 0;
+		}
 	}
 	@media (max-width: 899px) {
 		.banco-r {
@@ -336,6 +486,19 @@ const miniature = Object.fromEntries(mini);
 		.sup__n {
 			display: none;
 		}
+		.sup__sw {
+			position: absolute;
+			top: 0.3rem;
+			right: 0.3rem;
+			width: 18px;
+			height: 18px;
+		}
+		.sup__sw::before {
+			font-size: 0.8rem;
+		}
+		.segno__nome span:not(:empty) {
+			display: none;
+		}
 		.sup__nome {
 			font-size: 1.2rem;
 		}
@@ -383,12 +546,40 @@ const miniature = Object.fromEntries(mini);
 	const nomeSup = (i: number) => sup[i].closest('label')!.querySelector('.sup__nome')!.textContent!;
 	const nomeFin = (id: string) => fin.find((f) => f.value === id)!.closest('label')!.querySelector('.fin__nome')!.textContent!;
 
+	const tacche = [...sez.querySelectorAll<HTMLElement>('[data-tacche] i')];
+	const per = sez.querySelector<HTMLElement>('[data-fin-per]')!;
+	const segni = [...sez.querySelectorAll<HTMLElement>('[data-segno]')];
+	// Stato visibile di ogni superficie: campione nella riga, nome della finitura sul segno, tacche.
+	const mostra = (s: number) => {
+		const fatta = scelte[s] !== 'com-e';
+		const sw = sez.querySelector<HTMLElement>(`[data-sup-sw="${s}"]`)!;
+		sw.classList.toggle('fatta', fatta);
+		sw.style.background = fatta ? getComputedStyle(fin.find((f) => f.value === scelte[s])!.closest('label')!.querySelector('.fin__colore')!).background : '';
+		segni[s].querySelector<HTMLElement>('[data-segno-fin]')!.textContent = fatta ? nomeFin(scelte[s]) : '';
+		tacche[s].classList.toggle('fatta', fatta);
+	};
+	const testo = (s: number) => {
+		const resto = [0, 1, 2].filter((i) => scelte[i] === 'com-e').map((i) => nomeSup(i));
+		const fatte = 3 - resto.length;
+		const base = scelte[s] === 'com-e' ? `${nomeSup(s)}: com’è.` : `${nomeSup(s)}: ${nomeFin(scelte[s]).toLowerCase()}.`;
+		esito.textContent = fatte === 3 ? `${base} Tutte e tre cambiate: è un’altra stanza.`
+			: fatte === 0 ? `${base} Hai tre superfici da cambiare, ognuna a modo suo.`
+			: `${base} Cambiate ${fatte} su 3: prova anche ${resto.join(' e ')}.`;
+	};
+	const selezionata = (s: number) => {
+		per.textContent = `· ${nomeSup(s)}`;
+		segni.forEach((g, i) => g.classList.toggle('attiva', i === s));
+	};
+	selezionata(0);
+
 	const posa = (s: number, id: string, centro?: [number, number]) => {
 		scelte[s] = id;
+		fig.classList.add('usata');
 		const input = fin.find((f) => f.value === id)!;
 		r?.posa(s, JSON.parse(input.dataset.f!) as Finitura, centro ?? JSON.parse(sup[s].dataset.centro!));
 		sez.querySelector<HTMLElement>(`[data-sup-stato="${s}"]`)!.textContent = id === 'com-e' ? sup[s].closest('label')!.querySelector('.sup__d')!.getAttribute('data-orig') ?? '' : nomeFin(id);
-		esito.textContent = `${nomeSup(s)}: ${nomeFin(id).toLowerCase()}.`;
+		mostra(s);
+		testo(s);
 	};
 	sez.querySelectorAll<HTMLElement>('[data-sup-stato]').forEach((e) => e.setAttribute('data-orig', e.textContent!));
 
@@ -396,7 +587,8 @@ const miniature = Object.fromEntries(mini);
 	sup.forEach((s) => s.addEventListener('change', () => {
 		const i = attiva();
 		fin.forEach((f) => (f.checked = f.value === scelte[i]));
-		esito.textContent = `${nomeSup(i)}: ${nomeFin(scelte[i]).toLowerCase()}.`;
+		selezionata(i);
+		testo(i);
 	}));
 	fin.forEach((f) => f.addEventListener('change', () => { if (f.checked) posa(attiva(), f.value); }));
 
@@ -466,7 +658,7 @@ const miniature = Object.fromEntries(mini);
 	});
 
 	const parti = async () => {
-		r = await avviaRiarredo(canvas, JSON.parse(canvas.dataset.sorgenti!), [0.351, 0.638, 0.389], sup.map((s) => JSON.parse(s.dataset.centro!)));
+		r = await avviaRiarredo(canvas, JSON.parse(canvas.dataset.sorgenti!), [0.351, 0.638, 0.398], sup.map((s) => JSON.parse(s.dataset.centro!)));
 		if (!r) {
 			sez.querySelectorAll<HTMLInputElement>('input').forEach((i) => (i.disabled = true));
 			esito.textContent = 'Il tuo browser non supporta WebGL2: qui vedi il render com’è.';

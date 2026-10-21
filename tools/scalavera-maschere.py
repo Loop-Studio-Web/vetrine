@@ -51,17 +51,32 @@ dm = ImageDraw.Draw(mensola)
 dm.polygon(P([(0, .757), (.2, .752), (.5, .752), (.75, .748), (.962, .752), (.965, .83), (0, .828)]), fill=255)
 dm.rectangle((.755 * W, .786 * H, .925 * W, .84 * H), fill=0)   # tavolino davanti
 mensola = mensola.filter(ImageFilter.GaussianBlur(0.8))
-tav = Image.new('L', (W, H), 0)
+# Tavolini: disegnati a 4x e riportati a W x H (bordi puliti). Coordinate prese da un ritaglio
+# della foto (x 0-1200, y 0-442 = u 0.2-0.98, v 0.76-0.99), poi riportate in uv.
+S = 4
+tav = Image.new('L', (W * S, H * S), 0)
 dt = ImageDraw.Draw(tav)
-dt.ellipse((.305 * W, .842 * H, .735 * W, .898 * H), fill=255)                # piano
-dt.rounded_rectangle((.306 * W, .868 * H, .734 * W, .965 * H), radius=14, fill=255)  # spessore
-dt.rectangle((.758 * W, .79 * H, .92 * W, .955 * H), fill=255)                # tavolino
-dt.ellipse((.758 * W, .78 * H, .92 * W, .805 * H), fill=255)
-dt.rectangle((.455 * W, .832 * H, .665 * W, .9 * H), fill=0)                  # vassoio
-dt.rectangle((.815 * W, .775 * H, .845 * W, .8 * H), fill=0)                  # bicchiere
-dt.rectangle((.79 * W, .84 * H, .815 * W, .96 * H), fill=0)                   # gamba in acciaio
-dt.rectangle((.485 * W, .9 * H, .505 * W, .97 * H), fill=0)
-tav = tav.filter(ImageFilter.GaussianBlur(0.8))
+T = lambda x, y: ((0.2 + x / 1200 * 0.78) * W * S, (0.76 + y / 442 * 0.23) * H * S)
+TP = lambda pts: [T(x, y) for x, y in pts]
+def ell(cx, cy, rx, ry, fill):
+    (x0, y0), (x1, y1) = T(cx - rx, cy - ry), T(cx + rx, cy + ry)
+    dt.ellipse((x0, y0, x1, y1), fill=fill)
+def rect(x0, y0, x1, y1, fill):
+    a, b = T(x0, y0), T(x1, y1)
+    dt.rectangle((a[0], a[1], b[0], b[1]), fill=fill)
+# tavolo tondo: piano (due ellissi + fascia = spessore) e basamento
+ell(494, 232, 331, 66, 255); ell(494, 290, 331, 66, 255); rect(163, 232, 825, 290, 255)
+dt.rounded_rectangle((*T(163, 300), *T(825, 436)), radius=14 * S, fill=255)
+# tavolino alto: piano e fusto
+ell(982, 93, 127, 38, 255); dt.rounded_rectangle((*T(855, 93), *T(1110, 374)), radius=10 * S, fill=255)
+# fuori: vassoio con tazze e uva, bicchiere sul tavolino, gambe in acciaio
+dt.polygon(TP([(396, 276), (396, 205), (424, 173), (470, 172), (482, 197), (542, 197), (546, 166), (590, 158), (692, 161), (714, 203), (708, 276)]), fill=0)
+rect(953, 28, 1005, 84, 0)
+rect(482, 350, 512, 442, 0)
+rect(972, 128, 1008, 392, 0)
+tav = tav.resize((W, H), Image.LANCZOS)
+from PIL import ImageChops
+mensola = ImageChops.subtract(mensola, tav)
 Image.merge('RGB', (parete, mensola, tav)).resize((1200, 1500), Image.BILINEAR).save(out)
 # luminanza media di ogni superficie (per normalizzare l'ombreggiatura)
 L = im.convert('L').load()
