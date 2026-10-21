@@ -57,6 +57,18 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 				{CATEGORIE.map((c) => <button type="button" class="chip" data-barra-cat={c.chiave} aria-pressed="false">{c.nome}</button>)}
 			</div>
 			<div class="filtri__destra">
+				<div class="vista" role="group" aria-label="Grid size" data-vista data-v="mix">
+					<span class="vista__pomo" aria-hidden="true"></span>
+					<button type="button" class="vista__b vista__b--fitta" data-v-scelta="compact" aria-pressed="false" aria-label="More pieces, smaller">
+						<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="2" y="2" width="5.6" height="5.6" rx="1.6"/><rect x="9.2" y="2" width="5.6" height="5.6" rx="1.6"/><rect x="16.4" y="2" width="5.6" height="5.6" rx="1.6"/><rect x="2" y="9.2" width="5.6" height="5.6" rx="1.6"/><rect x="9.2" y="9.2" width="5.6" height="5.6" rx="1.6"/><rect x="16.4" y="9.2" width="5.6" height="5.6" rx="1.6"/><rect x="2" y="16.4" width="5.6" height="5.6" rx="1.6"/><rect x="9.2" y="16.4" width="5.6" height="5.6" rx="1.6"/><rect x="16.4" y="16.4" width="5.6" height="5.6" rx="1.6"/></svg>
+					</button>
+					<button type="button" class="vista__b" data-v-scelta="mix" aria-pressed="true" aria-label="Our mix">
+						<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="2" y="2" width="9" height="11" rx="2.6"/><rect x="13" y="2" width="9" height="7" rx="2.6"/><rect x="2" y="15" width="9" height="7" rx="2.6"/><rect x="13" y="11" width="9" height="11" rx="2.6"/></svg>
+					</button>
+					<button type="button" class="vista__b" data-v-scelta="big" aria-pressed="false" aria-label="Bigger pieces">
+						<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="2.5" width="18" height="19" rx="4.4"/></svg>
+					</button>
+				</div>
 				<label class="ordina">
 					<span class="sr-only">Sort by</span>
 					<select data-ordina>
@@ -74,7 +86,8 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 
 	<div class="catalogo__in">
 		<ul class="attivi" data-attivi aria-label="Active filters" hidden></ul>
-		<ul class="griglia" data-griglia>
+		<div class="caja">
+		<ul class="griglia" data-griglia data-v="mix">
 			{
 				PRODOTTI.map((p, i) => {
 					const src = sorgente(p, true);
@@ -105,6 +118,11 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 									/>
 								</span>
 								<span class="etichetta" aria-hidden="true">
+									<span class="invito">
+										<Icona nome="piu" />
+										<span class="invito__mouse">Click to see details</span>
+										<span class="invito__dito">Tap to see details</span>
+									</span>
 									<span class="etichetta__nome">{p.nome}</span>
 									<span class="etichetta__prezzo">{EURO(p.prezzo)}</span>
 								</span>
@@ -122,6 +140,7 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 				})
 			}
 		</ul>
+		</div>
 		<div class="vuoto" data-vuoto hidden>
 			<p class="vuoto__titolo" data-vuoto-titolo>Nothing in that mix.</p>
 			<p data-vuoto-testo>Try fewer filters, or start again from all the pieces.</p>
@@ -252,6 +271,135 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 		display: none;
 	}
 
+	/* l'interruttore della griglia: tre mattoncini presi dalla stessa famiglia di forme delle tessere; il pomo mandarino scivola sulla vista scelta */
+	.vista {
+		--i: 1;
+		position: relative;
+		display: flex;
+		padding: 2px;
+		border: 2px solid var(--ink);
+		border-radius: 999px;
+		background: var(--bianco);
+	}
+	.vista[data-v='compact'] {
+		--i: 0;
+	}
+	.vista[data-v='big'] {
+		--i: 2;
+	}
+	.vista__pomo {
+		position: absolute;
+		top: 2px;
+		bottom: 2px;
+		left: 2px;
+		width: 46px;
+		border-radius: 999px;
+		background: var(--mandarino);
+		transform: translateX(calc(var(--i) * 46px));
+		transition: transform 0.34s cubic-bezier(0.3, 1.3, 0.5, 1);
+	}
+	.vista__b {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: 46px;
+		height: 38px;
+		padding: 0;
+		border: 0;
+		border-radius: 999px;
+		background: none;
+		color: var(--ink);
+		-webkit-tap-highlight-color: transparent;
+	}
+	.vista__b svg {
+		width: 20px;
+		height: 20px;
+		fill: currentColor;
+		opacity: 0.5;
+		transition:
+			opacity 0.2s ease,
+			transform 0.2s var(--ease-out);
+	}
+	.vista__b[aria-pressed='true'] svg {
+		opacity: 1;
+	}
+	.vista__b:active svg {
+		transform: scale(0.88);
+	}
+	@media (hover: hover) and (pointer: fine) {
+		.vista__b:hover svg {
+			opacity: 1;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.vista__pomo {
+			transition-duration: 0.01ms;
+		}
+	}
+
+	/* l'invito: quando la finestra si apre compare un'etichetta "clicca/tocca per i dettagli" sopra il nome */
+	.invito {
+		position: absolute;
+		left: 50%;
+		bottom: calc(100% + 8px);
+		display: inline-flex;
+		align-items: center;
+		gap: 7px;
+		padding: 5px 13px 5px 6px;
+		border-radius: 999px;
+		background: var(--ink);
+		color: var(--nebbia);
+		font-family: var(--titoli-testo);
+		font-size: 0.9375rem;
+		line-height: 1.2;
+		white-space: nowrap;
+		opacity: 0;
+		translate: -50% 8px;
+		pointer-events: none;
+		transition:
+			opacity 0.2s ease,
+			translate 0.3s var(--ease-out);
+	}
+	.invito :global(.icona) {
+		width: 22px;
+		height: 22px;
+		padding: 4px;
+		border-radius: 50%;
+		background: var(--mandarino);
+		color: var(--ink);
+		stroke-width: 3;
+	}
+	.invito__mouse {
+		display: none;
+	}
+	@media (hover: hover) and (pointer: fine) {
+		.invito__mouse {
+			display: inline;
+		}
+		.invito__dito {
+			display: none;
+		}
+	}
+	.tessera__tasto:focus-visible .invito,
+	.tessera.aperta .invito {
+		opacity: 1;
+		translate: -50% 0;
+		transition-delay: 0.16s;
+	}
+	@media (hover: hover) and (pointer: fine) {
+		.tessera__tasto:hover .invito {
+			opacity: 1;
+			translate: -50% 0;
+			transition-delay: 0.16s;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.invito {
+			transition-duration: 0.01ms;
+			transition-delay: 0s !important;
+		}
+	}
+
 	/* i filtri attivi, ognuno si toglie con un tocco */
 	.attivi {
 		display: flex;
@@ -262,20 +410,40 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 	.attivi[hidden] {
 		display: none;
 	}
-	/* la griglia irregolare: sei colonne, tessere da due, qualche larga da quattro; i buchi li chiude "dense" */
+	/* la griglia irregolare: dodici colonne, la tessera ne occupa --sp, la larga --spl; i buchi li chiude "dense".
+	   --n = tessere per riga, --f = quanto è alta una riga rispetto alla larghezza di una tessera: l'unità --u
+	   segue la larghezza del contenitore, così cambiando vista (interruttore) le proporzioni restano buone */
+	.caja {
+		container-type: inline-size;
+		margin-top: 28px;
+	}
 	.griglia {
-		--u: clamp(58px, 8.4vw, 118px);
 		--gap: clamp(10px, 1.4vw, 18px);
+		--n: 3;
+		--f: 0.3;
+		--sp: 4;
+		--spl: 8;
+		--u: calc((100cqw - (var(--n) - 1) * var(--gap)) / var(--n) * var(--f));
 		display: grid;
-		grid-template-columns: repeat(6, 1fr);
+		grid-template-columns: repeat(12, 1fr);
 		grid-auto-rows: var(--u);
 		grid-auto-flow: dense;
 		gap: var(--gap);
-		margin-top: 28px;
+	}
+	.griglia[data-v='compact'] {
+		--n: 4;
+		--sp: 3;
+		--spl: 6;
+	}
+	.griglia[data-v='big'] {
+		--n: 2;
+		--f: 0.22;
+		--sp: 6;
+		--spl: 12;
 	}
 	.tessera {
 		position: relative;
-		grid-column: span 2;
+		grid-column: span var(--sp);
 		grid-row: span 5;
 		min-width: 0;
 		border-radius: 22px;
@@ -299,7 +467,7 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 		grid-row: span 6;
 	}
 	.tessera--l {
-		grid-column: span 4;
+		grid-column: span var(--spl);
 		grid-row: span 4;
 	}
 	.tessera__tasto {
@@ -492,21 +660,42 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 	}
 
 	@media (max-width: 1100px) {
-		.griglia {
-			grid-template-columns: repeat(4, 1fr);
-			--u: clamp(58px, 11vw, 118px);
+		.griglia,
+		.griglia[data-v='mix'] {
+			--n: 2;
+			--f: 0.23;
+			--sp: 6;
+			--spl: 12;
 		}
-		.tessera--l {
-			grid-column: span 4;
+		.griglia[data-v='compact'] {
+			--n: 3;
+			--f: 0.26;
+			--sp: 4;
+			--spl: 8;
+		}
+		.griglia[data-v='big'] {
+			--n: 1;
+			--f: 0.13;
+			--sp: 12;
+			--spl: 12;
 		}
 	}
 	@media (max-width: 700px) {
-		.griglia {
-			grid-template-columns: repeat(2, 1fr);
-			--u: 46px;
+		/* sul telefono due viste sole: due tessere per riga o una (il bottone "più piccole" sparisce, vale come "mix") */
+		.griglia,
+		.griglia[data-v='mix'],
+		.griglia[data-v='compact'] {
+			--n: 2;
+			--f: 0.26;
+			--sp: 6;
+			--spl: 12;
+		}
+		.griglia[data-v='big'] {
+			--n: 1;
+			--f: 0.17;
+			--sp: 12;
 		}
 		.tessera {
-			grid-column: span 1;
 			border-radius: 18px;
 		}
 		.tessera--s {
@@ -519,7 +708,6 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 			grid-row: span 7;
 		}
 		.tessera--l {
-			grid-column: span 2;
 			grid-row: span 6;
 		}
 		.etichetta {
@@ -533,6 +721,29 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 		}
 		.etichetta__nome {
 			font-size: 0.8125rem;
+		}
+		.invito {
+			bottom: calc(100% + 6px);
+			font-size: 0.75rem;
+			gap: 5px;
+			padding: 4px 10px 4px 4px;
+		}
+		.invito :global(.icona) {
+			width: 18px;
+			height: 18px;
+			padding: 3px;
+		}
+		/* "più piccole" non c'è sul telefono: il pomo di "mix" sta al primo posto, "big" al secondo */
+		.vista__b--fitta {
+			display: none;
+		}
+		.vista,
+		.vista[data-v='compact'] {
+			--i: 0;
+			order: 2;
+		}
+		.vista[data-v='big'] {
+			--i: 1;
 		}
 		.etichetta__prezzo {
 			font-size: 0.9375rem;
@@ -559,14 +770,18 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 		}
 		.filtro-tasto {
 			order: -1;
-			flex: 1;
-			justify-content: center;
+			flex: none;
+			padding: 0 16px 0 12px;
+			gap: 8px;
 		}
 		.ordina {
 			flex: 1;
+			min-width: 0;
 		}
 		.ordina select {
 			width: 100%;
+			padding: 0 6px 0 12px;
+			font-size: 0.875rem;
 		}
 		.azione {
 			width: 40px;
@@ -850,6 +1065,35 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 			);
 			tessere.forEach((t) => io.observe(t));
 		}
+
+		// l'interruttore della griglia: più piccole / mix / più grandi (sul telefono "più piccole" vale come mix)
+		const vista = radice.querySelector<HTMLElement>('[data-vista]')!;
+		const scelte = [...vista.querySelectorAll<HTMLButtonElement>('[data-v-scelta]')];
+		const telefono = matchMedia('(max-width: 700px)');
+		let scelta = 'mix';
+		const mostraVista = () => {
+			const v = telefono.matches && scelta === 'compact' ? 'mix' : scelta;
+			vista.dataset.v = v;
+			griglia.dataset.v = v;
+			scelte.forEach((b) => premuto(b, b.dataset.vScelta === v));
+		};
+		scelte.forEach((b) =>
+			b.addEventListener('click', () => {
+				if (b.dataset.vScelta === scelta) return;
+				scelta = b.dataset.vScelta!;
+				mostraVista();
+				if (!ridotto())
+					griglia.animate(
+						[
+							{ opacity: 0.25, transform: 'translateY(12px)' },
+							{ opacity: 1, transform: 'none' },
+						],
+						{ duration: 360, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' },
+					);
+			}),
+		);
+		telefono.addEventListener('change', mostraVista);
+		mostraVista();
 		applica();
 	}
 </script>
