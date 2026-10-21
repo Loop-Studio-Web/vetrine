@@ -1,0 +1,188 @@
+/* Soft Riot — token, font, reset e pezzi minimi. Mandarino che guida, lavanda di supporto, raso e grana. */
+@font-face {
+	font-family: 'LT Cowboy';
+	src: url('../../assets/softriot/font/ltcowboy.woff2') format('woff2');
+	font-weight: 400;
+	font-display: swap;
+}
+@font-face {
+	font-family: 'LT Cowboy Text';
+	src: url('../../assets/softriot/font/ltcowboytext.woff2') format('woff2');
+	font-weight: 400;
+	font-display: swap;
+}
+@font-face {
+	font-family: 'LT Gutbust';
+	src: url('../../assets/softriot/font/ltgutbust-bold-v3.woff2') format('woff2');
+	font-weight: 700;
+	font-display: swap;
+}
+
+:root {
+	--ink: #1d1033; /* inchiostro viola: testo e fondi scuri */
+	--ink2: #3a2561; /* seconda tinta dei fondi scuri (solo sfumatura) */
+	--mandarino: #ff8a1f; /* colore d'azione: sopra solo testo ink (7,2) */
+	--lavanda: #b9a8f2; /* secondario: sopra testo ink (8,1) */
+	--pesca: #ffb27a;
+	--corallo: #ff6b5a; /* sopra testo ink (5,7) */
+	--nebbia: #ece6ff; /* unica superficie chiara */
+	--bianco: #fffdfb;
+	--errore: #a3231a;
+
+	--titoli: 'LT Cowboy', 'Rockwell', 'Georgia', serif;
+	--titoli-testo: 'LT Cowboy Text', 'Rockwell', 'Georgia', serif;
+	--editoriale: 'LT Gutbust', 'Georgia', serif;
+	--testo: 'Bricolage Grotesque Variable', system-ui, sans-serif;
+
+	--ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+	--ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+	--ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+	--gutter: clamp(16px, 4.5vw, 56px);
+	--max: 1360px;
+	--colonna: calc(var(--max) - 2 * var(--gutter));
+	--testata-h: 68px;
+
+	/* grana: puntini di inchiostro, un solo livello sopra i colori pieni */
+	--grana: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .11 0 0 0 0 .06 0 0 0 0 .2 0 0 0 .5 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+	color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+html {
+	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+	scroll-padding-top: calc(var(--testata-h) + 12px);
+}
+body {
+	margin: 0;
+	background: var(--nebbia);
+	color: var(--ink);
+	font-family: var(--testo);
+	font-size: 1rem;
+	line-height: 1.5;
+	-webkit-font-smoothing: antialiased;
+	overflow-x: clip;
+}
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+figure {
+	margin: 0;
+}
+ul,
+ol {
+	padding: 0;
+	list-style: none;
+}
+img {
+	display: block;
+	max-width: 100%;
+}
+button,
+input,
+select {
+	font: inherit;
+	color: inherit;
+}
+button {
+	cursor: pointer;
+}
+a {
+	color: inherit;
+}
+:focus-visible {
+	outline: 3px solid var(--ink);
+	outline-offset: 3px;
+}
+.su-scuro :focus-visible {
+	outline-color: var(--mandarino);
+}
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+	border: 0;
+}
+.skip-link {
+	position: absolute;
+	left: 12px;
+	top: -60px;
+	z-index: 1000;
+	padding: 10px 16px;
+	border-radius: 999px;
+	background: var(--ink);
+	color: var(--nebbia);
+	font-weight: 600;
+	text-decoration: none;
+}
+.skip-link:focus {
+	top: 12px;
+}
+
+/* il bottone d'azione: pillola mandarino, un solo tipo di bottone primario in tutta la pagina */
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.6em;
+	min-height: 52px;
+	padding: 0 28px;
+	border: 2px solid var(--ink);
+	border-radius: 999px;
+	background: var(--mandarino);
+	color: var(--ink);
+	font-family: var(--titoli-testo);
+	font-size: 1.125rem;
+	line-height: 1;
+	text-decoration: none;
+	transition:
+		background-color 0.16s ease,
+		transform 0.16s var(--ease-out);
+}
+.btn:active {
+	transform: scale(0.97);
+}
+@media (hover: hover) and (pointer: fine) {
+	.btn:hover {
+		background: var(--pesca);
+	}
+}
+.btn--ink {
+	background: var(--ink);
+	color: var(--nebbia);
+}
+@media (hover: hover) and (pointer: fine) {
+	.btn--ink:hover {
+		background: var(--ink2);
+	}
+}
+.btn[disabled] {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+.btn--ink:focus-visible,
+.su-scuro .btn:focus-visible {
+	outline-color: var(--mandarino);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		scroll-behavior: auto !important;
+	}
+}

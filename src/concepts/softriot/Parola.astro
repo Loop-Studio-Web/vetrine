@@ -1,0 +1,24 @@
+---
+// Il nome scritto in LT Cowboy con la "o" di Riot in mandarino: sta in testata, borsa e scheda. Dove c'è spazio
+// va il logo completo in raso (Footer); il nome esiste sempre anche come testo vero.
+interface Props {
+	class?: string;
+	/** colore della "o": mandarino sui fondi chiari, pesca sui fondi scuri */
+	o?: string;
+}
+const { class: cls = '', o = 'var(--mandarino)' } = Astro.props;
+---
+
+<span class={`parola ${cls}`}>Soft Ri<span class="parola__o" style={`--o:${o}`}>o</span>t</span>
+
+<style>
+	.parola {
+		font-family: var(--titoli);
+		font-weight: 400;
+		letter-spacing: -0.01em;
+		white-space: nowrap;
+	}
+	.parola__o {
+		color: var(--o);
+	}
+</style>

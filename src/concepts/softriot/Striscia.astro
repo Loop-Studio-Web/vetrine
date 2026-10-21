@@ -1,0 +1,81 @@
+---
+// Una sola riga editoriale in LT Gutbust sul fondo scuro, con la "S" in raso che esce dal bordo: l'unico respiro
+// fra il catalogo e il piede della pagina.
+import { Image } from 'astro:assets';
+import esse from '../../assets/softriot/brand/s-raso.webp';
+---
+
+<section class="striscia su-scuro" aria-label="About Soft Riot">
+	<div class="striscia__in">
+		<p class="striscia__riga">
+			<span class="striscia__a">Soft things</span>
+			<span class="striscia__b">for loud days.</span>
+		</p>
+		<p class="striscia__testo">
+			Quilted, padded, knotted and a little bit too much. Soft Riot makes the pieces we wanted to wear and could not find, and
+			sits them next to clothes we love from everywhere else.
+		</p>
+	</div>
+	<Image class="striscia__esse" src={esse} alt="" width={520} quality={74} loading="lazy" />
+</section>
+
+<style>
+	.striscia {
+		position: relative;
+		overflow: clip;
+		padding: clamp(64px, 10vw, 140px) var(--gutter);
+		background:
+			var(--grana),
+			radial-gradient(90% 120% at 100% 100%, var(--ink2), transparent 70%),
+			var(--ink);
+		color: var(--nebbia);
+	}
+	.striscia__in {
+		position: relative;
+		z-index: 1;
+		max-width: var(--colonna);
+		margin-inline: auto;
+	}
+	.striscia__riga {
+		display: grid;
+		font-family: var(--editoriale);
+		font-weight: 700;
+		font-size: clamp(3.4rem, 11.5vw, 11rem);
+		line-height: 0.88;
+		letter-spacing: -0.02em;
+	}
+	.striscia__a {
+		color: var(--lavanda);
+	}
+	.striscia__b {
+		color: var(--mandarino);
+		padding-left: clamp(0px, 8vw, 140px);
+	}
+	.striscia__testo {
+		max-width: 30rem;
+		margin-top: 32px;
+		font-size: 1.125rem;
+		line-height: 1.5;
+	}
+	.striscia__esse {
+		position: absolute;
+		right: clamp(-60px, -2vw, 0px);
+		bottom: -14%;
+		z-index: 0;
+		width: clamp(220px, 34vw, 520px);
+		height: auto;
+		rotate: 8deg;
+		filter: drop-shadow(0 30px 40px rgb(0 0 0 / 0.4));
+	}
+	@media (max-width: 760px) {
+		.striscia__esse {
+			bottom: -8%;
+			right: -14vw;
+			opacity: 0.9;
+		}
+		.striscia__testo {
+			max-width: 20rem;
+			padding-bottom: 48px;
+		}
+	}
+</style>

@@ -1,0 +1,176 @@
+---
+// I marchi dei metodi di pagamento, come compaiono in una cassa vera: un cartellino per marchio, nei colori del
+// proprietario. Icone da simple-icons (CC0); Mastercard, Satispay, Scalapay e MyBank ricomposti come marchi semplici;
+// Apple Pay e Google Pay sono icone di Icons8 (attribuzione nel footer).
+// Vetrina dimostrativa: i marchi dicono che il metodo si può attivare, i pagamenti non partono.
+import visa from '../../assets/softriot/pagamenti/visa.svg?raw';
+import amex from '../../assets/softriot/pagamenti/americanexpress.svg?raw';
+import paypal from '../../assets/softriot/pagamenti/paypal.svg?raw';
+import apple from '../../assets/softriot/pagamenti/applepay-icons8.png';
+import google from '../../assets/softriot/pagamenti/googlepay-icons8.png';
+
+interface Props {
+	nome: string;
+	class?: string;
+}
+const { nome, class: cls = '' } = Astro.props;
+const percorso = (svg: string) => svg.match(/ d="([^"]+)"/)?.[1] ?? '';
+const etichette: Record<string, string> = {
+	visa: 'Visa',
+	mastercard: 'Mastercard',
+	americanexpress: 'American Express',
+	paypal: 'PayPal',
+	klarna: 'Klarna',
+	scalapay: 'Scalapay',
+	satispay: 'Satispay',
+	mybank: 'MyBank',
+	applepay: 'Apple Pay',
+	googlepay: 'Google Pay',
+};
+---
+
+<span class={`marchio marchio--${nome} ${cls}`} role="img" aria-label={etichette[nome] ?? nome}>
+	{
+		nome === 'visa' && (
+			<svg viewBox="0 0 24 24" aria-hidden="true">
+				<path fill="#1a1f71" d={percorso(visa)} />
+			</svg>
+		)
+	}
+	{
+		nome === 'mastercard' && (
+			<svg viewBox="0 0 38 24" aria-hidden="true">
+				<circle cx="15" cy="12" r="7.5" fill="#eb001b" />
+				<circle cx="23" cy="12" r="7.5" fill="#f79e1b" />
+				<path d="M19 5.6a7.5 7.5 0 0 1 0 12.8 7.5 7.5 0 0 1 0-12.8z" fill="#ff5f00" />
+			</svg>
+		)
+	}
+	{
+		nome === 'americanexpress' && (
+			<svg viewBox="0 0 24 24" aria-hidden="true">
+				<path fill="#ffffff" d={percorso(amex)} />
+			</svg>
+		)
+	}
+	{
+		nome === 'paypal' && (
+			<>
+				<svg viewBox="0 0 24 24" aria-hidden="true">
+					<path fill="#003087" d={percorso(paypal)} />
+				</svg>
+				{/* la parola in SVG, come nel logo vero: in HTML l'azzurro del marchio su bianco (3,1) conta come testo per axe */}
+				<svg class="pp" viewBox="0 0 41 14" width="41" height="14" aria-hidden="true">
+					<text x="0" y="11" textLength="40" lengthAdjust="spacingAndGlyphs"><tspan fill="#003087">Pay</tspan><tspan fill="#009cde">Pal</tspan></text>
+				</svg>
+			</>
+		)
+	}
+	{nome === 'klarna' && <b aria-hidden="true">Klarna.</b>}
+	{nome === 'scalapay' && <b aria-hidden="true">scalapay</b>}
+	{
+		nome === 'satispay' && (
+			<>
+				<svg viewBox="0 0 24 24" aria-hidden="true">
+					<path fill="#ffffff" d="M12 3.2 20.8 12 12 20.8 3.2 12z" />
+					<path fill="#ef373f" d="M12 7.6 16.4 12 12 16.4 7.6 12z" />
+				</svg>
+				<svg class="scritta" viewBox="0 0 52 14" width="52" height="14" style="--r: 3.714" aria-hidden="true">
+					<text x="0" y="11" fill="#ffffff" textLength="51" lengthAdjust="spacingAndGlyphs">Satispay</text>
+				</svg>
+			</>
+		)
+	}
+	{
+		nome === 'mybank' && (
+			<svg class="scritta" viewBox="0 0 44 14" width="44" height="14" style="--r: 3.143" aria-hidden="true">
+				<text x="0" y="11" textLength="43" lengthAdjust="spacingAndGlyphs"><tspan fill="#1a4a8f">My</tspan><tspan fill="#e5362a">Bank</tspan></text>
+			</svg>
+		)
+	}
+	{
+		nome === 'applepay' && <img src={apple.src} width={apple.width} height={apple.height} alt="" />
+	}
+	{
+		nome === 'googlepay' && <img src={google.src} width={google.width} height={google.height} alt="" />
+	}
+</span>
+
+<style>
+	.marchio {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.2em;
+		height: 26px;
+		min-width: 40px;
+		padding: 0 6px;
+		border-radius: 4px;
+		background: #fff;
+		box-shadow: inset 0 0 0 1px rgb(29 16 51 / 0.2);
+		font-family: system-ui, sans-serif;
+		font-size: 12px;
+		line-height: 1;
+		color: #111;
+		flex: none;
+	}
+	.marchio svg {
+		height: 18px;
+		width: auto;
+	}
+	.marchio b {
+		font-weight: 800;
+		letter-spacing: -0.02em;
+	}
+	.marchio--visa svg {
+		height: 22px;
+	}
+	.marchio--americanexpress {
+		background: #2e77bc;
+		box-shadow: none;
+	}
+	.marchio--americanexpress svg {
+		height: 22px;
+	}
+	.marchio--paypal .pp {
+		height: 1.17em;
+		width: auto;
+		font: italic 800 12px/1 system-ui, sans-serif;
+	}
+	.marchio--paypal svg {
+		height: 15px;
+	}
+	.marchio--klarna {
+		background: #ffb3c7;
+		box-shadow: none;
+	}
+	.marchio--scalapay {
+		background: #ffd4dd;
+		box-shadow: none;
+		font-weight: 700;
+	}
+	.marchio--satispay {
+		background: #ef373f;
+		color: #fff;
+		box-shadow: none;
+	}
+	.marchio--satispay svg {
+		height: 14px;
+	}
+	.marchio .scritta {
+		flex: none;
+		height: 14px;
+		width: calc(14px * var(--r));
+		font: 800 12px/1 system-ui, sans-serif;
+	}
+	.marchio img {
+		width: auto;
+		height: 18px;
+	}
+	.marchio--googlepay {
+		padding: 0 3px;
+	}
+	.marchio--googlepay img {
+		height: 22px;
+	}
+</style>

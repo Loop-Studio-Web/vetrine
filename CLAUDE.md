@@ -56,7 +56,7 @@ Dettagli e installazione sicura in `studio-kit/docs/skill-design.md`. Divisione 
 - **Movimento** (curve, durate, interruzioni, reduced-motion): Emil Kowalski (`animate`, `review-animations`, livello utente).
 - **Struttura, gerarchia, qualità tecnica, contrasto**: Impeccable (`detect`, `critique`, `audit`, `polish`), in `.claude/skills/impeccable/`.
 - **Direzione estetica prima del codice**: `frontend-design`. Il brief vince: se il concept vuole molto movimento, scriverlo nel brief.
-- **Ordine d'uso consigliato** (dedotto dai testi delle skill e provato su Mala Hierba): frontend-design PRIMA del codice, Emil `animate` mentre si scrive il movimento, poi axe/Lighthouse e Impeccable `detect` (sulla pagina COMPILATA, non sui `.astro`) + `critique`; correzioni in un giro solo; `review-animations` lo lancia l'utente.
+- **Ordine d'uso consigliato** (dedotto dai testi delle skill e provato su Mala Hierba): frontend-design PRIMA del codice, Emil `animate` mentre si scrive il movimento, poi **mostrare la bozza all'utente: solo se la approva** partono Impeccable `detect` (sulla pagina COMPILATA, non sui `.astro`) + `critique`, poi axe e Lighthouse; se no, prima le modifiche e poi i test (flusso completo nel CLAUDE.md globale, "Flusso di lavoro per ogni nuovo progetto"); correzioni in un giro solo; `review-animations` lo lancia l'utente.
 - Impeccable: installato `--no-hooks`, telemetria spenta in `.claude/settings.json`, motore nativo fuori da git. Non lanciare `live`
   (apre un helper su localhost) e `overdrive` solo con una direzione scelta dall'utente. Non installarlo a livello utente.
 - Il rilevatore non vede il contrasto del testo sopra un canvas: misurarlo con `studio-kit/scripts/canvas-shot.mjs` + `canvas-contrast.py`.

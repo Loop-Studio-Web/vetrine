@@ -1,0 +1,308 @@
+---
+// La testata: barra chiara appiccicata in cima con il nome appeso come un cartellino di ink. A sinistra le sezioni
+// (filtrano il catalogo), a destra la borsa. Sul telefono le sezioni stanno in un pannello a tutta larghezza
+// (menù mobile proprio di questo concept).
+import Parola from './Parola.astro';
+const sezioni = [
+	{ nome: 'Outerwear', categoria: 'outerwear' },
+	{ nome: 'Knits & sweats', categoria: 'knits' },
+	{ nome: 'Bags', categoria: 'bags' },
+	{ nome: 'Soft Riot originals', originali: true },
+];
+---
+
+<header class="testata">
+	<div class="testata__in">
+		<a class="testata__nome" href="#main" aria-label="Soft Riot, back to the top">
+			<Parola o="var(--pesca)" />
+		</a>
+		<nav class="testata__nav" aria-label="Shop sections">
+			{
+				sezioni.map((s) => (
+					<a href="#shop" data-categoria={s.categoria} data-originali={s.originali ? '1' : undefined}>
+						{s.nome}
+					</a>
+				))
+			}
+		</nav>
+		<div class="testata__azioni">
+			<button type="button" class="borsa-tasto" data-borsa>
+				<span>Bag</span>
+				<span class="borsa-tasto__n" data-conta aria-hidden="true">0</span>
+				<span class="sr-only" data-conta-testo>, empty</span>
+			</button>
+			<button type="button" class="menu-tasto" data-menu aria-haspopup="dialog">Menu</button>
+		</div>
+	</div>
+</header>
+
+<dialog class="pannello su-scuro" data-pannello aria-label="Menu">
+	<form method="dialog" class="pannello__chiudi">
+		<button type="submit" class="pannello__x" aria-label="Close menu"><span aria-hidden="true">×</span></button>
+	</form>
+	<nav class="pannello__nav" aria-label="Shop sections">
+		{
+			sezioni.map((s) => (
+				<a href="#shop" data-categoria={s.categoria} data-originali={s.originali ? '1' : undefined}>
+					{s.nome}
+				</a>
+			))
+		}
+		<a href="#shop" data-categoria="">All pieces</a>
+	</nav>
+	<p class="pannello__nota">Demo store by Loop Studio. Nothing here is for sale.</p>
+</dialog>
+
+<style>
+	.testata {
+		position: sticky;
+		top: 0;
+		z-index: 100;
+		height: var(--testata-h);
+		background: var(--nebbia);
+		border-bottom: 2px solid var(--ink);
+	}
+	.testata__in {
+		position: relative;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		gap: clamp(20px, 4vw, 56px);
+		max-width: var(--max);
+		margin-inline: auto;
+		padding-inline: var(--gutter);
+	}
+	.testata__nome {
+		align-self: flex-start;
+		display: flex;
+		align-items: center;
+		height: calc(var(--testata-h) + 16px);
+		padding: 0 22px;
+		border-radius: 0 0 24px 24px;
+		background: var(--ink);
+		color: var(--nebbia);
+		font-size: clamp(1.5rem, 2.4vw, 1.9rem);
+		line-height: 1;
+		text-decoration: none;
+	}
+	.testata__nome:focus-visible {
+		outline-color: var(--mandarino);
+		outline-offset: -6px;
+	}
+	.testata__nav {
+		display: flex;
+		gap: clamp(16px, 2.4vw, 32px);
+		font-weight: 600;
+	}
+	.testata__nav a {
+		text-decoration: none;
+		padding: 6px 0;
+		background: linear-gradient(var(--mandarino), var(--mandarino)) 0 100% / 0 4px no-repeat;
+		transition: background-size 0.2s var(--ease-out);
+	}
+	@media (hover: hover) and (pointer: fine) {
+		.testata__nav a:hover {
+			background-size: 100% 4px;
+		}
+	}
+	.testata__azioni {
+		margin-left: auto;
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+	.borsa-tasto,
+	.menu-tasto {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		min-height: 44px;
+		padding: 0 8px 0 20px;
+		border: 2px solid var(--ink);
+		border-radius: 999px;
+		background: var(--bianco);
+		font-family: var(--titoli-testo);
+		font-size: 1.0625rem;
+		transition:
+			background-color 0.16s ease,
+			transform 0.16s var(--ease-out);
+	}
+	.borsa-tasto:active,
+	.menu-tasto:active {
+		transform: scale(0.97);
+	}
+	@media (hover: hover) and (pointer: fine) {
+		.borsa-tasto:hover,
+		.menu-tasto:hover {
+			background: var(--lavanda);
+		}
+	}
+	.borsa-tasto__n {
+		display: inline-grid;
+		place-items: center;
+		min-width: 30px;
+		height: 30px;
+		padding: 0 6px;
+		border-radius: 999px;
+		background: var(--ink);
+		color: var(--nebbia);
+		font-family: var(--testo);
+		font-size: 0.875rem;
+		font-weight: 700;
+		transition: transform 0.18s var(--ease-out);
+	}
+	.borsa-tasto__n.salta {
+		transform: scale(1.25);
+	}
+	.borsa-tasto__n.vuota {
+		background: var(--lavanda);
+		color: var(--ink);
+	}
+	.menu-tasto {
+		display: none;
+		padding: 0 20px;
+	}
+	@media (max-width: 860px) {
+		.testata__nav {
+			display: none;
+		}
+		.menu-tasto {
+			display: inline-flex;
+		}
+	}
+	@media (max-width: 480px) {
+		.testata__in {
+			gap: 10px;
+		}
+		.testata__nome {
+			padding: 0 14px;
+			font-size: 1.35rem;
+		}
+		.borsa-tasto {
+			padding-left: 14px;
+		}
+		.menu-tasto {
+			padding: 0 14px;
+		}
+		.testata__azioni {
+			gap: 6px;
+		}
+	}
+
+	/* il pannello del menù mobile: ink a tutta larghezza, voci grandi in Cowboy */
+	.pannello {
+		position: fixed;
+		inset: 0;
+		width: 100%;
+		max-width: none;
+		height: 100%;
+		max-height: none;
+		margin: 0;
+		padding: 0 var(--gutter) 32px;
+		border: 0;
+		background: var(--ink);
+		color: var(--nebbia);
+		overflow-y: auto;
+		opacity: 0;
+		transform: translateY(-12px);
+		transition:
+			opacity 0.22s var(--ease-out),
+			transform 0.22s var(--ease-out),
+			overlay 0.22s allow-discrete,
+			display 0.22s allow-discrete;
+	}
+	.pannello[open] {
+		opacity: 1;
+		transform: none;
+	}
+	@starting-style {
+		.pannello[open] {
+			opacity: 0;
+			transform: translateY(-12px);
+		}
+	}
+	.pannello::backdrop {
+		background: var(--ink);
+	}
+	.pannello__chiudi {
+		display: flex;
+		justify-content: flex-end;
+		padding-top: 12px;
+	}
+	.pannello__x {
+		width: 52px;
+		height: 52px;
+		border: 2px solid var(--nebbia);
+		border-radius: 999px;
+		background: none;
+		color: var(--nebbia);
+		font-size: 1.9rem;
+		line-height: 1;
+	}
+	.pannello__nav {
+		display: grid;
+		gap: 4px;
+		margin-top: 28px;
+	}
+	.pannello__nav a {
+		padding: 10px 0;
+		font-family: var(--titoli);
+		font-size: clamp(2.2rem, 11vw, 3.4rem);
+		line-height: 1;
+		text-decoration: none;
+	}
+	.pannello__nav a:nth-child(2n) {
+		color: var(--lavanda);
+	}
+	.pannello__nav a:nth-child(3) {
+		color: var(--pesca);
+	}
+	.pannello__nota {
+		margin-top: 36px;
+		font-size: 0.875rem;
+		color: var(--lavanda);
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.pannello {
+			transform: none;
+		}
+		.testata__nav a {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	import { conteggio, filtra, ridotto } from './stato';
+
+	const n = document.querySelector<HTMLElement>('[data-conta]');
+	const testo = document.querySelector<HTMLElement>('[data-conta-testo]');
+	let ultimo = conteggio();
+	const aggiorna = () => {
+		const c = conteggio();
+		if (n) {
+			n.textContent = String(c);
+			n.classList.toggle('vuota', c === 0);
+			if (c > ultimo && !ridotto()) {
+				n.classList.add('salta');
+				setTimeout(() => n.classList.remove('salta'), 180);
+			}
+		}
+		if (testo) testo.textContent = c === 0 ? ', empty' : `, ${c} ${c === 1 ? 'item' : 'items'}`;
+		ultimo = c;
+	};
+	aggiorna();
+	document.addEventListener('sr:borsa', aggiorna);
+
+	document.querySelector('[data-borsa]')?.addEventListener('click', () => document.dispatchEvent(new CustomEvent('sr:apri-borsa')));
+
+	const pannello = document.querySelector<HTMLDialogElement>('[data-pannello]');
+	document.querySelector('[data-menu]')?.addEventListener('click', () => pannello?.showModal());
+
+	document.querySelectorAll<HTMLAnchorElement>('[data-categoria]').forEach((a) => {
+		a.addEventListener('click', () => {
+			filtra({ categoria: a.dataset.categoria || '', originali: a.dataset.originali === '1' });
+			pannello?.close();
+		});
+	});
+</script>

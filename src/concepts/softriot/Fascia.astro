@@ -1,0 +1,72 @@
+---
+// Fascia di ritorno: dice che è una vetrina dimostrativa e porta all'hub o al contatto. Qui sta nel flusso e scorre
+// via con la pagina; la testata, che le sta sotto, resta poi appiccicata in cima.
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<aside class="fascia" aria-label="About this showcase">
+	<p class="fascia__testo">Demo showcase <span class="fascia__studio">concept by Loop Studio</span></p>
+	<nav class="fascia__link" aria-label="Showcases">
+		<a href={`${base}/`}>All showcases</a>
+		<a href="https://theloopstudio.org/contatti/?concept=softriot" class="fascia__cta">I want one like this</a>
+	</nav>
+</aside>
+
+<style>
+	.fascia {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
+		min-height: 34px;
+		padding: 0 var(--gutter);
+		background: var(--ink);
+		color: var(--nebbia);
+		font-weight: 560;
+		font-size: 0.8125rem;
+		white-space: nowrap;
+	}
+	.fascia__studio {
+		margin-left: 0.6em;
+		padding-left: 0.7em;
+		border-left: 1px solid rgb(236 230 255 / 0.4);
+		color: var(--lavanda);
+	}
+	.fascia__link {
+		display: flex;
+		gap: 24px;
+	}
+	.fascia a {
+		display: inline-flex;
+		align-items: center;
+		min-height: 34px;
+		text-decoration: none;
+		border-bottom: 2px solid transparent;
+	}
+	.fascia a:hover {
+		border-bottom-color: var(--mandarino);
+	}
+	.fascia__cta {
+		color: var(--mandarino);
+	}
+	.fascia :focus-visible {
+		outline-color: var(--mandarino);
+		outline-offset: -3px;
+	}
+	@media (max-width: 640px) {
+		.fascia__studio {
+			display: none;
+		}
+		.fascia__link {
+			gap: 16px;
+		}
+	}
+	@media (max-width: 460px) {
+		.fascia__testo {
+			display: none;
+		}
+		.fascia {
+			justify-content: center;
+		}
+	}
+</style>

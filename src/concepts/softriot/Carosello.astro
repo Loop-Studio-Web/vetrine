@@ -1,0 +1,417 @@
+---
+// L'hero: un carosello di quattro pezzi del marchio (i render in raso), un campo di colore pieno per slide, titolo
+// enorme in Cowboy, un solo bottone. Scorre con lo scroll-snap (sul telefono si striscia col dito); frecce e punti
+// sono grandi. Parte da solo ma si ferma al primo gesto, al passaggio del mouse, e c'è il tasto pausa.
+import { Image } from 'astro:assets';
+import { SLIDE, PRODOTTI, EURO } from './dati';
+
+const brand = import.meta.glob('../../assets/softriot/brand/*.webp', { eager: true, import: 'default' }) as Record<
+	string,
+	ImageMetadata
+>;
+const img = (nome: string) => brand[`../../assets/softriot/brand/${nome}.webp`];
+const slide = SLIDE.map((s) => {
+	const p = PRODOTTI.find((x) => x.id === s.prodotto)!;
+	return { ...s, p, foto: img(p.immagine) };
+});
+---
+
+<section class="hero" aria-roledescription="carousel" aria-label="New from Soft Riot" data-carosello>
+	<div class="hero__pista" data-pista tabindex="-1">
+		{
+			slide.map((s, i) => (
+				<article
+					class:list={['slide', i === 0 && 'slide--prima']}
+					style={`--a:${s.campo[0]};--b:${s.campo[1]};--m:${s.macchia};--t:var(--${s.inchiostro})`}
+					data-su-scuro={s.inchiostro === 'nebbia' ? '' : undefined}
+					aria-roledescription="slide"
+					aria-label={`${i + 1} of ${slide.length}`}
+					data-slide
+				>
+					<span class="slide__macchia" aria-hidden="true" />
+					<div class="slide__testo">
+						<h2 class="slide__titolo">{s.titolo}</h2>
+						<p class="slide__sotto">{s.testo}</p>
+						<div class="slide__azione">
+							<button type="button" class="btn slide__cta" data-apri={s.p.id}>
+								{s.cta}
+							</button>
+							<p class="slide__prezzo">{EURO(s.p.prezzo)}</p>
+						</div>
+					</div>
+					<Image
+						class={`slide__oggetto slide__oggetto--${s.oggetto}`}
+						src={s.foto}
+						alt={s.alt}
+						widths={[480, 720, 1000]}
+						sizes="(max-width: 899px) 92vw, 56vw"
+						quality={78}
+						loading={i === 0 ? 'eager' : 'lazy'}
+						fetchpriority={i === 0 ? 'high' : 'auto'}
+						decoding={i === 0 ? 'sync' : 'async'}
+					/>
+				</article>
+			))
+		}
+	</div>
+
+	<div class="hero__comandi">
+		<button type="button" class="giro" data-prec aria-label="Previous slide"><span aria-hidden="true">‹</span></button>
+		<button type="button" class="giro" data-succ aria-label="Next slide"><span aria-hidden="true">›</span></button>
+		<div class="punti" role="group" aria-label="Choose a slide">
+			{slide.map((s, i) => <button type="button" class="punto" data-punto={i} aria-label={`Slide ${i + 1}: ${s.titolo}`} />)}
+		</div>
+		<button type="button" class="pausa" data-pausa aria-pressed="false">Pause</button>
+	</div>
+	<p class="sr-only" aria-live="polite" data-annuncio></p>
+</section>
+
+<style>
+	.hero {
+		position: relative;
+		background: var(--lavanda);
+	}
+	.hero__pista {
+		display: flex;
+		overflow-x: auto;
+		scroll-snap-type: x mandatory;
+		scrollbar-width: none;
+		overscroll-behavior-x: contain;
+	}
+	.hero__pista::-webkit-scrollbar {
+		display: none;
+	}
+	.slide {
+		position: relative;
+		flex: 0 0 100%;
+		scroll-snap-align: start;
+		scroll-snap-stop: always;
+		display: grid;
+		align-items: center;
+		min-height: clamp(560px, 80svh, 800px);
+		padding: 56px var(--gutter) 132px;
+		overflow: clip;
+		color: var(--t);
+		background:
+			var(--grana),
+			radial-gradient(120% 90% at 85% 30%, color-mix(in oklch, var(--b) 80%, white) 0%, transparent 60%),
+			linear-gradient(115deg, var(--a), var(--b));
+	}
+	.slide__macchia {
+		position: absolute;
+		right: -8vw;
+		top: 4%;
+		width: min(58vw, 820px);
+		aspect-ratio: 1.15;
+		background: var(--m);
+		opacity: 0.9;
+		border-radius: 58% 42% 51% 49% / 46% 56% 44% 54%;
+		rotate: -8deg;
+	}
+	.slide__testo {
+		position: relative;
+		z-index: 2;
+		width: 100%;
+		max-width: var(--colonna);
+		margin-inline: auto;
+	}
+	.slide__titolo {
+		max-width: 46%;
+		font-family: var(--titoli);
+		font-weight: 400;
+		font-size: clamp(3.4rem, 7.6vw, 7.2rem);
+		line-height: 0.9;
+		letter-spacing: -0.015em;
+		text-wrap: balance;
+	}
+	.slide__sotto {
+		max-width: 26rem;
+		margin-top: 22px;
+		font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
+		line-height: 1.4;
+		font-weight: 520;
+	}
+	.slide__azione {
+		display: flex;
+		align-items: center;
+		gap: 22px;
+		margin-top: 30px;
+	}
+	.slide__prezzo {
+		font-family: var(--titoli-testo);
+		font-size: 1.5rem;
+	}
+	.slide[data-su-scuro] .btn {
+		border-color: var(--nebbia);
+	}
+	.slide[data-su-scuro] :focus-visible {
+		outline-color: var(--mandarino);
+	}
+	.slide__oggetto {
+		position: absolute;
+		z-index: 1;
+		height: auto;
+		filter: drop-shadow(0 28px 34px rgb(29 16 51 / 0.35));
+		pointer-events: none;
+	}
+	.slide__oggetto--set {
+		right: -1%;
+		bottom: 12%;
+		width: min(58vw, 880px);
+		rotate: -3deg;
+	}
+	.slide__oggetto--borsa {
+		right: 2%;
+		bottom: 11%;
+		width: min(50vw, 780px);
+		rotate: 3deg;
+	}
+	.slide__oggetto--muffole {
+		right: 4%;
+		bottom: 9%;
+		width: min(46vw, 700px);
+		rotate: -6deg;
+	}
+	.slide__oggetto--occhiali {
+		right: 0;
+		bottom: 18%;
+		width: min(58vw, 880px);
+		rotate: 4deg;
+	}
+
+	/* l'unico momento orchestrato: al caricamento il primo pezzo sale e il titolo lo segue */
+	@media (prefers-reduced-motion: no-preference) {
+		.slide--prima .slide__oggetto {
+			animation: sale 0.75s var(--ease-out) both;
+		}
+		.slide--prima .slide__titolo,
+		.slide--prima .slide__sotto,
+		.slide--prima .slide__azione {
+			animation: appare 0.55s var(--ease-out) both;
+		}
+		.slide--prima .slide__sotto {
+			animation-delay: 0.07s;
+		}
+		.slide--prima .slide__azione {
+			animation-delay: 0.14s;
+		}
+	}
+	@keyframes sale {
+		from {
+			opacity: 0;
+			transform: translateY(48px) scale(0.96);
+		}
+	}
+	@keyframes appare {
+		from {
+			opacity: 0;
+			transform: translateY(14px);
+		}
+	}
+
+	.hero__comandi {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 34px;
+		z-index: 5;
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		max-width: var(--max);
+		margin-inline: auto;
+		padding-inline: var(--gutter);
+		pointer-events: none;
+	}
+	.hero__comandi > * {
+		pointer-events: auto;
+	}
+	.giro {
+		display: grid;
+		place-items: center;
+		width: 56px;
+		height: 56px;
+		border: 2px solid var(--ink);
+		border-radius: 999px;
+		background: var(--bianco);
+		font-family: var(--titoli);
+		font-size: 2rem;
+		line-height: 1;
+		padding: 0 0 4px;
+		transition:
+			background-color 0.16s ease,
+			transform 0.16s var(--ease-out);
+	}
+	.giro:active {
+		transform: scale(0.94);
+	}
+	@media (hover: hover) and (pointer: fine) {
+		.giro:hover {
+			background: var(--mandarino);
+		}
+	}
+	.punti {
+		display: flex;
+		margin-left: 10px;
+	}
+	.punto {
+		position: relative;
+		width: 36px;
+		height: 44px;
+		border: 0;
+		background: none;
+		padding: 0;
+	}
+	.punto::before {
+		content: '';
+		position: absolute;
+		left: 4px;
+		right: 4px;
+		top: 50%;
+		height: 12px;
+		translate: 0 -50%;
+		border: 2px solid var(--ink);
+		border-radius: 999px;
+		background: var(--bianco);
+		box-shadow: 0 0 0 2px var(--nebbia);
+		transition:
+			background-color 0.2s ease,
+			scale 0.2s var(--ease-out);
+	}
+	.punto[aria-current='true']::before {
+		background: var(--ink);
+		scale: 1.12 1;
+	}
+	.pausa {
+		min-height: 44px;
+		margin-left: auto;
+		padding: 0 18px;
+		border: 2px solid var(--ink);
+		border-radius: 999px;
+		background: var(--bianco);
+		font-weight: 600;
+		font-size: 0.9375rem;
+	}
+	.pausa[hidden] {
+		display: none;
+	}
+
+	@media (max-width: 899px) {
+		.slide {
+			align-items: end;
+			min-height: 700px;
+			padding: 0 var(--gutter) 128px;
+		}
+		.slide__macchia {
+			top: 0;
+			right: -20vw;
+			width: 110vw;
+		}
+		.slide__titolo {
+			max-width: 100%;
+			font-size: clamp(3rem, 14vw, 4.6rem);
+		}
+		.slide__sotto {
+			margin-top: 14px;
+		}
+		.slide__azione {
+			margin-top: 20px;
+		}
+		.slide__oggetto {
+			width: 108vw !important;
+			right: -6vw !important;
+			top: 20px;
+			bottom: auto !important;
+		}
+		.slide__oggetto--occhiali,
+		.slide__oggetto--muffole {
+			top: 36px;
+		}
+		.pausa {
+			display: none;
+		}
+		.giro {
+			width: 52px;
+			height: 52px;
+		}
+	}
+</style>
+
+<script>
+	import { apriScheda, ridotto } from './stato';
+
+	const root = document.querySelector<HTMLElement>('[data-carosello]');
+	if (root) {
+		const pista = root.querySelector<HTMLElement>('[data-pista]')!;
+		const slide = [...root.querySelectorAll<HTMLElement>('[data-slide]')];
+		const punti = [...root.querySelectorAll<HTMLButtonElement>('[data-punto]')];
+		const pausa = root.querySelector<HTMLButtonElement>('[data-pausa]')!;
+		const annuncio = root.querySelector<HTMLElement>('[data-annuncio]')!;
+		let attuale = 0;
+		let fermo = ridotto();
+		let sopra = false;
+		let timer = 0;
+
+		const vai = (i: number, comportamento: ScrollBehavior = ridotto() ? 'auto' : 'smooth') => {
+			const n = (i + slide.length) % slide.length;
+			pista.scrollTo({ left: n * pista.clientWidth, behavior: comportamento });
+		};
+		const mostra = (i: number) => {
+			attuale = i;
+			punti.forEach((p, k) => p.setAttribute('aria-current', String(k === i)));
+			slide.forEach((s, k) => (s.inert = k !== i));
+			annuncio.textContent = fermo ? `Slide ${i + 1} of ${slide.length}` : '';
+		};
+
+		let attesa = 0;
+		pista.addEventListener(
+			'scroll',
+			() => {
+				cancelAnimationFrame(attesa);
+				attesa = requestAnimationFrame(() => {
+					const i = Math.round(pista.scrollLeft / pista.clientWidth);
+					if (i !== attuale) mostra(i);
+				});
+			},
+			{ passive: true },
+		);
+		addEventListener('resize', () => vai(attuale, 'auto'));
+
+		root.querySelector('[data-prec]')?.addEventListener('click', () => (ferma(), vai(attuale - 1)));
+		root.querySelector('[data-succ]')?.addEventListener('click', () => (ferma(), vai(attuale + 1)));
+		punti.forEach((p, i) => p.addEventListener('click', () => (ferma(), vai(i))));
+		root.querySelectorAll<HTMLElement>('[data-apri]').forEach((b) => b.addEventListener('click', () => apriScheda(b.dataset.apri!)));
+
+		const gira = () => {
+			clearInterval(timer);
+			if (!fermo && !sopra) timer = window.setInterval(() => vai(attuale + 1), 6500);
+		};
+		const ferma = () => {
+			fermo = true;
+			pausa.setAttribute('aria-pressed', 'true');
+			pausa.textContent = 'Play';
+			clearInterval(timer);
+		};
+		pausa.addEventListener('click', () => {
+			if (fermo) {
+				fermo = false;
+				pausa.setAttribute('aria-pressed', 'false');
+				pausa.textContent = 'Pause';
+				gira();
+			} else ferma();
+		});
+		root.addEventListener('pointerenter', () => ((sopra = true), clearInterval(timer)));
+		root.addEventListener('pointerleave', () => ((sopra = false), gira()));
+		root.addEventListener('focusin', () => clearInterval(timer));
+		pista.addEventListener('touchstart', ferma, { passive: true });
+
+		if (fermo) {
+			pausa.setAttribute('aria-pressed', 'true');
+			pausa.textContent = 'Play';
+		}
+		mostra(0);
+		gira();
+		// fuori vista non gira: niente scatti mentre si guarda il catalogo
+		new IntersectionObserver(([e]) => (e.isIntersecting ? gira() : clearInterval(timer)), { threshold: 0.3 }).observe(root);
+	}
+</script>

@@ -1,0 +1,147 @@
+---
+// Il piede: campo mandarino con il logo completo in raso (versione a lettere alternate) che sporge in alto, tre
+// colonne di fatti, i marchi dei pagamenti, la nota di vetrina e il credito allo studio.
+import { Image } from 'astro:assets';
+import logo from '../../assets/softriot/brand/logo-b.webp';
+import loopLogo from '../../assets/hub/loop-logo-on-light.svg';
+import Marchio from './Marchio.astro';
+import { SOGLIA_SPEDIZIONE } from './dati';
+const accettati = ['visa', 'mastercard', 'paypal', 'applepay', 'googlepay', 'klarna'];
+---
+
+<footer class="piede-pagina">
+	<div class="piede-pagina__in">
+		<div class="piede-pagina__logo">
+			<Image src={logo} alt="Soft Riot" width={420} quality={78} loading="lazy" />
+		</div>
+		<div class="piede-pagina__colonne">
+			<div>
+				<h2 class="piede-pagina__titolo">Shipping</h2>
+				<p>Free over €{SOGLIA_SPEDIZIONE}, €4.90 under. Dispatched in two working days.</p>
+			</div>
+			<div>
+				<h2 class="piede-pagina__titolo">Returns</h2>
+				<p>Thirty days to change your mind. Tags on, no questions.</p>
+			</div>
+			<div>
+				<h2 class="piede-pagina__titolo">Sizes</h2>
+				<p>XS to XL, cut generous. Shoes: S is 38–39, M 40–41, L 42–43.</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="piede-pagina__pagamenti">
+		<p>Pay with</p>
+		<div class="piede-pagina__marchi">{accettati.map((n) => <Marchio nome={n} />)}</div>
+	</div>
+
+	<p class="piede-pagina__nota">
+		Soft Riot is a made-up shop: a demo concept by Loop Studio. The pieces, prices, sizes and policies do not exist and nothing
+		here is for sale. The name is not a registered trademark. The four Soft Riot originals and the logo are 3D illustrations;
+		the other photos are stock images from Pexels (credits in the project). Payment brand marks belong to their owners and only
+		show what could be switched on: no payment is real. Apple Pay and Google Pay icons by{' '}
+		<a href="https://icons8.com" target="_blank" rel="noopener">Icons8<span class="sr-only"> (opens in a new tab)</span></a>. A real store would
+		have terms of sale, a withdrawal right and a privacy policy here.
+	</p>
+	<a class="piede-pagina__credito" href="https://theloopstudio.org/" target="_blank" rel="noopener">
+		<span>Site by</span>
+		<img src={loopLogo.src} width="84" height="44" alt="Loop Studio" />
+		<span class="sr-only">(opens in a new tab)</span>
+	</a>
+</footer>
+
+<style>
+	.piede-pagina {
+		position: relative;
+		padding: clamp(56px, 8vw, 100px) var(--gutter) 40px;
+		background:
+			var(--grana),
+			radial-gradient(90% 120% at 0% 0%, var(--pesca), transparent 65%),
+			var(--mandarino);
+		color: var(--ink);
+	}
+	.piede-pagina__in {
+		display: grid;
+		grid-template-columns: minmax(180px, 320px) 1fr;
+		align-items: center;
+		gap: clamp(24px, 6vw, 96px);
+		max-width: var(--colonna);
+		margin-inline: auto;
+	}
+	.piede-pagina__logo img {
+		width: 100%;
+		height: auto;
+		filter: drop-shadow(0 24px 28px rgb(29 16 51 / 0.35));
+		rotate: -3deg;
+	}
+	.piede-pagina__colonne {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 28px;
+	}
+	.piede-pagina__titolo {
+		margin-bottom: 8px;
+		font-family: var(--titoli);
+		font-weight: 400;
+		font-size: 1.75rem;
+		line-height: 1;
+	}
+	.piede-pagina__colonne p {
+		max-width: 18rem;
+		line-height: 1.45;
+	}
+	.piede-pagina__pagamenti {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 12px 16px;
+		max-width: var(--colonna);
+		margin: 48px auto 0;
+		font-weight: 600;
+	}
+	.piede-pagina__marchi {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+	}
+	.piede-pagina__nota {
+		max-width: var(--colonna);
+		margin: 24px auto 0;
+		font-size: 0.875rem;
+		line-height: 1.55;
+	}
+	.piede-pagina__nota a {
+		text-underline-offset: 3px;
+	}
+	.piede-pagina__credito {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		width: fit-content;
+		margin: 28px auto 0 max(0px, calc((100% - var(--colonna)) / 2));
+		font-size: 0.875rem;
+		font-weight: 600;
+		text-decoration: none;
+	}
+	.piede-pagina__credito img {
+		width: 84px;
+		height: auto;
+	}
+	@media (min-width: 861px) {
+		.piede-pagina__nota {
+			padding-right: 20%;
+		}
+	}
+	@media (max-width: 860px) {
+		.piede-pagina__in {
+			grid-template-columns: 1fr;
+		}
+		.piede-pagina__logo {
+			width: min(62vw, 260px);
+		}
+		.piede-pagina__colonne {
+			grid-template-columns: 1fr;
+			gap: 20px;
+		}
+	}
+</style>

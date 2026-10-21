@@ -1,0 +1,335 @@
+---
+// La scheda rapida: un <dialog> che si apre dal catalogo o dal carosello. A sinistra il capo intero nel suo campo di
+// colore, a destra nome, prezzo, taglie e il bottone. Si riempie da JS con i dati del catalogo (JSON della pagina).
+import { SOGLIA_SPEDIZIONE } from './dati';
+---
+
+<dialog class="scheda" data-scheda aria-labelledby="scheda-nome">
+	<form method="dialog" class="scheda__chiudi">
+		<button type="submit" class="scheda__x" aria-label="Close quick view"><span aria-hidden="true">×</span></button>
+	</form>
+	<div class="scheda__media" data-media>
+		<img src="" alt="" data-foto width="1000" height="1500" />
+	</div>
+	<div class="scheda__info">
+		<p class="scheda__tag" data-tag hidden>Soft Riot original</p>
+		<h2 class="scheda__nome" id="scheda-nome" data-nome></h2>
+		<p class="scheda__prezzo" data-prezzo></p>
+		<p class="scheda__testo" data-testo></p>
+		<p class="scheda__colori" data-colori></p>
+		<fieldset class="scheda__taglie">
+			<legend>Size</legend>
+			<div class="scheda__chips" data-taglie></div>
+			<p class="scheda__errore" role="alert" data-errore></p>
+		</fieldset>
+		<button type="button" class="btn scheda__aggiungi" data-aggiungi>Add to bag</button>
+		<p class="scheda__nota">Free shipping over €{SOGLIA_SPEDIZIONE}. 30 days to return it. Demo store: nothing ships.</p>
+	</div>
+</dialog>
+
+<style>
+	.scheda {
+		width: min(980px, calc(100vw - 32px));
+		max-width: none;
+		max-height: min(92svh, 760px);
+		margin: auto;
+		padding: 0;
+		border: 2px solid var(--ink);
+		border-radius: 28px;
+		background: var(--nebbia);
+		color: var(--ink);
+		overflow: hidden;
+		opacity: 0;
+		transform: translateY(12px) scale(0.97);
+		transition:
+			opacity 0.2s var(--ease-out),
+			transform 0.2s var(--ease-out),
+			overlay 0.2s allow-discrete,
+			display 0.2s allow-discrete;
+	}
+	.scheda[open] {
+		display: grid;
+		grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+		opacity: 1;
+		transform: none;
+	}
+	@starting-style {
+		.scheda[open] {
+			opacity: 0;
+			transform: translateY(12px) scale(0.97);
+		}
+	}
+	.scheda::backdrop {
+		background: rgb(29 16 51 / 0.62);
+		opacity: 0;
+		transition:
+			opacity 0.2s ease,
+			overlay 0.2s allow-discrete,
+			display 0.2s allow-discrete;
+	}
+	.scheda[open]::backdrop {
+		opacity: 1;
+	}
+	@starting-style {
+		.scheda[open]::backdrop {
+			opacity: 0;
+		}
+	}
+	.scheda__chiudi {
+		position: absolute;
+		top: 14px;
+		right: 14px;
+		z-index: 3;
+	}
+	.scheda__x {
+		display: grid;
+		place-items: center;
+		width: 48px;
+		height: 48px;
+		padding: 0 0 3px;
+		border: 2px solid var(--ink);
+		border-radius: 50%;
+		background: var(--bianco);
+		font-size: 1.8rem;
+		line-height: 1;
+		transition: transform 0.16s var(--ease-out);
+	}
+	.scheda__x:active {
+		transform: scale(0.94);
+	}
+	.scheda__media {
+		position: relative;
+		min-height: 420px;
+		background:
+			var(--grana),
+			var(--campo, var(--lavanda));
+		overflow: hidden;
+	}
+	.scheda__media img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.scheda__media.brand img {
+		object-fit: contain;
+		padding: 10% 4%;
+		filter: drop-shadow(0 22px 24px rgb(29 16 51 / 0.3));
+	}
+	.scheda__info {
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+		padding: 40px 36px 32px;
+		overflow-y: auto;
+	}
+	.scheda__tag {
+		align-self: flex-start;
+		padding: 4px 12px;
+		border-radius: 999px;
+		background: var(--mandarino);
+		font-weight: 650;
+		font-size: 0.875rem;
+	}
+	.scheda__nome {
+		padding-right: 52px;
+		font-family: var(--titoli);
+		font-weight: 400;
+		font-size: clamp(2rem, 3.4vw, 3rem);
+		line-height: 0.98;
+		text-wrap: balance;
+	}
+	.scheda__prezzo {
+		font-family: var(--titoli-testo);
+		font-size: 1.625rem;
+	}
+	.scheda__testo {
+		max-width: 32rem;
+		font-size: 1.0625rem;
+		line-height: 1.5;
+	}
+	.scheda__colori {
+		font-weight: 600;
+	}
+	.scheda__taglie {
+		margin: 0;
+		padding: 0;
+		border: 0;
+	}
+	.scheda__taglie legend {
+		padding: 0 0 8px;
+		font-weight: 600;
+	}
+	.scheda__chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+	.scheda__errore {
+		min-height: 1.4em;
+		margin-top: 8px;
+		color: var(--errore);
+		font-weight: 600;
+		font-size: 0.9375rem;
+	}
+	.scheda__aggiungi {
+		width: 100%;
+		min-height: 58px;
+		margin-top: auto;
+	}
+	.scheda__nota {
+		font-size: 0.875rem;
+		color: color-mix(in oklch, var(--ink) 78%, var(--nebbia));
+	}
+
+	@media (max-width: 760px) {
+		.scheda {
+			width: 100%;
+			max-height: 94svh;
+			margin: auto 0 0;
+			border-inline: 0;
+			border-bottom: 0;
+			border-radius: 28px 28px 0 0;
+			transform: translateY(40px);
+		}
+		.scheda[open] {
+			display: block;
+			overflow-y: auto;
+		}
+		@starting-style {
+			.scheda[open] {
+				transform: translateY(40px);
+			}
+		}
+		.scheda__media {
+			height: min(46svh, 420px);
+			min-height: 0;
+		}
+		.scheda__info {
+			padding: 22px var(--gutter) 28px;
+			overflow: visible;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.scheda {
+			transform: none;
+		}
+		@starting-style {
+			.scheda[open] {
+				transform: none;
+			}
+		}
+	}
+</style>
+
+<style is:global>
+	.taglia {
+		min-width: 52px;
+		min-height: 48px;
+		padding: 0 16px;
+		border: 2px solid var(--ink);
+		border-radius: 999px;
+		background: var(--bianco);
+		font-weight: 650;
+		transition:
+			background-color 0.14s ease,
+			color 0.14s ease,
+			transform 0.14s var(--ease-out);
+	}
+	.taglia:active {
+		transform: scale(0.96);
+	}
+	@media (hover: hover) and (pointer: fine) {
+		.taglia:hover {
+			background: var(--lavanda);
+		}
+	}
+	.taglia[aria-pressed='true'] {
+		background: var(--ink);
+		color: var(--nebbia);
+	}
+</style>
+
+<script>
+	import { aggiungi, apriBorsa, prodotti } from './stato';
+	import { EURO } from './dati';
+
+	const scheda = document.querySelector<HTMLDialogElement>('[data-scheda]');
+	if (scheda) {
+		const q = <T extends HTMLElement>(s: string) => scheda.querySelector<T>(s)!;
+		const media = q('[data-media]');
+		const foto = q<HTMLImageElement>('[data-foto]');
+		const tag = q('[data-tag]');
+		const nome = q('[data-nome]');
+		const prezzo = q('[data-prezzo]');
+		const testo = q('[data-testo]');
+		const colori = q('[data-colori]');
+		const taglie = q('[data-taglie]');
+		const errore = q('[data-errore]');
+		const aggiungiBtn = q<HTMLButtonElement>('[data-aggiungi]');
+		let corrente = '';
+		let scelta = '';
+
+		const segna = () => {
+			taglie.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.taglia === scelta)));
+		};
+
+		document.addEventListener('sr:scheda', (e) => {
+			const id = (e as CustomEvent<{ id: string }>).detail.id;
+			const p = prodotti()[id];
+			if (!p) return;
+			corrente = id;
+			scelta = p.taglie.length === 1 ? p.taglie[0] : '';
+			media.style.setProperty('--campo', p.campo);
+			media.classList.toggle('brand', p.originale);
+			foto.src = p.grande;
+			foto.alt = p.nome;
+			tag.hidden = !p.originale;
+			nome.textContent = p.nome;
+			prezzo.textContent = EURO(p.prezzo);
+			testo.textContent = p.testo;
+			colori.textContent = `Colour: ${p.colori.map((c) => c.nome.toLowerCase()).join(', ')}`;
+			errore.textContent = '';
+			taglie.replaceChildren(
+				...p.taglie.map((t) => {
+					const b = document.createElement('button');
+					b.type = 'button';
+					b.className = 'taglia';
+					b.dataset.taglia = t;
+					b.textContent = t;
+					b.setAttribute('aria-pressed', 'false');
+					return b;
+				}),
+			);
+			segna();
+			aggiungiBtn.textContent = `Add to bag, ${EURO(p.prezzo)}`;
+			scheda.showModal();
+			scheda.scrollTop = 0;
+		});
+
+		taglie.addEventListener('click', (e) => {
+			const b = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-taglia]');
+			if (!b) return;
+			scelta = b.dataset.taglia!;
+			errore.textContent = '';
+			segna();
+		});
+
+		aggiungiBtn.addEventListener('click', () => {
+			if (!scelta) {
+				errore.textContent = 'Choose a size to add it to your bag.';
+				taglie.querySelector<HTMLButtonElement>('button')?.focus();
+				return;
+			}
+			aggiungi(corrente, scelta);
+			scheda.close();
+			apriBorsa();
+		});
+
+		// un clic sullo sfondo scuro chiude
+		scheda.addEventListener('click', (e) => {
+			if (e.target === scheda) scheda.close();
+		});
+	}
+</script>

@@ -1,0 +1,442 @@
+---
+// La borsa: un cassetto laterale (sul telefono un foglio dal basso, dove arriva il pollice) con la barra della
+// spedizione gratuita, le righe con quantità, i totali, i marchi dei pagamenti e un ordine di prova: nessun
+// pagamento è reale.
+import { Image } from 'astro:assets';
+import cintura from '../../assets/softriot/brand/cintura-annodata.webp';
+import { SOGLIA_SPEDIZIONE } from './dati';
+import Marchio from './Marchio.astro';
+const pagamenti = ['visa', 'mastercard', 'paypal', 'applepay', 'googlepay', 'klarna'];
+---
+
+<dialog class="borsa" data-borsa-dialog aria-labelledby="borsa-titolo">
+	<div class="borsa__testa">
+		<h2 id="borsa-titolo" class="borsa__titolo">Your bag <span class="borsa__n" data-n></span></h2>
+		<form method="dialog">
+			<button type="submit" class="borsa__x" aria-label="Close your bag"><span aria-hidden="true">×</span></button>
+		</form>
+	</div>
+
+	<div class="borsa__corpo" data-corpo>
+		<div class="spedizione" data-spedizione>
+			<p class="spedizione__testo" data-sped-testo></p>
+			<div class="spedizione__barra" aria-hidden="true"><span data-sped-barra></span></div>
+		</div>
+
+		<ul class="righe" data-righe></ul>
+
+		<div class="vuota" data-vuota hidden>
+			<Image src={cintura} alt="" width={420} quality={72} class="vuota__img" loading="lazy" />
+			<p class="vuota__titolo">Nothing in here yet.</p>
+			<p>Pick a piece from the shop and it will wait for you here.</p>
+			<button type="button" class="btn" data-continua>Keep browsing</button>
+		</div>
+	</div>
+
+	<div class="piede" data-piede>
+		<dl class="totali">
+			<div><dt>Subtotal</dt><dd data-parziale></dd></div>
+			<div><dt>Shipping</dt><dd data-sped></dd></div>
+			<div class="totali__tot"><dt>Total</dt><dd data-totale></dd></div>
+		</dl>
+		<button type="button" class="btn btn--ink piede__cassa" data-cassa>Checkout, demo</button>
+		<div class="pagano">
+			<p>Pay with</p>
+			<div class="pagano__marchi">{pagamenti.map((n) => <Marchio nome={n} />)}</div>
+		</div>
+		<p class="piede__nota">Free shipping over €{SOGLIA_SPEDIZIONE}. Demo store: no payment is taken.</p>
+	</div>
+
+	<div class="ordine" data-ordine hidden>
+		<p class="ordine__titolo">Order placed.</p>
+		<p class="ordine__numero" data-numero></p>
+		<p>This is a demo: nothing was charged and nothing will ship. In a real store this is where the payment goes through and the confirmation email goes out.</p>
+		<button type="button" class="btn" data-fine>Back to the shop</button>
+	</div>
+</dialog>
+
+<style>
+	.borsa {
+		position: fixed;
+		inset: 0 0 0 auto;
+		width: min(440px, 100vw);
+		height: 100%;
+		max-height: none;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		border-left: 2px solid var(--ink);
+		background: var(--nebbia);
+		color: var(--ink);
+		overflow: hidden;
+		transform: translateX(100%);
+		transition:
+			transform 0.3s var(--ease-drawer),
+			overlay 0.3s allow-discrete,
+			display 0.3s allow-discrete;
+	}
+	.borsa[open] {
+		display: flex;
+		flex-direction: column;
+		transform: none;
+	}
+	@starting-style {
+		.borsa[open] {
+			transform: translateX(100%);
+		}
+	}
+	.borsa::backdrop {
+		background: rgb(29 16 51 / 0.55);
+		opacity: 0;
+		transition:
+			opacity 0.3s ease,
+			overlay 0.3s allow-discrete,
+			display 0.3s allow-discrete;
+	}
+	.borsa[open]::backdrop {
+		opacity: 1;
+	}
+	@starting-style {
+		.borsa[open]::backdrop {
+			opacity: 0;
+		}
+	}
+	.borsa__testa {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 18px 22px;
+		border-bottom: 2px solid var(--ink);
+	}
+	.borsa__titolo {
+		font-family: var(--titoli);
+		font-weight: 400;
+		font-size: 2rem;
+		line-height: 1;
+	}
+	.borsa__n {
+		font-family: var(--testo);
+		font-size: 1rem;
+		font-weight: 650;
+		vertical-align: middle;
+	}
+	.borsa__x {
+		display: grid;
+		place-items: center;
+		width: 48px;
+		height: 48px;
+		padding: 0 0 3px;
+		border: 2px solid var(--ink);
+		border-radius: 50%;
+		background: var(--bianco);
+		font-size: 1.8rem;
+		line-height: 1;
+	}
+	.borsa__corpo {
+		flex: 1;
+		min-height: 0;
+		overflow-y: auto;
+		padding: 18px 22px;
+	}
+	.spedizione {
+		display: grid;
+		gap: 10px;
+		margin-bottom: 18px;
+		padding: 14px 16px;
+		border-radius: 18px;
+		background: var(--lavanda);
+	}
+	.spedizione__testo {
+		font-weight: 650;
+		font-size: 0.9375rem;
+		line-height: 1.3;
+	}
+	.spedizione__barra {
+		height: 12px;
+		border: 2px solid var(--ink);
+		border-radius: 999px;
+		background: var(--bianco);
+		overflow: hidden;
+	}
+	.spedizione__barra span {
+		display: block;
+		height: 100%;
+		background: var(--mandarino);
+		transform-origin: left;
+		transform: scaleX(var(--p, 0));
+		transition: transform 0.4s var(--ease-out);
+	}
+	.vuota {
+		display: grid;
+		justify-items: start;
+		gap: 12px;
+		padding-top: 12px;
+	}
+	.vuota[hidden],
+	.spedizione[hidden],
+	.piede[hidden],
+	.ordine[hidden],
+	.borsa__corpo[hidden] {
+		display: none;
+	}
+	.vuota__img {
+		width: min(100%, 320px);
+		height: auto;
+		filter: drop-shadow(0 14px 14px rgb(29 16 51 / 0.25));
+	}
+	.vuota__titolo {
+		font-family: var(--titoli);
+		font-size: 2rem;
+		line-height: 1;
+	}
+	.piede {
+		padding: 16px 22px 22px;
+		border-top: 2px solid var(--ink);
+		background: var(--nebbia);
+	}
+	.totali {
+		display: grid;
+		gap: 6px;
+		margin: 0 0 14px;
+	}
+	.totali div {
+		display: flex;
+		justify-content: space-between;
+	}
+	.totali dt,
+	.totali dd {
+		margin: 0;
+	}
+	.totali__tot {
+		padding-top: 8px;
+		border-top: 2px solid var(--ink);
+		font-family: var(--titoli-testo);
+		font-size: 1.375rem;
+	}
+	.piede__cassa {
+		width: 100%;
+		min-height: 58px;
+	}
+	.pagano {
+		display: grid;
+		gap: 8px;
+		margin-top: 14px;
+		font-size: 0.875rem;
+		font-weight: 600;
+	}
+	.pagano__marchi {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+	}
+	.piede__nota {
+		margin-top: 12px;
+		font-size: 0.8125rem;
+	}
+	.ordine {
+		display: grid;
+		align-content: start;
+		justify-items: start;
+		gap: 14px;
+		padding: 28px 22px;
+	}
+	.ordine__titolo {
+		font-family: var(--titoli);
+		font-size: 2.8rem;
+		line-height: 0.95;
+	}
+	.ordine__numero {
+		padding: 4px 12px;
+		border-radius: 999px;
+		background: var(--mandarino);
+		font-weight: 700;
+	}
+
+	@media (max-width: 600px) {
+		.borsa {
+			inset: auto 0 0 0;
+			width: 100%;
+			height: auto;
+			max-height: 90svh;
+			border-left: 0;
+			border-top: 2px solid var(--ink);
+			border-radius: 28px 28px 0 0;
+			transform: translateY(100%);
+		}
+		@starting-style {
+			.borsa[open] {
+				transform: translateY(100%);
+			}
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.borsa,
+		.borsa[open] {
+			transition-duration: 0.01ms;
+		}
+	}
+</style>
+
+<style is:global>
+	.righe {
+		display: grid;
+		gap: 16px;
+	}
+	.riga {
+		display: grid;
+		grid-template-columns: 76px 1fr;
+		gap: 14px;
+	}
+	.riga__foto {
+		width: 76px;
+		height: 100px;
+		border-radius: 14px;
+		overflow: hidden;
+		background: var(--lavanda);
+	}
+	.riga__foto img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.riga__foto.brand img {
+		object-fit: contain;
+		padding: 6px;
+	}
+	.riga__nome {
+		font-weight: 650;
+		line-height: 1.2;
+	}
+	.riga__dettaglio {
+		font-size: 0.9375rem;
+	}
+	.riga__fondo {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 10px;
+		margin-top: 10px;
+	}
+	.quantita {
+		display: inline-flex;
+		align-items: center;
+		border: 2px solid var(--ink);
+		border-radius: 999px;
+		background: var(--bianco);
+	}
+	.quantita button {
+		width: 40px;
+		height: 40px;
+		border: 0;
+		background: none;
+		font-size: 1.25rem;
+		line-height: 1;
+		border-radius: 50%;
+	}
+	.quantita span {
+		min-width: 22px;
+		text-align: center;
+		font-weight: 650;
+	}
+	.riga__prezzo {
+		font-family: var(--titoli-testo);
+		font-size: 1.125rem;
+	}
+	.riga__togli {
+		margin-top: 6px;
+		padding: 4px 0;
+		border: 0;
+		background: none;
+		font-size: 0.875rem;
+		font-weight: 600;
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+</style>
+
+<script>
+	import { EURO, SOGLIA_SPEDIZIONE } from './dati';
+	import { borsa, cambia, conteggio, parziale, prodotti, spedizione, svuota } from './stato';
+
+	const d = document.querySelector<HTMLDialogElement>('[data-borsa-dialog]');
+	if (d) {
+		const q = <T extends HTMLElement>(s: string) => d.querySelector<T>(s)!;
+		const righe = q('[data-righe]');
+		const vuota = q('[data-vuota]');
+		const corpo = q('[data-corpo]');
+		const piede = q('[data-piede]');
+		const ordine = q('[data-ordine]');
+		const sped = q('[data-spedizione]');
+
+		const disegna = () => {
+			const lista = borsa();
+			const n = conteggio();
+			q('[data-n]').textContent = n ? `(${n})` : '';
+			righe.replaceChildren(
+				...lista.map((r) => {
+					const p = prodotti()[r.id];
+					const li = document.createElement('li');
+					li.className = 'riga';
+					li.innerHTML = `
+						<div class="riga__foto${p.originale ? ' brand' : ''}" style="background:${p.campo}"><img src="${p.piccola}" alt="" width="152" height="200" loading="lazy" /></div>
+						<div>
+							<p class="riga__nome">${p.nome}</p>
+							<p class="riga__dettaglio">Size ${r.taglia}</p>
+							<div class="riga__fondo">
+								<div class="quantita" role="group" aria-label="Quantity for ${p.nome}, size ${r.taglia}">
+									<button type="button" data-meno aria-label="One less">−</button>
+									<span aria-live="polite">${r.q}</span>
+									<button type="button" data-piu aria-label="One more">+</button>
+								</div>
+								<p class="riga__prezzo">${EURO(p.prezzo * r.q)}</p>
+							</div>
+							<button type="button" class="riga__togli" data-togli>Remove</button>
+						</div>`;
+					li.querySelector('[data-meno]')!.addEventListener('click', () => cambia(r.id, r.taglia, r.q - 1));
+					li.querySelector('[data-piu]')!.addEventListener('click', () => cambia(r.id, r.taglia, r.q + 1));
+					li.querySelector('[data-togli]')!.addEventListener('click', () => cambia(r.id, r.taglia, 0));
+					return li;
+				}),
+			);
+			const vuotaOra = n === 0;
+			vuota.hidden = !vuotaOra;
+			sped.hidden = vuotaOra;
+			piede.hidden = vuotaOra;
+
+			const p = parziale();
+			const s = spedizione(p);
+			q('[data-parziale]').textContent = EURO(p);
+			q('[data-sped]').textContent = s === 0 ? 'Free' : EURO(s);
+			q('[data-totale]').textContent = EURO(p + s);
+			const manca = SOGLIA_SPEDIZIONE - p;
+			q('[data-sped-testo]').textContent =
+				manca > 0 ? `${EURO(manca)} more and shipping is free.` : 'Shipping is free on this order.';
+			q('[data-sped-barra]').style.setProperty('--p', String(Math.min(1, p / SOGLIA_SPEDIZIONE)));
+		};
+
+		document.addEventListener('sr:borsa', disegna);
+		document.addEventListener('sr:apri-borsa', () => {
+			ordine.hidden = true;
+			corpo.hidden = false;
+			disegna();
+			if (!d.open) d.showModal();
+		});
+
+		q('[data-continua]').addEventListener('click', () => d.close());
+		q('[data-cassa]').addEventListener('click', () => {
+			q('[data-numero]').textContent = `Demo order SR-${String(Math.floor(1000 + Math.random() * 9000))}`;
+			corpo.hidden = true;
+			piede.hidden = true;
+			ordine.hidden = false;
+			svuota();
+			ordine.querySelector<HTMLElement>('[data-fine]')?.focus();
+		});
+		q('[data-fine]').addEventListener('click', () => {
+			d.close();
+		});
+		d.addEventListener('click', (e) => {
+			if (e.target === d) d.close();
+		});
+		disegna();
+	}
+</script>

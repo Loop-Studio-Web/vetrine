@@ -1,0 +1,710 @@
+---
+// Il catalogo: barra di filtri appiccicata, griglia irregolare di tessere. Ogni tessera è un campo di colore con una
+// finestra dalla forma diversa (pillola, arco, ovale, goccia, foglia) che mostra un ritaglio estremo del capo: al
+// passaggio del mouse, al fuoco da tastiera o, sul telefono, quando la tessera passa a metà schermo, la finestra si
+// allarga e rivela il capo intero. Un tocco apre la scheda rapida.
+import { Image, getImage } from 'astro:assets';
+import { PRODOTTI, CATEGORIE, TAGLIE, COLORI, EURO } from './dati';
+import type { Prodotto } from './dati';
+
+const foto = import.meta.glob('../../assets/softriot/foto/*.jpg', { eager: true, import: 'default' }) as Record<string, ImageMetadata>;
+const brand = import.meta.glob('../../assets/softriot/brand/*.webp', { eager: true, import: 'default' }) as Record<string, ImageMetadata>;
+// la tessera usa l'immagine "a quadro" (il pezzo già centrato nella misura della tessera); scheda e borsa l'originale
+const sorgente = (p: Prodotto, quadro = false) =>
+	p.originale
+		? brand[`../../assets/softriot/brand/${p.immagine}${quadro ? '-quadro' : ''}.webp`]
+		: foto[`../../assets/softriot/foto/${p.immagine}.jpg`];
+
+const campoCss = (p: Prodotto) => `linear-gradient(135deg, var(--${p.campo[0]}), var(--${p.campo[1]}))`;
+const angoli = [128, 152, 112, 168, 100, 140];
+
+const dati = await Promise.all(
+	PRODOTTI.map(async (p) => {
+		const piccola = await getImage({ src: sorgente(p, true), width: 640, format: 'webp', quality: 74 });
+		const grande = await getImage({ src: sorgente(p), width: 1000, format: 'webp', quality: 78 });
+		return {
+			id: p.id,
+			nome: p.nome,
+			prezzo: p.prezzo,
+			categoria: p.categoria,
+			colori: p.colori.map((c) => ({ chiave: c, ...COLORI[c] })),
+			taglie: p.taglie,
+			testo: p.testo,
+			piccola: piccola.src,
+			grande: grande.src,
+			originale: !!p.originale,
+			campo: campoCss(p),
+		};
+	}),
+);
+const json = JSON.stringify(dati).replace(/</g, '\\u003c');
+const coloriUsati = Object.keys(COLORI).filter((c) => PRODOTTI.some((p) => p.colori.includes(c)));
+---
+
+<section class="catalogo" id="shop" aria-labelledby="catalogo-titolo">
+	<div class="catalogo__in">
+		<div class="catalogo__testa">
+			<h2 id="catalogo-titolo" class="catalogo__titolo">All the pieces</h2>
+			<p class="catalogo__conta" aria-live="polite" data-conta>{PRODOTTI.length} pieces</p>
+		</div>
+	</div>
+
+	<div class="filtri" data-filtri>
+		<div class="filtri__in">
+			<div class="filtri__riga">
+				<div class="chips" role="group" aria-label="Category">
+					<button type="button" class="chip" data-cat="" aria-pressed="true">All</button>
+					{CATEGORIE.map((c) => <button type="button" class="chip" data-cat={c.chiave} aria-pressed="false">{c.nome}</button>)}
+					<button type="button" class="chip chip--orig" data-orig aria-pressed="false">Soft Riot originals</button>
+				</div>
+				<button type="button" class="filtri__apri" aria-expanded="false" aria-controls="filtri-altri" data-apri-filtri>
+					<span class="lungo">Size, colour, sort</span><span class="corto">Filters</span>
+				</button>
+			</div>
+			<div class="filtri__altri" id="filtri-altri" data-altri hidden>
+				<div class="gruppo" role="group" aria-label="Size">
+					<span class="gruppo__nome" aria-hidden="true">Size</span>
+					<div class="chips">
+						{TAGLIE.map((t) => <button type="button" class="chip chip--piccolo" data-taglia={t} aria-pressed="false">{t}</button>)}
+					</div>
+				</div>
+				<div class="gruppo" role="group" aria-label="Colour">
+					<span class="gruppo__nome" aria-hidden="true">Colour</span>
+					<div class="pallini">
+						{
+							coloriUsati.map((c) => (
+								<button type="button" class="pallino" data-colore={c} aria-pressed="false" aria-label={COLORI[c].nome} title={COLORI[c].nome} style={`--c:${COLORI[c].hex}`} />
+							))
+						}
+					</div>
+				</div>
+				<label class="gruppo gruppo--cerca">
+					<span class="gruppo__nome">Search</span>
+					<input type="search" class="campo" placeholder="Hat, jacket, bag…" data-cerca autocomplete="off" />
+				</label>
+				<label class="gruppo">
+					<span class="gruppo__nome">Sort</span>
+					<select class="campo" data-ordina>
+						<option value="">Our order</option>
+						<option value="su">Price, low to high</option>
+						<option value="giu">Price, high to low</option>
+					</select>
+				</label>
+				<button type="button" class="azzera" data-azzera>Clear filters</button>
+			</div>
+		</div>
+	</div>
+
+	<div class="catalogo__in">
+		<ul class="griglia" data-griglia>
+			{
+				PRODOTTI.map((p, i) => {
+					const src = sorgente(p, true);
+					return (
+						<li
+							class:list={['tessera', `tessera--${p.misura}`, `p-${p.posto ?? 'sx'}`, `f-${p.forma}`, p.originale && 'tessera--orig']}
+							style={`--a:var(--${p.campo[0]});--b:var(--${p.campo[1]});--ang:${angoli[i % angoli.length]}deg;--x:${p.taglio.x}%;--y:${p.taglio.y}%;--z:${p.taglio.zoom};--ordine:${i}`}
+							data-prodotto={p.id}
+							data-cat={p.categoria}
+							data-colori={p.colori.join(' ')}
+							data-taglie={p.taglie.join('|')}
+							data-prezzo={p.prezzo}
+							data-orig={p.originale ? '1' : undefined}
+							data-nome={p.nome.toLowerCase()}
+						>
+							<button type="button" class="tessera__tasto" data-apri={p.id} aria-haspopup="dialog">
+								<span class="sr-only">Quick view: {p.nome}, {EURO(p.prezzo)}</span>
+								<span class="finestra" aria-hidden="true">
+									<Image
+										src={src}
+										alt=""
+										widths={[480, 720, 1000]}
+										sizes="(max-width: 700px) 100vw, 760px"
+										quality={70}
+										loading={i < 4 ? 'eager' : 'lazy'}
+										decoding="async"
+										class:list={[p.originale && 'finestra__brand']}
+									/>
+								</span>
+								<span class="etichetta" aria-hidden="true">
+									<span class="etichetta__nome">{p.nome}</span>
+									<span class="etichetta__prezzo">{EURO(p.prezzo)}</span>
+								</span>
+							</button>
+						</li>
+					);
+				})
+			}
+		</ul>
+		<div class="vuoto" data-vuoto hidden>
+			<p class="vuoto__titolo">Nothing in that mix.</p>
+			<p>Try fewer filters, or start again from all the pieces.</p>
+			<button type="button" class="btn" data-azzera>Clear filters</button>
+		</div>
+	</div>
+
+	<script type="application/json" id="sr-dati" set:html={json} />
+</section>
+
+<style>
+	.catalogo {
+		padding-block: clamp(48px, 7vw, 96px) clamp(56px, 8vw, 110px);
+		background: var(--nebbia);
+	}
+	.catalogo__in {
+		max-width: var(--max);
+		margin-inline: auto;
+		padding-inline: var(--gutter);
+	}
+	.catalogo__testa {
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 20px;
+		margin-bottom: 28px;
+	}
+	.catalogo__titolo {
+		font-family: var(--titoli);
+		font-weight: 400;
+		font-size: clamp(2.8rem, 7.4vw, 6.4rem);
+		line-height: 0.92;
+		letter-spacing: -0.015em;
+	}
+	.catalogo__conta {
+		font-weight: 600;
+		padding-bottom: 8px;
+	}
+
+	/* barra dei filtri: appiccicata sotto la testata */
+	.filtri {
+		position: sticky;
+		top: var(--testata-h);
+		z-index: 40;
+		background: var(--nebbia);
+		border-block: 2px solid var(--ink);
+	}
+	.filtri__in {
+		max-width: var(--max);
+		margin-inline: auto;
+		padding: 10px var(--gutter);
+	}
+	.filtri__riga {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+	}
+	.chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+	.filtri__riga > .chips {
+		flex: 1;
+	}
+	.chip {
+		min-height: 40px;
+		padding: 0 16px;
+		border: 2px solid var(--ink);
+		border-radius: 999px;
+		background: var(--bianco);
+		font-weight: 600;
+		font-size: 0.9375rem;
+		white-space: nowrap;
+		transition:
+			background-color 0.14s ease,
+			color 0.14s ease,
+			transform 0.14s var(--ease-out);
+	}
+	.chip:active {
+		transform: scale(0.96);
+	}
+	@media (hover: hover) and (pointer: fine) {
+		.chip:hover {
+			background: var(--lavanda);
+		}
+	}
+	.chip[aria-pressed='true'] {
+		background: var(--ink);
+		color: var(--nebbia);
+	}
+	.chip--orig {
+		background: var(--mandarino);
+	}
+	@media (hover: hover) and (pointer: fine) {
+		.chip--orig:hover {
+			background: var(--pesca);
+		}
+	}
+	.chip--orig[aria-pressed='true'] {
+		background: var(--ink);
+	}
+	.chip--piccolo {
+		min-height: 36px;
+		padding: 0 13px;
+	}
+	.filtri__apri {
+		flex: none;
+		min-height: 40px;
+		padding: 0 18px;
+		border: 2px solid var(--ink);
+		border-radius: 999px;
+		background: none;
+		font-weight: 600;
+		font-size: 0.9375rem;
+	}
+	.filtri__apri .corto {
+		display: none;
+	}
+	.filtri__apri[aria-expanded='true'] {
+		background: var(--lavanda);
+	}
+	.filtri__altri {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		gap: 14px 28px;
+		padding-top: 14px;
+	}
+	.filtri__altri[hidden] {
+		display: none;
+	}
+	.gruppo {
+		display: grid;
+		gap: 6px;
+	}
+	.gruppo__nome {
+		font-size: 0.875rem;
+		font-weight: 600;
+	}
+	.pallini {
+		display: flex;
+		gap: 6px;
+	}
+	.pallino {
+		position: relative;
+		width: 36px;
+		height: 36px;
+		padding: 0;
+		border: 2px solid var(--ink);
+		border-radius: 50%;
+		background: var(--c);
+		transition: transform 0.14s var(--ease-out);
+	}
+	.pallino[aria-pressed='true'] {
+		box-shadow:
+			0 0 0 3px var(--nebbia),
+			0 0 0 5px var(--ink);
+	}
+	.pallino:active {
+		transform: scale(0.92);
+	}
+	.campo {
+		min-height: 40px;
+		padding: 0 14px;
+		border: 2px solid var(--ink);
+		border-radius: 999px;
+		background: var(--bianco);
+		font-size: 0.9375rem;
+	}
+	.gruppo--cerca .campo {
+		min-width: 14rem;
+	}
+	.azzera {
+		min-height: 40px;
+		padding: 0 6px;
+		border: 0;
+		background: none;
+		font-weight: 600;
+		font-size: 0.9375rem;
+		text-decoration: underline;
+		text-underline-offset: 4px;
+		text-decoration-thickness: 2px;
+	}
+
+	/* la griglia irregolare: sei colonne, tessere da due, qualche larga da quattro; i buchi li chiude "dense" */
+	.griglia {
+		--u: clamp(58px, 8.4vw, 118px);
+		--gap: clamp(10px, 1.4vw, 18px);
+		display: grid;
+		grid-template-columns: repeat(6, 1fr);
+		grid-auto-rows: var(--u);
+		grid-auto-flow: dense;
+		gap: var(--gap);
+		margin-top: 28px;
+	}
+	.tessera {
+		position: relative;
+		grid-column: span 2;
+		grid-row: span 5;
+		min-width: 0;
+		border-radius: 22px;
+		overflow: clip;
+		background:
+			var(--grana),
+			linear-gradient(var(--ang), var(--a), var(--b));
+		order: var(--ordine);
+	}
+	.griglia[hidden],
+	.tessera[hidden] {
+		display: none;
+	}
+	.tessera--s {
+		grid-row: span 4;
+	}
+	.tessera--m {
+		grid-row: span 5;
+	}
+	.tessera--t {
+		grid-row: span 6;
+	}
+	.tessera--l {
+		grid-column: span 4;
+		grid-row: span 4;
+	}
+	.tessera__tasto {
+		position: absolute;
+		inset: 0;
+		display: block;
+		width: 100%;
+		height: 100%;
+		padding: 0;
+		border: 0;
+		background: none;
+		text-align: left;
+		-webkit-tap-highlight-color: transparent;
+	}
+	.tessera__tasto:focus-visible {
+		outline-offset: -5px;
+	}
+
+	/* dove sta la finestra a riposo e che forma ha */
+	.p-sx {
+		--is: 6%;
+		--id: 34%;
+		--cx: 36%;
+	}
+	.p-cx {
+		--is: 20%;
+		--id: 20%;
+		--cx: 50%;
+	}
+	.p-dx {
+		--is: 34%;
+		--id: 6%;
+		--cx: 64%;
+	}
+	.f-pillola {
+		--ir: 999px;
+		--it: 7%;
+		--ib: 18%;
+		--cy: 44.5%;
+	}
+	.f-arco {
+		--ir: 999px 999px 22px 22px;
+		--it: 5%;
+		--ib: 17%;
+		--cy: 44%;
+	}
+	.f-ovale {
+		--ir: 50%;
+		--it: 8%;
+		--ib: 20%;
+		--cy: 44%;
+	}
+	.f-goccia {
+		--ir: 64% 36% 58% 42% / 54% 60% 40% 46%;
+		--it: 7%;
+		--ib: 18%;
+		--cy: 44.5%;
+	}
+	.f-foglia {
+		--ir: 78% 10% 78% 10%;
+		--it: 7%;
+		--ib: 18%;
+		--cy: 44.5%;
+	}
+	.finestra {
+		position: absolute;
+		inset: 0;
+		clip-path: inset(var(--it) var(--id) var(--ib) var(--is) round var(--ir));
+		transition: clip-path 0.36s var(--ease-out);
+	}
+	.finestra img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transform-origin: var(--x) var(--y);
+		transform: translate(calc(var(--cx) - var(--x)), calc(var(--cy) - var(--y))) scale(var(--z));
+		transition: transform 0.36s var(--ease-out);
+	}
+	.finestra img.finestra__brand {
+		filter: drop-shadow(0 16px 18px rgb(29 16 51 / 0.32));
+	}
+	/* sui pezzi di brand (ritagliati, senza sfondo) la finestra ha un fondo suo: senza, la forma non si leggerebbe */
+	.tessera--orig .finestra {
+		background: var(--nebbia);
+	}
+	.etichetta {
+		position: absolute;
+		left: 10px;
+		right: 10px;
+		bottom: 10px;
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 10px;
+		padding: 8px 14px;
+		border-radius: 16px;
+		background: var(--nebbia);
+		color: var(--ink);
+		line-height: 1.2;
+	}
+	.etichetta__nome {
+		font-weight: 650;
+		font-size: 0.9375rem;
+		text-wrap: balance;
+	}
+	.etichetta__prezzo {
+		font-family: var(--titoli-testo);
+		font-size: 1.0625rem;
+		white-space: nowrap;
+	}
+	.tessera--orig .etichetta {
+		background: var(--mandarino);
+	}
+
+	/* aperta: la finestra riempie la tessera e il capo si vede per intero */
+	.tessera__tasto:focus-visible .finestra,
+	.tessera.aperta .finestra {
+		clip-path: inset(0 round 22px);
+	}
+	.tessera__tasto:focus-visible .finestra img,
+	.tessera.aperta .finestra img {
+		transform: none;
+	}
+	@media (hover: hover) and (pointer: fine) {
+		.tessera__tasto:hover .finestra {
+			clip-path: inset(0 round 22px);
+		}
+		.tessera__tasto:hover .finestra img {
+			transform: none;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.finestra,
+		.finestra img {
+			transition-duration: 0.01ms;
+		}
+	}
+
+	.vuoto {
+		display: grid;
+		justify-items: start;
+		gap: 12px;
+		padding: 48px 0;
+	}
+	.vuoto[hidden] {
+		display: none;
+	}
+	.vuoto__titolo {
+		font-family: var(--titoli);
+		font-size: clamp(2rem, 5vw, 3.4rem);
+		line-height: 1;
+	}
+
+	@media (max-width: 1100px) {
+		.griglia {
+			grid-template-columns: repeat(4, 1fr);
+			--u: clamp(58px, 11vw, 118px);
+		}
+		.tessera--l {
+			grid-column: span 4;
+		}
+	}
+	@media (max-width: 700px) {
+		.griglia {
+			grid-template-columns: repeat(2, 1fr);
+			--u: 46px;
+		}
+		.tessera {
+			grid-column: span 1;
+			border-radius: 18px;
+		}
+		.tessera--s {
+			grid-row: span 5;
+		}
+		.tessera--m {
+			grid-row: span 6;
+		}
+		.tessera--t {
+			grid-row: span 7;
+		}
+		.tessera--l {
+			grid-column: span 2;
+			grid-row: span 6;
+		}
+		.etichetta {
+			left: 6px;
+			right: 6px;
+			bottom: 6px;
+			display: grid;
+			gap: 0;
+			padding: 6px 10px;
+			border-radius: 14px;
+		}
+		.etichetta__nome {
+			font-size: 0.8125rem;
+		}
+		.etichetta__prezzo {
+			font-size: 0.9375rem;
+		}
+		.catalogo__testa {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 6px;
+		}
+		.filtri__riga {
+			gap: 8px;
+		}
+		.filtri__riga > .chips {
+			min-width: 0;
+			flex-wrap: nowrap;
+			overflow-x: auto;
+			scrollbar-width: none;
+			margin-left: calc(var(--gutter) * -1);
+			padding-left: var(--gutter);
+		}
+		.filtri__riga > .chips::-webkit-scrollbar {
+			display: none;
+		}
+		.filtri__apri .lungo {
+			display: none;
+		}
+		.filtri__apri .corto {
+			display: inline;
+		}
+		.gruppo--cerca .campo {
+			min-width: 0;
+			width: 100%;
+		}
+		.gruppo--cerca {
+			flex: 1 1 100%;
+		}
+	}
+</style>
+
+<script>
+	import { apriScheda } from './stato';
+
+	const radice = document.querySelector<HTMLElement>('#shop');
+	if (radice) {
+		const tessere = [...radice.querySelectorAll<HTMLElement>('.tessera')];
+		const conta = radice.querySelector<HTMLElement>('[data-conta]')!;
+		const vuoto = radice.querySelector<HTMLElement>('[data-vuoto]')!;
+		const griglia = radice.querySelector<HTMLElement>('[data-griglia]')!;
+		const apri = radice.querySelector<HTMLButtonElement>('[data-apri-filtri]')!;
+		const altri = radice.querySelector<HTMLElement>('[data-altri]')!;
+		const cerca = radice.querySelector<HTMLInputElement>('[data-cerca]')!;
+		const ordina = radice.querySelector<HTMLSelectElement>('[data-ordina]')!;
+
+		const stato = { categoria: '', originali: false, taglia: '', colori: new Set<string>(), testo: '', ordine: '' };
+
+		const premuto = (el: Element, v: boolean) => el.setAttribute('aria-pressed', String(v));
+
+		const applica = () => {
+			let n = 0;
+			tessere.forEach((t) => {
+				const taglie = (t.dataset.taglie || '').split('|');
+				const colori = (t.dataset.colori || '').split(' ');
+				const ok =
+					(!stato.categoria || t.dataset.cat === stato.categoria) &&
+					(!stato.originali || t.dataset.orig === '1') &&
+					(!stato.taglia || taglie.some((x) => x === stato.taglia || x.split('/').includes(stato.taglia))) &&
+					(stato.colori.size === 0 || colori.some((c) => stato.colori.has(c))) &&
+					(!stato.testo || (t.dataset.nome || '').includes(stato.testo));
+				t.hidden = !ok;
+				if (ok) n++;
+				const prezzo = Number(t.dataset.prezzo);
+				const base = Number(t.style.getPropertyValue('--ordine'));
+				t.style.order = String(stato.ordine === 'su' ? prezzo : stato.ordine === 'giu' ? -prezzo : base);
+			});
+			conta.textContent = `${n} ${n === 1 ? 'piece' : 'pieces'}`;
+			vuoto.hidden = n > 0;
+			griglia.hidden = n === 0;
+			radice.querySelectorAll<HTMLElement>('[data-cat]').forEach((c) => {
+				if (c.classList.contains('chip')) premuto(c, c.dataset.cat === stato.categoria && !stato.originali);
+			});
+			premuto(radice.querySelector('[data-orig]')!, stato.originali);
+			radice.querySelectorAll<HTMLElement>('[data-taglia]').forEach((c) => premuto(c, c.dataset.taglia === stato.taglia));
+			radice.querySelectorAll<HTMLElement>('[data-colore]').forEach((c) => premuto(c, stato.colori.has(c.dataset.colore!)));
+		};
+
+		radice.querySelectorAll<HTMLElement>('.chip[data-cat]').forEach((c) =>
+			c.addEventListener('click', () => {
+				stato.categoria = c.dataset.cat || '';
+				stato.originali = false;
+				applica();
+			}),
+		);
+		radice.querySelector('[data-orig]')?.addEventListener('click', () => {
+			stato.originali = !stato.originali;
+			if (stato.originali) stato.categoria = '';
+			applica();
+		});
+		radice.querySelectorAll<HTMLElement>('[data-taglia]').forEach((c) =>
+			c.addEventListener('click', () => {
+				stato.taglia = stato.taglia === c.dataset.taglia ? '' : c.dataset.taglia!;
+				applica();
+			}),
+		);
+		radice.querySelectorAll<HTMLElement>('[data-colore]').forEach((c) =>
+			c.addEventListener('click', () => {
+				const k = c.dataset.colore!;
+				stato.colori.has(k) ? stato.colori.delete(k) : stato.colori.add(k);
+				applica();
+			}),
+		);
+		cerca.addEventListener('input', () => {
+			stato.testo = cerca.value.trim().toLowerCase();
+			applica();
+		});
+		ordina.addEventListener('change', () => {
+			stato.ordine = ordina.value;
+			applica();
+		});
+		radice.querySelectorAll('[data-azzera]').forEach((b) =>
+			b.addEventListener('click', () => {
+				Object.assign(stato, { categoria: '', originali: false, taglia: '', testo: '', ordine: '' });
+				stato.colori.clear();
+				cerca.value = '';
+				ordina.value = '';
+				applica();
+			}),
+		);
+		apri.addEventListener('click', () => {
+			const aperto = apri.getAttribute('aria-expanded') === 'true';
+			apri.setAttribute('aria-expanded', String(!aperto));
+			altri.hidden = aperto;
+		});
+
+		// i comandi della testata e del pannello mobile
+		document.addEventListener('sr:filtra', (e) => {
+			const d = (e as CustomEvent<{ categoria?: string; originali?: boolean }>).detail;
+			stato.categoria = d.categoria || '';
+			stato.originali = !!d.originali;
+			applica();
+		});
+
+		radice.querySelectorAll<HTMLElement>('[data-apri]').forEach((b) => b.addEventListener('click', () => apriScheda(b.dataset.apri!)));
+
+		// sul telefono non c'è il passaggio del mouse: la tessera si apre da sola quando sta a metà schermo
+		if (matchMedia('(hover: none)').matches && 'IntersectionObserver' in window) {
+			const io = new IntersectionObserver(
+				(voci) => voci.forEach((v) => v.target.classList.toggle('aperta', v.isIntersecting)),
+				{ rootMargin: '-34% 0px -34% 0px', threshold: 0 },
+			);
+			tessere.forEach((t) => io.observe(t));
+		}
+		applica();
+	}
+</script>

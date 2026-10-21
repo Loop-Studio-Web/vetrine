@@ -107,9 +107,16 @@ direttamente**: aprirli prima di prenderne spunto.
 Richiesta dell'autore (2026-10-19): **al prossimo progetto vetrina, prima di disegnare, aprire e leggere**
 https://www.testmuai.com/blog/web-design-trends/ . Contiene molte idee da cui prendere spunto.
 
-- Stato: pagina **non ancora letta né analizzata** (le immagini degli esempi non sono state estratte,
-  per scelta dell'autore: non farlo finché non lo chiede). Leggerla all'apertura del concept e
-  annotare qui sotto le direzioni utili.
+- Immagini scaricate (2026-10-21, su richiesta dell'autore) in
+  `C:\Users\utente\Pictures\Assets\Ispirational` (fuori dalla repo, solo riferimento, mai in `src/assets`):
+  26 screenshot dell'articolo, rinominati col numero e la tendenza (`01-forme-organiche` … `25-velocita-di-caricamento`;
+  `00-` è la testata). Le tendenze senza immagine nell'articolo (griglia, navigazioni animate, micro-interazioni,
+  video, scroll, cursori dinamici) vanno lette sul testo.
+- Stato: pagina **letta il 2026-10-21** per Soft Riot (E-commerce Evoluto). Direzioni utili annotate:
+  fotografia di prodotto estrema (ritagli che si allargano = gesto di Soft Riot), forme organiche (finestre
+  pillola/arco/cerchio al posto delle card), griglia irregolare, colori a contrasto e gradienti, tipografia
+  emotiva, nav asimmetrica e azioni primarie in basso su mobile. Scartate: 3D interattivo, hero solo testo,
+  cursori dinamici. Il testo è generico (nessuna indicazione per la moda).
 - Vale lo stesso criterio della sezione 4: prendere il principio, non copiare il layout, e
   confrontare con la matrice della sezione 1 (struttura / materia / gesto non si ripetono).
 
