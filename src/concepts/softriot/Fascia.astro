@@ -1,11 +1,14 @@
 ---
 // Fascia di ritorno: dice che è una vetrina dimostrativa e porta all'hub o al contatto. Qui sta nel flusso e scorre
-// via con la pagina; la testata, che le sta sotto, resta poi appiccicata in cima.
+// via con la pagina; la testata, che le sta sotto, resta poi appiccicata in cima. Al centro porta gli avvisi del
+// negozio (spedizione, resi): una sola riga sopra la testata invece di due.
+import { SOGLIA_SPEDIZIONE } from './dati';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <aside class="fascia" aria-label="About this showcase">
 	<p class="fascia__testo">Demo showcase <span class="fascia__studio">concept by Loop Studio</span></p>
+	<p class="fascia__avvisi">Free shipping over €{SOGLIA_SPEDIZIONE}<span>30 days to change your mind</span></p>
 	<nav class="fascia__link" aria-label="Showcases">
 		<a href={`${base}/`}>All showcases</a>
 		<a href="https://theloopstudio.org/contatti/?concept=softriot" class="fascia__cta">I want one like this</a>
@@ -32,6 +35,15 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 		border-left: 1px solid rgb(236 230 255 / 0.4);
 		color: var(--lavanda);
 	}
+	.fascia__avvisi {
+		color: var(--mandarino);
+		text-align: center;
+	}
+	.fascia__avvisi span::before {
+		content: '·';
+		margin: 0 0.8em;
+		color: var(--lavanda);
+	}
 	.fascia__link {
 		display: flex;
 		gap: 24px;
@@ -53,8 +65,18 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 		outline-color: var(--mandarino);
 		outline-offset: -3px;
 	}
-	@media (max-width: 640px) {
+	@media (max-width: 1180px) {
+		.fascia__avvisi span {
+			display: none;
+		}
+	}
+	@media (max-width: 900px) {
 		.fascia__studio {
+			display: none;
+		}
+	}
+	@media (max-width: 760px) {
+		.fascia__avvisi {
 			display: none;
 		}
 		.fascia__link {

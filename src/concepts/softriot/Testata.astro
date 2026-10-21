@@ -20,7 +20,7 @@ import { CATEGORIE } from './dati';
 		</button>
 		<a class="testata__nome" href="#main" aria-label="Soft Riot, back to the top">
 			<Image class="testata__esse" src={esse} alt="" width={64} quality={70} loading="eager" />
-			<Parola />
+			<Parola o="#d14a00" />
 		</a>
 		<div class="testata__azioni">
 			<button type="button" class="tondo tondo--testo account-tasto" data-account aria-haspopup="dialog">
@@ -266,6 +266,12 @@ import { CATEGORIE } from './dati';
 		border: 0;
 		border-radius: 50%;
 		background: none;
+		/* chiusa, la lente è solo disegno: il tocco va al campo che sta sotto e lo apre; da aperta invia la ricerca */
+		pointer-events: none;
+	}
+	.cerca:focus-within .cerca__tasto,
+	.cerca:has(.cerca__campo:not(:placeholder-shown)) .cerca__tasto {
+		pointer-events: auto;
 	}
 	.cerca:focus-within .cerca__campo,
 	.cerca__campo:not(:placeholder-shown) {
@@ -290,6 +296,9 @@ import { CATEGORIE } from './dati';
 		}
 		.cerca:hover .cerca__campo::placeholder {
 			color: color-mix(in oklch, var(--ink) 62%, white);
+		}
+		.cerca:hover .cerca__tasto {
+			pointer-events: auto;
 		}
 	}
 
@@ -673,6 +682,13 @@ import { CATEGORIE } from './dati';
 	// la cerca: il campo filtra il catalogo all'invio
 	const form = document.querySelector<HTMLFormElement>('[data-cerca-form]');
 	const campo = form?.querySelector<HTMLInputElement>('input');
+	// la lente a campo vuoto non invia nulla: porta il fuoco nel campo, così si può scrivere
+	form?.querySelector('.cerca__tasto')?.addEventListener('click', (e) => {
+		if (!campo?.value.trim()) {
+			e.preventDefault();
+			campo?.focus();
+		}
+	});
 	form?.addEventListener('submit', (e) => {
 		e.preventDefault();
 		filtra({ testo: campo?.value.trim() ?? '', azzera: true });

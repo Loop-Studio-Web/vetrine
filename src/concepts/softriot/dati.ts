@@ -70,7 +70,7 @@ export const PRODOTTI: Prodotto[] = [
 		campo: ['lavanda', 'pesca'],
 		forma: 'ovale',
 		misura: 'l',
-		taglio: { x: 59, y: 55, zoom: 2.1 },
+		taglio: { x: 50, y: 50, zoom: 1.5 },
 		nuovo: true,
 	},
 	{
@@ -86,7 +86,7 @@ export const PRODOTTI: Prodotto[] = [
 		campo: ['ink', 'ink2'],
 		forma: 'arco',
 		misura: 'm',
-		taglio: { x: 59, y: 40, zoom: 2.3 },
+		taglio: { x: 50, y: 50, zoom: 1.5 },
 		nuovo: true,
 	},
 	{
@@ -102,7 +102,7 @@ export const PRODOTTI: Prodotto[] = [
 		campo: ['mandarino', 'corallo'],
 		forma: 'goccia',
 		misura: 's',
-		taglio: { x: 47, y: 50, zoom: 2.2 },
+		taglio: { x: 50, y: 50, zoom: 1.5 },
 		nuovo: true,
 	},
 	{
@@ -118,7 +118,7 @@ export const PRODOTTI: Prodotto[] = [
 		campo: ['ink2', 'ink'],
 		forma: 'pillola',
 		misura: 's',
-		taglio: { x: 70, y: 46, zoom: 2.4 },
+		taglio: { x: 50, y: 50, zoom: 1.5 },
 		nuovo: true,
 	},
 	{
@@ -133,7 +133,7 @@ export const PRODOTTI: Prodotto[] = [
 		campo: ['lavanda', 'nebbia'],
 		forma: 'arco',
 		misura: 't',
-		taglio: { x: 56, y: 48, zoom: 2.1 },
+		taglio: { x: 62, y: 34, zoom: 1.5 },
 		posto: 'cx',
 	},
 	{
@@ -148,7 +148,7 @@ export const PRODOTTI: Prodotto[] = [
 		campo: ['pesca', 'corallo'],
 		forma: 'ovale',
 		misura: 'm',
-		taglio: { x: 55, y: 34, zoom: 2.2 },
+		taglio: { x: 53, y: 48, zoom: 1.8 },
 		posto: 'dx',
 	},
 	{
@@ -163,7 +163,7 @@ export const PRODOTTI: Prodotto[] = [
 		campo: ['mandarino', 'pesca'],
 		forma: 'pillola',
 		misura: 's',
-		taglio: { x: 36, y: 80, zoom: 1.9 },
+		taglio: { x: 50, y: 70, zoom: 1.5 },
 		posto: 'sx',
 	},
 	{
@@ -178,7 +178,7 @@ export const PRODOTTI: Prodotto[] = [
 		campo: ['lavanda', 'lavanda'],
 		forma: 'goccia',
 		misura: 'm',
-		taglio: { x: 26, y: 64, zoom: 2 },
+		taglio: { x: 38, y: 60, zoom: 1.6 },
 		posto: 'dx',
 	},
 	{
@@ -193,7 +193,7 @@ export const PRODOTTI: Prodotto[] = [
 		campo: ['corallo', 'mandarino'],
 		forma: 'foglia',
 		misura: 't',
-		taglio: { x: 40, y: 78, zoom: 2.1 },
+		taglio: { x: 45, y: 62, zoom: 1.5 },
 		posto: 'sx',
 	},
 	{
@@ -208,7 +208,7 @@ export const PRODOTTI: Prodotto[] = [
 		campo: ['ink', 'ink2'],
 		forma: 'ovale',
 		misura: 'm',
-		taglio: { x: 30, y: 60, zoom: 2.4 },
+		taglio: { x: 45, y: 50, zoom: 1.4 },
 		posto: 'cx',
 	},
 	{
@@ -223,7 +223,7 @@ export const PRODOTTI: Prodotto[] = [
 		campo: ['lavanda', 'lavanda'],
 		forma: 'pillola',
 		misura: 't',
-		taglio: { x: 40, y: 84, zoom: 2.2 },
+		taglio: { x: 42, y: 58, zoom: 1.4 },
 		posto: 'sx',
 	},
 	{
@@ -238,7 +238,7 @@ export const PRODOTTI: Prodotto[] = [
 		campo: ['pesca', 'mandarino'],
 		forma: 'arco',
 		misura: 's',
-		taglio: { x: 50, y: 14, zoom: 2.7 },
+		taglio: { x: 50, y: 38, zoom: 1.6 },
 		posto: 'dx',
 	},
 	{
@@ -253,7 +253,7 @@ export const PRODOTTI: Prodotto[] = [
 		campo: ['lavanda', 'nebbia'],
 		forma: 'goccia',
 		misura: 'm',
-		taglio: { x: 52, y: 52, zoom: 2.1 },
+		taglio: { x: 55, y: 58, zoom: 1.5 },
 		posto: 'cx',
 	},
 	{
@@ -268,7 +268,7 @@ export const PRODOTTI: Prodotto[] = [
 		campo: ['corallo', 'pesca'],
 		forma: 'pillola',
 		misura: 's',
-		taglio: { x: 50, y: 56, zoom: 1.9 },
+		taglio: { x: 52, y: 56, zoom: 1.5 },
 		posto: 'sx',
 	},
 	{
@@ -283,7 +283,7 @@ export const PRODOTTI: Prodotto[] = [
 		campo: ['ink', 'ink2'],
 		forma: 'foglia',
 		misura: 'm',
-		taglio: { x: 54, y: 42, zoom: 2.3 },
+		taglio: { x: 50, y: 58, zoom: 1.5 },
 		posto: 'dx',
 	},
 	{
@@ -298,7 +298,7 @@ export const PRODOTTI: Prodotto[] = [
 		campo: ['lavanda', 'lavanda'],
 		forma: 'ovale',
 		misura: 't',
-		taglio: { x: 50, y: 66, zoom: 2.1 },
+		taglio: { x: 52, y: 56, zoom: 1.6 },
 		posto: 'sx',
 	},
 	{
@@ -313,7 +313,7 @@ export const PRODOTTI: Prodotto[] = [
 		campo: ['mandarino', 'corallo'],
 		forma: 'arco',
 		misura: 'm',
-		taglio: { x: 70, y: 76, zoom: 2 },
+		taglio: { x: 72, y: 62, zoom: 1.5 },
 		posto: 'cx',
 	},
 	{
@@ -328,7 +328,7 @@ export const PRODOTTI: Prodotto[] = [
 		campo: ['lavanda', 'pesca'],
 		forma: 'pillola',
 		misura: 't',
-		taglio: { x: 42, y: 38, zoom: 2.6 },
+		taglio: { x: 54, y: 38, zoom: 1.8 },
 		posto: 'sx',
 	},
 ];

@@ -17,6 +17,10 @@ const sorgente = (p: Prodotto, quadro = false) =>
 		? brand[`../../assets/softriot/brand/${p.immagine}${quadro ? '-quadro' : ''}.webp`]
 		: foto[`../../assets/softriot/foto/${p.immagine}.jpg`];
 
+// "XS–L" dalla prima all'ultima taglia; i pezzi a taglia unica dicono "One size"
+const misure = (p: Prodotto) =>
+	p.taglie.length === 1 ? p.taglie[0] : p.taglie.some((t) => t.includes('/')) ? p.taglie.join(' · ') : `${p.taglie[0]}–${p.taglie[p.taglie.length - 1]}`;
+
 const campoCss = (p: Prodotto) => `linear-gradient(135deg, var(--${p.campo[0]}), var(--${p.campo[1]}))`;
 const angoli = [128, 152, 112, 168, 100, 140];
 
@@ -109,8 +113,8 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 									<Image
 										src={src}
 										alt=""
-										widths={[480, 720, 1000]}
-										sizes="(max-width: 700px) 100vw, 760px"
+										widths={[360, 480, 720, 1000]}
+										sizes="(max-width: 700px) 56vw, (max-width: 1100px) 50vw, 34vw"
 										quality={70}
 										loading={i < 4 ? 'eager' : 'lazy'}
 										decoding="async"
@@ -123,7 +127,13 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 										<span class="invito__mouse">Click to see details</span>
 										<span class="invito__dito">Tap to see details</span>
 									</span>
-									<span class="etichetta__nome">{p.nome}</span>
+									<span class="etichetta__testo">
+										<span class="etichetta__nome">{p.nome}</span>
+										<span class="etichetta__meta">
+											<span class="pallini">{p.colori.map((c) => <i style={`background:${COLORI[c].hex}`} />)}</span>
+											<span class="etichetta__taglie">{misure(p)}</span>
+										</span>
+									</span>
 									<span class="etichetta__prezzo">{EURO(p.prezzo)}</span>
 								</span>
 							</button>
@@ -296,7 +306,7 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 		border-radius: 999px;
 		background: var(--mandarino);
 		transform: translateX(calc(var(--i) * 46px));
-		transition: transform 0.34s cubic-bezier(0.3, 1.3, 0.5, 1);
+		transition: transform 0.34s var(--ease-out);
 	}
 	.vista__b {
 		position: relative;
@@ -381,7 +391,7 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 		}
 	}
 	.tessera__tasto:focus-visible .invito,
-	.tessera.aperta .invito {
+	.tessera.invitata .invito {
 		opacity: 1;
 		translate: -50% 0;
 		transition-delay: 0.16s;
@@ -597,7 +607,7 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 		right: 10px;
 		bottom: 10px;
 		display: flex;
-		align-items: baseline;
+		align-items: center;
 		justify-content: space-between;
 		gap: 10px;
 		padding: 8px 14px;
@@ -606,10 +616,34 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 		color: var(--ink);
 		line-height: 1.2;
 	}
+	.etichetta__testo {
+		display: grid;
+		gap: 3px;
+		min-width: 0;
+	}
 	.etichetta__nome {
 		font-weight: 650;
 		font-size: 0.9375rem;
 		text-wrap: balance;
+	}
+	.etichetta__meta {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		font-size: 0.8125rem;
+		font-weight: 560;
+	}
+	.pallini {
+		display: inline-flex;
+	}
+	.pallini i {
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		box-shadow: inset 0 0 0 1px rgb(29 16 51 / 0.55);
+	}
+	.pallini i + i {
+		margin-left: -3px;
 	}
 	.etichetta__prezzo {
 		font-family: var(--titoli-testo);
@@ -659,6 +693,25 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 		line-height: 1;
 	}
 
+	/* pochi risultati (filtri stretti): tessere tutte della stessa altezza e della stessa larghezza, senza buchi a fianco.
+	   data-pochi = quante sono; nella vista "più grandi" (una per riga) non serve */
+	.griglia[data-pochi]:not([data-v='big']) .tessera {
+		grid-column: span var(--sp);
+		grid-row: span 5;
+	}
+	.griglia[data-pochi='1'][data-v],
+	.griglia[data-pochi='2'][data-v],
+	.griglia[data-pochi='4'][data-v] {
+		--n: 2;
+		--sp: 6;
+	}
+	.griglia[data-pochi='3'][data-v] {
+		--n: 3;
+		--sp: 4;
+	}
+	.griglia[data-pochi][data-v]:not([data-v='big']) {
+		--f: 0.3;
+	}
 	@media (max-width: 1100px) {
 		.griglia,
 		.griglia[data-v='mix'] {
@@ -715,12 +768,23 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 			right: 6px;
 			bottom: 6px;
 			display: grid;
-			gap: 0;
+			grid-template-columns: 1fr auto;
+			align-items: center;
+			gap: 0 6px;
 			padding: 6px 10px;
 			border-radius: 14px;
 		}
 		.etichetta__nome {
 			font-size: 0.8125rem;
+		}
+		.etichetta__taglie {
+			display: none;
+		}
+		.etichetta__testo {
+			display: contents;
+		}
+		.etichetta__nome {
+			grid-column: 1 / -1;
 		}
 		.invito {
 			bottom: calc(100% + 6px);
@@ -782,6 +846,19 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 			width: 100%;
 			padding: 0 6px 0 12px;
 			font-size: 0.875rem;
+		}
+		/* a metà lettura la barra si ritira sotto la testata (con la riga rapida) e torna scorrendo in su */
+		.filtri {
+			transition:
+				top 0.22s var(--ease-out),
+				transform 0.22s var(--ease-out);
+		}
+		:global(html.rapida-nascosta) .filtri.attaccata {
+			transform: translateY(calc(-100% - 2px));
+		}
+		.griglia[data-pochi='3'][data-v] {
+			--n: 2;
+			--sp: 6;
 		}
 		.azione {
 			width: 40px;
@@ -919,6 +996,8 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 			});
 			const testoConta = `${n} ${n === 1 ? 'piece' : 'pieces'}`;
 			conta.textContent = testoConta;
+			if (n > 0 && n <= 4) griglia.dataset.pochi = String(n);
+			else delete griglia.dataset.pochi;
 			vuoto.hidden = n > 0;
 			griglia.hidden = n === 0;
 			if (n === 0) {
@@ -1061,8 +1140,28 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 		// (anche sotto i 700 px: il DevTools "Responsive" cambia solo la larghezza e il mouse resta attivo)
 		if ('IntersectionObserver' in window) {
 			const senzaMouse = matchMedia('(hover: none), (max-width: 700px)');
+			// l'invito "Tap to see details" lo porta una tessera sola: fra quelle aperte, la più vicina al centro dello schermo
+			const invita = () => {
+				const centro = innerHeight / 2;
+				let migliore: HTMLElement | null = null;
+				let distanza = Infinity;
+				tessere.forEach((t) => {
+					t.classList.remove('invitata');
+					if (!t.classList.contains('aperta')) return;
+					const r = t.getBoundingClientRect();
+					const d = Math.abs(r.top + r.height / 2 - centro);
+					if (d < distanza) {
+						distanza = d;
+						migliore = t;
+					}
+				});
+				(migliore as HTMLElement | null)?.classList.add('invitata');
+			};
 			const io = new IntersectionObserver(
-				(voci) => voci.forEach((v) => senzaMouse.matches && v.target.classList.toggle('aperta', v.isIntersecting)),
+				(voci) => {
+					voci.forEach((v) => senzaMouse.matches && v.target.classList.toggle('aperta', v.isIntersecting));
+					invita();
+				},
 				{ rootMargin: '-34% 0px -34% 0px', threshold: 0 },
 			);
 			tessere.forEach((t) => io.observe(t));
@@ -1074,6 +1173,19 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 					io.observe(t);
 				});
 			});
+		}
+
+		// la barra sa quando è appiccicata (serve a ritirarla sul telefono, vedi CSS)
+		const barra = radice.querySelector<HTMLElement>('.filtri');
+		if (barra) {
+			let atteso = false;
+			const segna = () => {
+				atteso = false;
+				const top = parseFloat(getComputedStyle(barra).top) || 0;
+				barra.classList.toggle('attaccata', barra.getBoundingClientRect().top <= top + 1 && scrollY > 0);
+			};
+			addEventListener('scroll', () => !atteso && ((atteso = true), requestAnimationFrame(segna)), { passive: true });
+			segna();
 		}
 
 		// l'interruttore della griglia: più piccole / mix / più grandi (sul telefono "più piccole" vale come mix)

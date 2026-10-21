@@ -105,8 +105,8 @@ const accettati = ['visa', 'mastercard', 'paypal', 'applepay', 'googlepay', 'kla
 		gap: 6px;
 	}
 	.piede-pagina__nota {
-		max-width: var(--colonna);
-		margin: 24px auto 0;
+		max-width: min(var(--colonna), 72ch);
+		margin: 24px auto 0 max(0px, calc((100% - var(--colonna)) / 2));
 		font-size: 0.875rem;
 		line-height: 1.55;
 	}
@@ -128,8 +128,8 @@ const accettati = ['visa', 'mastercard', 'paypal', 'applepay', 'googlepay', 'kla
 		height: auto;
 	}
 	@media (min-width: 861px) {
-		.piede-pagina__nota {
-			padding-right: 20%;
+		.piede-pagina__in {
+			align-items: end;
 		}
 	}
 	@media (max-width: 860px) {

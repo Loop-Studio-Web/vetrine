@@ -17,6 +17,7 @@ const slide = SLIDE.map((s) => {
 ---
 
 <section class="hero" aria-roledescription="carousel" aria-label="New from Soft Riot" data-carosello>
+	<h1 class="sr-only">Soft Riot: quilted, knotted, loud clothes and accessories</h1>
 	<div class="hero__pista" data-pista tabindex="-1">
 		{
 			slide.map((s, i) => (
@@ -88,7 +89,7 @@ const slide = SLIDE.map((s) => {
 		scroll-snap-stop: always;
 		display: grid;
 		align-items: center;
-		min-height: clamp(540px, calc(100svh - 215px), 780px);
+		min-height: clamp(540px, calc(100svh - 190px), 760px);
 		padding: 56px var(--gutter) 132px;
 		overflow: clip;
 		color: var(--t);

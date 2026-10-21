@@ -89,8 +89,8 @@ Atelier Lumen (2, `lumen`), Aeterna (3, `aeterna`). Tech: FIXLAB (1, `fixlab`), 
 Scala Vera (3, `scalavera`). Eventi: Mala Hierba Flores (1, `malahierba`), Limonaia Aurelia (2, `limonaia`), Marrow & Knot (3, `marrowknot`). E-commerce: Chioma Saracena (1, `chioma`).
 Macro chiuse: Ristorazione, Benessere, Tech, Abitare, Eventi.
 
-**In lavorazione (2026-10-21): Soft Riot (E-commerce Evoluto, livello 2, EN, slug `softriot`)**: bozza APPROVATA dall'utente, commit locali; **prossimo passo: test finali**
-(Impeccable `detect` + `critique`, axe, Lighthouse), poi hub, sito madre, PSI online. Leggere prima `docs/concept/softriot.md`. Poi: E-commerce Editoriale (3, in spagnolo), Ospitalità, Animali, Legale
+**In lavorazione (2026-10-21): Soft Riot (E-commerce Evoluto, livello 2, EN, slug `softriot`)**: bozza APPROVATA, **test finali FATTI** (critique 27/40, axe 0, Lighthouse 91/99, correzioni applicate), commit locali;
+**prossimo passo: hub** (`data.ts`, `info.astro`, sitemap), sito madre, PSI online. Leggere prima `docs/concept/softriot.md`. Poi: E-commerce Editoriale (3, in spagnolo), Ospitalità, Animali, Legale
 (Motori e Sport in coda); settore medico escluso.
 
 **E-commerce e backend:** i livelli contano anche per il motore dietro il negozio; sull'hub si resta neutri (nessun nome di piattaforma né cifra, campo `backend` in `data.ts`). Le piattaforme si nominano SOLO nei documenti

@@ -10,7 +10,7 @@ import Icona from './Icona.astro';
 		<button type="submit" class="scheda__x" aria-label="Close quick view"><span aria-hidden="true">×</span></button>
 	</form>
 	<div class="scheda__media" data-media>
-		<img src="" alt="" data-foto width="1000" height="1500" />
+		<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" data-foto width="1000" height="1500" />
 	</div>
 	<div class="scheda__info">
 		<div class="scheda__riga">
@@ -23,13 +23,15 @@ import Icona from './Icona.astro';
 		<p class="scheda__prezzo" data-prezzo></p>
 		<p class="scheda__testo" data-testo></p>
 		<p class="scheda__colori" data-colori></p>
-		<fieldset class="scheda__taglie">
-			<legend>Size</legend>
-			<div class="scheda__chips" data-taglie></div>
-			<p class="scheda__errore" role="alert" data-errore></p>
-		</fieldset>
-		<button type="button" class="btn scheda__aggiungi" data-aggiungi><Icona nome="carrello" /><span data-aggiungi-testo>Add to bag</span></button>
 		<p class="scheda__nota">Free shipping over €{SOGLIA_SPEDIZIONE}. 30 days to return it. Demo store: nothing ships.</p>
+		<div class="scheda__azione">
+			<fieldset class="scheda__taglie">
+				<legend>Size</legend>
+				<div class="scheda__chips" data-taglie></div>
+				<p class="scheda__errore" role="alert" data-errore></p>
+			</fieldset>
+			<button type="button" class="btn scheda__aggiungi" data-aggiungi><Icona nome="carrello" /><span data-aggiungi-testo>Add to bag</span></button>
+		</div>
 	</div>
 </dialog>
 
@@ -218,7 +220,12 @@ import Icona from './Icona.astro';
 		min-height: 58px;
 		margin-top: auto;
 	}
+	/* taglie e bottone stanno in un blocco solo: sul desktop si dissolve nella colonna, sul telefono resta in basso */
+	.scheda__azione {
+		display: contents;
+	}
 	.scheda__nota {
+		order: 2;
 		font-size: 0.875rem;
 		color: color-mix(in oklch, var(--ink) 78%, var(--nebbia));
 	}
@@ -243,12 +250,34 @@ import Icona from './Icona.astro';
 			}
 		}
 		.scheda__media {
-			height: min(46svh, 420px);
+			height: min(40svh, 380px);
 			min-height: 0;
 		}
 		.scheda__info {
 			padding: 22px var(--gutter) 28px;
 			overflow: visible;
+		}
+		/* taglia e bottone restano appiccicati al bordo basso del foglio: sul telefono non vanno cercati sotto la piega */
+		.scheda__azione {
+			position: sticky;
+			bottom: 0;
+			z-index: 2;
+			display: grid;
+			gap: 10px;
+			margin: 0 calc(var(--gutter) * -1) -28px;
+			padding: 12px var(--gutter) calc(14px + env(safe-area-inset-bottom, 0px));
+			border-top: 2px solid var(--ink);
+			background: var(--nebbia);
+		}
+		.scheda__errore {
+			min-height: 0;
+			margin-top: 4px;
+		}
+		.scheda__errore:empty {
+			display: none;
+		}
+		.scheda__taglie legend {
+			padding-bottom: 6px;
 		}
 	}
 	@media (prefers-reduced-motion: reduce) {
