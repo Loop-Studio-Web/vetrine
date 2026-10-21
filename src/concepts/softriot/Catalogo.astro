@@ -1058,12 +1058,22 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 		);
 
 		// sul telefono non c'è il passaggio del mouse: la tessera si apre da sola quando sta a metà schermo
-		if (matchMedia('(hover: none)').matches && 'IntersectionObserver' in window) {
+		// (anche sotto i 700 px: il DevTools "Responsive" cambia solo la larghezza e il mouse resta attivo)
+		if ('IntersectionObserver' in window) {
+			const senzaMouse = matchMedia('(hover: none), (max-width: 700px)');
 			const io = new IntersectionObserver(
-				(voci) => voci.forEach((v) => v.target.classList.toggle('aperta', v.isIntersecting)),
+				(voci) => voci.forEach((v) => senzaMouse.matches && v.target.classList.toggle('aperta', v.isIntersecting)),
 				{ rootMargin: '-34% 0px -34% 0px', threshold: 0 },
 			);
 			tessere.forEach((t) => io.observe(t));
+			// se la condizione cambia (rotazione, DevTools) si riparte da zero: le tessere si riaprono rilevando di nuovo
+			senzaMouse.addEventListener('change', () => {
+				tessere.forEach((t) => {
+					t.classList.remove('aperta');
+					io.unobserve(t);
+					io.observe(t);
+				});
+			});
 		}
 
 		// l'interruttore della griglia: più piccole / mix / più grandi (sul telefono "più piccole" vale come mix)
