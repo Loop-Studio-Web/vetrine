@@ -56,6 +56,12 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 
 	<div class="filtri" data-filtri>
 		<div class="filtri__in">
+			<form class="cerca-barra" role="search" aria-label="Search the shop" data-cerca-barra>
+				<label class="sr-only" for="cerca-barra">Search the shop</label>
+				<Icona nome="cerca" />
+				<input id="cerca-barra" type="search" placeholder="Search" autocomplete="off" enterkeyhint="search" data-cerca-sinc />
+				<button type="button" class="cerca-barra__x" aria-label="Clear search" hidden><Icona nome="chiudi" /></button>
+			</form>
 			<div class="chips" role="group" aria-label="Category">
 				<button type="button" class="chip" data-barra-cat="" aria-pressed="true">All</button>
 				{CATEGORIE.map((c) => <button type="button" class="chip" data-barra-cat={c.chiave} aria-pressed="false">{c.nome}</button>)}
@@ -82,7 +88,7 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 					</select>
 				</label>
 				<button type="button" class="filtro-tasto" data-apri-filtri aria-haspopup="dialog">
-					<Icona nome="filtri" /><span>Filter</span><span class="filtro-tasto__n" data-filtri-n hidden>0</span>
+					<Icona nome="filtri" /><span class="filtro-tasto__testo">Filter</span><span class="filtro-tasto__n" data-filtri-n hidden>0</span>
 				</button>
 			</div>
 		</div>
@@ -239,6 +245,9 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 	}
 	.filtri.attaccata .filtri__in::before {
 		opacity: 1;
+	}
+	.cerca-barra {
+		display: none;
 	}
 	.chips {
 		flex: 1;
@@ -848,43 +857,101 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 			align-items: flex-start;
 			gap: 6px;
 		}
-		/* sul telefono la barra va su due righe: le categorie in alto, sotto "Filter" e l'ordine a tutta larghezza (pollice) */
+		/* sul telefono la barra è una riga sola: campo di ricerca, vista della griglia e Filter (cerchio con la sola icona).
+		   Le categorie stanno nel menù e nel cassetto, l'ordine nel cassetto */
 		.filtri__in {
-			flex-wrap: wrap;
+			flex-wrap: nowrap;
 			gap: 8px;
 			padding-block: 12px;
 		}
-		.chips {
-			flex: 1 1 100%;
-			margin-left: calc(var(--gutter) * -1);
-			margin-right: calc(var(--gutter) * -1);
-			padding-inline: var(--gutter);
+		.chips,
+		.ordina {
+			display: none;
 		}
 		.filtri__destra {
-			flex: 1 1 100%;
-		}
-		.filtro-tasto {
-			order: -1;
 			flex: none;
-			padding: 0 16px 0 12px;
 			gap: 8px;
 		}
-		.ordina {
+		.filtro-tasto {
+			position: relative;
+			justify-content: center;
+			width: 46px;
+			padding: 0;
+		}
+		.filtro-tasto__testo {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			overflow: hidden;
+			clip-path: inset(50%);
+			white-space: nowrap;
+		}
+		.filtro-tasto__n {
+			position: absolute;
+			top: -7px;
+			right: -7px;
+			border: 2px solid var(--ink);
+		}
+		.cerca-barra {
+			position: relative;
 			flex: 1;
 			min-width: 0;
+			display: block;
 		}
-		.ordina select {
+		.cerca-barra :global(.icona:first-of-type) {
+			position: absolute;
+			left: 14px;
+			top: 50%;
+			translate: 0 -50%;
+			width: 1.25rem;
+			height: 1.25rem;
+			pointer-events: none;
+		}
+		.cerca-barra input {
 			width: 100%;
-			padding: 0 6px 0 12px;
-			font-size: 0.875rem;
+			height: 46px;
+			padding: 0 44px 0 42px;
+			border: 2px solid var(--ink);
+			border-radius: 999px;
+			background: var(--bianco);
+			color: var(--ink);
+			font-size: 1rem;
 		}
-		/* a metà lettura la barra si ritira sotto la testata (con la riga rapida) e torna scorrendo in su */
+		.cerca-barra input::placeholder {
+			color: color-mix(in oklch, var(--ink) 62%, white);
+		}
+		.cerca-barra input::-webkit-search-cancel-button {
+			display: none;
+		}
+		.cerca-barra__x {
+			position: absolute;
+			right: 3px;
+			top: 50%;
+			translate: 0 -50%;
+			display: grid;
+			place-items: center;
+			width: 40px;
+			height: 40px;
+			padding: 0;
+			border: 0;
+			border-radius: 50%;
+			background: none;
+			color: var(--ink);
+		}
+		.cerca-barra__x[hidden] {
+			display: none;
+		}
+		.cerca-barra__x :global(.icona) {
+			width: 1.1rem;
+			height: 1.1rem;
+		}
+		/* a metà lettura la barra si ritira sotto la testata (con la riga rapida) e torna scorrendo in su; non si ritira mentre si scrive */
 		.filtri {
 			transition:
 				top 0.22s var(--ease-out),
 				transform 0.22s var(--ease-out);
 		}
-		:global(html.rapida-nascosta) .filtri.attaccata {
+		:global(html.rapida-nascosta) .filtri.attaccata:not(:focus-within) {
 			transform: translateY(calc(-100% - 2px));
 		}
 		.griglia[data-pochi='3'][data-v] {
@@ -1057,6 +1124,12 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 			premuto(fp('[data-pref]'), stato.preferiti);
 			pannello.querySelectorAll<HTMLElement>('[data-ord]').forEach((c) => premuto(c, (c.dataset.ord || '') === stato.ordine));
 			(fp('[data-fp-testo]') as HTMLInputElement).value = stato.testo;
+			// gli altri campi di ricerca (barra del telefono, testata, menù) mostrano lo stesso testo, tranne quello che si sta scrivendo
+			document.querySelectorAll<HTMLInputElement>('[data-cerca-sinc]').forEach((i) => {
+				if (i !== document.activeElement && i.value.trim() !== stato.testo) i.value = stato.testo;
+				const x = i.closest('form')?.querySelector<HTMLElement>('.cerca-barra__x');
+				if (x) x.hidden = !i.value;
+			});
 			minR.value = String(stato.min);
 			maxR.value = String(stato.max);
 			const span = limiti.max - limiti.min;
@@ -1203,6 +1276,33 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 					io.unobserve(t);
 					io.observe(t);
 				});
+			});
+		}
+
+		// il campo di ricerca della barra (telefono): filtra mentre si scrive, la × lo svuota, l'invio chiude solo la tastiera
+		const cercaBarra = radice.querySelector<HTMLFormElement>('[data-cerca-barra]');
+		if (cercaBarra) {
+			const campoB = cercaBarra.querySelector<HTMLInputElement>('input')!;
+			const croce = cercaBarra.querySelector<HTMLButtonElement>('.cerca-barra__x')!;
+			let attesaB: ReturnType<typeof setTimeout>;
+			campoB.addEventListener('input', () => {
+				croce.hidden = !campoB.value;
+				clearTimeout(attesaB);
+				attesaB = setTimeout(() => {
+					stato.testo = campoB.value.trim();
+					applica();
+				}, 140);
+			});
+			cercaBarra.addEventListener('submit', (e) => {
+				e.preventDefault();
+				campoB.blur();
+			});
+			croce.addEventListener('click', () => {
+				campoB.value = '';
+				croce.hidden = true;
+				stato.testo = '';
+				applica();
+				campoB.focus({ preventScroll: true });
 			});
 		}
 

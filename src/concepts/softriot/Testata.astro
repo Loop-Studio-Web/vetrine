@@ -31,7 +31,7 @@ import { CATEGORIE } from './dati';
 			</button>
 			<form class="cerca" role="search" data-cerca-form>
 				<label class="sr-only" for="cerca-testata">Search the shop</label>
-				<input id="cerca-testata" class="cerca__campo" type="search" placeholder="Search pieces" autocomplete="off" enterkeyhint="search" />
+				<input id="cerca-testata" class="cerca__campo" type="search" placeholder="Search pieces" autocomplete="off" enterkeyhint="search" data-cerca-sinc />
 				<button type="submit" class="cerca__tasto" aria-label="Search"><Icona nome="cerca" /></button>
 			</form>
 			<button type="button" class="tondo borsa-tasto" data-borsa aria-haspopup="dialog">
@@ -61,6 +61,11 @@ import { CATEGORIE } from './dati';
 <dialog class="pannello su-scuro" data-pannello aria-label="Menu">
 	<form method="dialog" class="pannello__chiudi">
 		<button type="submit" class="pannello__x" aria-label="Close menu"><Icona nome="chiudi" /></button>
+	</form>
+	<form class="pannello__cerca" role="search" aria-label="Search the shop" data-cerca-form>
+		<label class="sr-only" for="cerca-menu">Search the shop</label>
+		<input id="cerca-menu" type="search" placeholder="Search pieces" autocomplete="off" enterkeyhint="search" data-cerca-sinc />
+		<button type="submit" aria-label="Search"><Icona nome="cerca" /></button>
 	</form>
 	<nav class="pannello__nav" aria-label="Shop sections">
 		{CATEGORIE.map((c) => <a href="#shop" data-categoria={c.chiave}>{c.nome}</a>)}
@@ -411,19 +416,18 @@ import { CATEGORIE } from './dati';
 		.testata__nome {
 			justify-self: center;
 		}
-		/* il campo aperto si ferma prima del menù e del carrello: copre solo il nome */
-		.cerca:focus-within .cerca__campo,
-		.cerca__campo:not(:placeholder-shown) {
-			width: calc(100vw - 2 * var(--gutter) - 48px - 48px - 16px);
-		}
-		.cerca:focus-within .cerca__campo {
-			outline-offset: 2px;
-		}
 		.testata__esse {
 			display: none;
 		}
 		.testata__nome {
 			font-size: 1.9rem;
+		}
+	}
+
+	/* sul telefono la ricerca sta nella barra del catalogo e nel menù: la lente della testata non serve */
+	@media (max-width: 700px) {
+		.cerca {
+			display: none;
 		}
 	}
 
@@ -476,6 +480,41 @@ import { CATEGORIE } from './dati';
 		border-radius: 999px;
 		background: none;
 		color: var(--nebbia);
+	}
+	.pannello__cerca {
+		position: relative;
+		margin-top: 12px;
+	}
+	.pannello__cerca input {
+		width: 100%;
+		height: 56px;
+		padding: 0 60px 0 22px;
+		border: 2px solid var(--nebbia);
+		border-radius: 999px;
+		background: var(--nebbia);
+		color: var(--ink);
+		font-size: 1rem;
+	}
+	.pannello__cerca input::placeholder {
+		color: color-mix(in oklch, var(--ink) 62%, white);
+	}
+	.pannello__cerca input::-webkit-search-cancel-button {
+		display: none;
+	}
+	.pannello__cerca button {
+		position: absolute;
+		right: 6px;
+		top: 50%;
+		translate: 0 -50%;
+		display: grid;
+		place-items: center;
+		width: 44px;
+		height: 44px;
+		padding: 0;
+		border: 2px solid var(--ink);
+		border-radius: 50%;
+		background: var(--mandarino);
+		color: var(--ink);
 	}
 	.pannello__nav {
 		display: grid;
@@ -684,26 +723,27 @@ import { CATEGORIE } from './dati';
 		});
 	});
 
-	// la cerca: il campo filtra il catalogo all'invio
-	const form = document.querySelector<HTMLFormElement>('[data-cerca-form]');
-	const campo = form?.querySelector<HTMLInputElement>('input');
-	// la lente a campo vuoto non invia nulla: porta il fuoco nel campo, così si può scrivere
-	form?.querySelector('.cerca__tasto')?.addEventListener('click', (e) => {
-		if (!campo?.value.trim()) {
+	// le ricerche (testata, menù): all'invio filtrano il catalogo e portano lì. A campo vuoto la lente non invia nulla e porta
+	// il fuoco nel campo (preventScroll: dentro la testata appiccicata il fuoco "normale" riporta la pagina verso l'alto)
+	document.querySelectorAll<HTMLFormElement>('[data-cerca-form]').forEach((form) => {
+		const campo = form.querySelector<HTMLInputElement>('input')!;
+		form.querySelector('button[type="submit"]')?.addEventListener('click', (e) => {
+			if (!campo.value.trim()) {
+				e.preventDefault();
+				campo.focus({ preventScroll: true });
+			}
+		});
+		form.addEventListener('submit', (e) => {
 			e.preventDefault();
-			// preventScroll: dentro la testata appiccicata il fuoco "normale" riporta la pagina verso l'alto
-			campo?.focus({ preventScroll: true });
-		}
-	});
-	form?.addEventListener('submit', (e) => {
-		e.preventDefault();
-		if (!campo?.value.trim()) return; // invio a campo vuoto: niente da cercare, la pagina resta dov'è
-		filtra({ testo: campo?.value.trim() ?? '', azzera: true });
-		document.getElementById('shop')?.scrollIntoView({ behavior: ridotto() ? 'auto' : 'smooth' });
-		campo?.blur();
-	});
-	campo?.addEventListener('input', () => {
-		if (!campo.value) filtra({ testo: '' });
+			if (!campo.value.trim()) return;
+			pannello?.close();
+			filtra({ testo: campo.value.trim(), azzera: true });
+			document.getElementById('shop')?.scrollIntoView({ behavior: ridotto() ? 'auto' : 'smooth' });
+			campo.blur();
+		});
+		campo.addEventListener('input', () => {
+			if (!campo.value) filtra({ testo: '' });
+		});
 	});
 
 	// la riga rapida del telefono: compare scorrendo in su, sparisce scorrendo in giù. La barra dei filtri, appiccicata
