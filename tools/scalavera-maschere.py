@@ -80,7 +80,7 @@ if len(sys.argv) > 3:
     esc = esc.resize((W, H), Image.LANCZOS).filter(ImageFilter.MaxFilter(3))
     parete = ImageChops.subtract(parete, esc)
     dp = ImageDraw.Draw(parete)
-    dp.rectangle((.118 * W, .615 * H, .387 * W, .76 * H), fill=0)                  # nicchia
+    dp.rectangle((.1245 * W, .6145 * H, .382 * W, .7585 * H), fill=0)             # nicchia (solo l'apertura, il bordo si colora)
 parete = parete.filter(ImageFilter.MedianFilter(3)).filter(ImageFilter.GaussianBlur(0.8))
 mensola = Image.new('L', (W, H), 0)
 dm = ImageDraw.Draw(mensola)
@@ -120,8 +120,22 @@ if len(sys.argv) > 3:
     dt = ImageDraw.Draw(tav)
     G = lambda x, y: ((0.28 + x / 1300 * 0.70) * W * S, (0.82 + y / 418 * 0.18) * H * S)  # ritaglio del tavolo grande
     K = lambda x, y: ((0.72 + x / 1200 * 0.24) * W * S, (0.77 + y / 686 * 0.11) * H * S)  # ritaglio del tavolino
-    dt.polygon([G(*q) for q in [(62, 155), (100, 105), (200, 75), (300, 62), (450, 58), (600, 60), (700, 70), (780, 100), (825, 150), (835, 180),
+    # Piano grande: il poligono è solo una guida. Il bordo vero si prende dalla luminanza (il piano è più chiaro del pavimento):
+    # dentro resta pieno, in una fascia attorno al poligono vale solo ciò che è chiaro quanto il piano.
+    pb = Image.new('L', (W * S, H * S), 0)
+    ImageDraw.Draw(pb).polygon([G(*q) for q in [(62, 155), (100, 105), (200, 75), (300, 62), (450, 58), (600, 60), (700, 70), (780, 100), (825, 150), (835, 180),
                                 (820, 195), (750, 225), (650, 242), (550, 248), (450, 250), (300, 242), (200, 225), (110, 200), (70, 175)]], fill=255)
+    # bordo basso del piano, tracciato su un ritaglio più stretto (x 0-1300, y 0-295 = u 0.30-0.74, v 0.865-0.945)
+    R = lambda x, y: ((0.30 + x / 1300 * 0.44) * W * S, (0.865 + y / 295 * 0.08) * H * S)
+    ImageDraw.Draw(pb).polygon([R(*q) for q in [(100, 0), (55, 30), (38, 60), (45, 100), (100, 150), (200, 185), (300, 208), (400, 230), (500, 238), (600, 242), (700, 241), (800, 236), (900, 227),
+                                (1000, 212), (1100, 190), (1180, 165), (1250, 120), (1272, 70), (1250, 30), (1210, 0)]], fill=255)
+    pb = pb.resize((W, H), Image.LANCZOS)
+    lum_foto = im.convert('L')
+    chiaro = lum_foto.point(lambda v: max(0, min(255, int((v - 136) * 255 / 20))))
+    fascia = ImageChops.subtract(pb.filter(ImageFilter.MaxFilter(11)), pb.filter(ImageFilter.MinFilter(3)))
+    pb = ImageChops.lighter(pb.filter(ImageFilter.MinFilter(3)), ImageChops.multiply(fascia, chiaro))
+    tav_grande = pb.resize((W * S, H * S), Image.BILINEAR)
+    dt.bitmap((0, 0), tav_grande, fill=255)
     dt.polygon([G(*q) for q in [(338, 172), (338, 100), (370, 95), (372, 68), (425, 68), (428, 95), (490, 95), (512, 85), (515, 62), (555, 52), (600, 50), (665, 55), (690, 85), (704, 100), (704, 172)]], fill=0)
     dt.polygon([K(*q) for q in [(180, 200), (230, 165), (330, 145), (450, 135), (600, 132), (800, 138), (920, 160), (990, 190), (1010, 225),
                                 (1012, 270), (960, 320), (850, 342), (700, 350), (500, 345), (350, 335), (230, 310), (180, 270)]], fill=255)
