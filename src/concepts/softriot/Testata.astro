@@ -320,8 +320,16 @@ import { CATEGORIE } from './dati';
 	/* la riga rapida del telefono: quello che sul desktop sta a destra della testata (account, preferiti) */
 	.rapida {
 		display: none;
+		position: sticky;
+		top: var(--testata-h);
+		z-index: 90;
 		background: var(--lavanda);
 		border-bottom: 2px solid var(--ink);
+		transition: transform 0.22s var(--ease-out);
+	}
+	/* scorrendo in giù si nasconde sotto la testata, scorrendo in su torna (lo script mette la classe su <html>) */
+	:global(html.rapida-nascosta) .rapida {
+		transform: translateY(-100%);
 	}
 	.rapida > * {
 		flex: 1;
@@ -581,6 +589,9 @@ import { CATEGORIE } from './dati';
 		}
 	}
 	@media (prefers-reduced-motion: reduce) {
+		.rapida {
+			transition: none;
+		}
 		.pannello,
 		.account {
 			transform: none;
@@ -671,6 +682,42 @@ import { CATEGORIE } from './dati';
 	campo?.addEventListener('input', () => {
 		if (!campo.value) filtra({ testo: '' });
 	});
+
+	// la riga rapida del telefono: compare scorrendo in su, sparisce scorrendo in giù. La barra dei filtri, appiccicata
+	// sotto la testata, scende o sale della sua altezza (variabile --sotto)
+	const rapida = document.querySelector<HTMLElement>('.rapida');
+	if (rapida) {
+		const radice = document.documentElement;
+		let prima = scrollY;
+		let attesa = false;
+		const aggiorna = () => {
+			attesa = false;
+			const y = scrollY;
+			const visibile = getComputedStyle(rapida).display !== 'none';
+			if (!visibile) {
+				radice.classList.remove('rapida-nascosta');
+				radice.style.removeProperty('--sotto');
+				prima = y;
+				return;
+			}
+			if (y < 80 || y < prima - 6) radice.classList.remove('rapida-nascosta');
+			else if (y > prima + 6) radice.classList.add('rapida-nascosta');
+			radice.style.setProperty('--sotto', radice.classList.contains('rapida-nascosta') ? '0px' : `${rapida.offsetHeight}px`);
+			prima = y;
+		};
+		addEventListener(
+			'scroll',
+			() => {
+				if (!attesa) {
+					attesa = true;
+					requestAnimationFrame(aggiorna);
+				}
+			},
+			{ passive: true },
+		);
+		addEventListener('resize', aggiorna);
+		aggiorna();
+	}
 
 	// l'account di finta
 	const account = document.querySelector<HTMLDialogElement>('[data-account-dialog]');

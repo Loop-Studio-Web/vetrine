@@ -166,10 +166,11 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 	/* barra dei filtri: appiccicata sotto la testata. Le categorie restano a portata di dito; "Filter" apre il cassetto */
 	.filtri {
 		position: sticky;
-		top: var(--testata-h);
+		top: calc(var(--testata-h) + var(--sotto, 0px));
 		z-index: 40;
 		background: var(--nebbia);
 		border-block: 2px solid var(--ink);
+		transition: top 0.22s var(--ease-out);
 	}
 	.filtri__in {
 		display: flex;
