@@ -168,6 +168,34 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 					))}
 					</div>
 			</nav>
+			<div class="salta__stick" data-salta-stick>
+				<div class="salta__bar" data-salta-bar inert>
+					<div class="salta__row">
+						<p class="salta__cur">
+							<span class="salta__nome" data-salta-nome>{gruppi[0]?.nome}</span>
+							<span class="salta__pos" data-salta-pos aria-hidden="true">1/{gruppi.length + perStato.length}</span>
+						</p>
+						<button type="button" class="salta__tutte" aria-expanded="false" aria-controls="salta-sheet" data-salta-toggle>
+							Tutte
+							<svg viewBox="0 0 12 8" width="12" height="8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 1.5l5 5 5-5"></path></svg>
+						</button>
+					</div>
+					<nav class="salta__sheet" id="salta-sheet" aria-label="Tutte le categorie della via" data-salta-sheet inert>
+						{gruppi.map((g) => (
+							<a class="salta__link" href={`#via-${g.slug}`} data-via={`via-${g.slug}`} style={`--neon:${neonDi(g.slug)}`}>
+								<span class="salta__t">{g.nome}</span>
+								<span class="salta__n" aria-hidden="true">{g.live.length}</span>
+							</a>
+						))}
+						{perStato.map((g) => (
+							<a class="salta__link" href={`#via-${g.stato}`} data-via={`via-${g.stato}`} style={`--neon:${neonDi(g.stato)}`}>
+								<span class="salta__t">{g.titolo}</span>
+								<span class="salta__n" aria-hidden="true">{g.lista.length}</span>
+							</a>
+						))}
+					</nav>
+				</div>
+			</div>
 			{
 				gruppi.map((g, gi) => (
 					<div class="street__group" style={`--gd:${-((gi * 11 + 3) % 37)}s`}>
@@ -560,6 +588,157 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 		font-size: 0.7rem;
 		font-weight: 800;
 		letter-spacing: 0;
+	}
+	/* Telefono: a riposo la mini-nav è un quadro di insegne con tutte le categorie in vista (niente da scoprire
+	   scorrendo di lato); quando esce sotto l'header resta una barra a riga singola con la categoria corrente e il
+	   tasto "Tutte", che riapre il quadro a tendina. La barra sta in un contenitore alto 0 (sticky): comparendo
+	   non sposta niente. */
+	.salta__stick {
+		display: none;
+	}
+	@media (max-width: 699px) {
+		.salta {
+			position: static;
+		}
+		.salta__in {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			overflow: visible;
+		}
+		.salta__link {
+			justify-content: space-between;
+			gap: 6px;
+			min-width: 0;
+			padding: 6px 10px;
+			font-size: 0.72rem;
+			letter-spacing: 0.08em;
+		}
+		.salta__link:last-child:nth-child(odd) {
+			grid-column: 1 / -1;
+		}
+		.salta__stick {
+			display: block;
+			position: sticky;
+			top: 62px;
+			z-index: 41;
+			height: 0;
+			margin: 0 calc(50% - 50vw);
+		}
+		.salta__bar {
+			position: absolute;
+			inset: 0 0 auto;
+			padding: 8px 16px;
+			background: color-mix(in srgb, var(--bg) 78%, transparent);
+			-webkit-backdrop-filter: blur(14px) saturate(1.2);
+			backdrop-filter: blur(14px) saturate(1.2);
+			border-bottom: 1px solid var(--border);
+			opacity: 0;
+			visibility: hidden;
+			transform: translateY(-6px);
+			transition: opacity 0.2s ease-out, transform 0.2s ease-out, visibility 0s 0.2s;
+		}
+		.salta__bar.is-on {
+			opacity: 1;
+			visibility: visible;
+			transform: none;
+			transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+		}
+		.salta__row {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+		.salta__cur {
+			flex: 1;
+			min-width: 0;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			min-height: 40px;
+			margin: 0;
+			padding: 6px 12px;
+			border: 2px solid var(--neon, #fe3b30);
+			border-radius: 12px;
+			background: #0a0a0a;
+			color: var(--neon, #fe3b30);
+			font-size: 0.78rem;
+			font-weight: 800;
+			letter-spacing: 0.12em;
+			text-transform: uppercase;
+			text-shadow: 0 0 10px color-mix(in srgb, var(--neon, #fe3b30) 80%, transparent);
+			box-shadow: 0 0 14px color-mix(in srgb, var(--neon, #fe3b30) 50%, transparent), inset 0 0 10px color-mix(in srgb, var(--neon, #fe3b30) 28%, transparent);
+		}
+		.salta__nome {
+			flex: 1;
+			min-width: 0;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+		.salta__pos {
+			flex: none;
+			font-size: 0.7rem;
+			letter-spacing: 0.04em;
+			opacity: 0.75;
+		}
+		.salta__tutte {
+			flex: none;
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			min-height: 40px;
+			padding: 6px 14px;
+			border: 2px solid var(--border);
+			border-radius: 12px;
+			background: var(--bg);
+			color: var(--text, inherit);
+			font: inherit;
+			font-size: 0.78rem;
+			font-weight: 800;
+			letter-spacing: 0.12em;
+			text-transform: uppercase;
+			cursor: pointer;
+		}
+		.salta__tutte svg {
+			transition: transform 0.2s ease-out;
+		}
+		.salta__tutte[aria-expanded='true'] svg {
+			transform: rotate(180deg);
+		}
+		.salta__sheet {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 10px;
+			/* chiuso: altezza 0, così la barra è alta quanto la sola riga attiva */
+			max-height: 0;
+			overflow: hidden;
+			margin-top: 0;
+			opacity: 0;
+			visibility: hidden;
+			transition: max-height 0.22s ease-out, margin-top 0.22s ease-out, opacity 0.18s ease-out, visibility 0s 0.22s;
+		}
+		.salta__bar.is-open .salta__sheet {
+			max-height: calc(100svh - 62px - 70px);
+			overflow-y: auto;
+			margin-top: 10px;
+			padding-bottom: 4px;
+			opacity: 1;
+			visibility: visible;
+			transition: max-height 0.22s ease-out, margin-top 0.22s ease-out, opacity 0.18s ease-out;
+		}
+		.salta__sheet:not(:has(a)) {
+			display: none;
+		}
+		.salta__sheet .salta__link:last-child:nth-child(odd) {
+			grid-column: 1 / -1;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.salta__bar,
+		.salta__sheet,
+		.salta__tutte svg {
+			transition: none !important;
+		}
 	}
 	.street__tag {
 		scroll-margin-top: 170px;
@@ -1417,13 +1596,34 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 		const links = [...salta.querySelectorAll<HTMLAnchorElement>('.salta__link')];
 		const tag = links.map((l) => document.getElementById(l.dataset.via!));
 		const riga = salta.querySelector<HTMLElement>('.salta__in')!;
-		const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+		// telefono: barra a riga singola con la categoria corrente e il quadro "Tutte" a tendina
+		const stick = document.querySelector<HTMLElement>('[data-salta-stick]');
+		const bar = document.querySelector<HTMLElement>('[data-salta-bar]');
+		const sheet = document.querySelector<HTMLElement>('[data-salta-sheet]');
+		const toggle = document.querySelector<HTMLButtonElement>('[data-salta-toggle]');
+		const nome = document.querySelector<HTMLElement>('[data-salta-nome]');
+		const pos = document.querySelector<HTMLElement>('[data-salta-pos]');
+		const sheetLinks = sheet ? [...sheet.querySelectorAll<HTMLAnchorElement>('.salta__link')] : [];
+		const chiudi = () => {
+			if (!bar || !sheet || !toggle) return;
+			bar.classList.remove('is-open');
+			sheet.inert = true;
+			toggle.setAttribute('aria-expanded', 'false');
+		};
+const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
 		let corrente = -1;
 		const segna = (i: number) => {
 			if (i === corrente) return;
 			corrente = i;
-			links.forEach((l, k) => (k === i ? l.setAttribute('aria-current', 'location') : l.removeAttribute('aria-current')));
-			// su telefono la barra scorre: la voce attiva resta in vista
+			[links, sheetLinks].forEach((lista) =>
+				lista.forEach((l, k) => (k === i ? l.setAttribute('aria-current', 'location') : l.removeAttribute('aria-current'))),
+			);
+			if (bar && links[i]) {
+				bar.style.setProperty('--neon', links[i].style.getPropertyValue('--neon'));
+				if (nome) nome.textContent = links[i].querySelector('.salta__t')?.textContent ?? '';
+				if (pos) pos.textContent = `${i + 1}/${links.length}`;
+			}
+// su telefono la barra scorre: la voce attiva resta in vista
 			const l = links[i];
 			if (l && riga.scrollWidth > riga.clientWidth) {
 				riga.scrollTo({ left: l.offsetLeft - (riga.clientWidth - l.offsetWidth) / 2, behavior: ridotto ? 'auto' : 'smooth' });
@@ -1433,19 +1633,39 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 		// la posizione si calcola al clic e si ricontrolla a fine scroll.
 		const SOTTO = 170;
 		const quota = (t: HTMLElement) => t.getBoundingClientRect().top + scrollY - SOTTO;
-		links.forEach((l, i) =>
+		[...links, ...sheetLinks].forEach((l, n) => {
+			const i = n % links.length;
 			l.addEventListener('click', (e) => {
 				const t = tag[i];
 				if (!t) return;
 				e.preventDefault();
-				scrollTo({ top: quota(t), behavior: ridotto ? 'auto' : 'smooth' });
+				chiudi();
+scrollTo({ top: quota(t), behavior: ridotto ? 'auto' : 'smooth' });
 				const rifinisci = () => {
 					if (Math.abs(t.getBoundingClientRect().top - SOTTO) > 3) scrollTo({ top: quota(t), behavior: 'auto' });
 				};
 				if ('onscrollend' in window) addEventListener('scrollend', rifinisci, { once: true });
 				else setTimeout(rifinisci, 1200);
-			}),
-		);
+			});
+		});
+
+		if (bar && sheet && toggle) {
+			toggle.addEventListener('click', () => {
+				const apri = !bar.classList.contains('is-open');
+				bar.classList.toggle('is-open', apri);
+				sheet.inert = !apri;
+				toggle.setAttribute('aria-expanded', String(apri));
+			});
+			addEventListener('keydown', (e) => {
+				if (e.key === 'Escape' && bar.classList.contains('is-open')) {
+					chiudi();
+					toggle.focus();
+				}
+			});
+			document.addEventListener('click', (e) => {
+				if (bar.classList.contains('is-open') && !bar.contains(e.target as Node)) chiudi();
+			});
+		}
 
 		// Neon fulminato: a intervalli casuali una lettera a caso di una voce a caso si spegne e si riaccende.
 		// Le lettere si separano solo qui (senza JS o con reduced-motion il testo resta intero).
@@ -1471,6 +1691,7 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 		}
 
 		let tick = false;
+		let dopo = 0;
 		const aggiorna = () => {
 			tick = false;
 			let attiva = 0;
@@ -1478,6 +1699,15 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 				if (t && t.getBoundingClientRect().top <= 200) attiva = i;
 			});
 			segna(attiva);
+			// la barra compare quando il quadro è uscito sotto l'header (solo telefono: il contenitore è nascosto su desktop)
+			if (bar && stick) {
+				const on = stick.offsetParent !== null && stick.getBoundingClientRect().top <= 63;
+				if (on !== bar.classList.contains('is-on')) {
+					bar.classList.toggle('is-on', on);
+					bar.inert = !on;
+					if (!on) chiudi();
+				}
+			}
 		};
 		addEventListener(
 			'scroll',
@@ -1486,9 +1716,18 @@ const scenes = Array.from({ length: gruppi.length + perStato.length }, (_, i) =>
 					tick = true;
 					requestAnimationFrame(aggiorna);
 				}
+				// a fine scroll si ricontrolla (la via può essere ancora in animazione di rivelazione)
+				clearTimeout(dopo);
+				dopo = setTimeout(aggiorna, 1300);
 			},
 			{ passive: true },
 		);
+		addEventListener('resize', aggiorna);
+		addEventListener('load', aggiorna);
+		street?.addEventListener('transitionend', () => {
+			clearTimeout(dopo);
+			dopo = setTimeout(aggiorna, 120);
+		});
 		aggiorna();
 	}
 
