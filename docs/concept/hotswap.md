@@ -12,5 +12,5 @@
   ritiro, piantina), `Servizi.astro` (badge dalla lista, icone animate all'hover o in vista su touch), `Offerte.astro` (3 sconti scelti dal giorno, conto alla
   rovescia a mezzanotte), `Recensioni.astro`. Dati in `catalogo.ts`; orari e fasce in `ritiro.ts` (unica fonte per tabella e prenotazione, solo browser a runtime).
   Eventi interni: `hotswap:aggiungi`, `hotswap:lista` (porta `ids`), `hotswap:ritiro`, `hotswap:filtro`. Nome "Hot Swap" = termine tecnico generico (marchio debole):
-  controllo marchi su TMview/UIBM ancora da fare davvero. Marchi, prodotti e giochi sono di fantasia. Il menù mobile ha l'icona sola sotto i 520 px. Barra fissa su telefono (`Barra.astro`, 2026-10-17): "Build your PC" + "My list" con contatore, compare dopo l hero e si nasconde nel builder e nella visita (non ancora provata a vista).
+  controllo marchi NON necessario (nomi fittizi dichiarati; solo se si vende il brand). Marchi, prodotti e giochi sono di fantasia. Il menù mobile ha l'icona sola sotto i 520 px. Barra fissa su telefono (`Barra.astro`, 2026-10-17): "Build your PC" + "My list" con contatore, compare dopo l hero e si nasconde nel builder e nella visita (non ancora provata a vista).
   Firefox/Safari reali, rilettura testi. Non fatto: hero con mini-builder a preset (valutato, rimandato). Sul sito madre (`vetrinePerContatti`), verificato il 2026-10-20.

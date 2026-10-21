@@ -124,7 +124,9 @@ nessun nome di piattaforma, nessuna cifra; la piattaforma si sceglie in sede di 
 
 ## Misure di performance: ogni mese
 
-Una volta al mese si rimisurano TUTTE le homepage con `node tools/psi.mjs <url> mobile|desktop` (PSI online; chiave in `Assets/Loop/PSI.txt` -> variabile `PSI_KEY`, mai in repo) e si riallineano i `metriche` di `src/hub/data.ts` (e il README). Ultimi giri parziali: 2026-10-17 (Mala Hierba: 97 mobile / 100 desktop), 2026-10-18 (Chioma Saracena: 94 / 100). **Primo giro completo: novembre 2026.**
+Una volta al mese si rimisurano TUTTE le homepage con `node tools/psi.mjs <url> mobile|desktop` (PSI online; chiave in `Assets/Loop/PSI.txt` -> variabile `PSI_KEY`, mai in repo) e si riallineano i `metriche` di `src/hub/data.ts` (e il README). Ultimi giri parziali: 2026-10-17 (Mala Hierba: 97 mobile / 100 desktop), 2026-10-18 (Chioma Saracena: 94 / 100), 2026-10-21 (hub: 97 / 99; il vecchio "96 desktop" era rumore di misura, chiuso). **Primo giro completo: novembre 2026** (concordato il 2026-10-21: non prima).
+
+**Controllo su telefono reale (2026-10-21):** l'autore ha visto TUTTI i concept da mobile, per ora ok; Chioma Saracena provata anche su Firefox e Safari, ok. Non riproporli come pendenti. Resta solo la rilettura dei testi. **Marchi:** nessun controllo (TMview/UIBM/IMPI): i nomi sono dichiarati fittizi e basta; si controlla solo se il cliente compra anche il brand.
 
 ## Sito madre: ogni nuova homepage va comunicata (form contatti)
 
