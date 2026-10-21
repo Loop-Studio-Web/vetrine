@@ -1042,7 +1042,7 @@ export const concepts: Concept[] = [
 		caratteri: 'LT Cowboy, LT Gutbust e Bricolage Grotesque',
 		palette: ['#1d1033', '#ff8a1f', '#b9a8f2', '#ffb27a', '#ff6b5a', '#ece6ff'],
 		metriche: [
-			{ label: 'Performance', valore: '90' },
+			{ label: 'Performance', valore: '97' },
 			{ label: 'Accessibilità', valore: '100' },
 			{ label: 'Buone pratiche', valore: '100' },
 		],
