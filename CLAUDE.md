@@ -164,7 +164,7 @@ committare, verificare che questo PC sia allineato al remoto e al deploy:
    `git pull --ff-only` PRIMA di toccare qualsiasi file. Se non è un fast-forward
    o ci sono modifiche locali non committate che confliggono: fermarsi e
    chiedere, mai forzare né risolvere in silenzio.
-3. Prima di un push, ripetere il controllo: l'altro PC può aver pubblicato nel
+3. **Commit e push (regola dell'utente, 2026-10-21):** i commit locali si fanno liberamente, a pezzi logici, per tenere ordine nella repo; il **push** solo dopo il via esplicito dell'utente. Prima di un push, ripetere il controllo: l'altro PC può aver pubblicato nel
    frattempo. Mai `push --force`.
 4. Il deploy parte da ogni push su `main` (GitHub Actions): ciò che è online è
    ciò che sta su `origin/main`, non ciò che c'è sul PC. Dire sempre
