@@ -207,7 +207,38 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 		gap: 14px;
 		max-width: var(--max);
 		margin-inline: auto;
-		padding: 10px var(--gutter);
+		padding: 14px var(--gutter);
+	}
+	/* da incollata la barra diventa un pannello di vetro pesca che galleggia sotto la testata (la classe la mette lo script
+	   quando tocca la testata); in posizione normale resta la fascia piena. Il vetro è un ::before che sporge di 14px dai chip,
+	   così i chip non si spostano quando cambia stato */
+	.filtri__in {
+		position: relative;
+		isolation: isolate;
+	}
+	.filtri__in::before {
+		content: '';
+		position: absolute;
+		inset: 6px max(4px, calc(var(--gutter) - 14px));
+		z-index: -1;
+		border: 2px solid var(--ink);
+		border-radius: 20px;
+		background: rgb(255 178 122 / 0.8);
+		-webkit-backdrop-filter: blur(12px) saturate(1.2);
+		backdrop-filter: blur(12px) saturate(1.2);
+		opacity: 0;
+		transition: opacity 0.2s ease;
+	}
+	.filtri.attaccata {
+		background: transparent;
+		border-color: transparent;
+		pointer-events: none;
+	}
+	.filtri.attaccata .filtri__in {
+		pointer-events: auto;
+	}
+	.filtri.attaccata .filtri__in::before {
+		opacity: 1;
 	}
 	.chips {
 		flex: 1;
@@ -821,7 +852,7 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 		.filtri__in {
 			flex-wrap: wrap;
 			gap: 8px;
-			padding-block: 8px;
+			padding-block: 12px;
 		}
 		.chips {
 			flex: 1 1 100%;

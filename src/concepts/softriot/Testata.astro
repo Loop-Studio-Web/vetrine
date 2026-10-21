@@ -302,10 +302,14 @@ import { CATEGORIE } from './dati';
 		}
 	}
 
-	/* la riga delle sezioni: lavanda, scorre via con la pagina */
+	/* la riga delle sezioni: arancione, scorre via con la pagina. Il filo inchiostro sotto è più marcato: la slide arancione
+	   del carosello le sta subito sotto e senza stacco si fonderebbero */
 	.sezioni {
-		background: var(--lavanda);
-		border-bottom: 2px solid var(--ink);
+		background: var(--mandarino);
+		border-bottom: 4px solid var(--ink);
+	}
+	.sezioni a {
+		background-image: linear-gradient(var(--ink), var(--ink));
 	}
 	.sezioni__in {
 		display: flex;
@@ -332,8 +336,8 @@ import { CATEGORIE } from './dati';
 		position: sticky;
 		top: var(--testata-h);
 		z-index: 90;
-		background: var(--lavanda);
-		border-bottom: 2px solid var(--ink);
+		background: var(--mandarino);
+		border-bottom: 4px solid var(--ink);
 		transition: transform 0.22s var(--ease-out);
 	}
 	/* scorrendo in giù si nasconde sotto la testata, scorrendo in su torna (lo script mette la classe su <html>) */
@@ -368,7 +372,8 @@ import { CATEGORIE } from './dati';
 		height: 22px;
 		padding: 0 6px;
 		border-radius: 999px;
-		background: var(--mandarino);
+		background: var(--ink);
+		color: var(--nebbia);
 		font-family: var(--testo);
 		font-size: 0.75rem;
 		font-weight: 700;
@@ -686,11 +691,13 @@ import { CATEGORIE } from './dati';
 	form?.querySelector('.cerca__tasto')?.addEventListener('click', (e) => {
 		if (!campo?.value.trim()) {
 			e.preventDefault();
-			campo?.focus();
+			// preventScroll: dentro la testata appiccicata il fuoco "normale" riporta la pagina verso l'alto
+			campo?.focus({ preventScroll: true });
 		}
 	});
 	form?.addEventListener('submit', (e) => {
 		e.preventDefault();
+		if (!campo?.value.trim()) return; // invio a campo vuoto: niente da cercare, la pagina resta dov'è
 		filtra({ testo: campo?.value.trim() ?? '', azzera: true });
 		document.getElementById('shop')?.scrollIntoView({ behavior: ridotto() ? 'auto' : 'smooth' });
 		campo?.blur();
