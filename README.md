@@ -5,7 +5,7 @@
   <img src="docs/img/loop-logo-on-light.svg" alt="Loop Studio" height="64">
 </picture>
 
-<img src="docs/img/header.svg" alt="A street of shop fronts on two rows: Trattoria, Ossidiana, Luppolo & Watt, Bottega Tre Rasoi, Atelier Lumen, Aeterna, FIXLAB, Hot Swap, Ordito, Sifone, Obra Fina, Scala Vera, Mala Hierba Flores, Limonaia Aurelia, Marrow & Knot and Chioma Saracena are lit and open, one more window is dark and coming soon." width="100%">
+<img src="docs/img/header.svg" alt="A street of shop fronts on two rows: Trattoria, Ossidiana, Luppolo & Watt, Bottega Tre Rasoi, Atelier Lumen, Aeterna, FIXLAB, Hot Swap, Ordito, Sifone, Obra Fina, Scala Vera, Mala Hierba Flores, Limonaia Aurelia, Marrow & Knot, Chioma Saracena and Soft Riot are lit and open, one more window is dark and coming soon." width="100%">
 
 **Full-page homepage concepts for local businesses.<br>Each one designed as if it were the only one on the street.**
 
@@ -28,7 +28,7 @@
 *Vetrine* is Italian for **shop windows**. That is the whole idea: a shop window has one job, to make a stranger stop. So every concept here is a complete homepage with its own mood, structure, typography and motion, grouped by business category (Food & drink first), with several archetypes inside each category.
 
 > [!NOTE]
-> Most pages are in Italian, because that is the audience they are built for. A few are written for another market on purpose: Hot Swap and Marrow & Knot in English, Obra Fina in Spanish (Spain) and Mala Hierba Flores in Mexican Spanish. The hub, the detail pages and the "back to the street" strip stay in Italian. All businesses, people, addresses and reviews are fictional and declared as such.
+> Most pages are in Italian, because that is the audience they are built for. A few are written for another market on purpose: Hot Swap, Marrow & Knot and Soft Riot in English, Obra Fina in Spanish (Spain) and Mala Hierba Flores in Mexican Spanish. The hub, the detail pages and the "back to the street" strip stay in Italian. All businesses, people, addresses and reviews are fictional and declared as such.
 
 **A street, not a grid.** Each row sits in a full-width scene drawn in CSS and generated SVG (no image files): sky, two layers of skyline with lit windows, lamp posts, pavement and road, with a light parallax on scroll (off with reduced motion). The dark theme is night, the light theme is day, and every category has its own hour: restaurants at dusk, wellness at dawn, tech in the dead of night (windows lit like screens), home and craft at sunset, events at the blue hour, e-commerce in clear daylight, and the "in progress" rows under grey skies with a crane. Under the neon "Open" sign, a row of neon pills (one per category, in the colour of its hour) jumps to each row of the street.
 
@@ -340,11 +340,30 @@
 
 <br>
 
+### 17 · Soft Riot
+
+<a href="https://vetrine.theloopstudio.org/ecommerce/softriot/"><img src="docs/img/card-softriot.jpg" alt="Soft Riot on desktop and mobile: the headline Tie one on on a lavender field, a quilted hat and scarf fading from lilac to tangerine in front of an orange blob, a tangerine category bar and the carousel controls." width="100%"></a>
+
+*A catalogue that opens like a row of windows.* A clothing and accessories shop, in English, where every product looks out of a cut-out of its own shape.
+
+| | |
+|---|---|
+| **Archetype** | The fashion and accessories shop: the **evolved** tier of the E-commerce window, for a brand with dozens of pieces and a strong visual identity that wants to stand out from the usual grid of identical squares |
+| **Mood** | Flat fields of solid colour and quilted satin that catches the light: ink violet, tangerine, lavender, peach and coral, with a light grain. Colour changes with the mood of the product, not with the time of day |
+| **Type** | LT Cowboy (and Cowboy Text) for the wordmark and titles, LT Gutbust for one editorial line, Bricolage Grotesque for text. All SIL OFL, files in the repo with their licences |
+| **Palette** | <img src="docs/img/palette-softriot.svg" alt="Ink violet, tangerine, lavender, peach, coral and lilac mist" height="22"> |
+| **Signature moves** | **The cut-out that opens**: each catalogue tile shows one detail of the garment through a window with its own shape (pill, arch, drop, leaf); on hover or tap the window grows to the whole piece, on phones it opens by itself near the middle of the screen and a tap opens the quick view, which grows from the cut-out until it fills the sheet. A **grid switch** (three little bricks) changes tile density. A **12-column irregular grid** that falls back to equal tiles when a filter leaves four results or fewer. A **side drawer of filters** (collapsible sections, size and colour choices, a double-handle price slider, "show only", sort, a "Show N pieces" button) with the active filters kept as removable chips, a heart that saves pieces in the browser, a search that filters as you type. A **bag drawer** with a free-shipping bar, payment buttons (fake, declared as such) and a test order. A **frosted filter bar** that turns to glass only once it is stuck under the header. Four **brand pieces** (quilted hat and scarf, bag, mittens, glasses) are AI renders cut out with `rembg`; the rest of the catalogue is real fashion photography from free libraries, credited in the repo |
+| **Lighthouse** | Locally on mobile 90 performance (LCP 3.5 s), 99 on desktop, 100 on accessibility and best practices, no layout shift (SEO 66 only because the page is `noindex` by design); PageSpeed Insights numbers to follow online. Photographs from Pexels, Unsplash and Pixabay, declared as illustrative; payment marks are shown because a real shop shows them, but no payment is real |
+
+[**Open Soft Riot →**](https://vetrine.theloopstudio.org/ecommerce/softriot/)
+
+<br>
+
 ### Next on the street
 
 | Category | Archetype | Status |
 |---|---|---|
-| E-commerce | A drop / limited-edition shop (evolved) and an editorial "shoppable" magazine (experience) | In progress |
+| E-commerce | An editorial "shoppable" magazine (experience) | In progress |
 | Hospitality | Hotels, B&Bs and holiday homes | Planned |
 | Pets | Grooming, boarding and pet shops | Planned |
 | Legal | Law firms | Planned |
@@ -379,6 +398,7 @@ flowchart TB
     infra --> LA["<b>Limonaia Aurelia</b><br/>own markup · CSS · JS · fonts"]
     infra --> K["<b>Marrow & Knot</b><br/>own markup · CSS · JS · fonts"]
     infra --> C["<b>Chioma Saracena</b><br/>own markup · CSS · JS · fonts"]
+    infra --> SR["<b>Soft Riot</b><br/>own markup · CSS · JS · fonts"]
     infra --> N["<b>next concept…</b>"]
     T -.-|nothing shared| O
     O -.-|nothing shared| B
@@ -393,15 +413,15 @@ A piece of code is reused between two concepts only when it is the *exact same t
 
 Before a concept goes on the street, it has to clear the same gate:
 
-| Gate | What it means | Trattoria | Ossidiana | Luppolo & Watt | Tre Rasoi | Lumen | Aeterna | FIXLAB | Hot Swap | Ordito | Sifone | Obra Fina | Scala Vera | Mala Hierba | Limonaia | Marrow & Knot | Chioma |
-|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| **Builds** | `astro build` is clean | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Accessible** | `axe-core`: zero violations | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Menu on phones** | Its own open/close effect, keyboard and Escape friendly (Chioma: a blue sheet that slides down under the bar) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Gate | What it means | Trattoria | Ossidiana | Luppolo & Watt | Tre Rasoi | Lumen | Aeterna | FIXLAB | Hot Swap | Ordito | Sifone | Obra Fina | Scala Vera | Mala Hierba | Limonaia | Marrow & Knot | Chioma | Soft Riot |
+|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| **Builds** | `astro build` is clean | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Accessible** | `axe-core`: zero violations | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Menu on phones** | Its own open/close effect, keyboard and Escape friendly (Chioma: a blue sheet that slides down under the bar; Soft Riot: a panel with the search field on top) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ```text
  LIGHTHOUSE · mobile            Trattoria                Ossidiana
@@ -437,7 +457,8 @@ src/
 │  ├─ casa/                            idraulico, ristrutturazioni, interior
 │  ├─ eventi/                          fiorista, location, wedding
 │  └─ ecommerce/
-│     └─ olio/index.astro              (every concept also has an info.astro next to it)
+│     ├─ olio/index.astro              (every concept also has an info.astro next to it)
+│     └─ softriot/index.astro
 ├─ hub/                                data, styles and sections of the hub page
 ├─ concepts/
 │  ├─ trattoria/                       one component per section + base.css
@@ -452,7 +473,8 @@ src/
 │  ├─ sifone/, obrafina/, scalavera/   and again, three times (Spanish for Obra Fina, WebGL watercolour for Scala Vera)
 │  ├─ malahierba/, limonaia/           and again (Mexican Spanish, then a page that changes light with the hour)
 │  ├─ marrowknot/                      and again, in English, with photographs woven in WebGL
-│  └─ chioma/                          and again, a one-product shop with a cart and checkout
+│  ├─ chioma/                          and again, a one-product shop with a cart and checkout
+│  └─ softriot/                        and again, a fashion shop whose catalogue opens like windows
 └─ assets/<concept>/ and hub/          local images only, no hotlinking
 public/images/<concept>/               fixed URLs: og:image, favicon
 docs/img/                              the pictures you are looking at

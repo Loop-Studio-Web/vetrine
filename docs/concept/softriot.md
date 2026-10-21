@@ -1,6 +1,6 @@
 # Stato del concept: softriot
 
-**E-commerce / Evoluto** (Soft Riot, `src/pages/ecommerce/softriot/`, concept `src/concepts/softriot/`, slug hub `softriot`), livello 2, in **inglese**. Negozio di abbigliamento e accessori. **Bozza approvata dall'utente il 2026-10-21; test finali FATTI il 2026-10-21** (commit locali, non pushata). Prossimo: hub, sito madre, PSI online.
+**E-commerce / Evoluto** (Soft Riot, `src/pages/ecommerce/softriot/`, concept `src/concepts/softriot/`, slug hub `softriot`), livello 2, in **inglese**. Negozio di abbigliamento e accessori. **Bozza approvata dall'utente il 2026-10-21; test finali FATTI il 2026-10-21; PUBBLICATA sull'hub il 2026-10-21** (voce `softriot` in `data.ts` con `backend`, `info.astro`, sitemap, card e shot in `src/assets/hub/`, README e banner aggiornati). Resta: PSI online (poi `metriche` in `data.ts` e README, ora i numeri sono quelli di Lighthouse locale: 90/100/100) e rilettura testi.
 
 **Riga struttura / materia / gesto:** home da negozio (fascia avvisi, hero carosello, catalogo filtrabile, scheda rapida, carrello laterale) / campi di colore pieno, raso trapuntato 3D (render AI di brand) e foto vere di moda in ritagli / il ritaglio che si apre (una finestra con forma diversa per tessera che al passaggio/tocco si allarga sul capo intero). Differisce da Chioma in tutte e tre le colonne. Il nodo è solo immagine di brand (Marrow & Knot lo ha già come gesto); il colore cambia per umore del prodotto, non per ora del giorno (Ordito).
 

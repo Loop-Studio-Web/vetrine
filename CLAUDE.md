@@ -86,12 +86,11 @@ Schede complete (build, axe, Lighthouse/PSI, idea-guida, token, trabocchetti, "d
 
 Pubblicati (macro · livello · slug): Ristorazione: Trattoria (1, `trattoria`), Luppolo & Watt (2, `ristopub`), Ossidiana (3, `ossidiana`). Benessere: Bottega Tre Rasoi (1, `barbiere`),
 Atelier Lumen (2, `lumen`), Aeterna (3, `aeterna`). Tech: FIXLAB (1, `fixlab`), Hot Swap (2, `hotswap`), Ordito (3, `ordito`). Abitare: Sifone (1, `sifone`), Obra Fina (2, `obrafina`),
-Scala Vera (3, `scalavera`). Eventi: Mala Hierba Flores (1, `malahierba`), Limonaia Aurelia (2, `limonaia`), Marrow & Knot (3, `marrowknot`). E-commerce: Chioma Saracena (1, `chioma`).
+Scala Vera (3, `scalavera`). Eventi: Mala Hierba Flores (1, `malahierba`), Limonaia Aurelia (2, `limonaia`), Marrow & Knot (3, `marrowknot`). E-commerce: Chioma Saracena (1, `olio`), Soft Riot (2, `softriot`).
 Macro chiuse: Ristorazione, Benessere, Tech, Abitare, Eventi.
 
-**In lavorazione (2026-10-21): Soft Riot (E-commerce Evoluto, livello 2, EN, slug `softriot`)**: bozza APPROVATA, **test finali FATTI** (critique 27/40, axe 0, Lighthouse 91/99, correzioni applicate), commit locali;
-**prossimo passo: hub** (`data.ts`, `info.astro`, sitemap), sito madre, PSI online. Leggere prima `docs/concept/softriot.md`. Poi: E-commerce Editoriale (3, in spagnolo), Ospitalità, Animali, Legale
-(Motori e Sport in coda); settore medico escluso.
+**Prossimo (2026-10-21): E-commerce Editoriale** (livello 3, in spagnolo; Soft Riot è pubblicato: leggere `docs/concept/softriot.md` per i trabocchetti), poi Ospitalità, Animali, Legale
+(Motori e Sport in coda); settore medico escluso. Macro E-commerce aperta: Chioma Saracena (1) e Soft Riot (2).
 
 **E-commerce e backend:** i livelli contano anche per il motore dietro il negozio; sull'hub si resta neutri (nessun nome di piattaforma né cifra, campo `backend` in `data.ts`). Le piattaforme si nominano SOLO nei documenti
 interni, mai nei siti pubblici. Criteri e scelte per livello in `docs/ecommerce-backend.md`.

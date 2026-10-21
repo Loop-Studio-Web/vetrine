@@ -3,7 +3,7 @@
 I tre livelli di E-commerce si distinguono dal frontend **e dal motore dietro il negozio**. Sull'hub si resta **neutri**:
 nessun nome di piattaforma, nessuna cifra; la piattaforma si sceglie in sede di preventivo. In `data.ts` il campo opzionale
 `backend` (solo E-commerce) racconta il costo ricorrente, `Dettaglio.astro` lo mostra come "Dietro il negozio" e
-`Livelli.astro` ha una nota sul motore. Da compilare per ogni vetrina E-commerce (Soft Riot ed Editoriale ancora da fare).
+`Livelli.astro` ha una nota sul motore. Compilato per Chioma Saracena e Soft Riot; da fare per l'Editoriale.
 
 **Regola sui nomi (2026-10-20)**: le piattaforme si nominano solo nei documenti interni (CLAUDE.md, memoria, preventivi, questo file), MAI nei siti
 pubblici (hub, vetrine, sito madre): cambiano nel tempo, si dice "template custom", "servizio di pagamento". Unica eccezione sul sito madre: i
