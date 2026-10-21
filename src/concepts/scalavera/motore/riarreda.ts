@@ -103,6 +103,7 @@ export async function avviaRiarredo(
 	src: { foto: string; maschere: string; atlante: string },
 	rif: [number, number, number],
 	centri: [number, number][],
+	zone: [number, number, number, number, number][] = [], // [superficie, x0, y0, x1, y1] in uv: aree da toccare fuori dalla maschera (gambe)
 ): Promise<Riarredo | null> {
 	const gl = canvas.getContext('webgl2', { antialias: false, alpha: false, preserveDrawingBuffer: false });
 	if (!gl) return null;
@@ -212,10 +213,26 @@ export async function avviaRiarredo(
 		},
 		originale(on) { voluto = on ? 1 : 0; sveglia(); },
 		superficieIn(x, y) {
-			const i = (Math.min(149, Math.max(0, Math.floor(y * 150))) * 120 + Math.min(119, Math.max(0, Math.floor(x * 120)))) * 4;
-			const v = [pixel[i], pixel[i + 1], pixel[i + 2]];
-			const max = Math.max(...v);
-			return max > 110 ? v.indexOf(max) : -1;
+			// Il dito non è preciso: fuori da ogni maschera si prende la superficie più vicina (fino a ~4% della larghezza).
+			const a = (cx: number, cy: number) => {
+				const i = (Math.min(149, Math.max(0, cy)) * 120 + Math.min(119, Math.max(0, cx))) * 4;
+				const v = [pixel[i], pixel[i + 1], pixel[i + 2]];
+				const max = Math.max(...v);
+				return max > 110 ? v.indexOf(max) : -1;
+			};
+			const cx = Math.floor(x * 120), cy = Math.floor(y * 150);
+			for (let r = 0; r <= 5; r++) {
+				let trovata = -1, meglio = Infinity;
+				for (let dy = -r; dy <= r; dy++) {
+					for (let dx = -r; dx <= r; dx++) {
+						if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
+						const s = a(cx + dx, cy + dy), d = dx * dx + dy * dy;
+						if (s >= 0 && d < meglio) { meglio = d; trovata = s; }
+					}
+				}
+				if (trovata >= 0) return trovata;
+			}
+			return zone.find((z) => x >= z[1] && x <= z[3] && y >= z[2] && y <= z[4])?.[0] ?? -1;
 		},
 		distruggi() { cancelAnimationFrame(raf); ro.disconnect(); },
 	};

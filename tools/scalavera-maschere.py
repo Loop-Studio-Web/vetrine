@@ -1,6 +1,6 @@
 # Maschere di "riarreda la foto" su a2: R = parete, G = mensola in pietra, B = tavolini. Solo Pillow.
 import sys
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter, ImageChops
 src, out = sys.argv[1], sys.argv[2]
 W, H = 600, 750
 im = Image.open(src).convert('RGB').resize((W, H), Image.LANCZOS)
@@ -45,6 +45,42 @@ dp = ImageDraw.Draw(parete)
 dp.rectangle((.118 * W, .615 * H, .387 * W, .76 * H), fill=0)          # nicchia
 dp.rectangle((.722 * W, .645 * H, .852 * W, .752 * H), fill=0)         # quadro
 dp.polygon(P([(.416, .388), (.416, .29), (.44, .25), (.47, .232), (.49, .252), (.5, .225), (.522, .252), (.547, .228), (.577, .278), (.58, .388)]), fill=0)  # lampada
+if len(sys.argv) > 3:
+    # Foto a2r: colore ovunque (niente rettangoli grossolani attorno agli oggetti), poi si tolgono gli oggetti con poligoni
+    # tracciati su ritagli ingranditi. Ogni lambda porta le coordinate del ritaglio in uv.
+    parete = Image.new('L', (W, H), 0)
+    m = parete.load()
+    for y in range(H):
+        for x in range(W):
+            if not r[x, y]: continue
+            (a, b), l = cr(px[x, y])
+            if ((a - rr) ** 2 + (b - rg) ** 2) ** 0.5 < 0.06 and 10 < l < 205: m[x, y] = 255
+    parete = parete.filter(ImageFilter.MaxFilter(7)).filter(ImageFilter.MinFilter(7))
+    SS = 4
+    esc = Image.new('L', (W * SS, H * SS), 0)
+    de = ImageDraw.Draw(esc)
+    ritaglio = lambda u0, u1, v0, v1, cw, ch: (lambda x, y: ((u0 + x / cw * (u1 - u0)) * W * SS, (v0 + y / ch * (v1 - v0)) * H * SS))
+    A = ritaglio(.40, .60, .17, .40, 1100, 1586)   # lampada a sospensione
+    Bq = ritaglio(.60, .90, .28, .48, 1100, 919)   # vasi e statuina
+    Cq = ritaglio(.50, .90, .62, .76, 1100, 483)   # lampade da tavolo, scultura, cornice
+    poly = lambda f, pts: de.polygon([f(*q) for q in pts], fill=255)
+    poly(A, [(105, 1450), (105, 990), (135, 925), (200, 735), (255, 625), (335, 515), (385, 418), (430, 470), (515, 590), (545, 540), (570, 450), (595, 405), (625, 440), (655, 495), (690, 470), (725, 438), (780, 490), (830, 570), (880, 670), (935, 790), (970, 950), (978, 1050), (978, 1430), (955, 1452)])
+    poly(A, [(518, 0), (548, 0), (548, 600), (518, 600)])                          # cavo
+    poly(Bq, [(62, 175), (272, 175), (272, 408), (62, 408)])                       # vaso 1
+    poly(Bq, [(308, 128), (497, 128), (497, 408), (308, 408)])                     # vaso 2
+    poly(Bq, [(603, 822), (603, 670), (630, 658), (640, 600), (645, 562), (670, 548), (700, 555), (708, 600), (745, 640), (795, 640), (800, 610), (830, 600), (860, 610), (862, 700), (862, 822)])  # statuina
+    poly(Cq, [(88, 195), (210, 195), (210, 290), (185, 292), (185, 472), (120, 472), (120, 292), (88, 290)])   # lampada nera
+    poly(Cq, [(222, 128), (320, 128), (320, 270), (300, 272), (300, 472), (245, 472), (245, 272), (222, 270)])   # lampada bianca
+    poly(Cq, [(420, 295), (610, 278), (640, 305), (640, 440), (600, 462), (450, 472), (425, 450), (470, 395)])   # scultura in ferro
+    poly(Cq, [(606, 98), (960, 98), (960, 448), (606, 448)])                       # cornice
+    # mensole in acciaio (fili scuri con ombra) e libro
+    for xa, xb, v in ((.46, 1.0, .369), (.46, 1.0, .458), (.46, 1.0, .561)):
+        de.rectangle((xa * W * SS, (v - .005) * H * SS, xb * W * SS, (v + .007) * H * SS), fill=255)
+    de.rectangle((.583 * W * SS, .545 * H * SS, .68 * W * SS, .565 * H * SS), fill=255)
+    esc = esc.resize((W, H), Image.LANCZOS).filter(ImageFilter.MaxFilter(3))
+    parete = ImageChops.subtract(parete, esc)
+    dp = ImageDraw.Draw(parete)
+    dp.rectangle((.118 * W, .615 * H, .387 * W, .76 * H), fill=0)                  # nicchia
 parete = parete.filter(ImageFilter.MedianFilter(3)).filter(ImageFilter.GaussianBlur(0.8))
 mensola = Image.new('L', (W, H), 0)
 dm = ImageDraw.Draw(mensola)
