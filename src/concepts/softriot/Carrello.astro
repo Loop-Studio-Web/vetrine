@@ -55,7 +55,58 @@ const pagamenti = ['visa', 'mastercard', 'paypal', 'applepay', 'googlepay', 'kla
 	</div>
 </dialog>
 
+<div class="avviso su-scuro" data-avviso>
+	<p class="avviso__testo" role="status" data-avviso-testo></p>
+	<button type="button" class="avviso__borsa" data-avviso-borsa tabindex="-1">View bag</button>
+</div>
+
 <style>
+	/* l'avviso a comparsa dopo l'aggiunta veloce dalla tessera */
+	.avviso {
+		position: fixed;
+		inset-inline: 0;
+		width: fit-content;
+		margin-inline: auto;
+		bottom: max(20px, env(safe-area-inset-bottom, 0px));
+		z-index: 120;
+		display: flex;
+		align-items: center;
+		gap: 16px;
+		max-width: calc(100vw - 32px);
+		padding: 10px 10px 10px 20px;
+		border: 2px solid var(--nebbia);
+		border-radius: 999px;
+		background: var(--ink);
+		color: var(--nebbia);
+		font-weight: 600;
+		opacity: 0;
+		visibility: hidden;
+		transform: translateY(16px);
+		transition:
+			opacity 0.2s var(--ease-out),
+			transform 0.2s var(--ease-out),
+			visibility 0s linear 0.2s;
+	}
+	.avviso.visibile {
+		opacity: 1;
+		visibility: visible;
+		transform: none;
+		transition-delay: 0s;
+	}
+	.avviso__testo {
+		font-size: 0.9375rem;
+	}
+	.avviso__borsa {
+		min-height: 40px;
+		padding: 0 16px;
+		border: 0;
+		border-radius: 999px;
+		background: var(--mandarino);
+		color: var(--ink);
+		font-family: var(--titoli-testo);
+		font-size: 0.9375rem;
+		white-space: nowrap;
+	}
 	.borsa {
 		position: fixed;
 		inset: 0 0 0 auto;
@@ -415,6 +466,28 @@ const pagamenti = ['visa', 'mastercard', 'paypal', 'applepay', 'googlepay', 'kla
 		};
 
 		document.addEventListener('sr:borsa', disegna);
+
+		// avviso a comparsa (solo per l'aggiunta veloce): sparisce da solo
+		const avviso = document.querySelector<HTMLElement>('[data-avviso]');
+		const avvisoBtn = avviso?.querySelector<HTMLButtonElement>('[data-avviso-borsa]');
+		let attesa = 0;
+		document.addEventListener('sr:aggiunto', (e) => {
+			if (!avviso || d.open) return;
+			const { id, taglia } = (e as CustomEvent<{ id: string; taglia: string }>).detail;
+			const p = prodotti()[id];
+			avviso.querySelector('[data-avviso-testo]')!.textContent = `Added: ${p.nome}${taglia === 'One size' ? '' : `, size ${taglia}`}`;
+			avviso.classList.add('visibile');
+			avvisoBtn!.tabIndex = 0;
+			clearTimeout(attesa);
+			attesa = window.setTimeout(() => {
+				avviso.classList.remove('visibile');
+				avvisoBtn!.tabIndex = -1;
+			}, 3600);
+		});
+		avvisoBtn?.addEventListener('click', () => {
+			avviso!.classList.remove('visibile');
+			document.dispatchEvent(new CustomEvent('sr:apri-borsa'));
+		});
 		document.addEventListener('sr:apri-borsa', () => {
 			ordine.hidden = true;
 			corpo.hidden = false;

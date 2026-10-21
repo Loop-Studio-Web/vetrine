@@ -2,6 +2,7 @@
 // La scheda rapida: un <dialog> che si apre dal catalogo o dal carosello. A sinistra il capo intero nel suo campo di
 // colore, a destra nome, prezzo, taglie e il bottone. Si riempie da JS con i dati del catalogo (JSON della pagina).
 import { SOGLIA_SPEDIZIONE } from './dati';
+import Icona from './Icona.astro';
 ---
 
 <dialog class="scheda" data-scheda aria-labelledby="scheda-nome">
@@ -12,7 +13,12 @@ import { SOGLIA_SPEDIZIONE } from './dati';
 		<img src="" alt="" data-foto width="1000" height="1500" />
 	</div>
 	<div class="scheda__info">
-		<p class="scheda__tag" data-tag hidden>Soft Riot original</p>
+		<div class="scheda__riga">
+			<p class="scheda__tag" data-tag hidden>Soft Riot original</p>
+			<button type="button" class="scheda__cuore" data-scheda-cuore aria-pressed="false">
+				<Icona nome="cuore" /><span data-scheda-cuore-testo>Save</span>
+			</button>
+		</div>
 		<h2 class="scheda__nome" id="scheda-nome" data-nome></h2>
 		<p class="scheda__prezzo" data-prezzo></p>
 		<p class="scheda__testo" data-testo></p>
@@ -22,7 +28,7 @@ import { SOGLIA_SPEDIZIONE } from './dati';
 			<div class="scheda__chips" data-taglie></div>
 			<p class="scheda__errore" role="alert" data-errore></p>
 		</fieldset>
-		<button type="button" class="btn scheda__aggiungi" data-aggiungi>Add to bag</button>
+		<button type="button" class="btn scheda__aggiungi" data-aggiungi><Icona nome="carrello" /><span data-aggiungi-testo>Add to bag</span></button>
 		<p class="scheda__nota">Free shipping over €{SOGLIA_SPEDIZIONE}. 30 days to return it. Demo store: nothing ships.</p>
 	</div>
 </dialog>
@@ -123,6 +129,40 @@ import { SOGLIA_SPEDIZIONE } from './dati';
 		gap: 14px;
 		padding: 40px 36px 32px;
 		overflow-y: auto;
+	}
+	.scheda__riga {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		min-height: 44px;
+		padding-right: 56px;
+	}
+	.scheda__cuore {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		min-height: 44px;
+		margin-left: auto;
+		padding: 0 16px 0 12px;
+		border: 2px solid var(--ink);
+		border-radius: 999px;
+		background: var(--bianco);
+		font-weight: 650;
+		font-size: 0.9375rem;
+		transition:
+			background-color 0.14s ease,
+			transform 0.14s var(--ease-out);
+	}
+	.scheda__cuore:active {
+		transform: scale(0.95);
+	}
+	@media (hover: hover) and (pointer: fine) {
+		.scheda__cuore:hover {
+			background: var(--lavanda);
+		}
+	}
+	.scheda__cuore[aria-pressed='true'] {
+		background: var(--mandarino);
 	}
 	.scheda__tag {
 		align-self: flex-start;
@@ -252,7 +292,7 @@ import { SOGLIA_SPEDIZIONE } from './dati';
 </style>
 
 <script>
-	import { aggiungi, apriBorsa, prodotti } from './stato';
+	import { aggiungi, alternaCuore, apriBorsa, cuori, prodotti } from './stato';
 	import { EURO } from './dati';
 
 	const scheda = document.querySelector<HTMLDialogElement>('[data-scheda]');
@@ -268,12 +308,23 @@ import { SOGLIA_SPEDIZIONE } from './dati';
 		const taglie = q('[data-taglie]');
 		const errore = q('[data-errore]');
 		const aggiungiBtn = q<HTMLButtonElement>('[data-aggiungi]');
+		const aggiungiTesto = q('[data-aggiungi-testo]');
+		const cuore = q<HTMLButtonElement>('[data-scheda-cuore]');
+		const cuoreTesto = q('[data-scheda-cuore-testo]');
 		let corrente = '';
 		let scelta = '';
 
 		const segna = () => {
 			taglie.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.taglia === scelta)));
 		};
+
+		const segnaCuore = () => {
+			const acceso = cuori().has(corrente);
+			cuore.setAttribute('aria-pressed', String(acceso));
+			cuoreTesto.textContent = acceso ? 'Saved' : 'Save';
+		};
+		cuore.addEventListener('click', () => alternaCuore(corrente));
+		document.addEventListener('sr:cuori', segnaCuore);
 
 		document.addEventListener('sr:scheda', (e) => {
 			const id = (e as CustomEvent<{ id: string }>).detail.id;
@@ -303,7 +354,8 @@ import { SOGLIA_SPEDIZIONE } from './dati';
 				}),
 			);
 			segna();
-			aggiungiBtn.textContent = `Add to bag, ${EURO(p.prezzo)}`;
+			aggiungiTesto.textContent = `Add to bag, ${EURO(p.prezzo)}`;
+			segnaCuore();
 			scheda.showModal();
 			scheda.scrollTop = 0;
 		});

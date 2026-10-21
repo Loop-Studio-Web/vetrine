@@ -5,7 +5,7 @@ import { Image } from 'astro:assets';
 import esse from '../../assets/softriot/brand/s-raso.webp';
 ---
 
-<section class="striscia su-scuro" aria-label="About Soft Riot">
+<section class="striscia su-scuro" id="chi-siamo" aria-label="About Soft Riot">
 	<div class="striscia__in">
 		<p class="striscia__riga">
 			<span class="striscia__a">Soft things</span>
@@ -59,19 +59,20 @@ import esse from '../../assets/softriot/brand/s-raso.webp';
 	}
 	.striscia__esse {
 		position: absolute;
-		right: clamp(-60px, -2vw, 0px);
-		bottom: -14%;
+		right: clamp(-20px, 1vw, 24px);
+		bottom: clamp(20px, 4vw, 56px);
 		z-index: 0;
-		width: clamp(220px, 34vw, 520px);
+		width: clamp(200px, 27vw, 400px);
 		height: auto;
 		rotate: 8deg;
 		filter: drop-shadow(0 30px 40px rgb(0 0 0 / 0.4));
 	}
 	@media (max-width: 760px) {
 		.striscia__esse {
-			bottom: -8%;
-			right: -14vw;
-			opacity: 0.9;
+			bottom: 12px;
+			right: -10vw;
+			width: min(52vw, 220px);
+			opacity: 0.95;
 		}
 		.striscia__testo {
 			max-width: 20rem;

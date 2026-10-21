@@ -41,7 +41,7 @@
 	--gutter: clamp(16px, 4.5vw, 56px);
 	--max: 1360px;
 	--colonna: calc(var(--max) - 2 * var(--gutter));
-	--testata-h: 68px;
+	--testata-h: 76px;
 
 	/* grana: puntini di inchiostro, un solo livello sopra i colori pieni */
 	--grana: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .11 0 0 0 0 .06 0 0 0 0 .2 0 0 0 .5 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -177,6 +177,51 @@ a {
 .btn--ink:focus-visible,
 .su-scuro .btn:focus-visible {
 	outline-color: var(--mandarino);
+}
+
+/* la scelta a pillola: filtri della barra e del cassetto */
+.chip {
+	min-height: 42px;
+	padding: 0 16px;
+	border: 2px solid var(--ink);
+	border-radius: 999px;
+	background: var(--bianco);
+	font-weight: 600;
+	font-size: 0.9375rem;
+	white-space: nowrap;
+	transition:
+		background-color 0.14s ease,
+		color 0.14s ease,
+		transform 0.14s var(--ease-out);
+}
+.chip:active {
+	transform: scale(0.96);
+}
+@media (hover: hover) and (pointer: fine) {
+	.chip:hover {
+		background: var(--lavanda);
+	}
+}
+.chip[aria-pressed='true'] {
+	background: var(--ink);
+	color: var(--nebbia);
+}
+.chip--orig {
+	background: var(--mandarino);
+}
+@media (hover: hover) and (pointer: fine) {
+	.chip--orig:hover {
+		background: var(--pesca);
+	}
+}
+.chip--orig[aria-pressed='true'] {
+	background: var(--ink);
+}
+
+@media (max-width: 560px) {
+	:root {
+		--testata-h: 64px;
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {

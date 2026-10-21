@@ -56,12 +56,38 @@ function salva() {
 	document.dispatchEvent(new CustomEvent('sr:borsa'));
 }
 
-export function aggiungi(id: string, taglia: string, q = 1) {
+export function aggiungi(id: string, taglia: string, q = 1, avviso = false) {
 	const lista = borsa();
 	const esiste = lista.find((r) => r.id === id && r.taglia === taglia);
 	if (esiste) esiste.q = Math.min(9, esiste.q + q);
 	else lista.push({ id, taglia, q });
 	salva();
+	// l'avviso a comparsa serve solo per l'aggiunta veloce dalla tessera (dalla scheda si apre la borsa)
+	if (avviso) document.dispatchEvent(new CustomEvent('sr:aggiunto', { detail: { id, taglia } }));
+}
+
+// i preferiti: un cuore su tessera e scheda, il conto in testata
+const CHIAVE_CUORI = 'softriot-cuori';
+let cuoriSet: Set<string> | null = null;
+export function cuori(): Set<string> {
+	if (cuoriSet) return cuoriSet;
+	try {
+		const v = JSON.parse(localStorage.getItem(CHIAVE_CUORI) || '[]');
+		cuoriSet = new Set(Array.isArray(v) ? v.filter((id: string) => prodotti()[id]) : []);
+	} catch {
+		cuoriSet = new Set();
+	}
+	return cuoriSet!;
+}
+export function alternaCuore(id: string) {
+	const s = cuori();
+	s.has(id) ? s.delete(id) : s.add(id);
+	try {
+		localStorage.setItem(CHIAVE_CUORI, JSON.stringify([...s]));
+	} catch {
+		/* come la borsa: senza memoria vale solo finché la pagina è aperta */
+	}
+	document.dispatchEvent(new CustomEvent('sr:cuori', { detail: { id, acceso: s.has(id) } }));
 }
 
 export function cambia(id: string, taglia: string, q: number) {
@@ -92,7 +118,14 @@ export function spedizione(p = parziale()) {
 
 export const apriScheda = (id: string) => document.dispatchEvent(new CustomEvent('sr:scheda', { detail: { id } }));
 export const apriBorsa = () => document.dispatchEvent(new CustomEvent('sr:apri-borsa'));
-export const filtra = (detail: { categoria?: string; originali?: boolean }) =>
-	document.dispatchEvent(new CustomEvent('sr:filtra', { detail }));
+export interface Filtro {
+	categoria?: string;
+	originali?: boolean;
+	preferiti?: boolean;
+	testo?: string;
+	/** true: parte da zero e applica solo quello che c'è in questo oggetto */
+	azzera?: boolean;
+}
+export const filtra = (detail: Filtro) => document.dispatchEvent(new CustomEvent('sr:filtra', { detail }));
 
 export const ridotto = () => matchMedia('(prefers-reduced-motion: reduce)').matches;

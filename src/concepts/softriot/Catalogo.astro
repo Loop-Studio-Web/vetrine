@@ -4,7 +4,9 @@
 // passaggio del mouse, al fuoco da tastiera o, sul telefono, quando la tessera passa a metà schermo, la finestra si
 // allarga e rivela il capo intero. Un tocco apre la scheda rapida.
 import { Image, getImage } from 'astro:assets';
-import { PRODOTTI, CATEGORIE, TAGLIE, COLORI, EURO } from './dati';
+import { PRODOTTI, CATEGORIE, COLORI, EURO } from './dati';
+import Icona from './Icona.astro';
+import Filtri from './Filtri.astro';
 import type { Prodotto } from './dati';
 
 const foto = import.meta.glob('../../assets/softriot/foto/*.jpg', { eager: true, import: 'default' }) as Record<string, ImageMetadata>;
@@ -38,7 +40,6 @@ const dati = await Promise.all(
 	}),
 );
 const json = JSON.stringify(dati).replace(/</g, '\\u003c');
-const coloriUsati = Object.keys(COLORI).filter((c) => PRODOTTI.some((p) => p.colori.includes(c)));
 ---
 
 <section class="catalogo" id="shop" aria-labelledby="catalogo-titolo">
@@ -51,51 +52,28 @@ const coloriUsati = Object.keys(COLORI).filter((c) => PRODOTTI.some((p) => p.col
 
 	<div class="filtri" data-filtri>
 		<div class="filtri__in">
-			<div class="filtri__riga">
-				<div class="chips" role="group" aria-label="Category">
-					<button type="button" class="chip" data-cat="" aria-pressed="true">All</button>
-					{CATEGORIE.map((c) => <button type="button" class="chip" data-cat={c.chiave} aria-pressed="false">{c.nome}</button>)}
-					<button type="button" class="chip chip--orig" data-orig aria-pressed="false">Soft Riot originals</button>
-				</div>
-				<button type="button" class="filtri__apri" aria-expanded="false" aria-controls="filtri-altri" data-apri-filtri>
-					<span class="lungo">Size, colour, sort</span><span class="corto">Filters</span>
-				</button>
+			<div class="chips" role="group" aria-label="Category">
+				<button type="button" class="chip" data-barra-cat="" aria-pressed="true">All</button>
+				{CATEGORIE.map((c) => <button type="button" class="chip" data-barra-cat={c.chiave} aria-pressed="false">{c.nome}</button>)}
 			</div>
-			<div class="filtri__altri" id="filtri-altri" data-altri hidden>
-				<div class="gruppo" role="group" aria-label="Size">
-					<span class="gruppo__nome" aria-hidden="true">Size</span>
-					<div class="chips">
-						{TAGLIE.map((t) => <button type="button" class="chip chip--piccolo" data-taglia={t} aria-pressed="false">{t}</button>)}
-					</div>
-				</div>
-				<div class="gruppo" role="group" aria-label="Colour">
-					<span class="gruppo__nome" aria-hidden="true">Colour</span>
-					<div class="pallini">
-						{
-							coloriUsati.map((c) => (
-								<button type="button" class="pallino" data-colore={c} aria-pressed="false" aria-label={COLORI[c].nome} title={COLORI[c].nome} style={`--c:${COLORI[c].hex}`} />
-							))
-						}
-					</div>
-				</div>
-				<label class="gruppo gruppo--cerca">
-					<span class="gruppo__nome">Search</span>
-					<input type="search" class="campo" placeholder="Hat, jacket, bag…" data-cerca autocomplete="off" />
-				</label>
-				<label class="gruppo">
-					<span class="gruppo__nome">Sort</span>
-					<select class="campo" data-ordina>
+			<div class="filtri__destra">
+				<label class="ordina">
+					<span class="sr-only">Sort by</span>
+					<select data-ordina>
 						<option value="">Our order</option>
 						<option value="su">Price, low to high</option>
 						<option value="giu">Price, high to low</option>
 					</select>
 				</label>
-				<button type="button" class="azzera" data-azzera>Clear filters</button>
+				<button type="button" class="filtro-tasto" data-apri-filtri aria-haspopup="dialog">
+					<Icona nome="filtri" /><span>Filter</span><span class="filtro-tasto__n" data-filtri-n hidden>0</span>
+				</button>
 			</div>
 		</div>
 	</div>
 
 	<div class="catalogo__in">
+		<ul class="attivi" data-attivi aria-label="Active filters" hidden></ul>
 		<ul class="griglia" data-griglia>
 			{
 				PRODOTTI.map((p, i) => {
@@ -131,20 +109,30 @@ const coloriUsati = Object.keys(COLORI).filter((c) => PRODOTTI.some((p) => p.col
 									<span class="etichetta__prezzo">{EURO(p.prezzo)}</span>
 								</span>
 							</button>
+							<div class="tessera__azioni">
+								<button type="button" class="azione" data-cuore={p.id} aria-pressed="false" aria-label={`Save ${p.nome}`}>
+									<Icona nome="cuore" />
+								</button>
+								<button type="button" class="azione" data-rapido={p.id} aria-label={p.taglie.length === 1 ? `Add ${p.nome} to bag` : `Choose a size for ${p.nome}`}>
+									<Icona nome="carrello" />
+								</button>
+							</div>
 						</li>
 					);
 				})
 			}
 		</ul>
 		<div class="vuoto" data-vuoto hidden>
-			<p class="vuoto__titolo">Nothing in that mix.</p>
-			<p>Try fewer filters, or start again from all the pieces.</p>
+			<p class="vuoto__titolo" data-vuoto-titolo>Nothing in that mix.</p>
+			<p data-vuoto-testo>Try fewer filters, or start again from all the pieces.</p>
 			<button type="button" class="btn" data-azzera>Clear filters</button>
 		</div>
 	</div>
 
 	<script type="application/json" id="sr-dati" set:html={json} />
 </section>
+
+<Filtri />
 
 <style>
 	.catalogo {
@@ -175,7 +163,7 @@ const coloriUsati = Object.keys(COLORI).filter((c) => PRODOTTI.some((p) => p.col
 		padding-bottom: 8px;
 	}
 
-	/* barra dei filtri: appiccicata sotto la testata */
+	/* barra dei filtri: appiccicata sotto la testata. Le categorie restano a portata di dito; "Filter" apre il cassetto */
 	.filtri {
 		position: sticky;
 		top: var(--testata-h);
@@ -184,143 +172,95 @@ const coloriUsati = Object.keys(COLORI).filter((c) => PRODOTTI.some((p) => p.col
 		border-block: 2px solid var(--ink);
 	}
 	.filtri__in {
+		display: flex;
+		align-items: center;
+		gap: 14px;
 		max-width: var(--max);
 		margin-inline: auto;
 		padding: 10px var(--gutter);
 	}
-	.filtri__riga {
+	.chips {
+		flex: 1;
+		min-width: 0;
+		display: flex;
+		gap: 8px;
+		overflow-x: auto;
+		scrollbar-width: none;
+		padding: 4px 4px 4px 0;
+		margin: -4px 0;
+	}
+	.chips::-webkit-scrollbar {
+		display: none;
+	}
+	.filtri__destra {
+		flex: none;
 		display: flex;
 		align-items: center;
-		gap: 16px;
+		gap: 10px;
 	}
-	.chips {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 8px;
-	}
-	.filtri__riga > .chips {
-		flex: 1;
-	}
-	.chip {
-		min-height: 40px;
-		padding: 0 16px;
-		border: 2px solid var(--ink);
-		border-radius: 999px;
-		background: var(--bianco);
-		font-weight: 600;
-		font-size: 0.9375rem;
-		white-space: nowrap;
-		transition:
-			background-color 0.14s ease,
-			color 0.14s ease,
-			transform 0.14s var(--ease-out);
-	}
-	.chip:active {
-		transform: scale(0.96);
-	}
-	@media (hover: hover) and (pointer: fine) {
-		.chip:hover {
-			background: var(--lavanda);
-		}
-	}
-	.chip[aria-pressed='true'] {
-		background: var(--ink);
-		color: var(--nebbia);
-	}
-	.chip--orig {
-		background: var(--mandarino);
-	}
-	@media (hover: hover) and (pointer: fine) {
-		.chip--orig:hover {
-			background: var(--pesca);
-		}
-	}
-	.chip--orig[aria-pressed='true'] {
-		background: var(--ink);
-	}
-	.chip--piccolo {
-		min-height: 36px;
-		padding: 0 13px;
-	}
-	.filtri__apri {
-		flex: none;
-		min-height: 40px;
-		padding: 0 18px;
-		border: 2px solid var(--ink);
-		border-radius: 999px;
-		background: none;
-		font-weight: 600;
-		font-size: 0.9375rem;
-	}
-	.filtri__apri .corto {
-		display: none;
-	}
-	.filtri__apri[aria-expanded='true'] {
-		background: var(--lavanda);
-	}
-	.filtri__altri {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: flex-end;
-		gap: 14px 28px;
-		padding-top: 14px;
-	}
-	.filtri__altri[hidden] {
-		display: none;
-	}
-	.gruppo {
-		display: grid;
-		gap: 6px;
-	}
-	.gruppo__nome {
-		font-size: 0.875rem;
-		font-weight: 600;
-	}
-	.pallini {
-		display: flex;
-		gap: 6px;
-	}
-	.pallino {
-		position: relative;
-		width: 36px;
-		height: 36px;
-		padding: 0;
-		border: 2px solid var(--ink);
-		border-radius: 50%;
-		background: var(--c);
-		transition: transform 0.14s var(--ease-out);
-	}
-	.pallino[aria-pressed='true'] {
-		box-shadow:
-			0 0 0 3px var(--nebbia),
-			0 0 0 5px var(--ink);
-	}
-	.pallino:active {
-		transform: scale(0.92);
-	}
-	.campo {
-		min-height: 40px;
+	.ordina select {
+		min-height: 46px;
 		padding: 0 14px;
 		border: 2px solid var(--ink);
 		border-radius: 999px;
 		background: var(--bianco);
 		font-size: 0.9375rem;
-	}
-	.gruppo--cerca .campo {
-		min-width: 14rem;
-	}
-	.azzera {
-		min-height: 40px;
-		padding: 0 6px;
-		border: 0;
-		background: none;
 		font-weight: 600;
-		font-size: 0.9375rem;
-		text-decoration: underline;
-		text-underline-offset: 4px;
-		text-decoration-thickness: 2px;
+	}
+	.filtro-tasto {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		min-height: 46px;
+		padding: 0 20px 0 16px;
+		border: 2px solid var(--ink);
+		border-radius: 999px;
+		background: var(--ink);
+		color: var(--nebbia);
+		font-family: var(--titoli-testo);
+		font-size: 1.0625rem;
+		transition:
+			background-color 0.16s ease,
+			transform 0.16s var(--ease-out);
+	}
+	.filtro-tasto:active {
+		transform: scale(0.96);
+	}
+	@media (hover: hover) and (pointer: fine) {
+		.filtro-tasto:hover {
+			background: var(--ink2);
+		}
+	}
+	.filtro-tasto:focus-visible {
+		outline-color: var(--ink);
+	}
+	.filtro-tasto__n {
+		display: grid;
+		place-items: center;
+		min-width: 26px;
+		height: 26px;
+		padding: 0 7px;
+		border-radius: 999px;
+		background: var(--mandarino);
+		color: var(--ink);
+		font-family: var(--testo);
+		font-size: 0.8125rem;
+		font-weight: 700;
+	}
+	.filtro-tasto__n[hidden] {
+		display: none;
 	}
 
+	/* i filtri attivi, ognuno si toglie con un tocco */
+	.attivi {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		margin-top: 22px;
+	}
+	.attivi[hidden] {
+		display: none;
+	}
 	/* la griglia irregolare: sei colonne, tessere da due, qualche larga da quattro; i buchi li chiude "dense" */
 	.griglia {
 		--u: clamp(58px, 8.4vw, 118px);
@@ -444,6 +384,44 @@ const coloriUsati = Object.keys(COLORI).filter((c) => PRODOTTI.some((p) => p.col
 	.tessera--orig .finestra {
 		background: var(--nebbia);
 	}
+	/* cuore e carrello su ogni tessera: bottoni propri sopra il bottone grande che apre la scheda */
+	.tessera__azioni {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		z-index: 3;
+		display: flex;
+		gap: 6px;
+	}
+	.azione {
+		display: grid;
+		place-items: center;
+		width: 44px;
+		height: 44px;
+		padding: 0;
+		border: 2px solid var(--ink);
+		border-radius: 50%;
+		background: var(--nebbia);
+		color: var(--ink);
+		transition:
+			background-color 0.14s ease,
+			transform 0.14s var(--ease-out);
+	}
+	.azione:active {
+		transform: scale(0.92);
+	}
+	@media (hover: hover) and (pointer: fine) {
+		.azione:hover {
+			background: var(--mandarino);
+		}
+	}
+	.azione[aria-pressed='true'] {
+		background: var(--mandarino);
+	}
+	.azione.fatto {
+		background: var(--ink);
+		color: var(--nebbia);
+	}
 	.etichetta {
 		position: absolute;
 		left: 10px;
@@ -563,10 +541,10 @@ const coloriUsati = Object.keys(COLORI).filter((c) => PRODOTTI.some((p) => p.col
 			align-items: flex-start;
 			gap: 6px;
 		}
-		.filtri__riga {
+		.filtri__in {
 			gap: 8px;
 		}
-		.filtri__riga > .chips {
+		.chips {
 			min-width: 0;
 			flex-wrap: nowrap;
 			overflow-x: auto;
@@ -574,128 +552,285 @@ const coloriUsati = Object.keys(COLORI).filter((c) => PRODOTTI.some((p) => p.col
 			margin-left: calc(var(--gutter) * -1);
 			padding-left: var(--gutter);
 		}
-		.filtri__riga > .chips::-webkit-scrollbar {
+		.chips::-webkit-scrollbar {
 			display: none;
 		}
-		.filtri__apri .lungo {
+		.ordina {
 			display: none;
 		}
-		.filtri__apri .corto {
-			display: inline;
+		.azione {
+			width: 40px;
+			height: 40px;
 		}
-		.gruppo--cerca .campo {
-			min-width: 0;
-			width: 100%;
-		}
-		.gruppo--cerca {
-			flex: 1 1 100%;
+		.tessera__azioni {
+			top: 6px;
+			right: 6px;
+			gap: 4px;
 		}
 	}
 </style>
 
+<style is:global>
+	.attivo {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		min-height: 38px;
+		padding: 0 12px 0 14px;
+		border: 2px solid var(--ink);
+		border-radius: 999px;
+		background: var(--lavanda);
+		font-weight: 650;
+		font-size: 0.875rem;
+	}
+	.attivo .icona {
+		width: 0.9rem;
+		height: 0.9rem;
+	}
+</style>
+
 <script>
-	import { apriScheda } from './stato';
+	import { EURO, CATEGORIE, COLORI } from './dati';
+	import { aggiungi, alternaCuore, apriScheda, cuori, prodotti, ridotto } from './stato';
+	import type { Filtro } from './stato';
 
 	const radice = document.querySelector<HTMLElement>('#shop');
-	if (radice) {
+	const pannello = document.querySelector<HTMLDialogElement>('[data-fp]');
+	if (radice && pannello) {
 		const tessere = [...radice.querySelectorAll<HTMLElement>('.tessera')];
 		const conta = radice.querySelector<HTMLElement>('[data-conta]')!;
 		const vuoto = radice.querySelector<HTMLElement>('[data-vuoto]')!;
 		const griglia = radice.querySelector<HTMLElement>('[data-griglia]')!;
-		const apri = radice.querySelector<HTMLButtonElement>('[data-apri-filtri]')!;
-		const altri = radice.querySelector<HTMLElement>('[data-altri]')!;
-		const cerca = radice.querySelector<HTMLInputElement>('[data-cerca]')!;
+		const attivi = radice.querySelector<HTMLElement>('[data-attivi]')!;
 		const ordina = radice.querySelector<HTMLSelectElement>('[data-ordina]')!;
+		const nFiltri = radice.querySelector<HTMLElement>('[data-filtri-n]')!;
+		const fp = (s: string) => pannello.querySelector<HTMLElement>(s)!;
+		const minR = fp('[data-fp-min]') as HTMLInputElement;
+		const maxR = fp('[data-fp-max]') as HTMLInputElement;
+		const limiti = { min: Number(minR.min), max: Number(maxR.max) };
 
-		const stato = { categoria: '', originali: false, taglia: '', colori: new Set<string>(), testo: '', ordine: '' };
+		const stato = {
+			categorie: new Set<string>(),
+			taglie: new Set<string>(),
+			colori: new Set<string>(),
+			originali: false,
+			preferiti: false,
+			testo: '',
+			ordine: '',
+			min: limiti.min,
+			max: limiti.max,
+		};
+		const azzera = () => {
+			stato.categorie.clear();
+			stato.taglie.clear();
+			stato.colori.clear();
+			Object.assign(stato, { originali: false, preferiti: false, testo: '', ordine: '', min: limiti.min, max: limiti.max });
+		};
 
 		const premuto = (el: Element, v: boolean) => el.setAttribute('aria-pressed', String(v));
+		const nomeCat = Object.fromEntries(CATEGORIE.map((c) => [c.chiave, c.nome]));
+
+		// i filtri che non sono una categoria: servono per il conto sul bottone "Filter"
+		const quanti = () =>
+			stato.taglie.size +
+			stato.colori.size +
+			Number(stato.originali) +
+			Number(stato.preferiti) +
+			Number(!!stato.testo) +
+			Number(stato.min > limiti.min || stato.max < limiti.max);
+
+		const disegnaAttivi = () => {
+			const voci: { testo: string; togli: () => void }[] = [];
+			stato.categorie.forEach((c) => voci.push({ testo: nomeCat[c], togli: () => stato.categorie.delete(c) }));
+			stato.taglie.forEach((t) => voci.push({ testo: `Size ${t}`, togli: () => stato.taglie.delete(t) }));
+			stato.colori.forEach((c) => voci.push({ testo: COLORI[c].nome, togli: () => stato.colori.delete(c) }));
+			if (stato.min > limiti.min || stato.max < limiti.max)
+				voci.push({ testo: `${EURO(stato.min)} to ${EURO(stato.max)}`, togli: () => Object.assign(stato, { min: limiti.min, max: limiti.max }) });
+			if (stato.originali) voci.push({ testo: 'Soft Riot originals', togli: () => (stato.originali = false) });
+			if (stato.preferiti) voci.push({ testo: 'Saved pieces', togli: () => (stato.preferiti = false) });
+			if (stato.testo) voci.push({ testo: `“${stato.testo}”`, togli: () => (stato.testo = '') });
+			attivi.hidden = voci.length === 0;
+			attivi.replaceChildren(
+				...voci.map((v) => {
+					const li = document.createElement('li');
+					const b = document.createElement('button');
+					b.type = 'button';
+					b.className = 'attivo';
+					b.textContent = v.testo;
+					b.insertAdjacentHTML(
+						'beforeend',
+						'<svg class="icona" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg><span class="sr-only">, remove filter</span>',
+					);
+					b.addEventListener('click', () => {
+						v.togli();
+						applica();
+					});
+					li.append(b);
+					return li;
+				}),
+			);
+		};
 
 		const applica = () => {
+			const salvati = cuori();
 			let n = 0;
 			tessere.forEach((t) => {
 				const taglie = (t.dataset.taglie || '').split('|');
 				const colori = (t.dataset.colori || '').split(' ');
+				const prezzo = Number(t.dataset.prezzo);
 				const ok =
-					(!stato.categoria || t.dataset.cat === stato.categoria) &&
+					(stato.categorie.size === 0 || stato.categorie.has(t.dataset.cat!)) &&
 					(!stato.originali || t.dataset.orig === '1') &&
-					(!stato.taglia || taglie.some((x) => x === stato.taglia || x.split('/').includes(stato.taglia))) &&
+					(!stato.preferiti || salvati.has(t.dataset.prodotto!)) &&
+					(stato.taglie.size === 0 || taglie.some((x) => [...stato.taglie].some((s) => x === s || x.split('/').includes(s)))) &&
 					(stato.colori.size === 0 || colori.some((c) => stato.colori.has(c))) &&
-					(!stato.testo || (t.dataset.nome || '').includes(stato.testo));
+					prezzo >= stato.min &&
+					prezzo <= stato.max &&
+					(!stato.testo || (t.dataset.nome || '').includes(stato.testo.toLowerCase()));
 				t.hidden = !ok;
 				if (ok) n++;
-				const prezzo = Number(t.dataset.prezzo);
 				const base = Number(t.style.getPropertyValue('--ordine'));
 				t.style.order = String(stato.ordine === 'su' ? prezzo : stato.ordine === 'giu' ? -prezzo : base);
 			});
-			conta.textContent = `${n} ${n === 1 ? 'piece' : 'pieces'}`;
+			const testoConta = `${n} ${n === 1 ? 'piece' : 'pieces'}`;
+			conta.textContent = testoConta;
 			vuoto.hidden = n > 0;
 			griglia.hidden = n === 0;
-			radice.querySelectorAll<HTMLElement>('[data-cat]').forEach((c) => {
-				if (c.classList.contains('chip')) premuto(c, c.dataset.cat === stato.categoria && !stato.originali);
+			if (n === 0) {
+				const soloCuori = stato.preferiti && !salvati.size;
+				radice.querySelector('[data-vuoto-titolo]')!.textContent = soloCuori ? 'No saved pieces yet.' : 'Nothing in that mix.';
+				radice.querySelector('[data-vuoto-testo]')!.textContent = soloCuori
+					? 'Tap the heart on any piece and it will wait for you here.'
+					: 'Try fewer filters, or start again from all the pieces.';
+			}
+
+			// la barra in cima al catalogo
+			radice.querySelectorAll<HTMLElement>('[data-barra-cat]').forEach((c) => {
+				const k = c.dataset.barraCat!;
+				premuto(c, k === '' ? stato.categorie.size === 0 : stato.categorie.size === 1 && stato.categorie.has(k));
 			});
-			premuto(radice.querySelector('[data-orig]')!, stato.originali);
-			radice.querySelectorAll<HTMLElement>('[data-taglia]').forEach((c) => premuto(c, c.dataset.taglia === stato.taglia));
-			radice.querySelectorAll<HTMLElement>('[data-colore]').forEach((c) => premuto(c, stato.colori.has(c.dataset.colore!)));
+			ordina.value = stato.ordine;
+			const k = quanti();
+			nFiltri.hidden = k === 0;
+			nFiltri.textContent = String(k);
+
+			// il cassetto
+			pannello.querySelectorAll<HTMLElement>('[data-cat]').forEach((c) => premuto(c, stato.categorie.has(c.dataset.cat!)));
+			pannello.querySelectorAll<HTMLElement>('[data-taglia]').forEach((c) => premuto(c, stato.taglie.has(c.dataset.taglia!)));
+			pannello.querySelectorAll<HTMLElement>('[data-colore]').forEach((c) => premuto(c, stato.colori.has(c.dataset.colore!)));
+			premuto(fp('[data-orig]'), stato.originali);
+			premuto(fp('[data-pref]'), stato.preferiti);
+			pannello.querySelectorAll<HTMLElement>('[data-ord]').forEach((c) => premuto(c, (c.dataset.ord || '') === stato.ordine));
+			(fp('[data-fp-testo]') as HTMLInputElement).value = stato.testo;
+			minR.value = String(stato.min);
+			maxR.value = String(stato.max);
+			const span = limiti.max - limiti.min;
+			const binario = fp('.fp__binario span');
+			binario.style.setProperty('--da', `${((stato.min - limiti.min) / span) * 100}%`);
+			binario.style.setProperty('--a', `${((stato.max - limiti.min) / span) * 100}%`);
+			fp('[data-fp-da]').textContent = EURO(stato.min);
+			fp('[data-fp-a]').textContent = EURO(stato.max);
+			const f = fp('[data-fp-n]');
+			f.hidden = k + stato.categorie.size === 0;
+			f.textContent = String(k + stato.categorie.size);
+			fp('[data-fp-mostra]').textContent = n === 0 ? 'No pieces: change a filter' : `Show ${testoConta}`;
+			disegnaAttivi();
 		};
 
-		radice.querySelectorAll<HTMLElement>('.chip[data-cat]').forEach((c) =>
+		// la barra
+		radice.querySelectorAll<HTMLElement>('[data-barra-cat]').forEach((c) =>
 			c.addEventListener('click', () => {
-				stato.categoria = c.dataset.cat || '';
-				stato.originali = false;
+				stato.categorie.clear();
+				if (c.dataset.barraCat) stato.categorie.add(c.dataset.barraCat);
 				applica();
 			}),
 		);
-		radice.querySelector('[data-orig]')?.addEventListener('click', () => {
-			stato.originali = !stato.originali;
-			if (stato.originali) stato.categoria = '';
-			applica();
-		});
-		radice.querySelectorAll<HTMLElement>('[data-taglia]').forEach((c) =>
-			c.addEventListener('click', () => {
-				stato.taglia = stato.taglia === c.dataset.taglia ? '' : c.dataset.taglia!;
-				applica();
-			}),
-		);
-		radice.querySelectorAll<HTMLElement>('[data-colore]').forEach((c) =>
-			c.addEventListener('click', () => {
-				const k = c.dataset.colore!;
-				stato.colori.has(k) ? stato.colori.delete(k) : stato.colori.add(k);
-				applica();
-			}),
-		);
-		cerca.addEventListener('input', () => {
-			stato.testo = cerca.value.trim().toLowerCase();
-			applica();
-		});
 		ordina.addEventListener('change', () => {
 			stato.ordine = ordina.value;
 			applica();
 		});
-		radice.querySelectorAll('[data-azzera]').forEach((b) =>
-			b.addEventListener('click', () => {
-				Object.assign(stato, { categoria: '', originali: false, taglia: '', testo: '', ordine: '' });
-				stato.colori.clear();
-				cerca.value = '';
-				ordina.value = '';
-				applica();
-			}),
-		);
-		apri.addEventListener('click', () => {
-			const aperto = apri.getAttribute('aria-expanded') === 'true';
-			apri.setAttribute('aria-expanded', String(!aperto));
-			altri.hidden = aperto;
-		});
-
-		// i comandi della testata e del pannello mobile
-		document.addEventListener('sr:filtra', (e) => {
-			const d = (e as CustomEvent<{ categoria?: string; originali?: boolean }>).detail;
-			stato.categoria = d.categoria || '';
-			stato.originali = !!d.originali;
+		radice.querySelector('[data-apri-filtri]')?.addEventListener('click', () => pannello.showModal());
+		radice.querySelector('[data-azzera]')?.addEventListener('click', () => {
+			azzera();
 			applica();
 		});
 
-		radice.querySelectorAll<HTMLElement>('[data-apri]').forEach((b) => b.addEventListener('click', () => apriScheda(b.dataset.apri!)));
+		// il cassetto
+		const alterna = (insieme: Set<string>, v: string) => (insieme.has(v) ? insieme.delete(v) : insieme.add(v));
+		pannello.querySelectorAll<HTMLElement>('[data-cat]').forEach((c) => c.addEventListener('click', () => (alterna(stato.categorie, c.dataset.cat!), applica())));
+		pannello.querySelectorAll<HTMLElement>('[data-taglia]').forEach((c) => c.addEventListener('click', () => (alterna(stato.taglie, c.dataset.taglia!), applica())));
+		pannello.querySelectorAll<HTMLElement>('[data-colore]').forEach((c) => c.addEventListener('click', () => (alterna(stato.colori, c.dataset.colore!), applica())));
+		pannello.querySelectorAll<HTMLElement>('[data-ord]').forEach((c) => c.addEventListener('click', () => ((stato.ordine = c.dataset.ord || ''), applica())));
+		fp('[data-orig]').addEventListener('click', () => ((stato.originali = !stato.originali), applica()));
+		fp('[data-pref]').addEventListener('click', () => ((stato.preferiti = !stato.preferiti), applica()));
+		fp('[data-fp-testo]').addEventListener('input', (e) => {
+			stato.testo = (e.target as HTMLInputElement).value.trim();
+			applica();
+		});
+		// i due cursori del prezzo non si scavalcano
+		minR.addEventListener('input', () => {
+			stato.min = Math.min(Number(minR.value), stato.max - 5);
+			applica();
+		});
+		maxR.addEventListener('input', () => {
+			stato.max = Math.max(Number(maxR.value), stato.min + 5);
+			applica();
+		});
+		fp('[data-fp-azzera]').addEventListener('click', () => {
+			azzera();
+			applica();
+		});
+		fp('[data-fp-mostra]').addEventListener('click', () => pannello.close());
+		pannello.addEventListener('click', (e) => {
+			if (e.target === pannello) pannello.close();
+		});
+
+		// i comandi della testata (sezioni, cerca, preferiti)
+		document.addEventListener('sr:filtra', (e) => {
+			const d = (e as CustomEvent<Filtro>).detail;
+			if (d.azzera) azzera();
+			if (d.categoria !== undefined) {
+				stato.categorie.clear();
+				if (d.categoria) stato.categorie.add(d.categoria);
+			}
+			if (d.originali !== undefined) stato.originali = d.originali;
+			if (d.preferiti !== undefined) stato.preferiti = d.preferiti;
+			if (d.testo !== undefined) stato.testo = d.testo;
+			applica();
+		});
+
+		// tessere: scheda, cuore, aggiunta veloce
+		radice.querySelectorAll<HTMLElement>('.tessera__tasto[data-apri]').forEach((b) => b.addEventListener('click', () => apriScheda(b.dataset.apri!)));
+		const cuoriBtn = [...radice.querySelectorAll<HTMLButtonElement>('[data-cuore]')];
+		cuoriBtn.forEach((b) => b.addEventListener('click', () => alternaCuore(b.dataset.cuore!)));
+		const sincronizzaCuori = () => {
+			const s = cuori();
+			cuoriBtn.forEach((b) => {
+				const acceso = s.has(b.dataset.cuore!);
+				premuto(b, acceso);
+				const nome = prodotti()[b.dataset.cuore!]?.nome ?? '';
+				b.setAttribute('aria-label', acceso ? `Remove ${nome} from saved` : `Save ${nome}`);
+			});
+			if (stato.preferiti) applica();
+		};
+		sincronizzaCuori();
+		document.addEventListener('sr:cuori', sincronizzaCuori);
+
+		radice.querySelectorAll<HTMLButtonElement>('[data-rapido]').forEach((b) =>
+			b.addEventListener('click', () => {
+				const p = prodotti()[b.dataset.rapido!];
+				if (!p) return;
+				if (p.taglie.length > 1) {
+					apriScheda(p.id);
+					return;
+				}
+				aggiungi(p.id, p.taglie[0], 1, true);
+				if (!ridotto()) {
+					b.classList.add('fatto');
+					setTimeout(() => b.classList.remove('fatto'), 900);
+				}
+			}),
+		);
 
 		// sul telefono non c'è il passaggio del mouse: la tessera si apre da sola quando sta a metà schermo
 		if (matchMedia('(hover: none)').matches && 'IntersectionObserver' in window) {

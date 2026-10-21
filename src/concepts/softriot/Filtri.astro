@@ -1,0 +1,382 @@
+---
+// Il pannello dei filtri: un cassetto verticale che entra da sinistra (riferimento: pannello laterale a sezioni
+// richiudibili). Le scelte si applicano subito al catalogo dietro; il bottone in fondo dice quanti pezzi restano.
+// Questo componente è solo il guscio: lo stato dei filtri e l'apertura li gestisce lo script di Catalogo.astro.
+import Icona from './Icona.astro';
+import { CATEGORIE, TAGLIE, COLORI, PRODOTTI } from './dati';
+const coloriUsati = Object.keys(COLORI).filter((c) => PRODOTTI.some((p) => p.colori.includes(c)));
+const prezzi = PRODOTTI.map((p) => p.prezzo);
+const minimo = Math.floor(Math.min(...prezzi) / 5) * 5;
+const massimo = Math.ceil(Math.max(...prezzi) / 5) * 5;
+---
+
+<dialog class="fp" data-fp aria-labelledby="fp-titolo">
+	<div class="fp__testa">
+		<h2 class="fp__titolo" id="fp-titolo">Filters <span class="fp__n" data-fp-n hidden>0</span></h2>
+		<button type="button" class="fp__azzera" data-fp-azzera>Clear all</button>
+		<form method="dialog">
+			<button type="submit" class="fp__x" aria-label="Close filters"><Icona nome="chiudi" /></button>
+		</form>
+	</div>
+
+	<div class="fp__corpo">
+		<label class="fp__cerca">
+			<Icona nome="cerca" />
+			<span class="sr-only">Search pieces</span>
+			<input type="search" placeholder="Search pieces" autocomplete="off" data-fp-testo />
+		</label>
+
+		<details class="fp__sez" open>
+			<summary>Category</summary>
+			<div class="fp__chips">
+				{CATEGORIE.map((c) => <button type="button" class="chip chip--ag" data-cat={c.chiave} aria-pressed="false">{c.nome}</button>)}
+			</div>
+		</details>
+
+		<details class="fp__sez" open>
+			<summary>Size</summary>
+			<div class="fp__chips">
+				{TAGLIE.map((t) => <button type="button" class="chip chip--ag" data-taglia={t} aria-pressed="false">{t}</button>)}
+			</div>
+		</details>
+
+		<details class="fp__sez" open>
+			<summary>Colour</summary>
+			<div class="fp__chips">
+				{
+					coloriUsati.map((c) => (
+						<button type="button" class="chip chip--ag chip--colore" data-colore={c} aria-pressed="false" style={`--c:${COLORI[c].hex}`}>
+							<span class="chip__pallino" aria-hidden="true" />{COLORI[c].nome}
+						</button>
+					))
+				}
+			</div>
+		</details>
+
+		<details class="fp__sez" open>
+			<summary>Price</summary>
+			<div class="fp__prezzo" data-fp-prezzo style={`--min:${minimo};--max:${massimo}`}>
+				<div class="fp__binario" aria-hidden="true"><span data-fp-riempi></span></div>
+				<input type="range" min={minimo} max={massimo} step="5" value={minimo} aria-label="Lowest price" data-fp-min />
+				<input type="range" min={minimo} max={massimo} step="5" value={massimo} aria-label="Highest price" data-fp-max />
+				<p class="fp__valori"><span data-fp-da>€{minimo}</span><span data-fp-a>€{massimo}</span></p>
+			</div>
+		</details>
+
+		<details class="fp__sez" open>
+			<summary>Show only</summary>
+			<div class="fp__chips">
+				<button type="button" class="chip chip--ag" data-orig aria-pressed="false">Soft Riot originals</button>
+				<button type="button" class="chip chip--ag" data-pref aria-pressed="false">Saved pieces</button>
+			</div>
+		</details>
+
+		<details class="fp__sez" open>
+			<summary>Sort by</summary>
+			<div class="fp__chips">
+				<button type="button" class="chip chip--ag" data-ord="" aria-pressed="true">Our order</button>
+				<button type="button" class="chip chip--ag" data-ord="su" aria-pressed="false">Price, low to high</button>
+				<button type="button" class="chip chip--ag" data-ord="giu" aria-pressed="false">Price, high to low</button>
+			</div>
+		</details>
+	</div>
+
+	<div class="fp__piede">
+		<button type="button" class="btn btn--ink" data-fp-mostra>Show pieces</button>
+	</div>
+</dialog>
+
+<style>
+	.fp {
+		position: fixed;
+		inset: 0 auto 0 0;
+		width: min(430px, 92vw);
+		height: 100%;
+		max-height: none;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		border-right: 2px solid var(--ink);
+		background: var(--nebbia);
+		color: var(--ink);
+		overflow: hidden;
+		transform: translateX(-100%);
+		transition:
+			transform 0.3s var(--ease-drawer),
+			overlay 0.3s allow-discrete,
+			display 0.3s allow-discrete;
+	}
+	.fp[open] {
+		display: flex;
+		flex-direction: column;
+		transform: none;
+	}
+	@starting-style {
+		.fp[open] {
+			transform: translateX(-100%);
+		}
+	}
+	.fp::backdrop {
+		background: rgb(29 16 51 / 0.45);
+		opacity: 0;
+		transition:
+			opacity 0.3s ease,
+			overlay 0.3s allow-discrete,
+			display 0.3s allow-discrete;
+	}
+	.fp[open]::backdrop {
+		opacity: 1;
+	}
+	@starting-style {
+		.fp[open]::backdrop {
+			opacity: 0;
+		}
+	}
+	.fp__testa {
+		display: flex;
+		align-items: center;
+		gap: 14px;
+		padding: 16px 20px;
+		border-bottom: 2px solid var(--ink);
+	}
+	.fp__titolo {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		margin-right: auto;
+		font-family: var(--titoli);
+		font-weight: 400;
+		font-size: 2rem;
+		line-height: 1;
+	}
+	.fp__n {
+		display: grid;
+		place-items: center;
+		min-width: 28px;
+		height: 28px;
+		padding: 0 8px;
+		border-radius: 999px;
+		background: var(--mandarino);
+		font-family: var(--testo);
+		font-size: 0.875rem;
+		font-weight: 700;
+	}
+	.fp__n[hidden] {
+		display: none;
+	}
+	.fp__azzera {
+		white-space: nowrap;
+		border: 0;
+		background: none;
+		font-weight: 650;
+		font-size: 0.9375rem;
+		text-decoration: underline;
+		text-underline-offset: 4px;
+		text-decoration-thickness: 2px;
+	}
+	.fp__x {
+		display: grid;
+		place-items: center;
+		width: 46px;
+		height: 46px;
+		padding: 0;
+		border: 2px solid var(--ink);
+		border-radius: 50%;
+		background: var(--bianco);
+	}
+	.fp__corpo {
+		flex: 1;
+		min-height: 0;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		padding: 18px 20px 24px;
+	}
+	.fp__cerca {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		min-height: 54px;
+		padding: 0 16px;
+		border: 2px solid var(--ink);
+		border-radius: 16px;
+		background: var(--bianco);
+	}
+	.fp__cerca input {
+		flex: 1;
+		min-width: 0;
+		height: 50px;
+		border: 0;
+		background: none;
+		outline: none;
+		font-size: 1rem;
+	}
+	.fp__cerca:focus-within {
+		outline: 3px solid var(--ink);
+		outline-offset: 3px;
+	}
+	.fp__sez {
+		margin-top: 8px;
+		padding-block: 6px;
+		border-bottom: 2px solid color-mix(in oklch, var(--ink) 18%, transparent);
+	}
+	.fp__sez summary {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		min-height: 52px;
+		font-family: var(--titoli-testo);
+		font-size: 1.25rem;
+		cursor: pointer;
+		list-style: none;
+	}
+	.fp__sez summary::-webkit-details-marker {
+		display: none;
+	}
+	.fp__sez summary::after {
+		content: '';
+		width: 10px;
+		height: 10px;
+		margin-right: 6px;
+		border-right: 2.5px solid currentColor;
+		border-bottom: 2.5px solid currentColor;
+		rotate: 45deg;
+		translate: 0 -3px;
+		transition: rotate 0.2s var(--ease-out);
+	}
+	.fp__sez[open] summary::after {
+		rotate: 225deg;
+		translate: 0 3px;
+	}
+	.fp__chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		padding: 4px 0 14px;
+	}
+	/* ogni scelta ha un "+" che diventa "×" quando è accesa: dice cosa succede al tocco */
+	.chip--ag {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+	}
+	.chip--ag::after {
+		content: '+';
+		font-size: 1.1em;
+		line-height: 1;
+		opacity: 0.55;
+	}
+	.chip--ag[aria-pressed='true']::after {
+		content: '×';
+		opacity: 1;
+	}
+	.chip--colore {
+		padding-left: 10px;
+	}
+	.chip--colore .chip__pallino {
+		flex: none;
+	}
+	.chip__pallino {
+		width: 18px;
+		height: 18px;
+		border: 2px solid var(--ink);
+		border-radius: 50%;
+		background: var(--c);
+	}
+
+	/* il prezzo: due cursori sovrapposti sullo stesso binario */
+	.fp__prezzo {
+		position: relative;
+		padding: 10px 6px 4px;
+	}
+	.fp__binario {
+		position: absolute;
+		left: 6px;
+		right: 6px;
+		top: 24px;
+		height: 8px;
+		border: 2px solid var(--ink);
+		border-radius: 999px;
+		background: var(--bianco);
+	}
+	.fp__binario span {
+		position: absolute;
+		inset: -2px auto -2px 0;
+		border-radius: 999px;
+		background: var(--mandarino);
+		border: 2px solid var(--ink);
+		left: var(--da, 0%);
+		width: calc(var(--a, 100%) - var(--da, 0%));
+	}
+	.fp__prezzo input[type='range'] {
+		position: relative;
+		z-index: 1;
+		display: block;
+		width: 100%;
+		height: 30px;
+		margin: 0;
+		background: none;
+		pointer-events: none;
+		-webkit-appearance: none;
+		appearance: none;
+	}
+	.fp__prezzo input[type='range'] + input[type='range'] {
+		margin-top: -30px;
+	}
+	.fp__prezzo input[type='range']::-webkit-slider-runnable-track {
+		height: 30px;
+		background: none;
+	}
+	.fp__prezzo input[type='range']::-moz-range-track {
+		height: 30px;
+		background: none;
+	}
+	.fp__prezzo input[type='range']::-webkit-slider-thumb {
+		pointer-events: auto;
+		-webkit-appearance: none;
+		width: 28px;
+		height: 28px;
+		border: 2px solid var(--ink);
+		border-radius: 50%;
+		background: var(--bianco);
+		cursor: grab;
+		margin-top: 1px;
+	}
+	.fp__prezzo input[type='range']::-moz-range-thumb {
+		pointer-events: auto;
+		width: 24px;
+		height: 24px;
+		border: 2px solid var(--ink);
+		border-radius: 50%;
+		background: var(--bianco);
+		cursor: grab;
+	}
+	.fp__prezzo input[type='range']:focus-visible::-webkit-slider-thumb {
+		outline: 3px solid var(--ink);
+		outline-offset: 3px;
+	}
+	.fp__prezzo input[type='range']:focus-visible::-moz-range-thumb {
+		outline: 3px solid var(--ink);
+		outline-offset: 3px;
+	}
+	.fp__valori {
+		display: flex;
+		justify-content: space-between;
+		margin-top: 10px;
+		font-weight: 650;
+	}
+	.fp__piede {
+		padding: 14px 20px 18px;
+		border-top: 2px solid var(--ink);
+		background: var(--nebbia);
+	}
+	.fp__piede .btn {
+		width: 100%;
+		min-height: 58px;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.fp,
+		.fp[open] {
+			transition-duration: 0.01ms;
+		}
+	}
+</style>

@@ -1,56 +1,84 @@
 ---
-// La testata: barra chiara appiccicata in cima con il nome appeso come un cartellino di ink. A sinistra le sezioni
-// (filtrano il catalogo), a destra la borsa. Sul telefono le sezioni stanno in un pannello a tutta larghezza
-// (menù mobile proprio di questo concept).
+// La testata a due piani, come nel riferimento (negozio di cosmetica): la riga grande con due voci a sinistra, il nome
+// al centro e a destra account, cuore dei preferiti, cerca e carrello; sotto, la riga "Shop by" con le sezioni, che
+// scorre via. Sul telefono la riga delle sezioni sta nel pannello del menù (menù mobile proprio di questo concept).
+import { Image } from 'astro:assets';
+import esse from '../../assets/softriot/brand/s-raso.webp';
 import Parola from './Parola.astro';
-const sezioni = [
-	{ nome: 'Outerwear', categoria: 'outerwear' },
-	{ nome: 'Knits & sweats', categoria: 'knits' },
-	{ nome: 'Bags', categoria: 'bags' },
-	{ nome: 'Soft Riot originals', originali: true },
-];
+import Icona from './Icona.astro';
+import { CATEGORIE } from './dati';
 ---
 
-<header class="testata">
+<header class="testata" data-testata>
 	<div class="testata__in">
-		<a class="testata__nome" href="#main" aria-label="Soft Riot, back to the top">
-			<Parola o="var(--pesca)" />
-		</a>
-		<nav class="testata__nav" aria-label="Shop sections">
-			{
-				sezioni.map((s) => (
-					<a href="#shop" data-categoria={s.categoria} data-originali={s.originali ? '1' : undefined}>
-						{s.nome}
-					</a>
-				))
-			}
+		<nav class="testata__sx" aria-label="Highlights">
+			<a href="#shop" data-originali="1">Soft Riot originals</a>
+			<a href="#chi-siamo">Made soft, made to last</a>
 		</nav>
+		<button type="button" class="tondo menu-tasto" data-menu aria-haspopup="dialog" aria-label="Open the menu">
+			<Icona nome="menu" />
+		</button>
+		<a class="testata__nome" href="#main" aria-label="Soft Riot, back to the top">
+			<Image class="testata__esse" src={esse} alt="" width={64} quality={70} loading="eager" />
+			<Parola />
+		</a>
 		<div class="testata__azioni">
-			<button type="button" class="borsa-tasto" data-borsa>
-				<span>Bag</span>
-				<span class="borsa-tasto__n" data-conta aria-hidden="true">0</span>
-				<span class="sr-only" data-conta-testo>, empty</span>
+			<button type="button" class="tondo tondo--testo account-tasto" data-account aria-haspopup="dialog">
+				<Icona nome="utente" /><span class="account-tasto__testo">Login</span>
 			</button>
-			<button type="button" class="menu-tasto" data-menu aria-haspopup="dialog">Menu</button>
+			<button type="button" class="tondo cuori-tasto" data-cuori-testata aria-label="Saved pieces, none yet">
+				<Icona nome="cuore" /><span class="spunta" data-cuori-n hidden>0</span>
+			</button>
+			<form class="cerca" role="search" data-cerca-form>
+				<label class="sr-only" for="cerca-testata">Search the shop</label>
+				<input id="cerca-testata" class="cerca__campo" type="search" placeholder="Search pieces" autocomplete="off" enterkeyhint="search" />
+				<button type="submit" class="cerca__tasto" aria-label="Search"><Icona nome="cerca" /></button>
+			</form>
+			<button type="button" class="tondo borsa-tasto" data-borsa aria-haspopup="dialog">
+				<Icona nome="carrello" /><span class="spunta" data-conta aria-hidden="true">0</span>
+				<span class="sr-only" data-conta-testo>Bag, empty</span>
+			</button>
 		</div>
 	</div>
 </header>
 
+<nav class="sezioni" aria-label="Shop by">
+	<div class="sezioni__in">
+		<span class="sezioni__nome">Shop by:</span>
+		{CATEGORIE.map((c) => <a href="#shop" data-categoria={c.chiave}>{c.nome}</a>)}
+		<a href="#shop" data-categoria="" class="sezioni__tutto">Shop all</a>
+	</div>
+</nav>
+
 <dialog class="pannello su-scuro" data-pannello aria-label="Menu">
 	<form method="dialog" class="pannello__chiudi">
-		<button type="submit" class="pannello__x" aria-label="Close menu"><span aria-hidden="true">×</span></button>
+		<button type="submit" class="pannello__x" aria-label="Close menu"><Icona nome="chiudi" /></button>
 	</form>
 	<nav class="pannello__nav" aria-label="Shop sections">
-		{
-			sezioni.map((s) => (
-				<a href="#shop" data-categoria={s.categoria} data-originali={s.originali ? '1' : undefined}>
-					{s.nome}
-				</a>
-			))
-		}
+		{CATEGORIE.map((c) => <a href="#shop" data-categoria={c.chiave}>{c.nome}</a>)}
+		<a href="#shop" data-originali="1">Soft Riot originals</a>
 		<a href="#shop" data-categoria="">All pieces</a>
 	</nav>
+	<div class="pannello__sotto">
+		<button type="button" class="pannello__voce" data-pannello-cuori>Saved pieces</button>
+		<button type="button" class="pannello__voce" data-pannello-account>Login</button>
+		<a class="pannello__voce" href="#chi-siamo" data-chiudi>Made soft, made to last</a>
+	</div>
 	<p class="pannello__nota">Demo store by Loop Studio. Nothing here is for sale.</p>
+</dialog>
+
+<dialog class="account" data-account-dialog aria-labelledby="account-titolo">
+	<form method="dialog" class="account__chiudi">
+		<button type="submit" class="tondo" aria-label="Close"><Icona nome="chiudi" /></button>
+	</form>
+	<h2 class="account__titolo" id="account-titolo">Your account</h2>
+	<form class="account__form" data-account-form novalidate>
+		<label>Email<input type="email" autocomplete="off" placeholder="you@example.com" /></label>
+		<label>Password<input type="password" autocomplete="off" placeholder="••••••••" /></label>
+		<button type="submit" class="btn">Log in</button>
+		<p class="account__esito" role="status" data-account-esito></p>
+	</form>
+	<p class="account__nota">Demo store: there are no accounts, and nothing you type here leaves the page.</p>
 </dialog>
 
 <style>
@@ -64,128 +92,251 @@ const sezioni = [
 	}
 	.testata__in {
 		position: relative;
-		height: 100%;
-		display: flex;
+		display: grid;
+		grid-template-columns: 1fr auto 1fr;
 		align-items: center;
-		gap: clamp(20px, 4vw, 56px);
+		gap: 16px;
+		height: 100%;
 		max-width: var(--max);
 		margin-inline: auto;
 		padding-inline: var(--gutter);
 	}
-	.testata__nome {
-		align-self: flex-start;
+	.testata__sx {
 		display: flex;
-		align-items: center;
-		height: calc(var(--testata-h) + 16px);
-		padding: 0 22px;
-		border-radius: 0 0 24px 24px;
-		background: var(--ink);
-		color: var(--nebbia);
-		font-size: clamp(1.5rem, 2.4vw, 1.9rem);
-		line-height: 1;
-		text-decoration: none;
+		gap: clamp(18px, 2.6vw, 40px);
+		font-size: 1.0625rem;
+		font-weight: 700;
 	}
-	.testata__nome:focus-visible {
-		outline-color: var(--mandarino);
-		outline-offset: -6px;
-	}
-	.testata__nav {
-		display: flex;
-		gap: clamp(16px, 2.4vw, 32px);
-		font-weight: 600;
-	}
-	.testata__nav a {
+	.testata__sx a,
+	.sezioni a {
 		text-decoration: none;
 		padding: 6px 0;
 		background: linear-gradient(var(--mandarino), var(--mandarino)) 0 100% / 0 4px no-repeat;
 		transition: background-size 0.2s var(--ease-out);
 	}
 	@media (hover: hover) and (pointer: fine) {
-		.testata__nav a:hover {
+		.testata__sx a:hover,
+		.sezioni a:hover {
 			background-size: 100% 4px;
 		}
 	}
-	.testata__azioni {
-		margin-left: auto;
+	.testata__nome {
 		display: flex;
 		align-items: center;
-		gap: 10px;
+		gap: 12px;
+		font-size: clamp(2rem, 3.4vw, 2.9rem);
+		line-height: 1;
+		text-decoration: none;
 	}
-	.borsa-tasto,
-	.menu-tasto {
+	.testata__esse {
+		width: auto;
+		height: 1.25em;
+		rotate: -8deg;
+		filter: drop-shadow(0 4px 4px rgb(29 16 51 / 0.25));
+	}
+	.testata__azioni {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 8px;
+	}
+	.tondo {
+		position: relative;
 		display: inline-flex;
 		align-items: center;
-		gap: 10px;
-		min-height: 44px;
-		padding: 0 8px 0 20px;
+		justify-content: center;
+		gap: 8px;
+		width: 48px;
+		height: 48px;
+		padding: 0;
 		border: 2px solid var(--ink);
 		border-radius: 999px;
 		background: var(--bianco);
-		font-family: var(--titoli-testo);
-		font-size: 1.0625rem;
 		transition:
 			background-color 0.16s ease,
 			transform 0.16s var(--ease-out);
 	}
-	.borsa-tasto:active,
-	.menu-tasto:active {
-		transform: scale(0.97);
+	.tondo--testo {
+		width: auto;
+		padding: 0 18px 0 14px;
+		font-family: var(--titoli-testo);
+		font-size: 1.0625rem;
+	}
+	.tondo:active {
+		transform: scale(0.94);
 	}
 	@media (hover: hover) and (pointer: fine) {
-		.borsa-tasto:hover,
-		.menu-tasto:hover {
+		.tondo:hover {
 			background: var(--lavanda);
 		}
 	}
-	.borsa-tasto__n {
-		display: inline-grid;
+	.spunta {
+		position: absolute;
+		top: -7px;
+		right: -7px;
+		display: grid;
 		place-items: center;
-		min-width: 30px;
-		height: 30px;
+		min-width: 24px;
+		height: 24px;
 		padding: 0 6px;
+		border: 2px solid var(--nebbia);
 		border-radius: 999px;
 		background: var(--ink);
 		color: var(--nebbia);
 		font-family: var(--testo);
-		font-size: 0.875rem;
+		font-size: 0.75rem;
 		font-weight: 700;
+		line-height: 1;
 		transition: transform 0.18s var(--ease-out);
 	}
-	.borsa-tasto__n.salta {
-		transform: scale(1.25);
+	.spunta[hidden] {
+		display: none;
 	}
-	.borsa-tasto__n.vuota {
+	.spunta.salta {
+		transform: scale(1.3);
+	}
+	.spunta.vuota {
 		background: var(--lavanda);
+		color: var(--ink);
+	}
+	.cuori-tasto[aria-pressed='true'] {
+		background: var(--mandarino);
+	}
+	.cuori-tasto .spunta {
+		background: var(--mandarino);
 		color: var(--ink);
 	}
 	.menu-tasto {
 		display: none;
-		padding: 0 20px;
 	}
-	@media (max-width: 860px) {
-		.testata__nav {
+
+	/* la cerca: un cerchio con la lente che al passaggio o al fuoco si allarga in un campo (riferimento: searchbar 2).
+	   Il campo si apre SOPRA le icone vicine, non le sposta: la testata non si muove. */
+	.cerca {
+		position: relative;
+		width: 48px;
+		height: 48px;
+		margin: 0;
+	}
+	.cerca__campo {
+		position: absolute;
+		right: 0;
+		top: 0;
+		z-index: 2;
+		width: 48px;
+		height: 48px;
+		padding: 0 48px 0 0;
+		border: 2px solid var(--ink);
+		border-radius: 999px;
+		background: var(--bianco);
+		color: var(--ink);
+		font-size: 1rem;
+		outline: none;
+		cursor: pointer;
+		transition:
+			width 0.38s var(--ease-out),
+			border-radius 0.38s var(--ease-out),
+			padding 0.38s var(--ease-out);
+	}
+	.cerca__campo::placeholder {
+		color: transparent;
+		transition: color 0.2s ease 0.1s;
+	}
+	.cerca__campo::-webkit-search-cancel-button {
+		display: none;
+	}
+	.cerca__tasto {
+		position: absolute;
+		top: 0;
+		right: 0;
+		z-index: 3;
+		display: grid;
+		place-items: center;
+		width: 48px;
+		height: 48px;
+		padding: 0;
+		border: 0;
+		border-radius: 50%;
+		background: none;
+	}
+	.cerca:focus-within .cerca__campo,
+	.cerca__campo:not(:placeholder-shown) {
+		width: min(320px, 70vw);
+		padding-left: 18px;
+		border-radius: 16px;
+		cursor: text;
+	}
+	.cerca:focus-within .cerca__campo::placeholder {
+		color: color-mix(in oklch, var(--ink) 62%, white);
+	}
+	.cerca:focus-within .cerca__campo {
+		outline: 3px solid var(--ink);
+		outline-offset: 3px;
+	}
+	@media (hover: hover) and (pointer: fine) {
+		.cerca:hover .cerca__campo {
+			width: min(320px, 70vw);
+			padding-left: 18px;
+			border-radius: 16px;
+			cursor: text;
+		}
+		.cerca:hover .cerca__campo::placeholder {
+			color: color-mix(in oklch, var(--ink) 62%, white);
+		}
+	}
+
+	/* la riga delle sezioni: lavanda, scorre via con la pagina */
+	.sezioni {
+		background: var(--lavanda);
+		border-bottom: 2px solid var(--ink);
+	}
+	.sezioni__in {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		gap: 4px clamp(16px, 2.6vw, 38px);
+		max-width: var(--max);
+		margin-inline: auto;
+		padding: 8px var(--gutter);
+		font-weight: 650;
+	}
+	.sezioni__nome {
+		font-family: var(--titoli-testo);
+		font-size: 1.0625rem;
+	}
+	.sezioni__tutto {
+		font-weight: 800;
+	}
+
+	@media (max-width: 1100px) {
+		.testata__sx {
 			display: none;
+		}
+		.testata__in {
+			grid-template-columns: 1fr auto 1fr;
 		}
 		.menu-tasto {
 			display: inline-flex;
+			justify-self: start;
+		}
+		.account-tasto,
+		.cuori-tasto {
+			display: none;
+		}
+		.sezioni {
+			display: none;
 		}
 	}
-	@media (max-width: 480px) {
+	@media (max-width: 560px) {
 		.testata__in {
-			gap: 10px;
+			gap: 8px;
+		}
+		.testata__esse {
+			display: none;
 		}
 		.testata__nome {
-			padding: 0 14px;
-			font-size: 1.35rem;
-		}
-		.borsa-tasto {
-			padding-left: 14px;
-		}
-		.menu-tasto {
-			padding: 0 14px;
-		}
-		.testata__azioni {
-			gap: 6px;
+			font-size: 1.9rem;
 		}
 	}
 
@@ -230,79 +381,230 @@ const sezioni = [
 		padding-top: 12px;
 	}
 	.pannello__x {
+		display: grid;
+		place-items: center;
 		width: 52px;
 		height: 52px;
 		border: 2px solid var(--nebbia);
 		border-radius: 999px;
 		background: none;
 		color: var(--nebbia);
-		font-size: 1.9rem;
-		line-height: 1;
 	}
 	.pannello__nav {
 		display: grid;
-		gap: 4px;
-		margin-top: 28px;
+		gap: 2px;
+		margin-top: 20px;
 	}
 	.pannello__nav a {
-		padding: 10px 0;
+		padding: 8px 0;
 		font-family: var(--titoli);
-		font-size: clamp(2.2rem, 11vw, 3.4rem);
+		font-size: clamp(2rem, 10vw, 3.2rem);
 		line-height: 1;
 		text-decoration: none;
 	}
 	.pannello__nav a:nth-child(2n) {
 		color: var(--lavanda);
 	}
-	.pannello__nav a:nth-child(3) {
+	.pannello__nav a:nth-child(3n) {
 		color: var(--pesca);
 	}
+	.pannello__sotto {
+		display: grid;
+		justify-items: start;
+		gap: 4px;
+		margin-top: 28px;
+		padding-top: 18px;
+		border-top: 2px solid rgb(236 230 255 / 0.3);
+	}
+	.pannello__voce {
+		padding: 10px 0;
+		border: 0;
+		background: none;
+		color: var(--nebbia);
+		font-size: 1.125rem;
+		font-weight: 650;
+		text-decoration: none;
+		text-align: left;
+	}
 	.pannello__nota {
-		margin-top: 36px;
+		margin-top: 28px;
 		font-size: 0.875rem;
 		color: var(--lavanda);
 	}
+
+	/* l'account di finta */
+	.account {
+		width: min(420px, calc(100vw - 32px));
+		margin: auto;
+		padding: 28px 26px 24px;
+		border: 2px solid var(--ink);
+		border-radius: 28px;
+		background: var(--nebbia);
+		color: var(--ink);
+		opacity: 0;
+		transform: translateY(10px) scale(0.97);
+		transition:
+			opacity 0.2s var(--ease-out),
+			transform 0.2s var(--ease-out),
+			overlay 0.2s allow-discrete,
+			display 0.2s allow-discrete;
+	}
+	.account[open] {
+		opacity: 1;
+		transform: none;
+	}
+	@starting-style {
+		.account[open] {
+			opacity: 0;
+			transform: translateY(10px) scale(0.97);
+		}
+	}
+	.account::backdrop {
+		background: rgb(29 16 51 / 0.6);
+	}
+	.account__chiudi {
+		position: absolute;
+		top: 14px;
+		right: 14px;
+	}
+	.account__titolo {
+		font-family: var(--titoli);
+		font-weight: 400;
+		font-size: 2.4rem;
+		line-height: 1;
+	}
+	.account__form {
+		display: grid;
+		gap: 14px;
+		margin-top: 18px;
+	}
+	.account__form label {
+		display: grid;
+		gap: 6px;
+		font-weight: 650;
+	}
+	.account__form input {
+		min-height: 50px;
+		padding: 0 16px;
+		border: 2px solid var(--ink);
+		border-radius: 14px;
+		background: var(--bianco);
+		font-weight: 400;
+	}
+	.account__esito {
+		min-height: 1.4em;
+		font-weight: 600;
+	}
+	.account__nota {
+		margin-top: 8px;
+		font-size: 0.875rem;
+	}
 	@media (prefers-reduced-motion: reduce) {
-		.pannello {
+		.pannello,
+		.account {
 			transform: none;
 		}
-		.testata__nav a {
+		.testata__sx a,
+		.sezioni a {
 			transition: none;
 		}
 	}
 </style>
 
 <script>
-	import { conteggio, filtra, ridotto } from './stato';
+	import { conteggio, cuori, filtra, ridotto } from './stato';
 
-	const n = document.querySelector<HTMLElement>('[data-conta]');
-	const testo = document.querySelector<HTMLElement>('[data-conta-testo]');
-	let ultimo = conteggio();
-	const aggiorna = () => {
-		const c = conteggio();
-		if (n) {
-			n.textContent = String(c);
-			n.classList.toggle('vuota', c === 0);
-			if (c > ultimo && !ridotto()) {
-				n.classList.add('salta');
-				setTimeout(() => n.classList.remove('salta'), 180);
-			}
+	// i due conti: la borsa e i preferiti
+	const bump = (n: HTMLElement, su: boolean) => {
+		if (su && !ridotto()) {
+			n.classList.add('salta');
+			setTimeout(() => n.classList.remove('salta'), 180);
 		}
-		if (testo) testo.textContent = c === 0 ? ', empty' : `, ${c} ${c === 1 ? 'item' : 'items'}`;
+	};
+	const nBorsa = document.querySelector<HTMLElement>('[data-conta]');
+	const testoBorsa = document.querySelector<HTMLElement>('[data-conta-testo]');
+	let ultimo = conteggio();
+	const aggiornaBorsa = () => {
+		const c = conteggio();
+		if (nBorsa) {
+			nBorsa.textContent = String(c);
+			nBorsa.classList.toggle('vuota', c === 0);
+			bump(nBorsa, c > ultimo);
+		}
+		if (testoBorsa) testoBorsa.textContent = c === 0 ? 'Bag, empty' : `Bag, ${c} ${c === 1 ? 'item' : 'items'}`;
 		ultimo = c;
 	};
-	aggiorna();
-	document.addEventListener('sr:borsa', aggiorna);
+	aggiornaBorsa();
+	document.addEventListener('sr:borsa', aggiornaBorsa);
+
+	const nCuori = document.querySelector<HTMLElement>('[data-cuori-n]');
+	const tastoCuori = document.querySelector<HTMLElement>('[data-cuori-testata]');
+	let ultimiCuori = cuori().size;
+	const aggiornaCuori = () => {
+		const c = cuori().size;
+		if (nCuori) {
+			nCuori.textContent = String(c);
+			nCuori.hidden = c === 0;
+			bump(nCuori, c > ultimiCuori);
+		}
+		tastoCuori?.setAttribute('aria-label', c === 0 ? 'Saved pieces, none yet' : `Saved pieces, ${c}`);
+		ultimiCuori = c;
+	};
+	aggiornaCuori();
+	document.addEventListener('sr:cuori', aggiornaCuori);
+
+	const vaiAiCuori = () => {
+		filtra({ preferiti: true, azzera: true });
+		document.getElementById('shop')?.scrollIntoView({ behavior: ridotto() ? 'auto' : 'smooth' });
+	};
+	tastoCuori?.addEventListener('click', vaiAiCuori);
 
 	document.querySelector('[data-borsa]')?.addEventListener('click', () => document.dispatchEvent(new CustomEvent('sr:apri-borsa')));
 
+	// menù mobile
 	const pannello = document.querySelector<HTMLDialogElement>('[data-pannello]');
 	document.querySelector('[data-menu]')?.addEventListener('click', () => pannello?.showModal());
+	pannello?.querySelector('[data-pannello-cuori]')?.addEventListener('click', () => {
+		pannello.close();
+		vaiAiCuori();
+	});
+	pannello?.querySelector('[data-chiudi]')?.addEventListener('click', () => pannello.close());
 
-	document.querySelectorAll<HTMLAnchorElement>('[data-categoria]').forEach((a) => {
+	// le sezioni (riga "Shop by", pannello, voci a sinistra) filtrano il catalogo
+	document.querySelectorAll<HTMLAnchorElement>('[data-categoria], [data-originali]').forEach((a) => {
 		a.addEventListener('click', () => {
-			filtra({ categoria: a.dataset.categoria || '', originali: a.dataset.originali === '1' });
+			filtra({ categoria: a.dataset.categoria || '', originali: a.dataset.originali === '1', azzera: true });
 			pannello?.close();
 		});
+	});
+
+	// la cerca: il campo filtra il catalogo all'invio
+	const form = document.querySelector<HTMLFormElement>('[data-cerca-form]');
+	const campo = form?.querySelector<HTMLInputElement>('input');
+	form?.addEventListener('submit', (e) => {
+		e.preventDefault();
+		filtra({ testo: campo?.value.trim() ?? '', azzera: true });
+		document.getElementById('shop')?.scrollIntoView({ behavior: ridotto() ? 'auto' : 'smooth' });
+		campo?.blur();
+	});
+	campo?.addEventListener('input', () => {
+		if (!campo.value) filtra({ testo: '' });
+	});
+
+	// l'account di finta
+	const account = document.querySelector<HTMLDialogElement>('[data-account-dialog]');
+	const apriAccount = () => {
+		pannello?.close();
+		account?.showModal();
+	};
+	document.querySelector('[data-account]')?.addEventListener('click', apriAccount);
+	pannello?.querySelector('[data-pannello-account]')?.addEventListener('click', apriAccount);
+	const esito = document.querySelector<HTMLElement>('[data-account-esito]');
+	document.querySelector('[data-account-form]')?.addEventListener('submit', (e) => {
+		e.preventDefault();
+		if (esito) esito.textContent = 'Demo only: no account was opened. You are still browsing as a guest.';
+	});
+	account?.addEventListener('click', (e) => {
+		if (e.target === account) account.close();
 	});
 </script>
