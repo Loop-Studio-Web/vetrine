@@ -1,6 +1,6 @@
 # Stato del concept: softriot
 
-**E-commerce / Evoluto** (Soft Riot, `src/pages/ecommerce/softriot/`, concept `src/concepts/softriot/`, slug hub `softriot`), livello 2, in **inglese**. Negozio di abbigliamento e accessori. **In lavorazione dal 2026-10-21** (nessun commit di codice finora).
+**E-commerce / Evoluto** (Soft Riot, `src/pages/ecommerce/softriot/`, concept `src/concepts/softriot/`, slug hub `softriot`), livello 2, in **inglese**. Negozio di abbigliamento e accessori. **Bozza approvata dall'utente il 2026-10-21; in test finali** (commit locali, non pushata).
 
 **Riga struttura / materia / gesto:** home da negozio (fascia avvisi, hero carosello, catalogo filtrabile, scheda rapida, carrello laterale) / campi di colore pieno, raso trapuntato 3D (render AI di brand) e foto vere di moda in ritagli / il ritaglio che si apre (una finestra con forma diversa per tessera che al passaggio/tocco si allarga sul capo intero). Differisce da Chioma in tutte e tre le colonne. Il nodo è solo immagine di brand (Marrow & Knot lo ha già come gesto); il colore cambia per umore del prodotto, non per ora del giorno (Ordito).
 
@@ -31,7 +31,7 @@ public/images/softriot/                      og.jpg 1200x630, favicon.svg (la "S
 ```
 Fase 3 (asset): font e pezzi di brand fatti; foto del catalogo in corso (Pexels via ricerca con curl, 14-16 prodotti); mancano favicon "S" vettoriale, og:image, eventuale carrello vuoto/404 (cintura annodata già disponibile).
 
-**Stato (2026-10-21, sera): prima bozza costruita, NON ancora vista dall'utente; nessun test fatto** (build ok, solo controllo visivo con screenshot locali su `http://localhost:4401/ecommerce/softriot/`).
+**Stato (2026-10-21, sera): bozza costruita e APPROVATA dall'utente; nessun test formale ancora fatto** (solo controllo visivo con screenshot su `http://localhost:4401/ecommerce/softriot/`).
 - Pezzi: Fascia, Annunci, Testata (cartellino ink appeso + menù mobile a pannello), Carosello (4 slide dei pezzi di brand, scroll-snap, pausa), Catalogo (18 tessere: 14 foto Pexels + 4 originali; filtri categoria/taglia/colore/ricerca/ordine; finestre clip-path che si aprono; sul telefono si aprono a metà schermo), Scheda (dialog), Carrello (cassetto/foglio, barra spedizione, ordine di prova), Striscia (Gutbust + "S"), Footer (logo B).
 - Stato condiviso in `stato.ts` (borsa in localStorage + eventi `sr:*`). Gli elementi creati da JS hanno stili in `<style is:global>` (Scheda `.taglia`, Carrello `.riga*`).
 - Trabocchetti: i brand-cutout nel catalogo usano le immagini `*-quadro.webp` (pezzo già centrato nell'aspetto della tessera: così `taglio` è in coordinate di tessera); le variabili `--ib/--it/...` sono gli inset della finestra (`--b` è il colore del campo!); `[data-conta]` esiste sia nella testata (borsa) sia nel catalogo.

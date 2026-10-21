@@ -8,7 +8,7 @@ strumento per vedere cosa abbiamo già fatto e dove ci sono ancora buchi.
 ## 1. Matrice dei concept
 
 Tre scelte per ogni concept: **struttura** (che cosa fa la pagina), **materia** (di che cosa è fatta
-visivamente), **gesto** (l'unico effetto che si ricorda). Compilata dalle note del CLAUDE.md;
+visivamente), **gesto** (l'unico effetto che si ricorda). Compilata dalle schede in `docs/concept/`;
 le celle con "?" vanno verificate sul concept prima di fidarsi.
 
 | Concept | Struttura | Materia | Gesto / idea-guida |
@@ -29,10 +29,11 @@ le celle con "?" vanno verificate sul concept prima di fidarsi.
 | Limonaia Aurelia | strumento (pianta) + invito | foto + vetro | la pagina cambia luce con l'ora della festa |
 | Marrow & Knot | corridoio orizzontale di sale + nodo che si stringe | foto a tutta pagina tessute a fili (WebGL/OGL) + video in maschera a serratura | le foto si tessono entrando in sala e una si tesse sull'altra mentre si avanza; il testo si costruisce con lo scroll |
 | Chioma Saracena | pagina lunga a oggetto unico, acquisto in fondo (pagina prodotto + carrello + checkout) | lastre fotografiche + vetro cannettato, litografia su latta fuori registro, latta in render 3D | un oggetto solo che scende con lo scroll e cambia forma: oliva, goccia, latta che si posa accanto al pulsante |
+| Soft Riot | home da negozio (fascia avvisi, carosello, catalogo filtrabile, scheda rapida, carrello laterale) | campi di colore pieno, raso trapuntato 3D di brand + foto vere di moda in ritagli | il ritaglio che si apre: una finestra di forma diversa per tessera che al passaggio/tocco si allarga sul capo intero; interruttore di griglia a mattoncini |
 
 ### Cosa si ripete (lettura al 2026-10-15)
 
-- **"Strumento da toccare + ricevuta/preventivo finale"**: sette concept su tredici. È il motivo vero per cui
+- **"Strumento da toccare + ricevuta/preventivo finale"**: sette concept su tredici (lettura al 2026-10-15). È il motivo vero per cui
   Limonaia somigliava a Obra Fina, più della palette. Il confronto con i concept esistenti va fatto sulla
   struttura prima ancora che sui colori.
 - **Luce / ora del giorno come tema**: Lumen (giornata di luce), Aeterna (notte), Ordito (colore = luce),
@@ -46,8 +47,7 @@ le celle con "?" vanno verificate sul concept prima di fidarsi.
 
 Prima di scrivere codice, compilare per il nuovo concept la riga struttura / materia / gesto e
 confrontarla con la tabella sopra. **Due concept non possono condividere tutte e tre**, e in una
-stessa macro non possono condividerne due. Scrivere la riga nella nota del concept in `CLAUDE.md`
-(Stato dei concept), accanto all'idea-guida, e aggiornare questa tabella a fine lavoro.
+stessa macro non possono condividerne due. Scrivere la riga nella scheda del concept (`docs/concept/<slug>.md`), accanto all'idea-guida, e aggiornare questa tabella a fine lavoro.
 
 ## 3. Direzioni non ancora usate
 
