@@ -541,22 +541,31 @@ const json = JSON.stringify(dati).replace(/</g, '\\u003c');
 			align-items: flex-start;
 			gap: 6px;
 		}
+		/* sul telefono la barra va su due righe: le categorie in alto, sotto "Filter" e l'ordine a tutta larghezza (pollice) */
 		.filtri__in {
+			flex-wrap: wrap;
 			gap: 8px;
+			padding-block: 8px;
 		}
 		.chips {
-			min-width: 0;
-			flex-wrap: nowrap;
-			overflow-x: auto;
-			scrollbar-width: none;
+			flex: 1 1 100%;
 			margin-left: calc(var(--gutter) * -1);
-			padding-left: var(--gutter);
+			margin-right: calc(var(--gutter) * -1);
+			padding-inline: var(--gutter);
 		}
-		.chips::-webkit-scrollbar {
-			display: none;
+		.filtri__destra {
+			flex: 1 1 100%;
+		}
+		.filtro-tasto {
+			order: -1;
+			flex: 1;
+			justify-content: center;
 		}
 		.ordina {
-			display: none;
+			flex: 1;
+		}
+		.ordina select {
+			width: 100%;
 		}
 		.azione {
 			width: 40px;

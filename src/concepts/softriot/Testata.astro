@@ -50,6 +50,14 @@ import { CATEGORIE } from './dati';
 	</div>
 </nav>
 
+<nav class="rapida" aria-label="Your account and shortcuts">
+	<button type="button" data-account aria-haspopup="dialog"><Icona nome="utente" />Login</button>
+	<button type="button" data-cuori-testata aria-label="Saved pieces, none yet">
+		<Icona nome="cuore" />Saved<span class="rapida__n" data-cuori-n hidden>0</span>
+	</button>
+	<a href="#shop" data-originali="1">Originals</a>
+</nav>
+
 <dialog class="pannello su-scuro" data-pannello aria-label="Menu">
 	<form method="dialog" class="pannello__chiudi">
 		<button type="submit" class="pannello__x" aria-label="Close menu"><Icona nome="chiudi" /></button>
@@ -309,7 +317,52 @@ import { CATEGORIE } from './dati';
 		font-weight: 800;
 	}
 
+	/* la riga rapida del telefono: quello che sul desktop sta a destra della testata (account, preferiti) */
+	.rapida {
+		display: none;
+		background: var(--lavanda);
+		border-bottom: 2px solid var(--ink);
+	}
+	.rapida > * {
+		flex: 1;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		min-height: 48px;
+		padding: 0 8px;
+		border: 0;
+		background: none;
+		font-family: var(--titoli-testo);
+		font-size: 1rem;
+		text-decoration: none;
+	}
+	.rapida > * + * {
+		border-left: 2px solid var(--ink);
+	}
+	.rapida .icona {
+		width: 1.25rem;
+		height: 1.25rem;
+	}
+	.rapida__n {
+		display: grid;
+		place-items: center;
+		min-width: 22px;
+		height: 22px;
+		padding: 0 6px;
+		border-radius: 999px;
+		background: var(--mandarino);
+		font-family: var(--testo);
+		font-size: 0.75rem;
+		font-weight: 700;
+	}
+	.rapida__n[hidden] {
+		display: none;
+	}
 	@media (max-width: 1100px) {
+		.rapida {
+			display: flex;
+		}
 		.testata__sx {
 			display: none;
 		}
@@ -330,7 +383,19 @@ import { CATEGORIE } from './dati';
 	}
 	@media (max-width: 560px) {
 		.testata__in {
+			grid-template-columns: auto 1fr auto;
 			gap: 8px;
+		}
+		.testata__nome {
+			justify-self: center;
+		}
+		/* il campo aperto si ferma prima del menù e del carrello: copre solo il nome */
+		.cerca:focus-within .cerca__campo,
+		.cerca__campo:not(:placeholder-shown) {
+			width: calc(100vw - 2 * var(--gutter) - 48px - 48px - 16px);
+		}
+		.cerca:focus-within .cerca__campo {
+			outline-offset: 2px;
 		}
 		.testata__esse {
 			display: none;
@@ -499,6 +564,22 @@ import { CATEGORIE } from './dati';
 		margin-top: 8px;
 		font-size: 0.875rem;
 	}
+	@media (max-width: 380px) {
+		.testata__nome {
+			font-size: 1.6rem;
+		}
+		.testata .tondo,
+		.cerca,
+		.cerca__campo,
+		.cerca__tasto {
+			width: 44px;
+			height: 44px;
+		}
+		.cerca:focus-within .cerca__campo,
+		.cerca__campo:not(:placeholder-shown) {
+			width: calc(100vw - 2 * var(--gutter) - 44px - 44px - 16px);
+		}
+	}
 	@media (prefers-reduced-motion: reduce) {
 		.pannello,
 		.account {
@@ -537,17 +618,17 @@ import { CATEGORIE } from './dati';
 	aggiornaBorsa();
 	document.addEventListener('sr:borsa', aggiornaBorsa);
 
-	const nCuori = document.querySelector<HTMLElement>('[data-cuori-n]');
-	const tastoCuori = document.querySelector<HTMLElement>('[data-cuori-testata]');
+	const tutteN = [...document.querySelectorAll<HTMLElement>('[data-cuori-n]')];
+	const tastiCuori = [...document.querySelectorAll<HTMLElement>('[data-cuori-testata]')];
 	let ultimiCuori = cuori().size;
 	const aggiornaCuori = () => {
 		const c = cuori().size;
-		if (nCuori) {
-			nCuori.textContent = String(c);
-			nCuori.hidden = c === 0;
-			bump(nCuori, c > ultimiCuori);
-		}
-		tastoCuori?.setAttribute('aria-label', c === 0 ? 'Saved pieces, none yet' : `Saved pieces, ${c}`);
+		tutteN.forEach((n) => {
+			n.textContent = String(c);
+			n.hidden = c === 0;
+			bump(n, c > ultimiCuori);
+		});
+		tastiCuori.forEach((b) => b.setAttribute('aria-label', c === 0 ? 'Saved pieces, none yet' : `Saved pieces, ${c}`));
 		ultimiCuori = c;
 	};
 	aggiornaCuori();
@@ -557,7 +638,7 @@ import { CATEGORIE } from './dati';
 		filtra({ preferiti: true, azzera: true });
 		document.getElementById('shop')?.scrollIntoView({ behavior: ridotto() ? 'auto' : 'smooth' });
 	};
-	tastoCuori?.addEventListener('click', vaiAiCuori);
+	tastiCuori.forEach((b) => b.addEventListener('click', vaiAiCuori));
 
 	document.querySelector('[data-borsa]')?.addEventListener('click', () => document.dispatchEvent(new CustomEvent('sr:apri-borsa')));
 
@@ -597,7 +678,7 @@ import { CATEGORIE } from './dati';
 		pannello?.close();
 		account?.showModal();
 	};
-	document.querySelector('[data-account]')?.addEventListener('click', apriAccount);
+	document.querySelectorAll('[data-account]').forEach((b) => b.addEventListener('click', apriAccount));
 	pannello?.querySelector('[data-pannello-account]')?.addEventListener('click', apriAccount);
 	const esito = document.querySelector<HTMLElement>('[data-account-esito]');
 	document.querySelector('[data-account-form]')?.addEventListener('submit', (e) => {
