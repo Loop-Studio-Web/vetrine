@@ -64,15 +64,17 @@ def ell(cx, cy, rx, ry, fill):
 def rect(x0, y0, x1, y1, fill):
     a, b = T(x0, y0), T(x1, y1)
     dt.rectangle((a[0], a[1], b[0], b[1]), fill=fill)
-# tavolo tondo: piano (due ellissi + fascia = spessore) e basamento
-ell(494, 232, 331, 66, 255); ell(494, 290, 331, 66, 255); rect(163, 232, 825, 290, 255)
-dt.rounded_rectangle((*T(163, 300), *T(825, 436)), radius=14 * S, fill=255)
+# tavolo tondo: contorno tracciato su un ritaglio (x 0-1100, y 0-488 = u 0.30-0.75, v 0.83-0.99)
+V = lambda x, y: ((0.3 + x / 1100 * 0.45) * W * S, (0.83 + y / 488 * 0.16) * H * S)
+VP = lambda pts: [V(x, y) for x, y in pts]
+dt.polygon(VP([(15, 185), (22, 150), (60, 115), (130, 85), (250, 62), (380, 52), (540, 50), (700, 55), (800, 68), (900, 85), (980, 110), (1035, 145), (1062, 185),
+               (1064, 440), (1052, 468), (1020, 480), (60, 480), (28, 474), (14, 445)]), fill=255)
 # tavolino alto: piano e fusto
 ell(982, 93, 127, 38, 255); dt.rounded_rectangle((*T(855, 93), *T(1110, 374)), radius=10 * S, fill=255)
 # fuori: vassoio con tazze e uva, bicchiere sul tavolino, gambe in acciaio
-dt.polygon(TP([(396, 276), (396, 205), (424, 173), (470, 172), (482, 197), (542, 197), (546, 166), (590, 158), (692, 161), (714, 203), (708, 276)]), fill=0)
+dt.polygon(VP([(386, 222), (386, 106), (430, 100), (432, 66), (508, 64), (512, 100), (620, 100), (622, 54), (655, 44), (760, 38), (852, 78), (852, 120), (880, 124), (882, 222)]), fill=0)
 rect(953, 28, 1005, 84, 0)
-rect(482, 350, 512, 442, 0)
+dt.rectangle((*V(522, 342), *V(568, 490)), fill=0)
 rect(972, 128, 1008, 392, 0)
 tav = tav.resize((W, H), Image.LANCZOS)
 from PIL import ImageChops

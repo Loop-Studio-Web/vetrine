@@ -658,7 +658,7 @@ const miniature = Object.fromEntries(mini);
 	});
 
 	const parti = async () => {
-		r = await avviaRiarredo(canvas, JSON.parse(canvas.dataset.sorgenti!), [0.351, 0.638, 0.398], sup.map((s) => JSON.parse(s.dataset.centro!)));
+		r = await avviaRiarredo(canvas, JSON.parse(canvas.dataset.sorgenti!), [0.351, 0.638, 0.401], sup.map((s) => JSON.parse(s.dataset.centro!)));
 		if (!r) {
 			sez.querySelectorAll<HTMLInputElement>('input').forEach((i) => (i.disabled = true));
 			esito.textContent = 'Il tuo browser non supporta WebGL2: qui vedi il render com’è.';
