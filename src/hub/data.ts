@@ -32,6 +32,8 @@ import cardMarrowknot from '../assets/hub/card-marrowknot.jpg';
 import shotMarrowknot from '../assets/hub/shot-marrowknot.jpg';
 import cardChioma from '../assets/hub/card-chioma.jpg';
 import shotChioma from '../assets/hub/shot-chioma.jpg';
+import cardSoftriot from '../assets/hub/card-softriot.jpg';
+import shotSoftriot from '../assets/hub/shot-softriot.jpg';
 
 export const SITE = 'https://theloopstudio.org/';
 export const CONTACT = 'https://theloopstudio.org/contatti';
@@ -989,6 +991,64 @@ export const concepts: Concept[] = [
 		backend: {
 			titolo: 'Nessun canone di piattaforma',
 			d: 'Nel sito vero la cassa si appoggia a un servizio di pagamento senza abbonamento: il negozio non paga un canone mensile, solo una commissione su ogni vendita. Niente gestionale da mantenere: ordini e incassi si seguono dal pannello del servizio di pagamento.',
+		},
+	},
+	{
+		slug: 'softriot',
+		macro: 'ecommerce',
+		nome: 'Soft Riot',
+		categoria: 'E-commerce',
+		archetipo: 'Il negozio di abbigliamento e accessori',
+		claim: 'Un catalogo che si apre a finestre: ritagli di forma diversa che al tocco si allargano sul capo intero, filtri a cassetto, scheda rapida e carrello.',
+		path: '/ecommerce/softriot/',
+		infoPath: '/ecommerce/softriot/info/',
+		titoloSeo: 'Sito e-commerce per abbigliamento e accessori: homepage concept con catalogo filtrabile e carrello (in inglese)',
+		descrizioneSeo:
+			'Come potrebbe essere il negozio online di un marchio di abbigliamento e accessori: carosello a campi di colore, catalogo con finestre che si aprono sul capo, filtri a cassetto, preferiti, scheda rapida, carrello con spedizione gratuita e ordine di prova. In inglese. Concept dimostrativo di Loop Studio.',
+		intro: [
+			'Chi vende moda online ha un problema opposto a chi vende un solo prodotto: tanti pezzi, poco tempo, e una griglia di quadrati uguali in cui nulla si ricorda. Questa homepage tiene il catalogo vero (categorie, taglie, colori, prezzo, preferiti) ma lo disegna come una vetrina di finestre: ogni pezzo si affaccia da un ritaglio con la sua forma e, al passaggio o al tocco, la finestra si allarga fino a mostrare il capo intero.',
+			'È il livello Evoluto della categoria E-commerce e una vetrina dimostrativa, scritta in inglese per un marchio rivolto a un pubblico internazionale: il marchio, i prodotti, i prezzi e i recapiti sono di fantasia. I quattro pezzi “Originals” (cappello e sciarpa, borsa, muffole, occhiali) sono render di marchio; le altre fotografie sono d’archivio. I marchi dei pagamenti sono veri perché un negozio vero li mostra, ma nessun pagamento parte.',
+		],
+		perChi:
+			'Marchi di abbigliamento e accessori, concept store, designer che vendono capi propri e negozi con un catalogo di decine di pezzi che vogliono distinguersi dalle solite griglie. Adatta a chi ha un’identità visiva forte e vuole che il negozio online la mostri già nella prima schermata.',
+		sezioni: [
+			{
+				t: 'Un carosello a campi di colore pieno',
+				d: 'Quattro slide, una per pezzo di marchio, ciascuna con il suo campo di colore: il gradiente vive solo nella lucentezza del raso trapuntato. Scorre con scroll-snap, si ferma con un tasto e rispetta il movimento ridotto.',
+			},
+			{
+				t: 'Un catalogo che si apre a finestre',
+				d: 'Ogni tessera mostra un dettaglio del capo in una finestra dalla forma diversa (pillola, arco, goccia, foglia). Con il mouse la finestra si allarga al passaggio; sul telefono si apre da sola a metà schermo e un tocco apre la scheda. Un interruttore cambia la densità della griglia.',
+			},
+			{
+				t: 'Filtri a cassetto, preferiti e ricerca',
+				d: 'Categoria, taglia, colore, prezzo a doppio cursore e “mostra solo”, con i filtri attivi che restano come chip rimovibili. I preferiti si salvano nel browser; la ricerca filtra mentre si scrive, anche dal menù del telefono.',
+			},
+			{
+				t: 'Scheda rapida, carrello e ordine di prova',
+				d: 'La scheda si apre sopra il catalogo con il ritaglio che cresce fino a riempirla e un blocco taglia + carrello sempre a portata di pollice. Il cassetto della borsa ha la barra della spedizione gratuita, i metodi di pagamento e un ordine di prova.',
+			},
+		],
+		awning: ['#ff8a1f', '#1d1033'],
+		glow: 'rgba(255, 138, 31, 0.55)',
+		livello: 2,
+		lingua: 'EN',
+		card: cardSoftriot,
+		shot: shotSoftriot,
+		shotAlt: '',
+		crop: '60% 40%',
+		cardAlt: 'Soft Riot su desktop e su telefono: titolo “Tie one on” su un campo lavanda, un cappello e una sciarpa in raso trapuntato che sfumano dal lilla al mandarino davanti a una macchia arancione, barra del menù mandarino e carosello.',
+		mood: 'Campi di colore pieno e raso trapuntato che cattura la luce: inchiostro viola, mandarino, lavanda, pesca e corallo, con una grana leggera. Il colore cambia per umore del prodotto, non per ora del giorno.',
+		caratteri: 'LT Cowboy, LT Gutbust e Bricolage Grotesque',
+		palette: ['#1d1033', '#ff8a1f', '#b9a8f2', '#ffb27a', '#ff6b5a', '#ece6ff'],
+		metriche: [
+			{ label: 'Performance', valore: '90' },
+			{ label: 'Accessibilità', valore: '100' },
+			{ label: 'Buone pratiche', valore: '100' },
+		],
+		backend: {
+			titolo: 'Un motore su misura, senza abbonamenti',
+			d: 'Nel sito vero il catalogo vive in un motore su misura, sul server del cliente o su uno piccolo a canone fisso: niente plugin a pagamento e nessuna commissione di piattaforma sulle vendite, solo quella del servizio di pagamento. Prodotti, taglie e ordini si gestiscono da un pannello semplice; la scelta del motore si fa nel preventivo, in base a catalogo e volumi.',
 		},
 	},
 ];
