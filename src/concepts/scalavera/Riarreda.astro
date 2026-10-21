@@ -3,8 +3,8 @@
    pietra, tavolini). Si sceglie la superficie (anche toccando la foto), poi la finitura; i campioni
    si possono trascinare sulla foto. Le ombre restano quelle del render. Senza WebGL2 resta il render. */
 import { Image, getImage } from 'astro:assets';
-import a2 from '../../assets/scalavera/foto/a2-parete.jpg';
-import maschere from '../../assets/scalavera/foto/a2-maschere.png';
+import a2 from '../../assets/scalavera/foto/a2r-parete.jpg';
+import maschere from '../../assets/scalavera/foto/a2r-maschere.png';
 import atlante from '../../assets/scalavera/materia/atlante.jpg';
 
 const [foto, masc, atl] = await Promise.all([
@@ -17,7 +17,7 @@ const sorgenti = JSON.stringify({ foto: foto.src, maschere: masc.src, atlante: a
 const superfici = [
 	{ nome: 'Parete', d: 'Intonaco a calce', centro: [0.3, 0.35], segno: [0.2, 0.33] },
 	{ nome: 'Mensola', d: 'Pietra spaccata', centro: [0.45, 0.79], segno: [0.17, 0.79] },
-	{ nome: 'Tavolini', d: 'Travertino', centro: [0.52, 0.87], segno: [0.68, 0.925] },
+	{ nome: 'Tavolini', d: 'Travertino', centro: [0.42, 0.9], segno: [0.7, 0.89] },
 ];
 const finiture = [
 	{ id: 'com-e', nome: 'Com’è', gruppo: 'Calce', f: { tipo: 0 }, css: 'linear-gradient(135deg, #8d8678, #6f695e)' },
@@ -51,7 +51,7 @@ const miniature = Object.fromEntries(mini);
 
 		<div class="banco-r">
 			<figure class="foto-r" data-foto-r>
-				<Image src={a2} alt="Render della parete del soggiorno: camino in intonaco, mensole in acciaio, mensola in pietra spaccata, tavolino e tavolo tondo in travertino" widths={[600, 900, 1200]} sizes="(min-width: 900px) 46vw, 100vw" class="foto-r__img" loading="lazy" />
+				<Image src={a2} alt="Render della parete del soggiorno: camino in intonaco, mensole in acciaio, mensola in pietra spaccata, due tavolini tondi in travertino su gambe in ferro" widths={[600, 900, 1200]} sizes="(min-width: 900px) 46vw, 100vw" class="foto-r__img" loading="lazy" />
 				<canvas aria-hidden="true" data-sorgenti={sorgenti}></canvas>
 				<div class="segni" aria-hidden="true">
 					{superfici.map((s, i) => (
@@ -658,7 +658,7 @@ const miniature = Object.fromEntries(mini);
 	});
 
 	const parti = async () => {
-		r = await avviaRiarredo(canvas, JSON.parse(canvas.dataset.sorgenti!), [0.351, 0.638, 0.401], sup.map((s) => JSON.parse(s.dataset.centro!)));
+		r = await avviaRiarredo(canvas, JSON.parse(canvas.dataset.sorgenti!), [0.365, 0.648, 0.584], sup.map((s) => JSON.parse(s.dataset.centro!)));
 		if (!r) {
 			sez.querySelectorAll<HTMLInputElement>('input').forEach((i) => (i.disabled = true));
 			esito.textContent = 'Il tuo browser non supporta WebGL2: qui vedi il render com’è.';

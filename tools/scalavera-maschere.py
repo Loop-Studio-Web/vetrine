@@ -77,6 +77,20 @@ rect(953, 28, 1005, 84, 0)
 dt.rectangle((*V(522, 342), *V(568, 490)), fill=0)
 rect(972, 128, 1008, 392, 0)
 tav = tav.resize((W, H), Image.LANCZOS)
+# Foto ritoccata per "Prova prima del cantiere" (a2r): tavolini sottili, solo piano tondo su barra di ferro.
+# Terzo argomento "sottili": disegna questi dischi al posto dei vecchi tavolini con la base in pietra.
+if len(sys.argv) > 3:
+    tav = Image.new('L', (W * S, H * S), 0)
+    dt = ImageDraw.Draw(tav)
+    G = lambda x, y: ((0.28 + x / 1300 * 0.70) * W * S, (0.82 + y / 418 * 0.18) * H * S)  # ritaglio del tavolo grande
+    K = lambda x, y: ((0.72 + x / 1200 * 0.24) * W * S, (0.77 + y / 686 * 0.11) * H * S)  # ritaglio del tavolino
+    dt.polygon([G(*q) for q in [(62, 155), (100, 105), (200, 75), (300, 62), (450, 58), (600, 60), (700, 70), (780, 100), (825, 150), (835, 180),
+                                (820, 195), (750, 225), (650, 242), (550, 248), (450, 250), (300, 242), (200, 225), (110, 200), (70, 175)]], fill=255)
+    dt.polygon([G(*q) for q in [(338, 172), (338, 100), (370, 95), (372, 68), (425, 68), (428, 95), (490, 95), (512, 85), (515, 62), (555, 52), (600, 50), (665, 55), (690, 85), (704, 100), (704, 172)]], fill=0)
+    dt.polygon([K(*q) for q in [(180, 200), (230, 165), (330, 145), (450, 135), (600, 132), (800, 138), (920, 160), (990, 190), (1010, 225),
+                                (1012, 270), (960, 320), (850, 342), (700, 350), (500, 345), (350, 335), (230, 310), (180, 270)]], fill=255)
+    dt.polygon([K(*q) for q in [(525, 100), (655, 100), (655, 200), (525, 200)]], fill=0)
+    tav = tav.resize((W, H), Image.LANCZOS).filter(ImageFilter.MaxFilter(3))
 from PIL import ImageChops
 mensola = ImageChops.subtract(mensola, tav)
 Image.merge('RGB', (parete, mensola, tav)).resize((1200, 1500), Image.BILINEAR).save(out)
