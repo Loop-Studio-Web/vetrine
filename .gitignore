@@ -23,5 +23,5 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
-# motore nativo di Impeccable (19 MB; la copia di riferimento sta in C:SERSTENTE	OOLSIMPECCABLE-ENGINE, VIA IMPECCABLE_BIN; SI REINSTALLA con npx impeccable@4.7.0 install)
+# motore nativo di Impeccable (19 MB; copia di riferimento in tools/impeccable-engine via IMPECCABLE_BIN; si reinstalla con npx impeccable@4.7.0 install)
 .claude/skills/impeccable/scripts/bin/
