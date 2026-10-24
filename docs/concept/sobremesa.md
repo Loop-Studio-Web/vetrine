@@ -39,3 +39,8 @@ DA SCRIVERE: `Bolsa.astro` (dialog a cassetto; deve ascoltare `[data-bolsa-abrir
 2. Fase `sections` → `motion` (gesto firma già scritto in `Chapa.astro`; il resto del movimento sobrio, `reduced-motion`) → `responsive` (`build-phase` chiede `desktop.png` 1440 e `mobile.png` 390 in `.impeccable/review/`).
 3. **Mostrare la bozza all'autore PRIMA di qualunque collaudo** (regola del flusso). Poi: `impeccable detect` sulla pagina compilata, finish reviewer (agente fresco), documenter (DESIGN.md + `.impeccable/design.json`), axe, Lighthouse, `build-phase finish --disposition ship`.
 4. Chiusura: hub (`src/hub/data.ts` voce + `backend` neutro, `info.astro`, `public/sitemap.xml`, card/screenshot in `src/assets/hub/`), avviso sito madre (`vetrinePerContatti`: slug `sobremesa`), README, spostare PRODUCT.md in `docs/`, memoria. **Push solo dopo il via esplicito.**
+
+## Promemoria clear (richiesta dell'autore, 2026-10-24)
+Avvisare l'autore con un messaggio esplicito («È il momento di fare /clear» + il testo da incollare) in questi punti, dopo aver aggiornato questa scheda e la memoria e fatto un commit locale:
+1. **Dopo la prima bozza completa** (sezioni collegate, bolsa, versione telefono) e dopo il suo parere, PRIMA dei collaudi.
+2. **Dopo i collaudi e le correzioni** (detect, finish reviewer, documenter, axe, Lighthouse), PRIMA di hub / sito madre / README.
