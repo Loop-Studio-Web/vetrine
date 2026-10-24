@@ -1,13 +1,14 @@
 ---
-// Los carteles verticales de las franjas, solo en pantallas anchas y recién cuando se pasó el hero (arriba, esas franjas
-// tienen los carteles de Laterales.astro). Izquierda: abrir los filtros del depósito y volver arriba. Derecha: la bolsa
-// (con su cuenta) y el atajo al catálogo. Son botones y enlaces de verdad: están en el orden de tabulación solo cuando se ven.
+// Los carteles verticales de las franjas, solo en pantallas anchas y solo cuando sirven (arriba, en el hero, esas franjas
+// tienen los carteles de Laterales.astro). Pasado el hero aparece la bolsa (con su cuenta); el atajo al catálogo se ve
+// entre el hero y el depósito; los filtros (con "volver arriba") se ven solo mientras el depósito está en pantalla. Son
+// botones y enlaces de verdad: están en el orden de tabulación solo cuando se ven.
 import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 const t = `--textura:url(${enamelWhite.src})`;
 ---
 
 <nav class="rieles" aria-label="Accesos rápidos" data-rieles>
-	<div class="riel riel--izq">
+	<div class="riel riel--izq" data-riel-dep>
 		<button class="chapa cartel" type="button" data-filtros-abrir aria-haspopup="dialog" style={`--c:var(--amarillo);--tornillo:#4a3706;${t}`}>
 			<span class="v">Filtrar</span>
 		</button>
@@ -19,7 +20,7 @@ const t = `--textura:url(${enamelWhite.src})`;
 		<button class="chapa cartel" type="button" data-bolsa-abrir aria-haspopup="dialog" style={`--c:var(--rojo);--tornillo:#2a0a05;${t}`}>
 			<span class="v">Bolsa (<span data-bolsa-n>0</span>)</span>
 		</button>
-		<a class="chapa cartel cartel--chico" href="#deposito" style={`--c:var(--cobalto-vivo);--tornillo:#020f33;${t}`}>
+		<a class="chapa cartel cartel--chico cartel--cat" href="#deposito" style={`--c:var(--cobalto-vivo);--tornillo:#020f33;${t}`}>
 			<span class="v">Catálogo 360</span>
 		</a>
 	</div>
@@ -47,6 +48,24 @@ const t = `--textura:url(${enamelWhite.src})`;
 			visibility: visible;
 			opacity: 1;
 			transition: opacity 0.3s ease;
+		}
+		/* los filtros: solo con el depósito a la vista */
+		.riel--izq {
+			visibility: hidden;
+			opacity: 0;
+			transition: opacity 0.3s ease, visibility 0s 0.3s;
+		}
+		.rieles.dep .riel--izq {
+			visibility: visible;
+			opacity: 1;
+			transition: opacity 0.3s ease;
+		}
+		/* el atajo al catálogo: solo entre el hero y el depósito */
+		.rieles .cartel--cat {
+			display: none;
+		}
+		.rieles.antes .cartel--cat {
+			display: grid;
 		}
 		.riel {
 			position: absolute;
@@ -100,10 +119,22 @@ const t = `--textura:url(${enamelWhite.src})`;
 </style>
 
 <script>
-	// los carteles aparecen cuando el hero ya quedó atrás
+	// qué carteles se ven según dónde está la persona: hero, entre hero y depósito, depósito o más abajo
 	const riel = document.querySelector<HTMLElement>('[data-rieles]');
 	const hero = document.querySelector<HTMLElement>('.pared');
-	if (riel && hero && 'IntersectionObserver' in window) {
-		new IntersectionObserver(([e]) => riel.classList.toggle('on', !e.isIntersecting && e.boundingClientRect.bottom < 0), { threshold: 0 }).observe(hero);
+	const dep = document.getElementById('deposito');
+	if (riel && hero && dep && 'IntersectionObserver' in window) {
+		const estado = () => {
+			const pasoHero = hero.getBoundingClientRect().bottom < 0;
+			const d = dep.getBoundingClientRect();
+			riel.classList.toggle('on', pasoHero);
+			riel.classList.toggle('dep', d.top < innerHeight && d.bottom > 0);
+			riel.classList.toggle('antes', pasoHero && d.top >= innerHeight);
+		};
+		const io = new IntersectionObserver(estado, { threshold: 0 });
+		io.observe(hero);
+		io.observe(dep);
+		addEventListener('resize', estado);
+		estado();
 	}
 </script>
