@@ -5,7 +5,7 @@
 import { OBJETOS, ZONAS, PRECIO_ENVIO_GRATIS } from './dati';
 import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 
-const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.precio, stock: o.stock, dias: o.dias, foto: o.recorte.src }));
+const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.precio, stock: o.stock, dias: o.dias, foto: o.foto.src }));
 ---
 
 <dialog class="cajon" id="sb-bolsa" aria-labelledby="sb-bolsa-titulo" style={`--textura:url(${enamelWhite.src})`}>
@@ -173,8 +173,9 @@ const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.preci
 		grid-area: foto;
 		width: 72px;
 		height: 72px;
-		object-fit: contain;
-		filter: drop-shadow(0 4px 4px rgb(0 0 0 / 0.35));
+		object-fit: cover;
+		border-radius: 8px;
+		box-shadow: 0 0 0 2px rgb(255 255 255 / 0.6), 0 3px 6px rgb(0 0 0 / 0.3);
 	}
 	.linea__nombre {
 		grid-area: nombre;

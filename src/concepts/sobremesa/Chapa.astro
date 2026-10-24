@@ -1,8 +1,8 @@
 ---
 // "Del cuadro a la chapa": el gesto firma. Tocar un cartelito de la foto (o la foto de un objeto del estante) baja la luz de
-// la pared y el objeto se despega del cuadro: los píxeles del objeto se funden en una lámina esmaltada con su propia silueta,
-// que cuelga al lado de un cartel con el nombre, el precio y "Sumá a la bolsa". Todo el movimiento es WAAPI; sin movimiento
-// reducido, el cartel aparece en su lugar con un fundido.
+// la pared y el objeto se despega de donde estaba: la foto del objeto, impresa sobre una lámina esmaltada en su color, viaja
+// desde el punto tocado hasta su lugar y al lado entra un cartel con el nombre, el precio y "Sumá a la bolsa". Todo el
+// movimiento es WAAPI (transform y opacity); con movimiento reducido solo hay un fundido.
 import { OBJETOS, COLOR, pesos } from './dati';
 import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 
@@ -16,21 +16,22 @@ const datos = OBJETOS.map((o) => ({
 	dias: o.dias,
 	stock: o.stock,
 	color: COLOR[o.color],
-	recorte: o.recorte.src,
-	escena: o.escena ? { recorte: o.escena.recorte.src, x: o.escena.x, y: o.escena.y, w: o.escena.w, h: o.escena.h } : null,
+	foto: o.foto.src,
 }));
 ---
 
 <script type="application/json" id="sb-objetos" set:html={JSON.stringify(datos)} />
 
 <dialog class="objeto" id="sb-objeto" aria-labelledby="sb-objeto-nombre">
-	<div class="objeto__escena">
-		<div class="figura" data-figura aria-hidden="true">
+	<div class="objeto__escena" data-escena>
+		<div class="chapa chapa--flujo figura" data-figura aria-hidden="true" style="--tornillo:rgb(0 0 0 / 0.55)">
 			<img class="figura__foto" alt="" />
-			<span class="figura__brillo"></span>
 		</div>
 
 		<div class="chapa chapa--flujo datos" data-datos style={`--c:var(--esmalte);--tornillo:#55524c;--textura:url(${enamelWhite.src})`}>
+			<button class="cerrar" type="button" data-cerrar aria-label="Cerrar">
+				<svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
+			</button>
 			<h2 class="datos__nombre" id="sb-objeto-nombre"></h2>
 			<p class="datos__precio"></p>
 			<p class="datos__frase"></p>
@@ -64,12 +65,6 @@ const datos = OBJETOS.map((o) => ({
 	}
 	.objeto::backdrop {
 		background: rgb(8 16 11 / 0.86);
-		animation: sb-velo 0.35s var(--ease-out);
-	}
-	@keyframes sb-velo {
-		from {
-			opacity: 0;
-		}
 	}
 	.objeto__escena {
 		display: grid;
@@ -80,33 +75,21 @@ const datos = OBJETOS.map((o) => ({
 		--k: clamp(0.7px, calc(100vw / 1536), 1px);
 	}
 
-	/* el objeto impreso sobre su propia lámina: la foto recortada lleva un reborde de esmalte (color del objeto) y un filete claro,
-	   hechos con sombras duras encadenadas (--anillo, lo arma el script); encima, el brillo del esmalte con la misma silueta */
+	/* la foto del objeto impresa sobre una lámina esmaltada en su color, con los cuatro tornillos de todos los carteles */
 	.figura {
-		--sil: none;
 		--alto: min(58svh, 520px);
-		position: relative;
 		justify-self: center;
-		/* el ancho sale de la proporción de la silueta (--r) y nunca pasa de la columna; la altura sigue a la proporción */
-		width: min(100%, calc(var(--alto) * var(--r, 1)));
-		aspect-ratio: var(--r, 1);
-	}
-	.figura > * {
-		position: absolute;
-		inset: 0;
-		width: 100%;
-		height: 100%;
+		width: min(100%, var(--alto));
+		aspect-ratio: 1;
+		padding: calc(26 * var(--k));
+		border-radius: calc(18 * var(--k));
 	}
 	.figura__foto {
-		object-fit: fill;
-		filter: var(--anillo, none) drop-shadow(0 18px 22px rgb(0 0 0 / 0.55));
-	}
-	.figura__brillo {
-		-webkit-mask: var(--sil) center / 100% 100% no-repeat;
-		mask: var(--sil) center / 100% 100% no-repeat;
-		background: linear-gradient(118deg, rgb(255 255 255 / 0.32), rgb(255 255 255 / 0) 46%, rgb(0 0 0 / 0.2) 100%);
-		mix-blend-mode: soft-light;
-		pointer-events: none;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		border-radius: calc(10 * var(--k));
+		box-shadow: 0 0 0 calc(3 * var(--k)) rgb(255 255 255 / 0.55);
 	}
 
 	.datos {
@@ -116,12 +99,33 @@ const datos = OBJETOS.map((o) => ({
 		padding: clamp(28px, 4vw, 52px);
 		border-radius: 18px;
 	}
+	.cerrar {
+		position: absolute;
+		top: 30px;
+		right: 30px;
+		display: grid;
+		place-items: center;
+		width: 44px;
+		height: 44px;
+		border: 2px solid var(--tinta);
+		border-radius: 50%;
+		background: transparent;
+		color: var(--tinta);
+		transition: background-color 0.15s, color 0.15s;
+	}
+	@media (hover: hover) and (pointer: fine) {
+		.cerrar:hover {
+			background: var(--tinta);
+			color: #fff;
+		}
+	}
 	.datos__nombre {
 		font-family: var(--f-titulo);
 		font-weight: 400;
 		font-size: clamp(2.2rem, 4.4vw, 3.6rem);
 		line-height: 1;
 		text-transform: uppercase;
+		padding-right: 52px;
 	}
 	.datos__precio {
 		font-family: var(--f-titulo);
@@ -185,6 +189,10 @@ const datos = OBJETOS.map((o) => ({
 		.figura {
 			--alto: min(36svh, 300px);
 		}
+		.cerrar {
+			top: 22px;
+			right: 22px;
+		}
 	}
 </style>
 
@@ -194,48 +202,55 @@ const datos = OBJETOS.map((o) => ({
 	type Dato = {
 		id: string; nombre: string; precio: number; precioTxt: string; frase: string; taller: string; dias: number; stock: number;
 		color: { fondo: string; tinta: string; filete: string };
-		recorte: string;
-		escena: { recorte: string; x: number; y: number; w: number; h: number } | null;
+		foto: string;
 	};
 	const datos: Dato[] = JSON.parse(document.getElementById('sb-objetos')!.textContent!);
 	const dlg = document.getElementById('sb-objeto') as HTMLDialogElement;
+	const escena = dlg.querySelector<HTMLElement>('[data-escena]')!;
 	const figura = dlg.querySelector<HTMLElement>('[data-figura]')!;
 	const foto = figura.querySelector<HTMLImageElement>('.figura__foto')!;
 	const panel = dlg.querySelector<HTMLElement>('[data-datos]')!;
 	const q = <T extends Element>(s: string) => dlg.querySelector<T>(s)!;
 	const reducido = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
-	// reborde de esmalte + filete: sombras duras desplazadas a los 4 lados y encadenadas (dilatan la silueta); r = grosor en px
-	const aro = (r: number, c: string) => [[r, 0], [-r, 0], [0, r], [0, -r]].map(([x, y]) => `drop-shadow(${x}px ${y}px 0 ${c})`).join(' ');
-	const anillo = (r: number, d: Dato) => `${aro(r, d.color.fondo)} ${aro(r * 0.4, d.color.filete)}`;
-	let actual: Dato | null = null;
-	let abriendo = false;
+	const EASE = 'cubic-bezier(0.23, 1, 0.32, 1)';
 
-	// caja de un objeto de la escena en pantalla: la foto de la portada está impresa sobre tres láminas del marco 1536×1024
-	function rectEscena(e: NonNullable<Dato['escena']>): DOMRect | null {
-		const marco = document.querySelector<HTMLElement>('.pared__marco');
-		if (!marco) return null;
-		const r = marco.getBoundingClientRect();
-		const s = r.width / 1536;
-		const kx = 854 / 1672;
-		const ky = 474 / 929;
-		return new DOMRect(r.left + (646 + e.x * kx) * s, r.top + (165 + (e.y - 6) * ky) * s, e.w * kx * s, e.h * ky * s);
+	let actual: Dato | null = null;
+	let origen: HTMLElement | null = null;
+	let cerrando = false;
+	let anims: Animation[] = [];
+
+	// las fotos se bajan en el rato libre: al tocar, el objeto ya está listo y el movimiento no espera a la red
+	const precargar = () => datos.forEach((d) => Object.assign(new Image(), { src: d.foto }));
+	if ('requestIdleCallback' in window) requestIdleCallback(precargar);
+	else setTimeout(precargar, 1500);
+
+	// animaciones con fill: quedarían pegadas al diálogo cerrado (y lo dejarían invisible al reabrir): se anulan todas
+	function limpiar() {
+		anims.forEach((a) => a.cancel());
+		anims = [];
+		dlg.getAnimations({ subtree: true }).forEach((a) => a.cancel());
+	}
+	function correr(el: HTMLElement, kf: Keyframe[], op: KeyframeAnimationOptions & { pseudoElement?: string }) {
+		const a = el.animate(kf, op);
+		anims.push(a);
+		return a;
+	}
+	// traslado y escala que llevan la lámina desde su lugar hasta un rectángulo de pantalla (el punto tocado, la bolsa)
+	function haciaRect(t: DOMRect, minEscala: number) {
+		const f = figura.getBoundingClientRect();
+		const s = Math.min(1, Math.max(minEscala, Math.min(t.width / f.width, t.height / f.height)));
+		const dx = t.left + t.width / 2 - (f.left + f.width / 2);
+		const dy = t.top + t.height / 2 - (f.top + f.height / 2);
+		return `translate(${dx}px, ${dy}px) scale(${s})`;
 	}
 
-	const precarga = (src: string) =>
-		new Promise<HTMLImageElement>((ok) => {
-			const i = new Image();
-			i.onload = i.onerror = () => ok(i);
-			i.src = src;
-		});
-
-	async function abrir(id: string, origen: HTMLElement) {
+	function abrir(id: string, desde: HTMLElement) {
 		const d = datos.find((x) => x.id === id);
-		if (!d || abriendo || dlg.open) return;
-		abriendo = true;
+		if (!d || dlg.open) return;
 		actual = d;
-		const desdeEscena = origen.classList.contains('cartelito') && d.escena;
-		const src = desdeEscena ? d.escena!.recorte : d.recorte;
-		const img = await precarga(src);
+		origen = desde;
+		cerrando = false;
+		limpiar();
 
 		q('.datos__nombre').textContent = d.nombre;
 		q('.datos__precio').textContent = d.precioTxt;
@@ -246,77 +261,54 @@ const datos = OBJETOS.map((o) => ({
 		const g = q<HTMLButtonElement>('[data-guardar]');
 		g.setAttribute('aria-pressed', String(leerLibreta().includes(d.id)));
 		g.setAttribute('aria-label', `Guardar ${d.nombre} en mi libreta`);
-
-		// una animación con fill:forwards que quedara de un cierre anterior dejaría el diálogo invisible
-		dlg.getAnimations({ subtree: true }).forEach((a) => a.cancel());
-		figura.style.setProperty('--sil', `url(${src})`);
-		figura.style.setProperty('--r', String(img.naturalWidth / img.naturalHeight));
-		foto.src = src;
+		figura.style.setProperty('--c', d.color.fondo);
+		foto.src = d.foto;
 		dlg.showModal();
-		const r = Math.max(4, Math.min(9, figura.getBoundingClientRect().height * 0.017));
-		figura.style.setProperty('--anillo', anillo(r, d));
 
 		if (reducido()) {
-			dlg.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 180 });
-			abriendo = false;
+			correr(dlg, [{ opacity: 0 }, { opacity: 1 }], { duration: 160, easing: 'ease-out' });
 			return;
 		}
-
-		const o = (desdeEscena ? rectEscena(d.escena!) : null) ?? origen.getBoundingClientRect();
-		const f = figura.getBoundingClientRect();
-		const s = Math.min(o.width / f.width, o.height / f.height);
-		const dx = o.left + o.width / 2 - (f.left + f.width / 2);
-		const dy = o.top + o.height / 2 - (f.top + f.height / 2);
-		const T = 640;
-		figura.animate(
-			[{ transform: `translate(${dx}px, ${dy}px) scale(${s})` }, { transform: 'translate(0, 0) scale(1.012)', offset: 0.86 }, { transform: 'none' }],
-			{ duration: T, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' },
-		);
-		// el esmalte crece alrededor del objeto mientras llega a su lugar
-		const sombra = 'drop-shadow(0 18px 22px rgb(0 0 0 / 0.55))';
-		foto.animate(
-			[{ filter: `${anillo(0, d)} ${sombra}` }, { filter: `${anillo(0, d)} ${sombra}`, offset: 0.35 }, { filter: `${anillo(r, d)} ${sombra}` }],
-			{ duration: T, easing: 'ease-out' },
-		);
-		figura.querySelector('.figura__brillo')!.animate([{ opacity: 0 }, { opacity: 0, offset: 0.5 }, { opacity: 1 }], { duration: T });
-		panel.animate([{ opacity: 0, transform: 'translateX(32px)' }, { opacity: 1, transform: 'none' }], { duration: 460, delay: 240, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'backwards' });
-		setTimeout(() => (abriendo = false), T);
+		// la lámina sale del punto tocado (foto del estante o cartelito) y llega a su lugar; el cartel entra un instante después
+		correr(figura, [{ transform: haciaRect(origen.getBoundingClientRect(), 0.3), opacity: 0 }, { opacity: 1, offset: 0.3 }, { transform: 'none', opacity: 1 }], { duration: 340, easing: EASE, fill: 'backwards' });
+		correr(panel, [{ opacity: 0, transform: 'translateX(24px)' }, { opacity: 1, transform: 'none' }], { duration: 260, delay: 90, easing: EASE, fill: 'backwards' });
+		correr(dlg, [{ opacity: 0 }, { opacity: 1 }], { duration: 240, easing: 'ease-out', fill: 'backwards', pseudoElement: '::backdrop' });
 	}
 
-	function cerrar(luego?: () => void) {
-		if (!dlg.open) return;
+	// salir: la lámina vuelve adonde estaba (o hacia la bolsa) mientras el resto se apaga; recién entonces se cierra el diálogo
+	function salir(destino: DOMRect | null, duracion: number) {
+		if (!dlg.open || cerrando) return;
+		cerrando = true;
+		limpiar();
 		const fin = () => {
 			dlg.close();
-			dlg.getAnimations({ subtree: true }).forEach((a) => a.cancel());
-			luego?.();
+			limpiar();
+			cerrando = false;
 		};
 		if (reducido()) return fin();
-		dlg.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 160, fill: 'forwards' }).onfinish = fin;
+		const visible = (r: DOMRect | null) => !!r && r.width > 0 && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth;
+		const t = destino ?? (origen?.isConnected ? origen.getBoundingClientRect() : null);
+		const fuera = visible(t) ? haciaRect(t!, destino ? 0.12 : 0.3) : 'scale(0.95)';
+		const fa = correr(figura, [{ transform: 'none', opacity: 1 }, { opacity: 1, offset: 0.45 }, { transform: fuera, opacity: 0 }], { duration: duracion, easing: EASE, fill: 'forwards' });
+		correr(panel, [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateX(16px)' }], { duration: Math.min(duracion, 160), easing: 'ease-out', fill: 'forwards' });
+		correr(dlg, [{ opacity: 1 }, { opacity: 0 }], { duration: duracion, easing: 'ease-out', fill: 'forwards', pseudoElement: '::backdrop' });
+		fa.finished.then(fin, fin);
 	}
-
-	// volar hacia la bolsa: la lámina se achica hacia el cartel rojo y la cuenta da un pequeño golpe
-	function volar() {
-		const destino = document.querySelector<HTMLElement>('[data-bolsa-abrir]');
-		if (!destino || reducido()) return cerrar();
-		const f = figura.getBoundingClientRect();
-		const t = destino.getBoundingClientRect();
-		const dx = t.left + t.width / 2 - (f.left + f.width / 2);
-		const dy = t.top + t.height / 2 - (f.top + f.height / 2);
-		panel.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 220, fill: 'forwards' });
-		figura.animate(
-			[{ transform: 'none', opacity: 1 }, { transform: `translate(${dx * 0.5}px, ${dy * 0.35 - 40}px) scale(0.45)`, opacity: 1, offset: 0.55 }, { transform: `translate(${dx}px, ${dy}px) scale(0.08)`, opacity: 0.2 }],
-			{ duration: 560, easing: 'cubic-bezier(0.5, 0, 0.75, 0)', fill: 'forwards' },
-		).onfinish = () => cerrar();
-	}
+	const cerrar = () => salir(null, 220);
+	const volar = () => {
+		const bolsa = document.querySelector<HTMLElement>('[data-bolsa-abrir]');
+		salir(bolsa ? bolsa.getBoundingClientRect() : null, 420);
+	};
 
 	document.addEventListener('click', (e) => {
 		const el = (e.target as HTMLElement).closest<HTMLElement>('[data-objeto]');
 		if (el) abrir(el.dataset.objeto!, el);
 	});
 	dlg.addEventListener('click', (e) => {
-		if (e.target === dlg) cerrar();
 		const t = e.target as HTMLElement;
-		if (t.closest('[data-cerrar]')) cerrar();
+		// cualquier toque fuera de los dos carteles (el velo o el hueco entre ellos) cierra
+		if (t === dlg || t === escena) return cerrar();
+		if (t.closest('[data-cerrar]')) return cerrar();
 		if (t.closest('[data-agregar]') && actual) {
 			sumar(actual.id);
 			window.dispatchEvent(new CustomEvent('sb:agregado', { detail: { id: actual.id } }));

@@ -6,14 +6,14 @@ trasparenza (`recortes/`) sono ricavati con rembg (isnet-general-use) dalle stes
 
 | File | Foto Unsplash | Autore |
 |---|---|---|
-| objetos/jarra-gres.jpg, recortes/jarra-gres.png | NuIvaF6UAmI | Stephanie Sarlos |
+| objetos/jarra-gres.jpg | NuIvaF6UAmI | Stephanie Sarlos |
 | objetos/vasos-4.jpg | gKm4lAyB_T4 | Julia Zolotova |
-| objetos/lino-colores.jpg, recortes/lino-colores.png | wgRD0Lfe43Q | Ekaterina Grosheva |
-| objetos/lampara-naranja.jpg, recortes/lampara-naranja.png | OLOv7I1y9Y4 | Yevgeniy Mironov |
-| objetos/plato-gres.jpg, recortes/plato-gres.png | coV4CuQFx1I | John Vid |
-| objetos/tabla-madera.jpg, recortes/tabla-madera.png | zoWcTEx1EQc | Sergey Kotenev |
-| objetos/vela-bronce.jpg, recortes/vela-bronce.png | PyfOOdJGLd0 | KaLisa Veer |
-| objetos/florero-gres.jpg, recortes/florero-gres.png | RiuDaFRKd5o | Lute |
+| objetos/lino-colores.jpg | wgRD0Lfe43Q | Ekaterina Grosheva |
+| objetos/lampara-naranja.jpg | OLOv7I1y9Y4 | Yevgeniy Mironov |
+| objetos/plato-gres.jpg | coV4CuQFx1I | John Vid |
+| objetos/tabla-madera.jpg | zoWcTEx1EQc | Sergey Kotenev |
+| objetos/vela-bronce.jpg | PyfOOdJGLd0 | KaLisa Veer |
+| objetos/florero-gres.jpg | RiuDaFRKd5o | Lute |
 | talleres/alfareria.jpg | vUHYwZnkm84 | Earl Wilcox |
 | talleres/vidrio.jpg | 8g_j67M7Y0w | Clément Philippe |
 | talleres/telar.jpg | R07ZXq7hx9s | Sofie D. |

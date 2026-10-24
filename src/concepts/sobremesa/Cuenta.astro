@@ -3,7 +3,7 @@
 import { OBJETOS, PASOS_PEDIDO } from './dati';
 import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 
-const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.precio, foto: o.recorte.src }));
+const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.precio, foto: o.foto.src }));
 ---
 
 <section class="cuenta" id="cuenta" aria-labelledby="cuenta-titulo">
@@ -26,7 +26,8 @@ const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.preci
 					<button class="btn-chapa" type="submit">Ver</button>
 				</div>
 			</form>
-			<div class="estado" data-estado aria-live="polite">
+			<p class="estado__pista" data-pista>Escribí el número de tu pedido y tocá «Ver». Para probar, usá el de ejemplo: SB-24081.</p>
+			<div class="estado" data-estado aria-live="polite" hidden>
 				<p class="estado__quien" data-quien></p>
 				<ol class="pasos" data-pasos>
 					{PASOS_PEDIDO.map((p, i) => <li data-paso={i}><span class="pasos__marca" aria-hidden="true"></span><span>{p}</span></li>)}
@@ -90,8 +91,9 @@ const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.preci
 	.libreta img {
 		width: 64px;
 		height: 64px;
-		object-fit: contain;
-		filter: drop-shadow(0 4px 4px rgb(0 0 0 / 0.4));
+		object-fit: cover;
+		border-radius: 8px;
+		box-shadow: 0 0 0 2px rgb(255 255 255 / 0.6), 0 3px 6px rgb(0 0 0 / 0.3);
 	}
 	.libreta__nombre {
 		font-weight: 700;
@@ -153,6 +155,9 @@ const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.preci
 		gap: 14px;
 		margin-top: 6px;
 	}
+	.estado[hidden] {
+		display: none;
+	}
 	.estado__quien {
 		font-weight: 700;
 		font-size: 1.1875rem;
@@ -202,6 +207,10 @@ const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.preci
 	}
 	.pasos li[data-actual] .pasos__marca {
 		box-shadow: 0 0 0 4px var(--amarillo), 0 0 0 7px var(--tinta);
+	}
+	.estado__pista {
+		font-weight: 600;
+		font-size: 1.0625rem;
 	}
 	.estado__nota {
 		font-weight: 600;
@@ -258,7 +267,11 @@ const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.preci
 	const pasos = document.querySelectorAll<HTMLElement>('[data-paso]');
 	const q = document.querySelector<HTMLElement>('[data-quien]')!;
 	const nota = document.querySelector<HTMLElement>('[data-nota]')!;
+	const pista = document.querySelector<HTMLElement>('[data-pista]')!;
+	const estado = document.querySelector<HTMLElement>('[data-estado]')!;
 	function ver() {
+		pista.hidden = true;
+		estado.hidden = false;
 		const code = inp.value.trim().toUpperCase();
 		const p = leerPedidos().find((x) => x.id === code);
 		const base = code === demo.id ? { id: demo.id, fecha: demo.fecha, desc: demo.nombre, zona: demo.zona } : p ? { id: p.id, fecha: p.fecha, desc: p.lineas.map((l) => l.nombre).slice(0, 1).join('') + (p.lineas.length > 1 ? ` y ${p.lineas.length - 1} más` : ''), zona: p.zona } : null;
@@ -271,10 +284,13 @@ const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.preci
 		const dias = (Date.now() - base.fecha) / DIA;
 		const hecho = dias < 0.01 ? 0 : dias < 2 ? 1 : dias < 4 ? 2 : 3;
 		pasos.forEach((li, i) => { if (i <= hecho) li.setAttribute('data-hecho', ''); if (i === hecho) li.setAttribute('data-actual', ''); });
+		// los tramos se van marcando uno tras otro, para que se vea que el botón hizo algo
+		if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+			[q, ...pasos, nota].forEach((el, i) => el.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 260, delay: i * 70, easing: 'cubic-bezier(0.23, 1, 0.32, 1)', fill: 'backwards' }));
+		}
 		q.textContent = `${base.id} · ${base.desc}`;
 		nota.textContent = `Hecho el ${new Date(base.fecha).toLocaleDateString('es-AR', { day: 'numeric', month: 'long' })}, para ${base.zona}. Pedido de ejemplo: los tramos avanzan solos con el paso de los días.`;
 	}
 	form.addEventListener('submit', ver);
 	window.addEventListener('sb:pedidos', () => { const p = leerPedidos()[0]; if (p) { inp.value = p.id; ver(); } });
-	ver();
 </script>

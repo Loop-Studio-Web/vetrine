@@ -7,18 +7,6 @@ import fotoPlato from '../../assets/sobremesa/objetos/plato-gres.jpg';
 import fotoTabla from '../../assets/sobremesa/objetos/tabla-madera.jpg';
 import fotoVela from '../../assets/sobremesa/objetos/vela-bronce.jpg';
 import fotoFlorero from '../../assets/sobremesa/objetos/florero-gres.jpg';
-import recLampara from '../../assets/sobremesa/recortes/lampara-naranja.png';
-import recJarra from '../../assets/sobremesa/recortes/jarra-gres.png';
-import recVasos from '../../assets/sobremesa/recortes/vasos-4.png';
-import recMantel from '../../assets/sobremesa/recortes/lino-colores.png';
-import recPlato from '../../assets/sobremesa/recortes/plato-gres.png';
-import recTabla from '../../assets/sobremesa/recortes/tabla-madera.png';
-import recVela from '../../assets/sobremesa/recortes/vela-bronce.png';
-import recFlorero from '../../assets/sobremesa/recortes/florero-gres.png';
-import escLampara from '../../assets/sobremesa/recortes/hero-lampara.png';
-import escJarra from '../../assets/sobremesa/recortes/hero-jarra.png';
-import escVasos from '../../assets/sobremesa/recortes/hero-vasos.png';
-import escMantel from '../../assets/sobremesa/recortes/hero-mantel.png';
 import tallerAlfareria from '../../assets/sobremesa/talleres/alfareria.jpg';
 import tallerVidrio from '../../assets/sobremesa/talleres/vidrio.jpg';
 import tallerTelar from '../../assets/sobremesa/talleres/telar.jpg';
@@ -43,9 +31,6 @@ export type Objeto = {
 	stock: number;
 	color: Color;
 	foto: ImageMetadata;
-	recorte: ImageMetadata;
-	/** si sale de la foto de la portada: recorte de la escena y caja (px de scena.png, 1672×941) */
-	escena?: { recorte: ImageMetadata; x: number; y: number; w: number; h: number };
 	/** cuántas columnas ocupa en el estante (variar el ritmo, no repetir tarjetas iguales) */
 	ancho: 3 | 4 | 5;
 };
@@ -61,8 +46,6 @@ export const OBJETOS: Objeto[] = [
 		stock: 6,
 		color: 'amarillo',
 		foto: fotoLampara,
-		recorte: recLampara,
-		escena: { recorte: escLampara, x: 700, y: 0, w: 440, h: 217 },
 		ancho: 5,
 	},
 	{
@@ -75,8 +58,6 @@ export const OBJETOS: Objeto[] = [
 		stock: 3,
 		color: 'negro',
 		foto: fotoJarra,
-		recorte: recJarra,
-		escena: { recorte: escJarra, x: 305, y: 350, w: 270, h: 350 },
 		ancho: 3,
 	},
 	{
@@ -89,8 +70,6 @@ export const OBJETOS: Objeto[] = [
 		stock: 11,
 		color: 'rojo',
 		foto: fotoVasos,
-		recorte: recVasos,
-		escena: { recorte: escVasos, x: 545, y: 420, w: 455, h: 228 },
 		ancho: 4,
 	},
 	{
@@ -103,8 +82,6 @@ export const OBJETOS: Objeto[] = [
 		stock: 5,
 		color: 'blanco',
 		foto: fotoMantel,
-		recorte: recMantel,
-		escena: { recorte: escMantel, x: 0, y: 640, w: 780, h: 301 },
 		ancho: 4,
 	},
 	{
@@ -117,7 +94,6 @@ export const OBJETOS: Objeto[] = [
 		stock: 14,
 		color: 'cobalto',
 		foto: fotoPlato,
-		recorte: recPlato,
 		ancho: 3,
 	},
 	{
@@ -130,7 +106,6 @@ export const OBJETOS: Objeto[] = [
 		stock: 8,
 		color: 'blanco',
 		foto: fotoTabla,
-		recorte: recTabla,
 		ancho: 5,
 	},
 	{
@@ -143,7 +118,6 @@ export const OBJETOS: Objeto[] = [
 		stock: 4,
 		color: 'rojo',
 		foto: fotoVela,
-		recorte: recVela,
 		ancho: 3,
 	},
 	{
@@ -156,7 +130,6 @@ export const OBJETOS: Objeto[] = [
 		stock: 2,
 		color: 'cobalto',
 		foto: fotoFlorero,
-		recorte: recFlorero,
 		ancho: 4,
 	},
 ];
