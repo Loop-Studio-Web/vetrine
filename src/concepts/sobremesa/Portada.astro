@@ -4,6 +4,7 @@
 import { Image } from 'astro:assets';
 import { caja, dentro } from './caja';
 import { OBJETOS_MESA, pesos } from './dati';
+import { MEDIDAS } from './medidas';
 import cartonLayout from './cartonLayout.json';
 import enamelBlue from '../../assets/sobremesa/plates/enamel-blue.png';
 import photo1 from '../../assets/sobremesa/plates/photo-1.png';
@@ -26,10 +27,29 @@ const cartelitos = [
 	{ region: 'tag-vasos', objeto: OBJETOS_MESA[2], img: tagVasos, giro: -22 },
 	{ region: 'tag-mantel', objeto: OBJETOS_MESA[3], img: tagMantel, giro: -22 },
 ];
+// telefono: la foto es una sola tira de tres láminas y los objetos se marcan con números (posición del cartelito del
+// mockup dentro de la tira); la leyenda de abajo repite número, nombre y precio
+const [fx0, fy0] = [MEDIDAS['photo-1'][0], Math.min(...laminas.map((l) => MEDIDAS[l.id][1]))];
+const fx1 = MEDIDAS['photo-3'][0] + MEDIDAS['photo-3'][2];
+const fy1 = Math.max(...laminas.map((l) => MEDIDAS[l.id][1] + MEDIDAS[l.id][3]));
+const tira = { ratio: ((fx1 - fx0) * 1536) / ((fy1 - fy0) * 1024), w: fx1 - fx0, h: fy1 - fy0 };
+// número, color del disco y ajuste fino del punto (en % de la tira) respecto del centro del cartelito
+const pines: Record<string, { n: number; fondo: string; tinta: string; dx: number; dy: number }> = {
+	'jarra-gres': { n: 1, fondo: 'var(--rojo)', tinta: '#fff', dx: 0, dy: 0 },
+	'vasos-4': { n: 2, fondo: 'var(--amarillo)', tinta: 'var(--tinta)', dx: 0, dy: 0 },
+	'mantel-lino': { n: 3, fondo: 'var(--esmalte-luz)', tinta: 'var(--tinta)', dx: 0, dy: 0 },
+	'lampara-chapa': { n: 4, fondo: 'var(--negro)', tinta: '#fff', dx: -12.5, dy: -6 },
+};
+const pinDe = (region: string, id: string) => {
+	const [x, y, w, h] = MEDIDAS[region];
+	const p = pines[id];
+	return `--px:${(((x + w / 2 - fx0) / tira.w) * 100 + p.dx).toFixed(2)}%;--py:${(((y + h / 2 - fy0) / tira.h) * 100 + p.dy).toFixed(2)}%`;
+};
+const leyenda = [...cartelitos].sort((a, b) => pines[a.objeto.id].n - pines[b.objeto.id].n);
 ---
 
-<section class="portada" aria-labelledby="titulo">
-	<div class="chapa titulo-cartel" style={`${caja('sign-headline')};--c:var(--cobalto);--tornillo:#020f33;--textura:url(${enamelBlue.src})`}>
+<section class="portada" aria-labelledby="titulo" style={`--textura:url(${enamelBlue.src})`}>
+	<div class="chapa titulo-cartel" style={`${caja('sign-headline')};--c:var(--cobalto);--tornillo:#020f33`}>
 		<h1 id="titulo" class="titulo" style={dentro('headline-1', 'sign-headline')}>
 			<span>LA MESA LARGA</span>
 			<span>DE CARO Y MATI</span>
@@ -38,7 +58,7 @@ const cartelitos = [
 		<p class="titulo-meta" style={dentro('headline-meta', 'sign-headline')}>Villa Crespo · 6 min de lectura</p>
 	</div>
 
-	<div class="tavola" role="group" aria-label="La mesa larga: objetos de esta historia">
+	<div class="tavola" role="group" aria-label="La mesa larga: objetos de esta historia" style={`--ratio:${tira.ratio.toFixed(3)};--c1:${(MEDIDAS['photo-1'][2]*1000).toFixed(1)}fr;--c2:${(MEDIDAS['photo-2'][2]*1000).toFixed(1)}fr;--c3:${(MEDIDAS['photo-3'][2]*1000).toFixed(1)}fr`}>
 		{laminas.map((l) => (
 			<figure class="lamina" style={caja(l.id)}>
 				<Image src={l.img} alt="" width={l.w} quality={80} format="webp" sizes="18vw" loading="eager" />
@@ -49,7 +69,7 @@ const cartelitos = [
 		{cartelitos.map((c) => {
 			const m = (cartonLayout as Record<string, { cx: number; cy: number; w: number; h: number }>)[c.region];
 			return (
-				<button class="cartelito" type="button" style={`${caja(c.region)};--giro:${c.giro}deg;--cx:${m.cx}%;--cy:${m.cy}%;--bw:${m.w}%`} data-objeto={c.objeto.id} aria-label={`${c.objeto.nombre}, ${pesos(c.objeto.precio)}. Ver y sumar a la bolsa`}>
+				<button class="cartelito" type="button" style={`${caja(c.region)};--giro:${c.giro}deg;--cx:${m.cx}%;--cy:${m.cy}%;--bw:${m.w}%;${pinDe(c.region, c.objeto.id)};--pin:${pines[c.objeto.id].fondo};--pin-tinta:${pines[c.objeto.id].tinta}`} data-objeto={c.objeto.id} aria-label={`${c.objeto.nombre}, ${pesos(c.objeto.precio)}. Ver y sumar a la bolsa`}>
 					<span class="cartelito__lamina">
 						<Image class="cartelito__carton" src={c.img} alt="" width={260} quality={85} format="webp" loading="eager" />
 						<span class="cartelito__texto" aria-hidden="true">
@@ -57,18 +77,29 @@ const cartelitos = [
 							<strong>{pesos(c.objeto.precio)}</strong>
 						</span>
 					</span>
+					<span class="cartelito__pin" aria-hidden="true">{pines[c.objeto.id].n}</span>
 				</button>
 			);
 		})}
-
-		<button class="cta" type="button" style={caja('cta-bolsa')} data-sumar-mesa>
-			<svg viewBox="0 0 229 70" preserveAspectRatio="none" aria-hidden="true">
-				<polygon points="5,5 203,5 224,35 203,65 5,65" fill="var(--cobalto)" stroke="rgb(255 255 255 / 0.92)" stroke-width="3" stroke-linejoin="round" />
-				<polygon points="11,11 200,11 217,35 200,59 11,59" fill="none" stroke="rgb(255 255 255 / 0.28)" stroke-width="1.5" stroke-linejoin="round" />
-			</svg>
-			<span>Sumá a la bolsa</span>
-		</button>
 	</div>
+
+	<ul class="leyenda" aria-hidden="true">
+		{leyenda.map((c) => (
+			<li data-objeto={c.objeto.id} style={`--pin:${pines[c.objeto.id].fondo};--pin-tinta:${pines[c.objeto.id].tinta}`}>
+				<span class="leyenda__n">{pines[c.objeto.id].n}</span>
+				<span class="leyenda__nombre">{c.objeto.nombre}</span>
+				<strong>{pesos(c.objeto.precio)}</strong>
+			</li>
+		))}
+	</ul>
+
+	<button class="cta" type="button" style={caja('cta-bolsa')} data-sumar-mesa>
+		<svg viewBox="0 0 229 70" preserveAspectRatio="none" aria-hidden="true">
+			<polygon points="5,5 203,5 224,35 203,65 5,65" fill="var(--cobalto)" stroke="rgb(255 255 255 / 0.92)" stroke-width="3" stroke-linejoin="round" />
+			<polygon points="11,11 200,11 217,35 200,59 11,59" fill="none" stroke="rgb(255 255 255 / 0.28)" stroke-width="1.5" stroke-linejoin="round" />
+		</svg>
+		<span>Sumá a la bolsa</span>
+	</button>
 </section>
 
 <style>
@@ -188,6 +219,11 @@ const cartelitos = [
 		font-size: 1.1em;
 	}
 
+	.cartelito__pin,
+	.leyenda {
+		display: none;
+	}
+
 	.cta {
 		position: absolute;
 		z-index: 3;
@@ -219,5 +255,184 @@ const cartelitos = [
 	.cta:hover {
 		translate: calc(3 * var(--k)) 0;
 		filter: drop-shadow(0 calc(5 * var(--k)) calc(8 * var(--k)) rgb(0 0 0 / 0.5)) brightness(1.15);
+	}
+
+	/* telefono: un solo cartel cobalto con el título, la tira de la foto con los objetos numerados, la leyenda y el botón */
+	@media (max-width: 900px) {
+		.portada {
+			display: block;
+			position: relative;
+			isolation: isolate;
+			padding: 26px 16px 18px;
+			border-radius: calc(16 * var(--k));
+			color: var(--blanco);
+			background-color: var(--cobalto);
+			background-image:
+				radial-gradient(circle at 14px 14px, #020f33 0 3.5px, rgb(255 255 255 / 0.3) 4px 5.4px, transparent 6.2px),
+				radial-gradient(circle at calc(100% - 14px) 14px, #020f33 0 3.5px, rgb(255 255 255 / 0.3) 4px 5.4px, transparent 6.2px),
+				radial-gradient(circle at 14px calc(100% - 14px), #020f33 0 3.5px, rgb(255 255 255 / 0.3) 4px 5.4px, transparent 6.2px),
+				radial-gradient(circle at calc(100% - 14px) calc(100% - 14px), #020f33 0 3.5px, rgb(255 255 255 / 0.3) 4px 5.4px, transparent 6.2px),
+				linear-gradient(112deg, rgb(255 255 255 / 0.2), rgb(255 255 255 / 0) 34%, rgb(0 0 0 / 0.14) 100%);
+			box-shadow:
+				0 6px 12px rgb(0 0 0 / 0.5),
+				inset 0 0 0 2px rgb(255 255 255 / 0.3),
+				inset 0 -4px 8px rgb(0 0 0 / 0.28);
+		}
+		.portada::before {
+			content: '';
+			position: absolute;
+			inset: 0;
+			z-index: -1;
+			border-radius: inherit;
+			background: var(--textura) center / 340px auto repeat;
+			mix-blend-mode: soft-light;
+			opacity: 0.55;
+			pointer-events: none;
+		}
+
+		.titulo-cartel {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			column-gap: 14px;
+			container-type: inline-size;
+			background: none;
+			box-shadow: none;
+			border-radius: 0;
+		}
+		.titulo-cartel::before {
+			display: none;
+		}
+		.titulo {
+			flex: 0 0 100%;
+			font-size: 13.4cqw;
+			line-height: 1.04;
+			margin-top: 0;
+		}
+		.titulo-meta {
+			order: 2;
+			margin-top: 12px;
+			font-size: 1.25rem;
+		}
+		.titulo-regla {
+			order: 3;
+			flex: 1;
+			margin-top: 12px;
+			height: 0 !important;
+			background: none;
+			border-top: 2px solid rgb(255 255 255 / 0.9);
+		}
+
+		.tavola {
+			position: relative;
+			display: grid;
+			grid-template-columns: var(--c1) var(--c2) var(--c3);
+			grid-template-rows: minmax(0, 1fr);
+			gap: 4px;
+			aspect-ratio: var(--ratio);
+			margin-top: 18px;
+		}
+		.lamina {
+			padding: 3px;
+			border-radius: 8px;
+			box-shadow:
+				0 3px 6px rgb(0 0 0 / 0.5),
+				inset 0 0 0 1.5px rgb(255 255 255 / 0.35);
+		}
+		.lamina :global(img) {
+			border-radius: 5px;
+		}
+
+		/* el cartelito de cartón se vuelve un punto numerado; el botón conserva 48 px de zona táctil */
+		.cartelito {
+			position: absolute !important;
+			left: var(--px) !important;
+			top: var(--py) !important;
+			width: 48px !important;
+			height: 48px !important;
+			translate: -50% -50%;
+			rotate: 0deg;
+		}
+		.cartelito:hover {
+			translate: -50% -50%;
+			rotate: 0deg;
+		}
+		.cartelito__lamina {
+			display: none;
+		}
+		.cartelito__pin {
+			position: absolute;
+			inset: 9px;
+			display: grid;
+			place-items: center;
+			border-radius: 50%;
+			background: var(--pin);
+			color: var(--pin-tinta);
+			font-family: var(--f-cartel);
+			font-weight: 700;
+			font-size: 1.0625rem;
+			line-height: 1;
+			box-shadow: 0 0 0 2px rgb(255 255 255 / 0.92), 0 2px 6px rgb(0 0 0 / 0.55);
+		}
+
+		.leyenda {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 4px 14px;
+			margin: 16px 0 0;
+			padding: 0;
+			list-style: none;
+		}
+		.leyenda li {
+			display: grid;
+			grid-template-columns: auto minmax(0, 1fr);
+			grid-template-rows: auto auto;
+			column-gap: 10px;
+			align-items: center;
+			padding: 8px 0;
+			cursor: pointer;
+		}
+		.leyenda__n {
+			grid-row: 1 / 3;
+			display: grid;
+			place-items: center;
+			width: 28px;
+			height: 28px;
+			border-radius: 50%;
+			background: var(--pin);
+			color: var(--pin-tinta);
+			font-weight: 700;
+			font-size: 1rem;
+			line-height: 1;
+			box-shadow: 0 0 0 2px rgb(255 255 255 / 0.92);
+		}
+		.leyenda__nombre {
+			font-size: 1rem;
+			line-height: 1.1;
+		}
+		.leyenda strong {
+			font-size: 1.1875rem;
+			line-height: 1.15;
+		}
+
+		.cta {
+			display: grid;
+			width: 100% !important;
+			height: 56px !important;
+			margin-top: 12px;
+			padding: 0;
+			font-size: 1.375rem;
+			filter: drop-shadow(0 3px 5px rgb(0 0 0 / 0.5));
+		}
+		.cta svg path,
+		.cta svg polygon {
+			vector-effect: non-scaling-stroke;
+		}
+		.cta:hover {
+			translate: none;
+		}
+		.cta span {
+			padding-right: 14px;
+		}
 	}
 </style>

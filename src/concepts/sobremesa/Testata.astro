@@ -121,4 +121,57 @@ const textura = `--textura:url(${enamelWhite.src})`;
 		translate: 0 calc(-2 * var(--k));
 		filter: brightness(1.1);
 	}
+
+	/* telefono: primera fila marca + bolsa, segunda fila las cuatro voces en carteles iguales */
+	@media (max-width: 900px) {
+		.testata {
+			position: static;
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) auto;
+			gap: 10px;
+			pointer-events: auto;
+		}
+		.marca {
+			display: grid;
+			gap: 6px;
+			min-width: 0;
+			padding: 14px 32px 13px;
+		}
+		.marca__nombre {
+			font-size: clamp(1.75rem, 8.2vw, 2.5rem);
+		}
+		.marca__sub {
+			display: block;
+			font-size: 0.6875rem;
+			letter-spacing: 0.1em;
+			line-height: 1.25;
+			white-space: normal;
+			text-wrap: balance;
+		}
+		.testata nav {
+			grid-column: 1 / -1;
+			grid-row: 2;
+			display: grid;
+			grid-template-columns: repeat(4, minmax(0, 1fr));
+			gap: 8px;
+		}
+		.voz {
+			min-height: 48px;
+			font-size: 1.0625rem;
+			background-image: linear-gradient(112deg, rgb(255 255 255 / 0.2), rgb(255 255 255 / 0) 34%, rgb(0 0 0 / 0.14) 100%);
+		}
+		.bolsa {
+			min-width: 48px;
+			min-height: 48px;
+			align-self: stretch;
+			padding: 0 14px;
+			gap: 7px;
+			font-size: 1.0625rem;
+			background-image: linear-gradient(112deg, rgb(255 255 255 / 0.2), rgb(255 255 255 / 0) 34%, rgb(0 0 0 / 0.14) 100%);
+		}
+		.bolsa svg {
+			width: 22px;
+			height: 22px;
+		}
+	}
 </style>

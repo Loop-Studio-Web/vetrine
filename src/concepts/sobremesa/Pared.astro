@@ -24,9 +24,28 @@
 		container-type: inline-size;
 	}
 	@media (max-width: 900px) {
-		/* el telefono se rehace aparte (columna de carteles): aquí no se reescala la composición de escritorio */
+		/* el telefono se rehace aparte: una columna de carteles (referencia comp-2-b). Las medidas del mockup que traen los
+		   componentes en style="left:…" se anulan acá (con :where() para que cada componente pueda corregir lo suyo) y cada
+		   uno dice en su CSS cómo se acomoda; --k pasa a ser un valor fijo para tornillos, bordes y sombras. */
+		.pared {
+			min-height: 0;
+			padding: 18px var(--gutter) 40px;
+		}
 		.pared__marco {
-			width: 100%;
+			--k: 0.8px;
+			width: min(100%, 520px);
+			aspect-ratio: auto;
+			container-type: normal;
+			display: flex;
+			flex-direction: column;
+			gap: 14px;
+		}
+		.pared__marco :global(:where([style*='left:'])) {
+			position: relative !important;
+			left: auto !important;
+			top: auto !important;
+			width: auto !important;
+			height: auto !important;
 		}
 	}
 </style>

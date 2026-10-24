@@ -81,4 +81,55 @@ const items = [
 		line-height: 1;
 		white-space: nowrap;
 	}
+
+	/* telefono: dos carteles blancos apilados, foto a la izquierda */
+	@media (max-width: 900px) {
+		.historias {
+			display: grid;
+			gap: 14px;
+		}
+		.historia {
+			display: grid;
+			grid-template-columns: minmax(0, 36%) minmax(0, 1fr);
+			grid-template-rows: 1fr auto auto;
+			align-items: center;
+			column-gap: 16px;
+			min-height: 128px;
+			padding-right: 16px;
+		}
+		.historia__foto {
+			grid-column: 1;
+			grid-row: 1 / 4;
+			align-self: stretch;
+			border-radius: calc(12 * var(--k)) 0 0 calc(12 * var(--k));
+		}
+		.historia__foto :global(img) {
+			position: absolute;
+			inset: 0;
+		}
+		.historia__titulo {
+			grid-column: 2;
+			grid-row: 1;
+			align-self: end;
+			margin-top: 14px;
+			font-size: clamp(1.75rem, 8.2vw, 2.5rem);
+			line-height: 1.06;
+		}
+		.historia__regla {
+			grid-column: 2;
+			grid-row: 2;
+			height: 2px !important;
+			margin-top: 8px;
+		}
+		.historia__meta {
+			grid-column: 2;
+			grid-row: 3;
+			align-self: start;
+			margin: 8px 0 14px;
+			font-size: 0.8125rem;
+			letter-spacing: 0.08em;
+			white-space: normal;
+			text-transform: uppercase;
+		}
+	}
 </style>

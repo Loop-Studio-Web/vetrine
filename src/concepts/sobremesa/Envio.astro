@@ -46,4 +46,30 @@ import enamelYellow from '../../assets/sobremesa/plates/enamel-yellow.png';
 		text-transform: uppercase;
 		white-space: nowrap;
 	}
+
+	/* telefono: camión y texto centrados, sin los filetes del escritorio */
+	@media (max-width: 900px) {
+		.tira {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 14px;
+			padding: 14px 18px;
+		}
+		.tira__regla {
+			display: none;
+		}
+		.tira__camion {
+			flex: none;
+			width: 44px !important;
+		}
+		.tira__texto {
+			display: block;
+			min-width: 0;
+			font-size: clamp(1.25rem, 5.6vw, 1.75rem);
+			line-height: 1.1;
+			white-space: normal;
+			text-wrap: balance;
+		}
+	}
 </style>
