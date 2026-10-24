@@ -23,7 +23,7 @@ const items = [
 				{hist.titulo.map((l) => <span>{l}</span>)}
 			</span>
 			<span class="historia__regla" style={dentro(`story-${n}-rule`, `sign-story-${n}`)}></span>
-			<span class="historia__meta" style={dentro(`story-${n}-meta`, `sign-story-${n}`)}>{hist.seccion} · {hist.minutos} min de lectura</span>
+			<span class="historia__meta" style={dentro(`story-${n}-meta`, `sign-story-${n}`)}>{hist.seccion} · {hist.objetos.length} objetos</span>
 		</a>
 	))}
 </section>

@@ -29,6 +29,8 @@ export type Objeto = {
 	taller: string;
 	dias: number;
 	stock: number;
+	/** la foto del estante no es el objeto de la escena de la portada (lámpara y jarra) */
+	ilustrativa?: boolean;
 	color: Color;
 	foto: ImageMetadata;
 	/** cuántas columnas ocupa en el estante (variar el ritmo, no repetir tarjetas iguales) */
@@ -44,6 +46,7 @@ export const OBJETOS: Objeto[] = [
 		taller: 'Chapería Boedo',
 		dias: 14,
 		stock: 6,
+		ilustrativa: true,
 		color: 'amarillo',
 		foto: fotoLampara,
 		ancho: 5,
@@ -56,6 +59,7 @@ export const OBJETOS: Objeto[] = [
 		taller: 'Taller Ñandú',
 		dias: 12,
 		stock: 3,
+		ilustrativa: true,
 		color: 'negro',
 		foto: fotoJarra,
 		ancho: 3,
@@ -148,8 +152,8 @@ export const COLOR: Record<Color, { fondo: string; tinta: string; filete: string
 export const OBJETOS_MESA = ['lampara-chapa', 'jarra-gres', 'vasos-4', 'mantel-lino'].map((id) => porId(id)!);
 
 export const HISTORIAS = [
-	{ id: 'cocina-de-pasillo', titulo: ['COCINA', 'DE PASILLO'], seccion: 'Historias', minutos: 5 },
-	{ id: 'un-domingo-de-lino', titulo: ['UN DOMINGO', 'DE LINO'], seccion: 'Objetos', minutos: 4 },
+	{ id: 'cocina-de-pasillo', titulo: ['COCINA', 'DE PASILLO'], seccion: 'Historias', objetos: ['jarra-gres', 'plato-gres', 'tabla-lenga'] },
+	{ id: 'un-domingo-de-lino', titulo: ['UN DOMINGO', 'DE LINO'], seccion: 'Objetos', objetos: ['mantel-lino', 'vasos-4', 'candelero-bronce'] },
 ];
 
 export const TALLERES = [

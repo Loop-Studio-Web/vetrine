@@ -18,6 +18,7 @@ const datos = await Promise.all(OBJETOS.map(async (o) => ({
 	taller: o.taller,
 	dias: o.dias,
 	stock: o.stock,
+	ilustrativa: !!o.ilustrativa,
 	color: COLOR[o.color],
 	foto: await fotoWebp(o),
 })));
@@ -42,6 +43,7 @@ const datos = await Promise.all(OBJETOS.map(async (o) => ({
 				<li data-taller></li>
 				<li data-dias></li>
 				<li data-stock></li>
+					<li data-ilustrativa hidden>Foto ilustrativa: el objeto real es el de la portada.</li>
 			</ul>
 			<div class="datos__acciones">
 				<button class="btn-chapa" type="button" data-agregar>Sumá a la bolsa</button>
@@ -226,7 +228,7 @@ const datos = await Promise.all(OBJETOS.map(async (o) => ({
 	import type { Lamina } from './chapa-gl';
 
 	type Dato = {
-		id: string; nombre: string; precio: number; precioTxt: string; frase: string; taller: string; dias: number; stock: number;
+		id: string; nombre: string; precio: number; precioTxt: string; frase: string; taller: string; dias: number; stock: number; ilustrativa: boolean;
 		color: { fondo: string; tinta: string; filete: string };
 		foto: string;
 	};
@@ -303,6 +305,7 @@ const datos = await Promise.all(OBJETOS.map(async (o) => ({
 		q('[data-taller]').textContent = `Hecho por ${d.taller}`;
 		q('[data-dias]').textContent = `A pedido, listo en ${d.dias} días`;
 		q('[data-stock]').textContent = d.stock <= 4 ? `Quedan ${d.stock}` : 'En stock';
+		q<HTMLElement>('[data-ilustrativa]').hidden = !d.ilustrativa;
 		const g = q<HTMLButtonElement>('[data-guardar]');
 		g.setAttribute('aria-pressed', String(leerLibreta().includes(d.id)));
 		g.setAttribute('aria-label', `Guardar ${d.nombre} en mi libreta`);

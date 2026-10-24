@@ -1,6 +1,23 @@
 ---
 // Pie: el boletín (de mentira), las aclaraciones de la maqueta y la firma del estudio.
 import logoLoop from '../../assets/hub/loop-logo-on-dark.svg';
+
+// fotos de Unsplash (id de la foto, autor); mismos datos que src/assets/sobremesa/CREDITI.md
+const FOTOS = [
+	['NuIvaF6UAmI', 'Stephanie Sarlos'],
+	['gKm4lAyB_T4', 'Julia Zolotova'],
+	['wgRD0Lfe43Q', 'Ekaterina Grosheva'],
+	['OLOv7I1y9Y4', 'Yevgeniy Mironov'],
+	['coV4CuQFx1I', 'John Vid'],
+	['zoWcTEx1EQc', 'Sergey Kotenev'],
+	['PyfOOdJGLd0', 'KaLisa Veer'],
+	['RiuDaFRKd5o', 'Lute'],
+	['vUHYwZnkm84', 'Earl Wilcox'],
+	['8g_j67M7Y0w', 'Clément Philippe'],
+	['R07ZXq7hx9s', 'Sofie D.'],
+	['TN9hFa61cIw', 'Nico'],
+	['PQlIsxezVUo', 'Mathias Reding'],
+];
 ---
 
 <footer class="pie">
@@ -25,7 +42,8 @@ import logoLoop from '../../assets/hub/loop-logo-on-dark.svg';
 		</a>
 		<div class="pie__aclaraciones">
 			<p><strong>Vitrina demostrativa.</strong> Sobremesa no existe: los objetos, talleres, precios, plazos y números de la revista son de ejemplo y nada se vende ni se envía.</p>
-			<p>La foto de la mesa larga es una imagen de ejemplo generada; el resto de las fotos son de Unsplash, con sus autores en el archivo de créditos del proyecto.</p>
+			<p>La foto de la mesa larga es una imagen de ejemplo generada. El resto de las fotos son de <a href="https://unsplash.com/">Unsplash</a>:
+				{FOTOS.map(([id, autor], i) => (<>{i > 0 && ' · '}<a href={`https://unsplash.com/photos/${id}`}>{autor}</a></>))}.</p>
 			<p>Concepto de <a href="https://theloopstudio.org/">Loop Studio</a> · <a href="https://theloopstudio.org/contatti/?concept=sobremesa">Quiero una así</a> · <a href="../../">Todas las vitrinas</a></p>
 		</div>
 	</div>
