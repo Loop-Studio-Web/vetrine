@@ -329,3 +329,7 @@ html:has(dialog[open]) {
 	outline: 3px solid var(--cobalto-vivo);
 	outline-offset: -3px;
 }
+
+[hidden] {
+	display: none !important;
+}

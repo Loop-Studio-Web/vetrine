@@ -1,0 +1,109 @@
+---
+// Los carteles verticales de las franjas, solo en pantallas anchas y recién cuando se pasó el hero (arriba, esas franjas
+// tienen los carteles de Laterales.astro). Izquierda: abrir los filtros del depósito y volver arriba. Derecha: la bolsa
+// (con su cuenta) y el atajo al catálogo. Son botones y enlaces de verdad: están en el orden de tabulación solo cuando se ven.
+import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
+const t = `--textura:url(${enamelWhite.src})`;
+---
+
+<nav class="rieles" aria-label="Accesos rápidos" data-rieles>
+	<div class="riel riel--izq">
+		<button class="chapa cartel" type="button" data-filtros-abrir aria-haspopup="dialog" style={`--c:var(--amarillo);--tornillo:#4a3706;${t}`}>
+			<span class="v">Filtrar</span>
+		</button>
+		<a class="chapa cartel cartel--chico" href="#main" style={`--c:var(--esmalte);--tornillo:#55524c;${t}`}>
+			<span class="v">↑ Arriba</span>
+		</a>
+	</div>
+	<div class="riel riel--der">
+		<button class="chapa cartel" type="button" data-bolsa-abrir aria-haspopup="dialog" style={`--c:var(--rojo);--tornillo:#2a0a05;${t}`}>
+			<span class="v">Bolsa (<span data-bolsa-n>0</span>)</span>
+		</button>
+		<a class="chapa cartel cartel--chico" href="#deposito" style={`--c:var(--cobalto-vivo);--tornillo:#020f33;${t}`}>
+			<span class="v">Catálogo 360</span>
+		</a>
+	</div>
+</nav>
+
+<style>
+	.rieles {
+		display: none;
+	}
+	@media (min-width: 1700px) and (min-aspect-ratio: 16 / 9) {
+		.rieles {
+			display: block;
+			--k: 0.85px;
+			/* el centro de cada franja: lo que sobra a cada lado de la columna de contenido (ver .cuerpo), con su margen */
+			--franja: calc((100vw - clamp(1280px, calc((100svh - 34px) * 1.5), 1760px)) / 2 + clamp(16px, 4vw, 48px));
+			position: fixed;
+			inset: 0;
+			z-index: 20;
+			pointer-events: none;
+			visibility: hidden;
+			opacity: 0;
+			transition: opacity 0.3s ease, visibility 0s 0.3s;
+		}
+		.rieles.on {
+			visibility: visible;
+			opacity: 1;
+			transition: opacity 0.3s ease;
+		}
+		.riel {
+			position: absolute;
+			top: 50%;
+			display: grid;
+			gap: 14px;
+			translate: 0 -50%;
+			width: 56px;
+		}
+		.riel--izq {
+			left: max(6px, calc(var(--franja) / 2 - 28px));
+		}
+		.riel--der {
+			right: max(6px, calc(var(--franja) / 2 - 28px));
+		}
+		.cartel {
+			position: relative;
+			display: grid;
+			place-items: center;
+			width: 56px;
+			padding: 34px 0;
+			border: 0;
+			color: var(--tinta);
+			font-family: var(--f-cartel);
+			font-weight: 700;
+			font-size: 1.1875rem;
+			letter-spacing: 0.12em;
+			text-transform: uppercase;
+			text-decoration: none;
+			pointer-events: auto;
+			transition: translate 0.2s var(--ease-out), filter 0.2s;
+		}
+		.cartel--chico {
+			padding: 24px 0;
+			font-size: 1rem;
+		}
+		.cartel:hover {
+			translate: 0 -3px;
+			filter: brightness(1.1);
+		}
+		.cartel[data-bolsa-abrir],
+		.cartel[href='#deposito'] {
+			color: #fff;
+		}
+		.v {
+			writing-mode: vertical-rl;
+			rotate: 180deg;
+			white-space: nowrap;
+		}
+	}
+</style>
+
+<script>
+	// los carteles aparecen cuando el hero ya quedó atrás
+	const riel = document.querySelector<HTMLElement>('[data-rieles]');
+	const hero = document.querySelector<HTMLElement>('.pared');
+	if (riel && hero && 'IntersectionObserver' in window) {
+		new IntersectionObserver(([e]) => riel.classList.toggle('on', !e.isIntersecting && e.boundingClientRect.bottom < 0), { threshold: 0 }).observe(hero);
+	}
+</script>

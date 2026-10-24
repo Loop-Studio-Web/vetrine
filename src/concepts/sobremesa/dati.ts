@@ -78,7 +78,24 @@ export type Objeto = {
 	ancho?: 3 | 4 | 5;
 	/** el mismo objeto en otros colores: la primera es la que se ve al entrar; `color` es el de la lámina de esa foto */
 	variantes?: Variante[];
+	/** categoría del depósito (los filtros del cajón); los ocho del estante no la usan */
+	categoria?: Categoria;
 };
+
+export type Categoria = 'mesa-cocina' | 'luz' | 'textiles' | 'plantas';
+export const CATEGORIAS: { id: Categoria; nombre: string }[] = [
+	{ id: 'mesa-cocina', nombre: 'Mesa y cocina' },
+	{ id: 'luz', nombre: 'Luz' },
+	{ id: 'textiles', nombre: 'Textiles' },
+	{ id: 'plantas', nombre: 'Plantas y flores' },
+];
+export const FRANJAS = [
+	{ id: 'bajo', nombre: 'Hasta $20.000', hasta: 20000 },
+	{ id: 'medio', nombre: '$20.000 a $60.000', hasta: 60000 },
+	{ id: 'alto', nombre: 'Más de $60.000', hasta: Infinity },
+];
+export const franja = (precio: number) => FRANJAS.find((f) => precio <= f.hasta)!.id;
+export const slug = (t: string) => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
 export type Variante = { color: Color; foto: ImageMetadata };
 export const NOMBRE_COLOR: Record<Color, string> = { blanco: 'crudo', cobalto: 'cobalto', rojo: 'rojo', amarillo: 'amarillo', negro: 'negro' };
@@ -192,6 +209,7 @@ export const OBJETOS: Objeto[] = [
 		taller: 'Telar La Quinta',
 		dias: 10,
 		stock: 12,
+		categoria: 'textiles',
 		color: 'cobalto',
 		foto: fAlmohadonCobalto,
 		variantes: variantes({ blanco: fAlmohadonCrudo, cobalto: fAlmohadonCobalto, rojo: fAlmohadonRojo, amarillo: fAlmohadonAmarillo, negro: fAlmohadonNegro }, ['cobalto', 'rojo', 'amarillo', 'negro', 'blanco']),
@@ -204,6 +222,7 @@ export const OBJETOS: Objeto[] = [
 		taller: 'Taller Ñandú',
 		dias: 9,
 		stock: 40,
+		categoria: 'mesa-cocina',
 		color: 'amarillo',
 		foto: fTazaAmarillo,
 		variantes: variantes({ blanco: fTazaCrudo, cobalto: fTazaCobalto, rojo: fTazaRojo, amarillo: fTazaAmarillo, negro: fTazaNegro }, ['amarillo', 'cobalto', 'rojo', 'negro', 'blanco']),
@@ -216,6 +235,7 @@ export const OBJETOS: Objeto[] = [
 		taller: 'Telar La Quinta',
 		dias: 8,
 		stock: 25,
+		categoria: 'textiles',
 		color: 'rojo',
 		foto: fBolsoRojo,
 		variantes: variantes({ blanco: fBolsoCrudo, cobalto: fBolsoCobalto, rojo: fBolsoRojo, amarillo: fBolsoAmarillo, negro: fBolsoNegro }, ['rojo', 'cobalto', 'amarillo', 'negro', 'blanco']),
@@ -228,6 +248,7 @@ export const OBJETOS: Objeto[] = [
 		taller: 'Carpintería del Parque',
 		dias: 18,
 		stock: 5,
+		categoria: 'mesa-cocina',
 		color: 'negro',
 		foto: fBancoNegro,
 		variantes: variantes({ blanco: fBancoCrudo, cobalto: fBancoCobalto, rojo: fBancoRojo, amarillo: fBancoAmarillo, negro: fBancoNegro }, ['negro', 'cobalto', 'rojo', 'amarillo', 'blanco']),
@@ -240,6 +261,7 @@ export const OBJETOS: Objeto[] = [
 		taller: 'Chapería Boedo',
 		dias: 21,
 		stock: 4,
+		categoria: 'luz',
 		color: 'amarillo',
 		foto: fLamparaPieAmarillo,
 		variantes: variantes({ blanco: fLamparaPieCrudo, cobalto: fLamparaPieCobalto, rojo: fLamparaPieRojo, amarillo: fLamparaPieAmarillo, negro: fLamparaPieNegro }, ['amarillo', 'rojo', 'cobalto', 'negro', 'blanco']),
@@ -252,6 +274,7 @@ export const OBJETOS: Objeto[] = [
 		taller: 'Taller Ñandú',
 		dias: 14,
 		stock: 7,
+		categoria: 'mesa-cocina',
 		color: 'cobalto',
 		foto: fCacerolaCobalto,
 		variantes: variantes({ blanco: fCacerolaCrudo, cobalto: fCacerolaCobalto, rojo: fCacerolaRojo, amarillo: fCacerolaAmarillo, negro: fCacerolaNegro }, ['cobalto', 'amarillo', 'rojo', 'negro', 'blanco']),
@@ -264,6 +287,7 @@ export const OBJETOS: Objeto[] = [
 		taller: 'Telar La Quinta',
 		dias: 6,
 		stock: 60,
+		categoria: 'textiles',
 		color: 'rojo',
 		foto: fRepasadorRojo,
 		variantes: variantes({ blanco: fRepasadorCrudo, cobalto: fRepasadorCobalto, rojo: fRepasadorRojo, amarillo: fRepasadorAmarillo, negro: fRepasadorNegro }, ['rojo', 'cobalto', 'amarillo', 'negro', 'blanco']),
@@ -276,6 +300,7 @@ export const OBJETOS: Objeto[] = [
 		taller: 'Taller Ñandú',
 		dias: 16,
 		stock: 4,
+		categoria: 'plantas',
 		color: 'blanco',
 		foto: fotoAros,
 	},
@@ -287,6 +312,7 @@ export const OBJETOS: Objeto[] = [
 		taller: 'Carpintería del Parque',
 		dias: 15,
 		stock: 6,
+		categoria: 'plantas',
 		color: 'amarillo',
 		foto: fotoMadera,
 	},
@@ -298,6 +324,7 @@ export const OBJETOS: Objeto[] = [
 		taller: 'Cementos del Bajo',
 		dias: 10,
 		stock: 14,
+		categoria: 'plantas',
 		color: 'negro',
 		foto: fotoMaceta,
 	},
@@ -309,6 +336,7 @@ export const OBJETOS: Objeto[] = [
 		taller: 'Vidriería Santa Ana',
 		dias: 7,
 		stock: 30,
+		categoria: 'luz',
 		color: 'rojo',
 		foto: fotoVelaAmbar,
 	},
@@ -320,6 +348,7 @@ export const OBJETOS: Objeto[] = [
 		taller: 'Vidriería Santa Ana',
 		dias: 7,
 		stock: 18,
+		categoria: 'luz',
 		color: 'cobalto',
 		foto: fotoVelaAlta,
 	},
@@ -331,6 +360,7 @@ export const OBJETOS: Objeto[] = [
 		taller: 'Chapería Boedo',
 		dias: 9,
 		stock: 22,
+		categoria: 'luz',
 		color: 'blanco',
 		foto: fotoVelaCobre,
 	},

@@ -1,0 +1,258 @@
+---
+// El cajón de filtros del depósito: sale desde la izquierda (como el de la bolsa sale desde la derecha). Se abre con
+// [data-filtros-abrir] (el botón "Filtrar" del depósito y, en pantallas anchas, el cartel vertical de Rieles.astro).
+// Filtra solo el depósito; los ocho del estante son la parte editorial y no se tocan. Un grupo = una sola opción a la vez,
+// y entre grupos se cumplen todos.
+import { CATEGORIAS, FRANJAS, DEPOSITO, slug } from './dati';
+import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
+
+const talleres = [...new Set(DEPOSITO.map((o) => o.taller))].sort((a, b) => a.localeCompare(b, 'es')).map((t) => ({ id: slug(t), nombre: t }));
+const grupos = [
+	{ id: 'cat', titulo: 'Qué es', opciones: CATEGORIAS },
+	{ id: 'taller', titulo: 'Quién lo hace', opciones: talleres },
+	{ id: 'precio', titulo: 'Precio', opciones: FRANJAS },
+];
+---
+
+<dialog class="filtros" id="sb-filtros" aria-labelledby="sb-filtros-titulo">
+	<div class="chapa chapa--flujo hoja" style={`--c:var(--esmalte);--tornillo:#55524c;--textura:url(${enamelWhite.src})`}>
+		<div class="hoja__cab">
+			<h2 class="hoja__titulo" id="sb-filtros-titulo">Filtrar el depósito</h2>
+			<button class="cerrar" type="button" data-filtros-cerrar aria-label="Cerrar los filtros">
+				<svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
+			</button>
+		</div>
+
+		{grupos.map((g) => (
+			<div class="grupo" role="group" aria-labelledby={`fg-${g.id}`}>
+				<p class="grupo__titulo" id={`fg-${g.id}`}>{g.titulo}</p>
+				<div class="grupo__chips">
+					{g.opciones.map((o) => (
+						<button class="chip" type="button" aria-pressed="false" data-grupo={g.id} data-valor={o.id}>{o.nombre}</button>
+					))}
+				</div>
+			</div>
+		))}
+
+		<div class="grupo" role="group" aria-labelledby="fg-col">
+			<p class="grupo__titulo" id="fg-col">Colores</p>
+			<div class="grupo__chips">
+				<button class="chip" type="button" aria-pressed="false" data-grupo="colores" data-valor="1">Solo los que vienen en varios colores</button>
+			</div>
+		</div>
+
+		<div class="hoja__pie">
+			<button class="btn-chapa" type="button" data-filtros-ver><span>Ver <span data-filtros-total>{DEPOSITO.length}</span> objetos</span></button>
+			<button class="btn-chapa btn-chapa--claro" type="button" data-filtros-borrar>Borrar todo</button>
+		</div>
+	</div>
+</dialog>
+
+<style>
+	.filtros {
+		position: fixed;
+		inset: 0 auto 0 0;
+		width: min(440px, 100vw);
+		max-width: none;
+		height: 100%;
+		max-height: none;
+		margin: 0;
+		padding: 12px;
+		border: 0;
+		background: transparent;
+		color: var(--tinta);
+		overflow-y: auto;
+		overscroll-behavior: contain;
+	}
+	.filtros::backdrop {
+		background: rgb(8 16 11 / 0.78);
+	}
+	.hoja {
+		--k: 1px;
+		display: flex;
+		flex-direction: column;
+		gap: 22px;
+		min-height: 100%;
+		padding: 34px 28px 28px;
+		border-radius: 18px;
+	}
+	.hoja__cab {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 12px;
+	}
+	.hoja__titulo {
+		font-family: var(--f-titulo);
+		font-weight: 400;
+		font-size: clamp(2rem, 3.4vw, 2.6rem);
+		line-height: 1.05;
+		text-transform: uppercase;
+		text-wrap: balance;
+	}
+	.cerrar {
+		display: grid;
+		place-items: center;
+		flex: none;
+		width: 44px;
+		height: 44px;
+		border: 2px solid var(--tinta);
+		border-radius: 50%;
+		background: transparent;
+		color: var(--tinta);
+		transition: background-color 0.15s, color 0.15s;
+	}
+	@media (hover: hover) and (pointer: fine) {
+		.cerrar:hover {
+			background: var(--tinta);
+			color: #fff;
+		}
+	}
+	.grupo {
+		display: grid;
+		gap: 8px;
+		padding-top: 14px;
+		border-top: 2px solid var(--tinta);
+	}
+	.grupo__titulo {
+		font-weight: 700;
+		font-size: 1rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+	.grupo__chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+	.chip {
+		min-height: 44px;
+		padding: 0 16px;
+		border: 2px solid var(--tinta);
+		border-radius: 10px;
+		background: transparent;
+		color: var(--tinta);
+		font-family: var(--f-cartel);
+		font-weight: 700;
+		font-size: 1.0625rem;
+		letter-spacing: 0.03em;
+		text-align: left;
+		transition: background-color 0.15s, color 0.15s, translate 0.2s var(--ease-out);
+	}
+	@media (hover: hover) and (pointer: fine) {
+		.chip:hover {
+			translate: 0 -2px;
+		}
+	}
+	.chip[aria-pressed='true'] {
+		background: var(--cobalto-vivo);
+		border-color: var(--cobalto-vivo);
+		color: #fff;
+	}
+	.hoja__pie {
+		position: sticky;
+		bottom: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+		margin: auto -28px -28px;
+		padding: 14px 28px 20px;
+		border-top: 2px solid var(--tinta);
+		border-radius: 0 0 18px 18px;
+		background: var(--esmalte);
+		box-shadow: 0 -10px 14px -10px rgb(0 0 0 / 0.3);
+	}
+</style>
+
+<script>
+	// Estado de los filtros y su efecto sobre las tarjetas del depósito. Los grupos se leen de los data-* de cada <li data-filtro>.
+	type Estado = { cat: string; taller: string; precio: string; colores: string };
+	const vacio = (): Estado => ({ cat: '', taller: '', precio: '', colores: '' });
+	let estado = vacio();
+
+	const dlg = document.getElementById('sb-filtros') as HTMLDialogElement;
+	const items = [...document.querySelectorAll<HTMLElement>('#deposito [data-filtro]')];
+	const estadoTxt = document.querySelector<HTMLElement>('[data-filtros-estado]');
+	const vacioEl = document.querySelector<HTMLElement>('[data-filtros-vacio]');
+	const borrarBarra = document.querySelector<HTMLElement>('[data-filtros-borrar]');
+	const contador = document.querySelector<HTMLElement>('[data-filtros-n]');
+	const reducido = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	const coincide = (li: HTMLElement) =>
+		(!estado.cat || li.dataset.cat === estado.cat) &&
+		(!estado.taller || li.dataset.taller === estado.taller) &&
+		(!estado.precio || li.dataset.precio === estado.precio) &&
+		(!estado.colores || li.dataset.colores === estado.colores);
+
+	function aplicar() {
+		let n = 0;
+		let grandes = 0;
+		items.forEach((li) => {
+			const ok = coincide(li);
+			li.hidden = !ok;
+			if (!ok) return;
+			n++;
+			// las tarjetas grandes siguen el 3/4 por fila aunque falten algunas
+			if (li.classList.contains('dep--color')) {
+				li.classList.toggle('dep--tres', grandes < 3);
+				li.classList.toggle('dep--cuatro', grandes >= 3);
+				grandes++;
+			}
+		});
+		const activos = Object.values(estado).filter(Boolean).length;
+		dlg.querySelectorAll<HTMLElement>('.chip').forEach((c) => c.setAttribute('aria-pressed', String(estado[c.dataset.grupo as keyof Estado] === c.dataset.valor)));
+		dlg.querySelector('[data-filtros-total]')!.textContent = String(n);
+		if (estadoTxt) estadoTxt.textContent = activos ? `${n} de ${items.length} objetos del depósito` : `${items.length} objetos en el depósito`;
+		if (contador) {
+			contador.hidden = !activos;
+			contador.textContent = String(activos);
+		}
+		if (borrarBarra) borrarBarra.hidden = !activos;
+		if (vacioEl) vacioEl.hidden = n > 0;
+		(dlg.querySelector('[data-filtros-ver]') as HTMLButtonElement).disabled = n === 0;
+	}
+
+	function abrir() {
+		if (dlg.open) return;
+		dlg.showModal();
+		if (!reducido()) dlg.animate([{ translate: '-32px 0', opacity: 0 }, { translate: '0 0', opacity: 1 }], { duration: 260, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' });
+	}
+	function cerrar(irAlDeposito = false) {
+		const fin = () => {
+			dlg.close();
+			if (irAlDeposito) {
+				const d = document.getElementById('deposito')!;
+				const r = d.getBoundingClientRect();
+				if (r.top > innerHeight * 0.6 || r.bottom < 0) d.scrollIntoView({ behavior: reducido() ? 'auto' : 'smooth', block: 'start' });
+			}
+		};
+		if (!dlg.open) return;
+		if (reducido()) return fin();
+		dlg.animate([{ translate: '0 0', opacity: 1 }, { translate: '-32px 0', opacity: 0 }], { duration: 180, easing: 'ease-out' }).finished.then(fin, fin);
+	}
+	const borrar = () => {
+		estado = vacio();
+		aplicar();
+	};
+
+	document.addEventListener('click', (e) => {
+		const t = e.target as HTMLElement;
+		if (t.closest('[data-filtros-abrir]')) return abrir();
+		if (t.closest('[data-filtros-borrar]')) return borrar();
+		if (dlg.open) {
+			if (t === dlg || t.closest('[data-filtros-cerrar]')) return cerrar();
+			if (t.closest('[data-filtros-ver]')) return cerrar(true);
+			const chip = t.closest<HTMLElement>('.chip');
+			if (chip) {
+				const g = chip.dataset.grupo as keyof Estado;
+				estado[g] = estado[g] === chip.dataset.valor ? '' : chip.dataset.valor!;
+				aplicar();
+			}
+		}
+	});
+	dlg.addEventListener('cancel', (e) => {
+		e.preventDefault();
+		cerrar();
+	});
+	aplicar();
+</script>

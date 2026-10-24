@@ -3,7 +3,7 @@
 // a la vista (tocar un punto cambia la foto y el color de la lámina); los de una sola foto van abajo, chicos. El catálogo
 // "completo" es de mentira y lo dice. Sumar, guardar y abrir el diálogo los resuelven Objetos.astro y Chapa.astro (son globales).
 import { Image, getImage } from 'astro:assets';
-import { DEPOSITO, COLOR, NOMBRE_COLOR, TOTAL_CATALOGO, OBJETOS, clave, pesos } from './dati';
+import { DEPOSITO, COLOR, NOMBRE_COLOR, TOTAL_CATALOGO, OBJETOS, clave, franja, slug, pesos } from './dati';
 import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 
 const webp = (foto: ImageMetadata) => getImage({ src: foto, width: 720, quality: 76, format: 'webp' }).then((i) => i.src);
@@ -22,9 +22,15 @@ const marco = (c: { fondo: string; tinta: string; filete: string }) => `--c:${c.
 	<h2 id="deposito-titulo" class="chapa chapa--flujo rotulo" style={`--c:var(--esmalte);--tornillo:#55524c;--textura:url(${enamelWhite.src})`}>El depósito</h2>
 	<p class="bajada">Lo que no cabía en la foto. Los que tienen puntos de colores vienen en más de uno: tocá un punto y el objeto cambia.</p>
 
+	<div class="barra">
+		<button class="btn-chapa" type="button" data-filtros-abrir aria-haspopup="dialog">Filtrar <span class="barra__n" data-filtros-n hidden></span></button>
+		<p class="barra__estado" role="status" data-filtros-estado>{DEPOSITO.length} objetos en el depósito</p>
+		<button class="btn-chapa btn-chapa--claro btn-chapa--chico" type="button" data-filtros-borrar hidden>Borrar filtros</button>
+	</div>
+
 	<ul class="caja">
 		{conColores.map(({ o, vs }, i) => (
-			<li class:list={['dep', 'dep--color', i < 3 ? 'dep--tres' : 'dep--cuatro']}>
+			<li class:list={['dep', 'dep--color', i < 3 ? 'dep--tres' : 'dep--cuatro']} data-filtro data-cat={o.categoria} data-taller={slug(o.taller)} data-precio={franja(o.precio)} data-colores="1">
 				<article class="chapa chapa--flujo tarjeta" data-tarjeta data-id={o.id} style={marco(COLOR[vs[0].color])}>
 					<button class="tarjeta__foto" type="button" data-objeto={o.id} data-color={vs[0].color} aria-label={`${o.nombre}: ver de cerca`}>
 						<img src={vs[0].url} alt={`${o.nombre}, foto de ejemplo`} width="720" height="720" loading="lazy" decoding="async" />
@@ -60,7 +66,7 @@ const marco = (c: { fondo: string; tinta: string; filete: string }) => `--c:${c.
 
 	<ul class="chicos">
 		{chicos.map((o) => (
-			<li class="dep dep--chico">
+			<li class="dep dep--chico" data-filtro data-cat={o.categoria} data-taller={slug(o.taller)} data-precio={franja(o.precio)} data-colores="0">
 				<article class="chapa chapa--flujo mini" style={marco(COLOR[o.color])}>
 					<button class="tarjeta__foto" type="button" data-objeto={o.id} aria-label={`${o.nombre}: ver de cerca`}>
 						<Image src={o.foto} alt={`${o.nombre}, foto de ejemplo`} width={480} quality={72} format="webp" sizes="(min-width: 900px) 16vw, 44vw" loading="lazy" />
@@ -79,6 +85,11 @@ const marco = (c: { fondo: string; tinta: string; filete: string }) => `--c:${c.
 			</li>
 		))}
 	</ul>
+
+	<div class="vacio chapa chapa--flujo" data-filtros-vacio hidden style={`--c:var(--esmalte);--tornillo:#55524c;--textura:url(${enamelWhite.src})`}>
+		<p class="vacio__titulo">Nada con esos filtros</p>
+		<p>En esta maqueta no hay objetos que cumplan todo a la vez; el catálogo completo, con sus {TOTAL_CATALOGO} objetos, seguro tendría alguno. Probá sacando un filtro.</p>
+	</div>
 
 	<div class="catalogo">
 		<p class="catalogo__cuenta">Mostrando {mostrados} de {TOTAL_CATALOGO} objetos</p>
@@ -323,6 +334,50 @@ const marco = (c: { fondo: string; tinta: string; filete: string }) => `--c:${c.
 		padding: 0 12px;
 	}
 
+	.barra {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 12px 20px;
+		margin-top: clamp(24px, 3vw, 36px);
+	}
+	.barra__n {
+		display: inline-grid;
+		place-items: center;
+		min-width: 1.5em;
+		margin-left: 6px;
+		padding: 0 6px;
+		border-radius: 999px;
+		background: #fff;
+		color: var(--cobalto-vivo);
+		font-size: 0.9375rem;
+	}
+	.barra__estado {
+		font-weight: 700;
+		font-size: 1rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	.vacio {
+		display: grid;
+		gap: 10px;
+		justify-items: start;
+		max-width: 560px;
+		margin-top: clamp(28px, 4vw, 48px);
+		padding: calc(34 * var(--k));
+		color: var(--tinta);
+	}
+	.vacio__titulo {
+		font-family: var(--f-titulo);
+		font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+		line-height: 1.05;
+		text-transform: uppercase;
+	}
+	.vacio p:not(.vacio__titulo) {
+		font-weight: 600;
+		font-size: 1.0625rem;
+		line-height: 1.4;
+	}
 	.catalogo {
 		display: grid;
 		justify-items: start;
