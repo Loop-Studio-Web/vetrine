@@ -7,10 +7,12 @@
 	<div class="pared__marco">
 		<slot />
 	</div>
+	<slot name="lados" />
 </section>
 
 <style>
 	.pared {
+		position: relative;
 		--fascia-h: 34px;
 		display: grid;
 		justify-items: center;

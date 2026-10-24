@@ -14,12 +14,14 @@ import wall from '../../../assets/sobremesa/plates/wall.png';
 import enamelBlue from '../../../assets/sobremesa/plates/enamel-blue.png';
 import enamelGrano from '../../../assets/sobremesa/plates/enamel-grano.jpg';
 import Fascia from '../../../concepts/sobremesa/Fascia.astro';
+import Laterales from '../../../concepts/sobremesa/Laterales.astro';
 import Pared from '../../../concepts/sobremesa/Pared.astro';
 import Testata from '../../../concepts/sobremesa/Testata.astro';
 import Portada from '../../../concepts/sobremesa/Portada.astro';
 import Historias from '../../../concepts/sobremesa/Historias.astro';
 import Envio from '../../../concepts/sobremesa/Envio.astro';
 import Objetos from '../../../concepts/sobremesa/Objetos.astro';
+import Deposito from '../../../concepts/sobremesa/Deposito.astro';
 import Talleres from '../../../concepts/sobremesa/Talleres.astro';
 import Envios from '../../../concepts/sobremesa/Envios.astro';
 import Revista from '../../../concepts/sobremesa/Revista.astro';
@@ -76,9 +78,11 @@ const pageUrl = new URL(`${base}/ecommerce/sobremesa/`, Astro.site).href;
 				<Portada />
 				<Historias />
 				<Envio />
+				<Laterales slot="lados" />
 			</Pared>
 			<div class="cuerpo">
 				<Objetos />
+				<Deposito />
 				<Talleres />
 				<Envios />
 				<Revista />

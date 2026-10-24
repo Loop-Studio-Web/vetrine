@@ -1,11 +1,11 @@
 ---
 // Tu libreta y tu pedido: lo guardado (corazones) y el seguimiento de un pedido de prueba con sus cuatro tramos.
 import { getImage } from 'astro:assets';
-import { OBJETOS, PASOS_PEDIDO } from './dati';
+import { CLAVES, PASOS_PEDIDO } from './dati';
 import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 
 const ligero = await Promise.all(
-	OBJETOS.map(async (o) => ({ id: o.id, nombre: o.nombre, precio: o.precio, foto: await getImage({ src: o.foto, width: 720, quality: 76, format: 'webp' }).then((i) => i.src) })),
+	CLAVES.map(async (o) => ({ id: o.id, nombre: o.nombre, precio: o.precio, foto: await getImage({ src: o.foto, width: 720, quality: 76, format: 'webp' }).then((i) => i.src) })),
 );
 ---
 

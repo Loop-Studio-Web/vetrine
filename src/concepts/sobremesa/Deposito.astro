@@ -1,0 +1,453 @@
+---
+// El depósito: lo que no cabía en la foto. Los objetos que vienen en varios colores van primero y más grandes, con sus puntos
+// a la vista (tocar un punto cambia la foto y el color de la lámina); los de una sola foto van abajo, chicos. El catálogo
+// "completo" es de mentira y lo dice. Sumar, guardar y abrir el diálogo los resuelven Objetos.astro y Chapa.astro (son globales).
+import { Image, getImage } from 'astro:assets';
+import { DEPOSITO, COLOR, NOMBRE_COLOR, TOTAL_CATALOGO, OBJETOS, clave, pesos } from './dati';
+import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
+
+const webp = (foto: ImageMetadata) => getImage({ src: foto, width: 720, quality: 76, format: 'webp' }).then((i) => i.src);
+const conColores = await Promise.all(
+	DEPOSITO.filter((o) => o.variantes).map(async (o) => ({
+		o,
+		vs: await Promise.all(o.variantes!.map(async (v) => ({ ...v, ...COLOR[v.color], nombre: NOMBRE_COLOR[v.color], url: await webp(v.foto) }))),
+	})),
+);
+const chicos = DEPOSITO.filter((o) => !o.variantes);
+const mostrados = OBJETOS.length;
+const marco = (c: { fondo: string; tinta: string; filete: string }) => `--c:${c.fondo};--tinta-c:${c.tinta};--filete:${c.filete};--textura:url(${enamelWhite.src});--tornillo:rgb(0 0 0 / 0.55)`;
+---
+
+<section class="deposito" id="deposito" aria-labelledby="deposito-titulo">
+	<h2 id="deposito-titulo" class="chapa chapa--flujo rotulo" style={`--c:var(--esmalte);--tornillo:#55524c;--textura:url(${enamelWhite.src})`}>El depósito</h2>
+	<p class="bajada">Lo que no cabía en la foto. Los que tienen puntos de colores vienen en más de uno: tocá un punto y el objeto cambia.</p>
+
+	<ul class="caja">
+		{conColores.map(({ o, vs }, i) => (
+			<li class:list={['dep', 'dep--color', i < 3 ? 'dep--tres' : 'dep--cuatro']}>
+				<article class="chapa chapa--flujo tarjeta" data-tarjeta data-id={o.id} style={marco(COLOR[vs[0].color])}>
+					<button class="tarjeta__foto" type="button" data-objeto={o.id} data-color={vs[0].color} aria-label={`${o.nombre}: ver de cerca`}>
+						<img src={vs[0].url} alt={`${o.nombre}, foto de ejemplo`} width="720" height="720" loading="lazy" decoding="async" />
+						<span class="tarjeta__ver" aria-hidden="true">Ver de cerca</span>
+					</button>
+					<div class="tarjeta__texto">
+						<h3 class="tarjeta__nombre">{o.nombre}</h3>
+						<p class="tarjeta__meta">{o.taller} · listo en {o.dias} días</p>
+					</div>
+					<div class="puntos" role="group" aria-label={`Color de ${o.nombre}`}>
+						<span class="puntos__rotulo">{vs.length} colores</span>
+						<span class="puntos__fila">
+							{vs.map((v, j) => (
+								<button class="punto" type="button" aria-pressed={String(j === 0)} aria-label={`${o.nombre}, ${v.nombre}`} style={`--p:${v.fondo}`} data-color={v.color} data-nombre={v.nombre} data-foto={v.url} data-fondo={v.fondo} data-tinta={v.tinta} data-filete={v.filete} />
+							))}
+						</span>
+					</div>
+					<div class="tarjeta__pie">
+						<p class="tarjeta__precio">
+							<strong>{pesos(o.precio)}</strong>
+							<span class:list={['tarjeta__stock', { 'tarjeta__stock--poco': o.stock <= 4 }]}>{o.stock <= 4 ? `Quedan ${o.stock}` : 'En stock'}</span>
+						</p>
+						<button class="btn-chapa btn-chapa--chico" type="button" data-sumar={clave(o.id, vs[0].color)} aria-label={`Sumá ${o.nombre}, ${vs[0].nombre}, a la bolsa`}>Sumá</button>
+						<button class="corazon" type="button" data-libreta={clave(o.id, vs[0].color)} aria-pressed="false" aria-label={`Guardar ${o.nombre}, ${vs[0].nombre}, en mi libreta`}>
+							<svg viewBox="0 0 24 24" aria-hidden="true" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9-9.4C1.9 7.600 4 5 6.800 5c2 0 3.700 1.100 5.200 3 1.500-1.900 3.200-3 5.200-3C20 5 22.100 7.600 21 11.100c-1.500 4.800-9 9.400-9 9.400Z" />
+							</svg>
+						</button>
+					</div>
+				</article>
+			</li>
+		))}
+	</ul>
+
+	<ul class="chicos">
+		{chicos.map((o) => (
+			<li class="dep dep--chico">
+				<article class="chapa chapa--flujo mini" style={marco(COLOR[o.color])}>
+					<button class="tarjeta__foto" type="button" data-objeto={o.id} aria-label={`${o.nombre}: ver de cerca`}>
+						<Image src={o.foto} alt={`${o.nombre}, foto de ejemplo`} width={480} quality={72} format="webp" sizes="(min-width: 900px) 16vw, 44vw" loading="lazy" />
+						<span class="tarjeta__ver" aria-hidden="true">Ver</span>
+					</button>
+					<h3 class="mini__nombre">{o.nombre}</h3>
+					<div class="mini__pie">
+						<strong class="mini__precio">{pesos(o.precio)}</strong>
+						<button class="btn-chapa btn-chapa--chico" type="button" data-sumar={o.id} aria-label={`Sumá ${o.nombre} a la bolsa`}>Sumá</button>
+						<button class="corazon" type="button" data-libreta={o.id} aria-pressed="false" aria-label={`Guardar ${o.nombre} en mi libreta`}>
+							<svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9-9.4C1.9 7.600 4 5 6.800 5c2 0 3.700 1.100 5.200 3 1.500-1.900 3.200-3 5.200-3C20 5 22.100 7.600 21 11.100c-1.500 4.800-9 9.400-9 9.400Z" />
+							</svg>
+						</button>
+					</div>
+				</article>
+			</li>
+		))}
+	</ul>
+
+	<div class="catalogo">
+		<p class="catalogo__cuenta">Mostrando {mostrados} de {TOTAL_CATALOGO} objetos</p>
+		<button class="btn-chapa" type="button" data-catalogo aria-describedby="catalogo-aviso">Descubrí el catálogo completo · {TOTAL_CATALOGO} objetos</button>
+		<p class="catalogo__aviso" id="catalogo-aviso" role="status" hidden>Es una maqueta: acá se abriría el catálogo entero, con filtros por taller, color y precio. Lo que ves es todo lo que hay en esta vitrina.</p>
+	</div>
+
+	<div class="chapa chapa--flujo fin" style={`--c:var(--cobalto);--tornillo:#020f33;--textura:url(${enamelWhite.src})`}>
+		<p class="fin__titulo">¿No era este el que buscabas?</p>
+		<p>Cada número de la revista tiene su propia mesa. Los anteriores siguen en el archivo.</p>
+		<a class="btn-chapa" href="#revista">Ver números anteriores</a>
+	</div>
+</section>
+
+<style>
+	.deposito {
+		display: grid;
+		justify-items: start;
+		margin-top: clamp(72px, 9vw, 140px);
+	}
+	.caja,
+	.chicos {
+		list-style: none;
+		margin: clamp(28px, 4vw, 48px) 0 0;
+		padding: 0;
+		width: 100%;
+		display: grid;
+		grid-template-columns: repeat(12, minmax(0, 1fr));
+		gap: clamp(28px, 4vw, 56px) clamp(20px, 3vw, 44px);
+		align-items: start;
+	}
+	.chicos {
+		margin-top: clamp(40px, 6vw, 88px);
+		gap: clamp(20px, 2.6vw, 36px) clamp(14px, 2vw, 28px);
+	}
+	.dep {
+		container-type: inline-size;
+	}
+	/* tres y cuatro por fila, como el 3/4/5 del estante; cada una cuelga apenas torcida */
+	.dep--tres {
+		grid-column: span 4;
+	}
+	.dep--cuatro {
+		grid-column: span 3;
+	}
+	.dep--chico {
+		grid-column: span 2;
+	}
+	.dep--color:nth-child(odd) {
+		rotate: -0.4deg;
+	}
+	.dep--color:nth-child(even) {
+		rotate: 0.4deg;
+		margin-top: clamp(0px, 1.6vw, 26px);
+	}
+	.dep--chico:nth-child(3n + 2) {
+		margin-top: clamp(0px, 1.2vw, 18px);
+	}
+
+	.tarjeta,
+	.mini {
+		display: grid;
+		gap: calc(14 * var(--k));
+		padding: calc(30 * var(--k)) calc(30 * var(--k)) calc(26 * var(--k));
+		color: var(--tinta-c);
+		border-radius: calc(18 * var(--k));
+		transition: background-color 0.3s;
+	}
+	.tarjeta__foto {
+		position: relative;
+		display: block;
+		padding: 0;
+		border: 0;
+		border-radius: calc(10 * var(--k));
+		overflow: hidden;
+		background: rgb(0 0 0 / 0.25);
+		aspect-ratio: 1;
+		box-shadow: 0 0 0 calc(4 * var(--k)) var(--filete), 0 calc(6 * var(--k)) calc(12 * var(--k)) rgb(0 0 0 / 0.4);
+		cursor: pointer;
+	}
+	.tarjeta__foto :global(img),
+	.tarjeta__foto img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: scale 0.5s var(--ease-out);
+	}
+	.tarjeta__foto:hover :global(img),
+	.tarjeta__foto:hover img {
+		scale: 1.05;
+	}
+	.tarjeta__ver {
+		position: absolute;
+		left: 10px;
+		bottom: 10px;
+		padding: 6px 12px;
+		border-radius: 6px;
+		background: rgb(11 30 100 / 0.92);
+		color: #fff;
+		font-family: var(--f-cartel);
+		font-weight: 700;
+		font-size: 1rem;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		opacity: 0.94;
+		transition: opacity 0.2s, background 0.2s;
+	}
+	.tarjeta__foto:hover .tarjeta__ver,
+	.tarjeta__foto:focus-visible .tarjeta__ver {
+		opacity: 1;
+		background: var(--cobalto-vivo);
+	}
+	.tarjeta__nombre {
+		font-family: var(--f-titulo);
+		font-weight: 400;
+		font-size: clamp(1.6rem, 2.4vw, 2.2rem);
+		line-height: 1.05;
+		text-transform: uppercase;
+		letter-spacing: 0.01em;
+	}
+	.tarjeta__meta {
+		margin-top: 6px;
+		font-weight: 700;
+		font-size: 0.9375rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		opacity: 0.9;
+	}
+	.tarjeta .puntos {
+		padding-top: 4px;
+		border-top: 2px solid currentColor;
+	}
+	.tarjeta__pie {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		flex-wrap: wrap;
+		padding-top: calc(12 * var(--k));
+		border-top: 2px solid currentColor;
+	}
+	.tarjeta__precio {
+		margin-right: auto;
+		display: grid;
+		line-height: 1.1;
+	}
+	.tarjeta__precio strong {
+		font-family: var(--f-titulo);
+		font-weight: 400;
+		font-size: 1.75rem;
+		letter-spacing: 0.01em;
+	}
+	.tarjeta__stock {
+		font-weight: 700;
+		font-size: 0.9375rem;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+		opacity: 0.88;
+	}
+	.tarjeta__stock--poco {
+		opacity: 1;
+	}
+	.tarjeta__stock--poco::before {
+		content: '';
+		display: inline-block;
+		width: 0.5em;
+		height: 0.5em;
+		margin-right: 0.45em;
+		border-radius: 50%;
+		background: currentColor;
+		vertical-align: 0.05em;
+	}
+	/* en las tarjetas angostas (cuatro por fila) el rótulo de colores va arriba, los puntos algo más chicos y el precio ocupa su fila */
+	@container (max-width: 300px) {
+		.puntos__rotulo {
+			flex: 1 1 100%;
+		}
+		.puntos :global(.punto) {
+			width: 40px;
+		}
+		.tarjeta__precio {
+			flex: 1 1 100%;
+			grid-auto-flow: column;
+			justify-content: space-between;
+			align-items: baseline;
+		}
+	}
+	.corazon {
+		display: grid;
+		place-items: center;
+		width: 44px;
+		height: 44px;
+		border: 2px solid currentColor;
+		border-radius: 10px;
+		background: transparent;
+		color: inherit;
+		transition: background 0.2s, color 0.2s, scale 0.2s var(--ease-out);
+	}
+	.corazon:hover {
+		scale: 1.06;
+	}
+	.corazon[aria-pressed='true'] {
+		background: var(--rojo);
+		border-color: #fff;
+		color: #fff;
+	}
+	.corazon[aria-pressed='true'] svg {
+		fill: currentColor;
+	}
+
+	/* los chicos: foto, nombre, precio, y Sumá + corazón */
+	.mini {
+		padding: calc(20 * var(--k));
+		gap: calc(10 * var(--k));
+	}
+	.mini__nombre {
+		font-family: var(--f-titulo);
+		font-weight: 400;
+		font-size: 1.25rem;
+		line-height: 1.1;
+		text-transform: uppercase;
+		letter-spacing: 0.01em;
+		text-wrap: balance;
+	}
+	.mini__pie {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 8px;
+		padding-top: calc(10 * var(--k));
+		border-top: 2px solid currentColor;
+	}
+	.mini__precio {
+		flex: 1 1 100%;
+		font-family: var(--f-titulo);
+		font-weight: 400;
+		font-size: 1.375rem;
+		letter-spacing: 0.01em;
+	}
+	.mini .btn-chapa {
+		flex: 1 1 auto;
+		padding: 0 12px;
+	}
+
+	.catalogo {
+		display: grid;
+		justify-items: start;
+		gap: 14px;
+		margin-top: clamp(40px, 5vw, 72px);
+	}
+	.catalogo__cuenta {
+		font-weight: 700;
+		font-size: 1rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	.catalogo__aviso {
+		max-width: 60ch;
+		font-weight: 600;
+		font-size: 1.0625rem;
+		line-height: 1.4;
+	}
+	.fin {
+		display: grid;
+		gap: 14px;
+		justify-items: start;
+		max-width: 640px;
+		margin-top: clamp(56px, 7vw, 100px);
+		padding: calc(40 * var(--k));
+		color: var(--blanco);
+	}
+	.fin__titulo {
+		font-family: var(--f-titulo);
+		font-size: clamp(1.6rem, 2.6vw, 2.4rem);
+		line-height: 1.05;
+		text-transform: uppercase;
+	}
+	.fin p:not(.fin__titulo) {
+		max-width: 34ch;
+		font-weight: 500;
+		font-size: 1.125rem;
+	}
+
+	@media (max-width: 1100px) {
+		.dep--cuatro {
+			grid-column: span 4;
+		}
+		.dep--chico {
+			grid-column: span 3;
+		}
+	}
+	@media (max-width: 900px) {
+		.dep--tres,
+		.dep--cuatro {
+			grid-column: span 6;
+		}
+		.dep--color:nth-child(n) {
+			margin-top: 0;
+			rotate: 0deg;
+		}
+		.dep--chico {
+			grid-column: span 4;
+		}
+		.dep--chico:nth-child(n) {
+			margin-top: 0;
+		}
+	}
+	@media (max-width: 620px) {
+		.dep--tres,
+		.dep--cuatro {
+			grid-column: span 12;
+		}
+		.dep--chico {
+			grid-column: span 6;
+		}
+		.mini__nombre {
+			font-size: 1.125rem;
+		}
+		/* siete tarjetas cuadradas apiladas serían una cinta interminable en el teléfono */
+		.dep--color .tarjeta__foto {
+			aspect-ratio: 5 / 4;
+		}
+	}
+</style>
+
+<script>
+	// puntos de color de las tarjetas: la foto, la lámina y las claves de sumar/guardar siguen al punto elegido
+	const precargados = new Set<string>();
+	document.addEventListener('pointerover', (e) => {
+		const p = (e.target as HTMLElement).closest<HTMLElement>('.punto[data-foto]');
+		if (p && !precargados.has(p.dataset.foto!)) {
+			precargados.add(p.dataset.foto!);
+			Object.assign(new Image(), { src: p.dataset.foto });
+		}
+	});
+	document.addEventListener('focusin', (e) => {
+		const p = (e.target as HTMLElement).closest<HTMLElement>('.punto[data-foto]');
+		if (p && !precargados.has(p.dataset.foto!)) {
+			precargados.add(p.dataset.foto!);
+			Object.assign(new Image(), { src: p.dataset.foto });
+		}
+	});
+	document.addEventListener('click', (e) => {
+		const p = (e.target as HTMLElement).closest<HTMLButtonElement>('.punto[data-foto]');
+		if (!p) return;
+		const t = p.closest<HTMLElement>('[data-tarjeta]');
+		if (!t) return;
+		const id = t.dataset.id!;
+		const k = `${id}~${p.dataset.color}`;
+		t.style.setProperty('--c', p.dataset.fondo!);
+		t.style.setProperty('--tinta-c', p.dataset.tinta!);
+		t.style.setProperty('--filete', p.dataset.filete!);
+		t.querySelectorAll<HTMLElement>('.punto').forEach((b) => b.setAttribute('aria-pressed', String(b === p)));
+		const ver = t.querySelector<HTMLButtonElement>('.tarjeta__foto')!;
+		ver.dataset.color = p.dataset.color;
+		const img = ver.querySelector('img')!;
+		img.src = p.dataset.foto!;
+		const nombre = t.querySelector('.tarjeta__nombre')!.textContent!;
+		const suma = t.querySelector<HTMLButtonElement>('[data-sumar]')!;
+		suma.dataset.sumar = k;
+		suma.setAttribute('aria-label', `Sumá ${nombre}, ${p.dataset.nombre}, a la bolsa`);
+		const guardar = t.querySelector<HTMLButtonElement>('[data-libreta]')!;
+		guardar.dataset.libreta = k;
+		guardar.setAttribute('aria-label', `Guardar ${nombre}, ${p.dataset.nombre}, en mi libreta`);
+		// el corazón vuelve a mirar si esa clave ya estaba guardada (Objetos.astro escucha este evento)
+		window.dispatchEvent(new CustomEvent('sb:libreta'));
+	});
+
+	document.querySelector<HTMLButtonElement>('[data-catalogo]')?.addEventListener('click', () => {
+		document.getElementById('catalogo-aviso')!.hidden = false;
+	});
+</script>

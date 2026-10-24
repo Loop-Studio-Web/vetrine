@@ -4,7 +4,7 @@
 // desde el punto tocado hasta su lugar y al lado entra un cartel con el nombre, el precio y "Sumá a la bolsa". Todo el
 // movimiento es WAAPI (transform y opacity); con movimiento reducido solo hay un fundido.
 import { getImage } from 'astro:assets';
-import { OBJETOS, COLOR, pesos } from './dati';
+import { OBJETOS, COLOR, NOMBRE_COLOR, pesos } from './dati';
 import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 
 // misma foto, mismos parámetros que el estante (Objetos.astro): un solo archivo webp en lugar del JPG original
@@ -21,6 +21,7 @@ const datos = await Promise.all(OBJETOS.map(async (o) => ({
 	ilustrativa: !!o.ilustrativa,
 	color: COLOR[o.color],
 	foto: await fotoWebp(o),
+	variantes: o.variantes ? await Promise.all(o.variantes.map(async (v) => ({ color: v.color, nombre: NOMBRE_COLOR[v.color], foto: await getImage({ src: v.foto, width: 720, quality: 76, format: 'webp' }).then((i) => i.src), ...COLOR[v.color] }))) : null,
 })));
 ---
 
@@ -38,6 +39,10 @@ const datos = await Promise.all(OBJETOS.map(async (o) => ({
 			</button>
 			<h2 class="datos__nombre" id="sb-objeto-nombre"></h2>
 			<p class="datos__precio"></p>
+			<div class="puntos" data-colores role="group" aria-label="Elegí el color" hidden>
+				<span class="puntos__rotulo" data-color-nombre></span>
+				<span class="puntos__fila" data-puntos></span>
+			</div>
 			<p class="datos__frase"></p>
 			<ul class="datos__lista">
 				<li data-taller></li>
@@ -231,6 +236,7 @@ const datos = await Promise.all(OBJETOS.map(async (o) => ({
 		id: string; nombre: string; precio: number; precioTxt: string; frase: string; taller: string; dias: number; stock: number; ilustrativa: boolean;
 		color: { fondo: string; tinta: string; filete: string };
 		foto: string;
+		variantes: { color: string; nombre: string; foto: string; fondo: string; tinta: string; filete: string }[] | null;
 	};
 	const datos: Dato[] = JSON.parse(document.getElementById('sb-objetos')!.textContent!);
 	const dlg = document.getElementById('sb-objeto') as HTMLDialogElement;
@@ -243,6 +249,8 @@ const datos = await Promise.all(OBJETOS.map(async (o) => ({
 	const EASE = 'cubic-bezier(0.23, 1, 0.32, 1)';
 
 	let actual: Dato | null = null;
+	let colorActual = ''; // color elegido de un objeto con variantes (vacío si el objeto tiene una sola foto)
+	const claveActual = () => (actual && actual.variantes ? `${actual.id}~${colorActual}` : actual?.id ?? '');
 	let origen: HTMLElement | null = null;
 	let cerrando = false;
 	let anims: Animation[] = [];
@@ -291,6 +299,51 @@ const datos = await Promise.all(OBJETOS.map(async (o) => ({
 		return `translate(${dx}px, ${dy}px) scale(${s})`;
 	}
 
+	function pintarGuardar() {
+		if (!actual) return;
+		const g = q<HTMLButtonElement>('[data-guardar]');
+		g.setAttribute('aria-pressed', String(leerLibreta().includes(claveActual())));
+		g.setAttribute('aria-label', `Guardar ${actual.nombre}${colorActual ? ` (${nombreColor()})` : ''} en mi libreta`);
+	}
+	const nombreColor = () => actual?.variantes?.find((v) => v.color === colorActual)?.nombre ?? '';
+	// los puntos de color: solo si el objeto viene en varios; al elegir uno la lámina cambia de color y la foto se funde de nuevo
+	function pintarColores(d: Dato) {
+		const caja = q<HTMLElement>('[data-colores]');
+		caja.hidden = !d.variantes;
+		if (!d.variantes) return;
+		q('[data-color-nombre]').textContent = `Color: ${nombreColor()}`;
+		q('[data-puntos]').replaceChildren(
+			...d.variantes.map((v) => {
+				const b = document.createElement('button');
+				b.type = 'button';
+				b.className = 'punto';
+				b.dataset.color = v.color;
+				b.style.setProperty('--p', v.fondo);
+				b.setAttribute('aria-label', v.nombre);
+				b.setAttribute('aria-pressed', String(v.color === colorActual));
+				return b;
+			}),
+		);
+	}
+	function elegirColor(color: string) {
+		const d = actual;
+		const v = d?.variantes?.find((x) => x.color === color);
+		if (!d || !v || color === colorActual || cerrando) return;
+		colorActual = color;
+		pintarColores(d);
+		pintarGuardar();
+		figura.style.setProperty('--c', v.fondo);
+		foto.src = v.foto;
+		if (lamina?.activa()) {
+			foto
+				.decode()
+				.then(() => {
+					if (dlg.open && actual === d && colorActual === color && !cerrando) lamina!.mostrar(foto, reducido());
+				})
+				.catch(() => figura.classList.remove('gl'));
+		}
+	}
+
 	function abrir(id: string, desde: HTMLElement) {
 		const d = datos.find((x) => x.id === id);
 		if (!d || dlg.open) return;
@@ -306,11 +359,12 @@ const datos = await Promise.all(OBJETOS.map(async (o) => ({
 		q('[data-dias]').textContent = `A pedido, listo en ${d.dias} días`;
 		q('[data-stock]').textContent = d.stock <= 4 ? `Quedan ${d.stock}` : 'En stock';
 		q<HTMLElement>('[data-ilustrativa]').hidden = !d.ilustrativa;
-		const g = q<HTMLButtonElement>('[data-guardar]');
-		g.setAttribute('aria-pressed', String(leerLibreta().includes(d.id)));
-		g.setAttribute('aria-label', `Guardar ${d.nombre} en mi libreta`);
-		figura.style.setProperty('--c', d.color.fondo);
-		foto.src = d.foto;
+		colorActual = d.variantes ? (d.variantes.find((v) => v.color === desde.dataset.color) ?? d.variantes[0]).color : '';
+		const v = d.variantes?.find((x) => x.color === colorActual);
+		pintarColores(d);
+		pintarGuardar();
+		figura.style.setProperty('--c', v ? v.fondo : d.color.fondo);
+		foto.src = v ? v.foto : d.foto;
 		dlg.showModal();
 
 		// la foto pasa a ser el shader: sus píxeles se funden en el esmalte (con movimiento reducido, el estado final quieto)
@@ -370,13 +424,15 @@ const datos = await Promise.all(OBJETOS.map(async (o) => ({
 		// cualquier toque fuera de los dos carteles (el velo o el hueco entre ellos) cierra
 		if (t === dlg || t === escena) return cerrar();
 		if (t.closest('[data-cerrar]')) return cerrar();
+		const punto = t.closest<HTMLElement>('.punto[data-color]');
+		if (punto) return elegirColor(punto.dataset.color!);
 		if (t.closest('[data-agregar]') && actual) {
-			sumar(actual.id);
-			window.dispatchEvent(new CustomEvent('sb:agregado', { detail: { id: actual.id } }));
+			sumar(claveActual());
+			window.dispatchEvent(new CustomEvent('sb:agregado', { detail: { id: claveActual() } }));
 			volar();
 		}
 		if (t.closest('[data-guardar]') && actual) {
-			const on = alternarLibreta(actual.id);
+			const on = alternarLibreta(claveActual());
 			q('[data-guardar]').setAttribute('aria-pressed', String(on));
 		}
 	});

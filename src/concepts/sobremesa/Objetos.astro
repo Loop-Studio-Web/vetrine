@@ -123,13 +123,6 @@ import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 	  ); })}
 	  </ul>
 	  </li>
-	  <li class="obj--fin">
-	  <div class="chapa chapa--flujo fin" style={`--c:var(--cobalto);--tornillo:#020f33;--textura:url(${enamelWhite.src})`}>
-	  <p class="fin__titulo">¿No era este el que buscabas?</p>
-	  <p>Cada número de la revista tiene su propia mesa. Los anteriores siguen en el archivo.</p>
-	  <a class="btn-chapa" href="#revista">Ver números anteriores</a>
-	  </div>
-	  </li>
 	  </ul>
 </section>
 
@@ -213,9 +206,6 @@ import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 	.tarjeta--ancha .tarjeta__frase {
 		font-size: 1.25rem;
 		max-width: 34ch;
-	}
-	.obj--fin .fin {
-		max-width: 640px;
 	}
 	.tarjeta {
 		display: grid;
@@ -366,26 +356,6 @@ import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 	}
 	.corazon[aria-pressed='true'] svg {
 		fill: currentColor;
-	}
-
-	.fin {
-		display: grid;
-		gap: 14px;
-		justify-items: start;
-		padding: calc(40 * var(--k));
-		color: var(--blanco);
-		align-self: center;
-	}
-	.fin__titulo {
-		font-family: var(--f-titulo);
-		font-size: clamp(1.6rem, 2.6vw, 2.4rem);
-		line-height: 1.05;
-		text-transform: uppercase;
-	}
-	.fin p:not(.fin__titulo) {
-		max-width: 34ch;
-		font-weight: 500;
-		font-size: 1.125rem;
 	}
 
 	@media (max-width: 900px) {

@@ -7,6 +7,47 @@ import fotoPlato from '../../assets/sobremesa/objetos/plato-gres.jpg';
 import fotoTabla from '../../assets/sobremesa/objetos/tabla-madera.jpg';
 import fotoVela from '../../assets/sobremesa/objetos/vela-bronce.jpg';
 import fotoFlorero from '../../assets/sobremesa/objetos/florero-gres.jpg';
+import fotoAros from '../../assets/sobremesa/objetos/aros-par.jpg';
+import fotoMadera from '../../assets/sobremesa/objetos/madera-par.jpg';
+import fotoMaceta from '../../assets/sobremesa/objetos/maceta-eucalipto.jpg';
+import fotoVelaAmbar from '../../assets/sobremesa/objetos/vela-ambar.jpg';
+import fotoVelaAlta from '../../assets/sobremesa/objetos/vela-alta.jpg';
+import fotoVelaCobre from '../../assets/sobremesa/objetos/vela-cobre.jpg';
+import fAlmohadonCrudo from '../../assets/sobremesa/objetos/almohadon.jpg';
+import fAlmohadonCobalto from '../../assets/sobremesa/objetos/almohadon-cobalto.jpg';
+import fAlmohadonRojo from '../../assets/sobremesa/objetos/almohadon-rojo.jpg';
+import fAlmohadonAmarillo from '../../assets/sobremesa/objetos/almohadon-amarillo.jpg';
+import fAlmohadonNegro from '../../assets/sobremesa/objetos/almohadon-negro.jpg';
+import fTazaCrudo from '../../assets/sobremesa/objetos/taza.jpg';
+import fTazaCobalto from '../../assets/sobremesa/objetos/taza-cobalto.jpg';
+import fTazaRojo from '../../assets/sobremesa/objetos/taza-rojo.jpg';
+import fTazaAmarillo from '../../assets/sobremesa/objetos/taza-amarillo.jpg';
+import fTazaNegro from '../../assets/sobremesa/objetos/taza-negro.jpg';
+import fBolsoCrudo from '../../assets/sobremesa/objetos/bolso.jpg';
+import fBolsoCobalto from '../../assets/sobremesa/objetos/bolso-cobalto.jpg';
+import fBolsoRojo from '../../assets/sobremesa/objetos/bolso-rojo.jpg';
+import fBolsoAmarillo from '../../assets/sobremesa/objetos/bolso-amarillo.jpg';
+import fBolsoNegro from '../../assets/sobremesa/objetos/bolso-negro.jpg';
+import fBancoCrudo from '../../assets/sobremesa/objetos/banco.jpg';
+import fBancoCobalto from '../../assets/sobremesa/objetos/banco-cobalto.jpg';
+import fBancoRojo from '../../assets/sobremesa/objetos/banco-rojo.jpg';
+import fBancoAmarillo from '../../assets/sobremesa/objetos/banco-amarillo.jpg';
+import fBancoNegro from '../../assets/sobremesa/objetos/banco-negro.jpg';
+import fLamparaPieCrudo from '../../assets/sobremesa/objetos/lampara-pie.jpg';
+import fLamparaPieCobalto from '../../assets/sobremesa/objetos/lampara-pie-cobalto.jpg';
+import fLamparaPieRojo from '../../assets/sobremesa/objetos/lampara-pie-rojo.jpg';
+import fLamparaPieAmarillo from '../../assets/sobremesa/objetos/lampara-pie-amarillo.jpg';
+import fLamparaPieNegro from '../../assets/sobremesa/objetos/lampara-pie-negro.jpg';
+import fCacerolaCrudo from '../../assets/sobremesa/objetos/cacerola.jpg';
+import fCacerolaCobalto from '../../assets/sobremesa/objetos/cacerola-cobalto.jpg';
+import fCacerolaRojo from '../../assets/sobremesa/objetos/cacerola-rojo.jpg';
+import fCacerolaAmarillo from '../../assets/sobremesa/objetos/cacerola-amarillo.jpg';
+import fCacerolaNegro from '../../assets/sobremesa/objetos/cacerola-negro.jpg';
+import fRepasadorCrudo from '../../assets/sobremesa/objetos/repasador.jpg';
+import fRepasadorCobalto from '../../assets/sobremesa/objetos/repasador-cobalto.jpg';
+import fRepasadorRojo from '../../assets/sobremesa/objetos/repasador-rojo.jpg';
+import fRepasadorAmarillo from '../../assets/sobremesa/objetos/repasador-amarillo.jpg';
+import fRepasadorNegro from '../../assets/sobremesa/objetos/repasador-negro.jpg';
 import tallerAlfareria from '../../assets/sobremesa/talleres/alfareria.jpg';
 import tallerVidrio from '../../assets/sobremesa/talleres/vidrio.jpg';
 import tallerTelar from '../../assets/sobremesa/talleres/telar.jpg';
@@ -33,9 +74,16 @@ export type Objeto = {
 	ilustrativa?: boolean;
 	color: Color;
 	foto: ImageMetadata;
-	/** cuántas columnas ocupa en el estante (variar el ritmo, no repetir tarjetas iguales) */
-	ancho: 3 | 4 | 5;
+	/** cuántas columnas ocupa en el estante (variar el ritmo, no repetir tarjetas iguales); los del depósito no lo usan */
+	ancho?: 3 | 4 | 5;
+	/** el mismo objeto en otros colores: la primera es la que se ve al entrar; `color` es el de la lámina de esa foto */
+	variantes?: Variante[];
 };
+
+export type Variante = { color: Color; foto: ImageMetadata };
+export const NOMBRE_COLOR: Record<Color, string> = { blanco: 'crudo', cobalto: 'cobalto', rojo: 'rojo', amarillo: 'amarillo', negro: 'negro' };
+export const clave = (id: string, color?: Color) => (color ? `${id}~${color}` : id);
+const variantes = (pref: Record<Color, ImageMetadata>, orden: Color[]): Variante[] => orden.map((color) => ({ color, foto: pref[color] }));
 
 export const OBJETOS: Objeto[] = [
 	{
@@ -136,7 +184,166 @@ export const OBJETOS: Objeto[] = [
 		foto: fotoFlorero,
 		ancho: 4,
 	},
+	{
+		id: 'almohadon',
+		nombre: 'Almohadón de terciopelo',
+		precio: 22000,
+		frase: 'Terciopelo de algodón, relleno de plumas. Funda con cierre para lavarla.',
+		taller: 'Telar La Quinta',
+		dias: 10,
+		stock: 12,
+		color: 'cobalto',
+		foto: fAlmohadonCobalto,
+		variantes: variantes({ blanco: fAlmohadonCrudo, cobalto: fAlmohadonCobalto, rojo: fAlmohadonRojo, amarillo: fAlmohadonAmarillo, negro: fAlmohadonNegro }, ['cobalto', 'rojo', 'amarillo', 'negro', 'blanco']),
+	},
+	{
+		id: 'taza',
+		nombre: 'Taza panzona',
+		precio: 12900,
+		frase: 'Cabe un mate cocido grande y se agarra con una mano. Gres esmaltado, va al lavavajillas.',
+		taller: 'Taller Ñandú',
+		dias: 9,
+		stock: 40,
+		color: 'amarillo',
+		foto: fTazaAmarillo,
+		variantes: variantes({ blanco: fTazaCrudo, cobalto: fTazaCobalto, rojo: fTazaRojo, amarillo: fTazaAmarillo, negro: fTazaNegro }, ['amarillo', 'cobalto', 'rojo', 'negro', 'blanco']),
+	},
+	{
+		id: 'bolso',
+		nombre: 'Bolso de lona',
+		precio: 18500,
+		frase: 'Lona cruda cosida a mano, asa larga para el hombro. Se lava a 40 grados.',
+		taller: 'Telar La Quinta',
+		dias: 8,
+		stock: 25,
+		color: 'rojo',
+		foto: fBolsoRojo,
+		variantes: variantes({ blanco: fBolsoCrudo, cobalto: fBolsoCobalto, rojo: fBolsoRojo, amarillo: fBolsoAmarillo, negro: fBolsoNegro }, ['rojo', 'cobalto', 'amarillo', 'negro', 'blanco']),
+	},
+	{
+		id: 'banco',
+		nombre: 'Banco de cocina',
+		precio: 96000,
+		frase: 'Madera maciza pintada a mano, con travesaños que aguantan los pies. Alto de barra.',
+		taller: 'Carpintería del Parque',
+		dias: 18,
+		stock: 5,
+		color: 'negro',
+		foto: fBancoNegro,
+		variantes: variantes({ blanco: fBancoCrudo, cobalto: fBancoCobalto, rojo: fBancoRojo, amarillo: fBancoAmarillo, negro: fBancoNegro }, ['negro', 'cobalto', 'rojo', 'amarillo', 'blanco']),
+	},
+	{
+		id: 'lampara-pie',
+		nombre: 'Lámpara de pie',
+		precio: 129000,
+		frase: 'Trípode de madera y pantalla de tela. Se pide con el cable que va con tu enchufe.',
+		taller: 'Chapería Boedo',
+		dias: 21,
+		stock: 4,
+		color: 'amarillo',
+		foto: fLamparaPieAmarillo,
+		variantes: variantes({ blanco: fLamparaPieCrudo, cobalto: fLamparaPieCobalto, rojo: fLamparaPieRojo, amarillo: fLamparaPieAmarillo, negro: fLamparaPieNegro }, ['amarillo', 'rojo', 'cobalto', 'negro', 'blanco']),
+	},
+	{
+		id: 'cacerola',
+		nombre: 'Cacerola esmaltada',
+		precio: 58000,
+		frase: 'Esmalte salpicado, tapa que cierra bien y asas anchas para llevarla caliente a la mesa.',
+		taller: 'Taller Ñandú',
+		dias: 14,
+		stock: 7,
+		color: 'cobalto',
+		foto: fCacerolaCobalto,
+		variantes: variantes({ blanco: fCacerolaCrudo, cobalto: fCacerolaCobalto, rojo: fCacerolaRojo, amarillo: fCacerolaAmarillo, negro: fCacerolaNegro }, ['cobalto', 'amarillo', 'rojo', 'negro', 'blanco']),
+	},
+	{
+		id: 'repasador',
+		nombre: 'Repasador estampado',
+		precio: 7900,
+		frase: 'Algodón grueso que seca de verdad. El dibujo va estampado a mano, uno por uno.',
+		taller: 'Telar La Quinta',
+		dias: 6,
+		stock: 60,
+		color: 'rojo',
+		foto: fRepasadorRojo,
+		variantes: variantes({ blanco: fRepasadorCrudo, cobalto: fRepasadorCobalto, rojo: fRepasadorRojo, amarillo: fRepasadorAmarillo, negro: fRepasadorNegro }, ['rojo', 'cobalto', 'amarillo', 'negro', 'blanco']),
+	},
+	{
+		id: 'aros-par',
+		nombre: 'Jarrones aro (par)',
+		precio: 64000,
+		frase: 'Dos tamaños de gres crudo con el agujero al medio. Se paran solos y piden pocas flores.',
+		taller: 'Taller Ñandú',
+		dias: 16,
+		stock: 4,
+		color: 'blanco',
+		foto: fotoAros,
+	},
+	{
+		id: 'madera-par',
+		nombre: 'Jarrón y maceta de mango',
+		precio: 71000,
+		frase: 'Madera torneada de una sola pieza, con la veta a la vista. Viene el par.',
+		taller: 'Carpintería del Parque',
+		dias: 15,
+		stock: 6,
+		color: 'amarillo',
+		foto: fotoMadera,
+	},
+	{
+		id: 'maceta-eucalipto',
+		nombre: 'Maceta facetada de cemento',
+		precio: 24500,
+		frase: 'Cemento blanco colado en molde facetado. Con agujero de drenaje y platito.',
+		taller: 'Cementos del Bajo',
+		dias: 10,
+		stock: 14,
+		color: 'negro',
+		foto: fotoMaceta,
+	},
+	{
+		id: 'vela-ambar',
+		nombre: 'Vela en frasco ámbar',
+		precio: 18900,
+		frase: 'Cera de soja en vidrio ámbar, unas cuarenta horas. Se recarga cuando se termina.',
+		taller: 'Vidriería Santa Ana',
+		dias: 7,
+		stock: 30,
+		color: 'rojo',
+		foto: fotoVelaAmbar,
+	},
+	{
+		id: 'vela-alta',
+		nombre: 'Vela alta ámbar',
+		precio: 26500,
+		frase: 'La misma cera en frasco alto, para el centro de la mesa. Arde parejo hasta el final.',
+		taller: 'Vidriería Santa Ana',
+		dias: 7,
+		stock: 18,
+		color: 'cobalto',
+		foto: fotoVelaAlta,
+	},
+	{
+		id: 'vela-cobre',
+		nombre: 'Vela en lata de cobre',
+		precio: 21900,
+		frase: 'Lata de cobre con tapa que se vuelve a poner. Para llevar a cualquier mesa.',
+		taller: 'Chapería Boedo',
+		dias: 9,
+		stock: 22,
+		color: 'blanco',
+		foto: fotoVelaCobre,
+	},
 ];
+
+// Lo que no cuelga de la foto: los que vienen en varios colores primero (se ven más grandes), después los de una sola foto.
+export const DEPOSITO = OBJETOS.slice(8).sort((a, b) => Number(!!b.variantes) - Number(!!a.variantes));
+export const TOTAL_CATALOGO = 360;
+
+// Cada objeto con colores se vuelve una entrada por color (clave `id~color`): la bolsa, la libreta y los pedidos guardan la clave.
+export const CLAVES: Objeto[] = OBJETOS.flatMap((o) =>
+	o.variantes ? o.variantes.map((v) => ({ ...o, id: clave(o.id, v.color), nombre: `${o.nombre} · ${NOMBRE_COLOR[v.color]}`, foto: v.foto, color: v.color })) : [o],
+);
 
 export const porId = (id: string) => OBJETOS.find((o) => o.id === id);
 

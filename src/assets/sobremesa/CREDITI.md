@@ -24,3 +24,24 @@ trasparenza (`recortes/`) sono ricavati con rembg (isnet-general-use) dalle stes
 approvato, poi tagliata in tre lamiere; i ritagli `hero-*` vengono da quella scena. Non è una fotografia reale: va dichiarata «imagen de ejemplo» nel sito.
 
 **Cartellini** (`plates/tag*.png`): immagine generata dall'autore con ChatGPT (prompt incorporato nel file). **Texture** (`wall`, `enamel-*`): ritagli puliti del mockup, specchiati.
+
+## Objetos del depósito (2026-10-24)
+Descargados de Unsplash tramite API o a mano (download registrato per le sei con API). Gli oggetti «con colori» sono ricolorati con
+maschera (rembg isnet-general-use + soglie di luminosità) e moltiplicazione del colore per la luminanza originale: le foto sono finte
+varianti, dichiarato nel piede («recoloreados digitalmente»). Gli altri sono ritagli quadrati di foto con più oggetti.
+
+| File | Foto Unsplash | Autore |
+|---|---|---|
+| objetos/almohadon*.jpg | UR_eZMMmVn4 | Mediamodifier |
+| objetos/taza*.jpg | nDd3dIkkOLo | NordWood Themes |
+| objetos/bolso*.jpg | B7BS0hw3Yg0 | Luciano Paris |
+| objetos/banco*.jpg | 82RA0IXM7LM | Dillon Shook |
+| objetos/lampara-pie*.jpg | Gp3Z2Gx-GCM | Cole Patrick |
+| objetos/cacerola*.jpg | sZGBifFHgdk | Crissy Jarvis |
+| objetos/repasador*.jpg | NJTj9jvNo0U | Taylor Vick |
+| objetos/aros-par.jpg | DyX5mNCnWBc | Evangelos Mpikakis |
+| objetos/madera-par.jpg | giP0e750Dr8 | Linh Le |
+| objetos/maceta-eucalipto.jpg | Qk3aWEifevI | Mike Gattorna |
+| objetos/vela-ambar.jpg, vela-alta.jpg, vela-cobre.jpg | KLU0scqbKQ0 | PMV Chamara |
+
+Scartata (non usata): Sean Foster, A7hPZMY23-g (statua di legno).

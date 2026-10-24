@@ -3,12 +3,12 @@
 // una barra hasta el envío gratis, un mensaje de regalo y un pago de prueba (sin marcas ni datos: no se cobra nada).
 // El estado vive en estado.ts; acá solo se pinta y se escucha [data-bolsa-abrir], [data-sumar-mesa] y "sb:agregado".
 import { getImage } from 'astro:assets';
-import { OBJETOS, ZONAS, PRECIO_ENVIO_GRATIS } from './dati';
+import { CLAVES, ZONAS, PRECIO_ENVIO_GRATIS } from './dati';
 import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 
 // misma foto webp que el estante y el diálogo (un solo archivo en caché)
 const ligero = await Promise.all(
-	OBJETOS.map(async (o) => ({ id: o.id, nombre: o.nombre, precio: o.precio, stock: o.stock, dias: o.dias, foto: await getImage({ src: o.foto, width: 720, quality: 76, format: 'webp' }).then((i) => i.src) })),
+	CLAVES.map(async (o) => ({ id: o.id, nombre: o.nombre, precio: o.precio, stock: o.stock, dias: o.dias, foto: await getImage({ src: o.foto, width: 720, quality: 76, format: 'webp' }).then((i) => i.src) })),
 );
 ---
 

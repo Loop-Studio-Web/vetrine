@@ -1,0 +1,195 @@
+---
+// Las franjas de pared a los lados del marco 3:2, solo en pantallas anchas (cuando sobran ~150 px por lado): carteles chicos
+// colgados de la misma pared, algunos cortados por el borde de la pantalla. Son adorno (aria-hidden), salvo el del catálogo,
+// que es un enlace. Nada pisa el marco: cada franja mide lo que sobra a cada lado.
+import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
+const t = `--textura:url(${enamelWhite.src})`;
+---
+
+<div class="lados">
+	<div class="lado lado--izq" aria-hidden="true">
+		<div class="chapa cartel c1" style={`--c:var(--amarillo);--tornillo:#4a3706;${t}`}>
+			<span class="c1__a">Desde</span>
+			<span class="c1__n">1964</span>
+			<span class="c1__a">Villa Crespo</span>
+		</div>
+		<div class="chapa cartel c2" style={`--c:var(--esmalte);--tornillo:#55524c;${t}`}>
+			<span class="c2__t">Hoy no<br />se fía</span>
+			<span class="c2__m">(mañana tampoco)</span>
+		</div>
+		<div class="chapa cartel c3" style={`--c:var(--rojo);--tornillo:#2a0a05;${t}`}>
+			<span class="c3__t">Envíos<br />a todo<br />el país</span>
+		</div>
+	</div>
+
+	<div class="lado lado--der">
+		<a class="chapa cartel r1" href="#deposito" style={`--c:var(--cobalto-vivo);--tornillo:#020f33;${t}`}>
+			<span class="r1__a">Catálogo</span>
+			<span class="r1__n">360</span>
+			<span class="r1__a">objetos ↓</span>
+		</a>
+		<div class="chapa cartel r2" aria-hidden="true" style={`--c:var(--negro);--tornillo:#000;${t}`}>
+			<span class="r2__t">Abierto</span>
+			<span class="r2__m">todo el año</span>
+		</div>
+		<div class="chapa cartel r3" aria-hidden="true" style={`--c:var(--esmalte);--tornillo:#55524c;${t}`}>
+			<span class="r3__n">Nº 14</span>
+			<span class="r3__a">Revista + tienda<br />octubre</span>
+		</div>
+	</div>
+</div>
+
+<style>
+	.lados {
+		display: none;
+	}
+	/* el ancho de cada franja es lo que sobra del marco 3:2 (ver Pared.astro): con menos de ~150 px no se muestra nada */
+	@media (min-width: 1700px) and (min-aspect-ratio: 16 / 9) {
+		.lados {
+			display: contents;
+			--k: 0.85px;
+			--marco: min(100%, calc((100svh - 34px) * 1.5));
+		}
+		.lado {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			width: calc((100% - var(--marco)) / 2);
+			overflow: clip;
+			pointer-events: none;
+		}
+		.lado--izq {
+			left: 0;
+		}
+		.lado--der {
+			right: 0;
+		}
+		.cartel {
+			display: grid;
+			justify-items: center;
+			align-content: center;
+			gap: 2px;
+			padding: 18px 16px;
+			text-align: center;
+			text-transform: uppercase;
+			color: var(--tinta);
+			font-family: var(--f-cartel);
+			font-weight: 700;
+			pointer-events: auto;
+		}
+		.cartel span {
+			display: block;
+		}
+		.cartel[aria-hidden] {
+			pointer-events: none;
+		}
+		/* izquierda: tres carteles, uno asomando por el borde */
+		.c1 {
+			top: 9%;
+			left: -26px;
+			width: 150px;
+			rotate: -2.5deg;
+		}
+		.c1__a {
+			font-size: 1rem;
+			letter-spacing: 0.12em;
+		}
+		.c1__n {
+			font-family: var(--f-titulo);
+			font-weight: 400;
+			font-size: 3.4rem;
+			line-height: 1.05;
+		}
+		.c2 {
+			top: 36%;
+			left: 22px;
+			width: 134px;
+			rotate: 2deg;
+		}
+		.c2__t {
+			font-family: var(--f-titulo);
+			font-weight: 400;
+			font-size: 1.9rem;
+			line-height: 1.08;
+		}
+		.c2__m {
+			margin-top: 4px;
+			font-family: var(--f-mano);
+			font-weight: 700;
+			font-size: 1.1rem;
+			text-transform: none;
+		}
+		.c3 {
+			top: 64%;
+			left: -20px;
+			width: 150px;
+			color: #fff;
+			rotate: -1.5deg;
+		}
+		.c3__t {
+			font-family: var(--f-titulo);
+			font-weight: 400;
+			font-size: 2rem;
+			line-height: 1.08;
+		}
+		/* derecha: el enlace al catálogo (entero, a la vista), un cartel negro y la revista */
+		.r1 {
+			top: 12%;
+			right: 20px;
+			width: 134px;
+			color: #fff;
+			text-decoration: none;
+			rotate: 1.5deg;
+			transition: translate 0.2s var(--ease-out), filter 0.2s;
+		}
+		.r1:hover {
+			translate: 0 -3px;
+			filter: brightness(1.12);
+		}
+		.r1__a {
+			font-size: 1.0625rem;
+			letter-spacing: 0.1em;
+		}
+		.r1__n {
+			font-family: var(--f-titulo);
+			font-weight: 400;
+			font-size: 3.6rem;
+			line-height: 1.05;
+		}
+		.r2 {
+			top: 41%;
+			right: -30px;
+			width: 150px;
+			color: var(--amarillo);
+			rotate: -2deg;
+		}
+		.r2__t {
+			font-family: var(--f-titulo);
+			font-weight: 400;
+			font-size: 2.1rem;
+			line-height: 1.05;
+		}
+		.r2__m {
+			font-size: 0.9375rem;
+			letter-spacing: 0.14em;
+			color: #fff;
+		}
+		.r3 {
+			top: 69%;
+			right: 16px;
+			width: 140px;
+			rotate: 2deg;
+		}
+		.r3__n {
+			font-family: var(--f-titulo);
+			font-weight: 400;
+			font-size: 2.6rem;
+			line-height: 1.05;
+		}
+		.r3__a {
+			font-size: 0.9375rem;
+			letter-spacing: 0.1em;
+			line-height: 1.25;
+		}
+	}
+</style>
