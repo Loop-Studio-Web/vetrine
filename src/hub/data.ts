@@ -1102,7 +1102,7 @@ export const concepts: Concept[] = [
 		caratteri: 'Anton, Barlow Condensed, Archivo e Caveat',
 		palette: ['#16261c', '#1747b8', '#a82a1a', '#e8b414', '#14161a', '#d6d1ca'],
 		metriche: [
-			{ label: 'Performance', valore: '84' },
+			{ label: 'Performance', valore: '94' },
 			{ label: 'Accessibilità', valore: '100' },
 			{ label: 'Buone pratiche', valore: '100' },
 		],

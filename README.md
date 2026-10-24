@@ -5,7 +5,7 @@
   <img src="docs/img/loop-logo-on-light.svg" alt="Loop Studio" height="64">
 </picture>
 
-<img src="docs/img/header.svg" alt="A street of shop fronts on two rows: Trattoria, Ossidiana, Luppolo & Watt, Bottega Tre Rasoi, Atelier Lumen, Aeterna, FIXLAB, Hot Swap, Ordito, Sifone, Obra Fina, Scala Vera, Mala Hierba Flores, Limonaia Aurelia, Marrow & Knot, Chioma Saracena and Soft Riot are lit and open, one more window is dark and coming soon." width="100%">
+<img src="docs/img/header.svg" alt="A street of shop fronts on two rows: Trattoria, Ossidiana, Luppolo & Watt, Bottega Tre Rasoi, Atelier Lumen, Aeterna, FIXLAB, Hot Swap, Ordito, Sifone, Obra Fina, Scala Vera, Mala Hierba Flores, Limonaia Aurelia, Marrow & Knot, Chioma Saracena, Soft Riot and Sobremesa are lit and open." width="100%">
 
 **Full-page homepage concepts for local businesses.<br>Each one designed as if it were the only one on the street.**
 
@@ -372,7 +372,7 @@
 | **Type** | Anton for titles, Barlow Condensed for the signs, Archivo for the wordmark, Caveat for the handwritten prices. All SIL OFL, packaged with `@fontsource` |
 | **Palette** | <img src="docs/img/palette-sobremesa.svg" alt="Wall green, cobalt, enamel red, yellow, black and enamel white" height="22"> |
 | **Signature moves** | **From the picture to the plate**: tap an object in the photograph (or on the shelf) and its pixels melt, cell by cell, into an enamel plate (a small WebGL shader, about 6 KB, loaded on the first gesture, with the CSS plate as a fallback) that opens from the spot you touched; "Sumá a la bolsa" sends the plate flying to the red sign of the bag. Objects with several colours have **colour dots** that change the photograph, the enamel and the melt. Signs **hang** on the wall on load with one pendulum swing and sections **screw in** as they enter. A **depot** of large and small cards with a left **drawer of filters** and a single live counter; on wide screens the strips beside the wall carry vertical signs for filters, bag and catalogue. A **bag drawer** with a free-shipping bar, gift message, stock limits and a test order, a **calculator** of zones and amounts, a **notebook** of saved objects and a four-step order tracker. On phones the cardboard tags become numbered dots with a legend |
-| **Lighthouse** | 84 performance on mobile and 98 on desktop in a local run (the online PageSpeed numbers come after the deploy), 100 on accessibility and best practices, no layout shift (SEO 66 only because the page is `noindex` by design). axe: 0 violations at 390, 1440 and 1920, light and dark, with the object dialog, bag and filter drawer open. Photographs from Unsplash, credited in `src/assets/sobremesa/CREDITI.md`; the big table photograph is a generated example image, declared as such. No payment is real |
+| **Lighthouse** | 94 performance on mobile and 100 on desktop (PageSpeed Insights on the live page, 2026-10-24), 100 on accessibility and best practices, no layout shift (SEO 66 only because the page is `noindex` by design). axe: 0 violations at 390, 1440 and 1920, light and dark, with the object dialog, bag and filter drawer open. Photographs from Unsplash, credited in `src/assets/sobremesa/CREDITI.md`; the big table photograph is a generated example image, declared as such. No payment is real |
 
 [**Open Sobremesa →**](https://vetrine.theloopstudio.org/ecommerce/sobremesa/)
 
