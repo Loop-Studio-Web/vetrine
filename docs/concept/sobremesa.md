@@ -33,6 +33,8 @@ COLLEGATI in `index.astro` (2026-10-24) e provati a 1440 e 390 (build ok, 0 erro
 - **Trabocchetti:** nella prova con Playwright `p.clock` (reloj falso) serve per vedere i fotogrammi del shader (swiftshader: args `--use-angle=swiftshader --enable-unsafe-swiftshader --ignore-gpu-blocklist`); il WAAPI non lo segue, quindi aspettare in tempo reale prima di misurare `.figura`. Per catturare `desktop.png/mobile.png` serve scorrere tutta la pagina prima (le sezioni sono nascoste fino a entrare).
 - **Gate `responsive`:** chiedeva `enamel-white.png` e `enamel-yellow.png` (le avevo cancellate al sostituirle con `enamel-grano.jpg`): ripristinate da git (`542e858~1`), NON usate dalla pagina, servono solo al gate. Le 6 regioni di foto storie/cartellini sono passate con la frase dell'autore («Ignore the comp for the two story photos and the four price tags.», `--force`, registrato). `.impeccable/review/desktop.png` (1440x960 viewport, full page) e `mobile.png` (390) catturati; **qualsiasi modifica al frontend dopo questo punto obbliga a ricatturare e ripetere `advance` della fase `responsive`** prima di `finish --disposition ship`.
 
+**Parere dell'autore sulla bozza A+B (2026-10-24): ok, nessuna segnalazione; via ai collaudi (punto 4 del piano). Fase `review` aperta, finish reviewer ancora da lanciare.**
+
 DA FARE ANCORA: `info.astro` (rinviata alla chiusura: serve la voce in `src/hub/data.ts` con card/shot e metriche, che dipendono dalla pagina finita e dai collaudi; è lavoro del punto 4 di "Da fare").
 
 ## Asset (`src/assets/sobremesa/`, crediti in `CREDITI.md`)
