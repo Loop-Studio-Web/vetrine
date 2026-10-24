@@ -33,7 +33,7 @@ import logoLoop from '../../assets/hub/loop-logo-on-dark.svg';
 
 <style>
 	.pie {
-		width: min(100%, 1280px);
+		width: min(100%, clamp(1280px, calc((100svh - 34px) * 1.5), 1760px));
 		margin: clamp(72px, 9vw, 140px) auto 0;
 		padding: 0 var(--gutter) clamp(40px, 5vw, 64px);
 		display: grid;

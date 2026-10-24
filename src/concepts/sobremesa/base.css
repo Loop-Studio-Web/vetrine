@@ -199,7 +199,8 @@ html:has(dialog[open]) {
 .cuerpo {
 	overflow-x: clip;
 	--k: clamp(0.62px, calc(100vw / 1536), 1px);
-	width: min(100%, 1280px);
+	/* acompaña el ancho del marco de la portada (3:2 a la altura de la pantalla), con tope, para no dejar franjas verdes a los lados */
+	width: min(100%, clamp(1280px, calc((100svh - 34px) * 1.5), 1760px));
 	margin-inline: auto;
 	padding: clamp(56px, 8vw, 120px) var(--gutter) 0;
 	display: grid;

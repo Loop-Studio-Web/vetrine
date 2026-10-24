@@ -10,43 +10,127 @@ import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 	<h2 id="objetos-titulo" class="chapa chapa--flujo rotulo" style={`--c:var(--esmalte);--tornillo:#55524c;--textura:url(${enamelWhite.src})`}>Lo que vimos en la mesa</h2>
 	<p class="bajada">Todo lo que cuelga de la foto de la portada y unas cosas más de la misma casa. Tocá la foto de uno y lo ves de cerca.</p>
 
-	<ul class="estante">
-		{OBJETOS.map((o, i) => {
-			const c = COLOR[o.color];
-			return (
-				<li class="obj" style={`--span:${o.ancho}`}>
-					<article class="chapa chapa--flujo tarjeta" style={`--c:${c.fondo};--tinta-c:${c.tinta};--filete:${c.filete};--textura:url(${enamelWhite.src});--tornillo:rgb(0 0 0 / 0.55)`}>
-						<button class="tarjeta__foto" type="button" data-objeto={o.id} aria-label={`${o.nombre}: ver de cerca`}>
-							<Image src={o.foto} alt={`${o.nombre}, foto de ejemplo`} width={720} quality={76} format="webp" sizes="(min-width: 900px) 40vw, 90vw" loading="lazy" />
-							<span class="tarjeta__ver" aria-hidden="true">Ver de cerca</span>
-						</button>
-						<div class="tarjeta__texto">
-							<h3 class="tarjeta__nombre">{o.nombre}</h3>
-							<p class="tarjeta__frase">{o.frase}</p>
-							<p class="tarjeta__meta">{o.taller} · listo en {o.dias} días</p>
-						</div>
-						<div class="tarjeta__pie">
-							<p class="tarjeta__precio">
-								<strong>{pesos(o.precio)}</strong>
-								<span class:list={['tarjeta__stock', { 'tarjeta__stock--poco': o.stock <= 4 }]}>{o.stock <= 4 ? `Quedan ${o.stock}` : 'En stock'}</span>
-							</p>
-							<button class="btn-chapa btn-chapa--chico" type="button" data-sumar={o.id}>Sumá</button>
-							<button class="corazon" type="button" data-libreta={o.id} aria-pressed="false" aria-label={`Guardar ${o.nombre} en mi libreta`}>
-								<svg viewBox="0 0 24 24" aria-hidden="true" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9-9.4C1.9 7.600 4 5 6.800 5c2 0 3.700 1.100 5.200 3 1.500-1.900 3.200-3 5.200-3C20 5 22.100 7.600 21 11.100c-1.500 4.800-9 9.400-9 9.400Z" /></svg>
-							</button>
-						</div>
-					</article>
-				</li>
-			);
-		})}
-		<li class="obj obj--fin" style="--span:5">
-			<div class="chapa chapa--flujo fin" style={`--c:var(--cobalto);--tornillo:#020f33;--textura:url(${enamelWhite.src})`}>
-				<p class="fin__titulo">¿No era este el que buscabas?</p>
-				<p>Cada número de la revista tiene su propia mesa. Los anteriores siguen en el archivo.</p>
-				<a class="btn-chapa" href="#revista">Ver números anteriores</a>
-			</div>
-		</li>
-	</ul>
+		  <ul class="estante">
+	  {OBJETOS.slice(0, 1).map((o) => { const c = COLOR[o.color]; return (
+	  <li class="obj obj--ancha">
+	  <article class="chapa chapa--flujo tarjeta tarjeta--ancha" style={`--c:${c.fondo};--tinta-c:${c.tinta};--filete:${c.filete};--textura:url(${enamelWhite.src});--tornillo:rgb(0 0 0 / 0.55)`}>
+	  <button class="tarjeta__foto" type="button" data-objeto={o.id} aria-label={`${o.nombre}: ver de cerca`}>
+	  <Image src={o.foto} alt={`${o.nombre}, foto de ejemplo`} width={720} quality={76} format="webp" sizes="(min-width: 900px) 40vw, 90vw" loading="lazy" />
+	  <span class="tarjeta__ver" aria-hidden="true">Ver de cerca</span>
+	  </button>
+	  <div class="tarjeta__cuerpo">
+	  <div class="tarjeta__texto">
+	  <h3 class="tarjeta__nombre">{o.nombre}</h3>
+	  <p class="tarjeta__frase">{o.frase}</p>
+	  <p class="tarjeta__meta">{o.taller} · listo en {o.dias} días</p>
+	  </div>
+	  <div class="tarjeta__pie">
+	  <p class="tarjeta__precio">
+	  <strong>{pesos(o.precio)}</strong>
+	  <span class:list={['tarjeta__stock', { 'tarjeta__stock--poco': o.stock <= 4 }]}>{o.stock <= 4 ? `Quedan ${o.stock}` : 'En stock'}</span>
+	  </p>
+	  <button class="btn-chapa btn-chapa--chico" type="button" data-sumar={o.id}>Sumá</button>
+	  <button class="corazon" type="button" data-libreta={o.id} aria-pressed="false" aria-label={`Guardar ${o.nombre} en mi libreta`}>
+	  <svg viewBox="0 0 24 24" aria-hidden="true" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9-9.4C1.9 7.600 4 5 6.800 5c2 0 3.700 1.100 5.200 3 1.500-1.900 3.200-3 5.200-3C20 5 22.100 7.600 21 11.100c-1.500 4.800-9 9.400-9 9.400Z" /></svg>
+	  </button>
+	  </div>
+	  </div>
+	  </article>
+	  </li>
+	  ); })}
+	  <li class="grupo">
+	  <ul class="fila">
+	  {OBJETOS.slice(1, 4).map((o) => { const c = COLOR[o.color]; return (
+	  <li class="obj obj--alta">
+	  <article class="chapa chapa--flujo tarjeta tarjeta--alta" style={`--c:${c.fondo};--tinta-c:${c.tinta};--filete:${c.filete};--textura:url(${enamelWhite.src});--tornillo:rgb(0 0 0 / 0.55)`}>
+	  <button class="tarjeta__foto" type="button" data-objeto={o.id} aria-label={`${o.nombre}: ver de cerca`}>
+	  <Image src={o.foto} alt={`${o.nombre}, foto de ejemplo`} width={720} quality={76} format="webp" sizes="(min-width: 900px) 40vw, 90vw" loading="lazy" />
+	  <span class="tarjeta__ver" aria-hidden="true">Ver de cerca</span>
+	  </button>
+	  <div class="tarjeta__texto">
+	  <h3 class="tarjeta__nombre">{o.nombre}</h3>
+	  <p class="tarjeta__frase">{o.frase}</p>
+	  <p class="tarjeta__meta">{o.taller} · listo en {o.dias} días</p>
+	  </div>
+	  <div class="tarjeta__pie">
+	  <p class="tarjeta__precio">
+	  <strong>{pesos(o.precio)}</strong>
+	  <span class:list={['tarjeta__stock', { 'tarjeta__stock--poco': o.stock <= 4 }]}>{o.stock <= 4 ? `Quedan ${o.stock}` : 'En stock'}</span>
+	  </p>
+	  <button class="btn-chapa btn-chapa--chico" type="button" data-sumar={o.id}>Sumá</button>
+	  <button class="corazon" type="button" data-libreta={o.id} aria-pressed="false" aria-label={`Guardar ${o.nombre} en mi libreta`}>
+	  <svg viewBox="0 0 24 24" aria-hidden="true" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9-9.4C1.9 7.600 4 5 6.800 5c2 0 3.700 1.100 5.200 3 1.500-1.900 3.200-3 5.200-3C20 5 22.100 7.600 21 11.100c-1.500 4.800-9 9.400-9 9.400Z" /></svg>
+	  </button>
+	  </div>
+	  </article>
+	  </li>
+	  ); })}
+	  </ul>
+	  </li>
+	  {OBJETOS.slice(4, 5).map((o) => { const c = COLOR[o.color]; return (
+	  <li class="obj obj--ancha obj--inversa">
+	  <article class="chapa chapa--flujo tarjeta tarjeta--ancha" style={`--c:${c.fondo};--tinta-c:${c.tinta};--filete:${c.filete};--textura:url(${enamelWhite.src});--tornillo:rgb(0 0 0 / 0.55)`}>
+	  <button class="tarjeta__foto" type="button" data-objeto={o.id} aria-label={`${o.nombre}: ver de cerca`}>
+	  <Image src={o.foto} alt={`${o.nombre}, foto de ejemplo`} width={720} quality={76} format="webp" sizes="(min-width: 900px) 40vw, 90vw" loading="lazy" />
+	  <span class="tarjeta__ver" aria-hidden="true">Ver de cerca</span>
+	  </button>
+	  <div class="tarjeta__cuerpo">
+	  <div class="tarjeta__texto">
+	  <h3 class="tarjeta__nombre">{o.nombre}</h3>
+	  <p class="tarjeta__frase">{o.frase}</p>
+	  <p class="tarjeta__meta">{o.taller} · listo en {o.dias} días</p>
+	  </div>
+	  <div class="tarjeta__pie">
+	  <p class="tarjeta__precio">
+	  <strong>{pesos(o.precio)}</strong>
+	  <span class:list={['tarjeta__stock', { 'tarjeta__stock--poco': o.stock <= 4 }]}>{o.stock <= 4 ? `Quedan ${o.stock}` : 'En stock'}</span>
+	  </p>
+	  <button class="btn-chapa btn-chapa--chico" type="button" data-sumar={o.id}>Sumá</button>
+	  <button class="corazon" type="button" data-libreta={o.id} aria-pressed="false" aria-label={`Guardar ${o.nombre} en mi libreta`}>
+	  <svg viewBox="0 0 24 24" aria-hidden="true" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9-9.4C1.9 7.600 4 5 6.800 5c2 0 3.700 1.100 5.200 3 1.500-1.900 3.200-3 5.200-3C20 5 22.100 7.600 21 11.100c-1.500 4.800-9 9.400-9 9.400Z" /></svg>
+	  </button>
+	  </div>
+	  </div>
+	  </article>
+	  </li>
+	  ); })}
+	  <li class="grupo">
+	  <ul class="fila">
+	  {OBJETOS.slice(5, 8).map((o) => { const c = COLOR[o.color]; return (
+	  <li class="obj obj--alta">
+	  <article class="chapa chapa--flujo tarjeta tarjeta--alta" style={`--c:${c.fondo};--tinta-c:${c.tinta};--filete:${c.filete};--textura:url(${enamelWhite.src});--tornillo:rgb(0 0 0 / 0.55)`}>
+	  <button class="tarjeta__foto" type="button" data-objeto={o.id} aria-label={`${o.nombre}: ver de cerca`}>
+	  <Image src={o.foto} alt={`${o.nombre}, foto de ejemplo`} width={720} quality={76} format="webp" sizes="(min-width: 900px) 40vw, 90vw" loading="lazy" />
+	  <span class="tarjeta__ver" aria-hidden="true">Ver de cerca</span>
+	  </button>
+	  <div class="tarjeta__texto">
+	  <h3 class="tarjeta__nombre">{o.nombre}</h3>
+	  <p class="tarjeta__frase">{o.frase}</p>
+	  <p class="tarjeta__meta">{o.taller} · listo en {o.dias} días</p>
+	  </div>
+	  <div class="tarjeta__pie">
+	  <p class="tarjeta__precio">
+	  <strong>{pesos(o.precio)}</strong>
+	  <span class:list={['tarjeta__stock', { 'tarjeta__stock--poco': o.stock <= 4 }]}>{o.stock <= 4 ? `Quedan ${o.stock}` : 'En stock'}</span>
+	  </p>
+	  <button class="btn-chapa btn-chapa--chico" type="button" data-sumar={o.id}>Sumá</button>
+	  <button class="corazon" type="button" data-libreta={o.id} aria-pressed="false" aria-label={`Guardar ${o.nombre} en mi libreta`}>
+	  <svg viewBox="0 0 24 24" aria-hidden="true" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9-9.4C1.9 7.600 4 5 6.800 5c2 0 3.700 1.100 5.200 3 1.500-1.900 3.200-3 5.200-3C20 5 22.100 7.600 21 11.100c-1.500 4.800-9 9.400-9 9.400Z" /></svg>
+	  </button>
+	  </div>
+	  </article>
+	  </li>
+	  ); })}
+	  </ul>
+	  </li>
+	  <li class="obj--fin">
+	  <div class="chapa chapa--flujo fin" style={`--c:var(--cobalto);--tornillo:#020f33;--textura:url(${enamelWhite.src})`}>
+	  <p class="fin__titulo">¿No era este el que buscabas?</p>
+	  <p>Cada número de la revista tiene su propia mesa. Los anteriores siguen en el archivo.</p>
+	  <a class="btn-chapa" href="#revista">Ver números anteriores</a>
+	  </div>
+	  </li>
+	  </ul>
 </section>
 
 <style>
@@ -54,25 +138,84 @@ import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 		display: grid;
 		justify-items: start;
 	}
+	/* el estante: una lámina ancha, tres altas a distinta altura, otra ancha, otras tres, y el cierre */
 	.estante {
 		list-style: none;
 		margin: clamp(28px, 4vw, 48px) 0 0;
 		padding: 0;
 		width: 100%;
 		display: grid;
-		grid-template-columns: repeat(12, minmax(0, 1fr));
-		gap: clamp(18px, 2.4vw, 32px);
-		align-items: start;
+		gap: clamp(36px, 5vw, 76px);
+	}
+	.estante ul {
+		list-style: none;
+		padding: 0;
+		margin: 0;
 	}
 	.obj {
-		grid-column: span var(--span);
+		container-type: inline-size;
 	}
-	/* un pequeño desnivel entre vecinos: se lee como carteles colgados a mano, no como una tabla */
-	.obj:nth-child(3n + 2) {
+	.grupo {
+		width: 100%;
+	}
+	.fila {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: clamp(20px, 3vw, 48px);
+		align-items: start;
+	}
+	/* las altas no van en línea: cada una cuelga a su altura y gira un poco, como puestas a mano */
+	.obj--alta:nth-child(1) {
+		rotate: -0.5deg;
+	}
+	.obj--alta:nth-child(2) {
+		rotate: 0.6deg;
+		margin-top: clamp(0px, 7vw, 108px);
+	}
+	.obj--alta:nth-child(3) {
+		rotate: -0.3deg;
 		margin-top: clamp(0px, 3vw, 44px);
 	}
-	.obj:nth-child(3n) {
-		margin-top: clamp(0px, 1.2vw, 18px);
+	.obj--alta:nth-child(1) .tarjeta__foto {
+		aspect-ratio: 4 / 5;
+	}
+	.obj--alta:nth-child(2) .tarjeta__foto {
+		aspect-ratio: 1;
+	}
+	.obj--alta:nth-child(3) .tarjeta__foto {
+		aspect-ratio: 3 / 4;
+	}
+	.tarjeta--alta .tarjeta__nombre {
+		font-size: clamp(1.7rem, 2.6vw, 2.5rem);
+	}
+	.tarjeta--ancha {
+		grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+		align-items: center;
+		gap: clamp(18px, 3vw, 48px);
+		padding: calc(40 * var(--k));
+	}
+	.obj--inversa .tarjeta--ancha {
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+	}
+	.obj--inversa .tarjeta--ancha > .tarjeta__foto {
+		order: 2;
+	}
+	.tarjeta--ancha .tarjeta__foto {
+		aspect-ratio: 16 / 11;
+	}
+	.tarjeta__cuerpo {
+		display: grid;
+		gap: 18px;
+	}
+	.tarjeta--ancha .tarjeta__nombre {
+		font-size: clamp(2.2rem, 4.2vw, 3.8rem);
+	}
+	.tarjeta--ancha .tarjeta__frase {
+		font-size: 1.25rem;
+		max-width: 34ch;
+	}
+	.obj--fin .fin {
+		max-width: 640px;
 	}
 	.tarjeta {
 		display: grid;
@@ -245,20 +388,25 @@ import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 		font-size: 1.125rem;
 	}
 
-	@media (max-width: 1000px) {
-		.obj {
-			grid-column: span 6;
+	@media (max-width: 900px) {
+		.tarjeta--ancha,
+		.obj--inversa .tarjeta--ancha {
+			grid-template-columns: minmax(0, 1fr);
 		}
-		.obj--fin {
-			grid-column: 1 / -1;
+		.obj--inversa .tarjeta--ancha > .tarjeta__foto {
+			order: 0;
 		}
-		.obj:nth-child(n) {
+		.fila {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+		.obj--alta:nth-child(n) {
 			margin-top: 0;
+			rotate: 0deg;
 		}
 	}
 	@media (max-width: 620px) {
-		.obj {
-			grid-column: 1 / -1;
+		.fila {
+			grid-template-columns: minmax(0, 1fr);
 		}
 	}
 </style>
