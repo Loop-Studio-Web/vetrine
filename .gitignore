@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # motore nativo di Impeccable (19 MB; copia di riferimento in tools/impeccable-engine via IMPECCABLE_BIN; si reinstalla con npx impeccable@4.7.0 install)
 .claude/skills/impeccable/scripts/bin/
+
+# Impeccable: stato del motore, mock e catture (locale, ~100 MB)
+.impeccable/
