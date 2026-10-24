@@ -13,7 +13,7 @@ const t = `--textura:url(${enamelWhite.src})`;
 			<span class="v">Filtrar</span>
 		</button>
 		<a class="chapa cartel cartel--chico" href="#main" style={`--c:var(--esmalte);--tornillo:#55524c;${t}`}>
-			<span class="v">↑ Arriba</span>
+			<span class="v">Arriba <svg class="flecha" viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="M6 1v10M2 7l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" /></svg></span>
 		</a>
 	</div>
 	<div class="riel riel--der">
@@ -109,6 +109,11 @@ const t = `--textura:url(${enamelWhite.src})`;
 		.cartel[data-bolsa-abrir],
 		.cartel[href='#deposito'] {
 			color: #fff;
+		}
+		.flecha {
+			width: 0.8em;
+			height: 0.8em;
+			margin-block-start: 0.3em;
 		}
 		.v {
 			writing-mode: vertical-rl;

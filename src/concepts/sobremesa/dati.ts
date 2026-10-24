@@ -145,7 +145,7 @@ export const OBJETOS: Objeto[] = [
 		id: 'mantel-lino',
 		nombre: 'Mantel de lino',
 		precio: 62000,
-		frase: 'Lino lavado, 1,60 × 2,40 m, con la raya azul del telar. Seis colores.',
+		frase: 'Lino lavado, 1,60 × 2,40 m, con la raya azul del telar.',
 		taller: 'Telar La Quinta',
 		dias: 20,
 		stock: 5,

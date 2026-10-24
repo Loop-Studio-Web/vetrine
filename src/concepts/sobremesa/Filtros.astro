@@ -173,6 +173,7 @@ const grupos = [
 	const dlg = document.getElementById('sb-filtros') as HTMLDialogElement;
 	const items = [...document.querySelectorAll<HTMLElement>('#deposito [data-filtro]')];
 	const estadoTxt = document.querySelector<HTMLElement>('[data-filtros-estado]');
+	const cuentaPie = document.querySelector<HTMLElement>('[data-filtros-cuenta]');
 	const vacioEl = document.querySelector<HTMLElement>('[data-filtros-vacio]');
 	const borrarBarra = document.querySelector<HTMLElement>('[data-filtros-borrar]');
 	const contador = document.querySelector<HTMLElement>('[data-filtros-n]');
@@ -187,6 +188,7 @@ const grupos = [
 	function aplicar() {
 		let n = 0;
 		let grandes = 0;
+		let chicos = 0;
 		items.forEach((li) => {
 			const ok = coincide(li);
 			li.hidden = !ok;
@@ -196,13 +198,24 @@ const grupos = [
 			if (li.classList.contains('dep--color')) {
 				li.classList.toggle('dep--tres', grandes < 3);
 				li.classList.toggle('dep--cuatro', grandes >= 3);
+				// la inclinación alterna entre las que se ven, no entre las del HTML
+				li.classList.toggle('dep--par', grandes % 2 === 1);
+				li.classList.toggle('dep--impar', grandes % 2 === 0);
 				grandes++;
+			} else {
+				li.classList.toggle('dep--bajo', chicos % 3 === 1);
+				chicos++;
 			}
 		});
 		const activos = Object.values(estado).filter(Boolean).length;
 		dlg.querySelectorAll<HTMLElement>('.chip').forEach((c) => c.setAttribute('aria-pressed', String(estado[c.dataset.grupo as keyof Estado] === c.dataset.valor)));
 		dlg.querySelector('[data-filtros-total]')!.textContent = String(n);
-		if (estadoTxt) estadoTxt.textContent = activos ? `${n} de ${items.length} objetos del depósito` : `${items.length} objetos en el depósito`;
+		// un solo número en toda la página: los objetos del estante (siempre a la vista) más los del depósito que pasan los filtros
+		const total = (cuentaPie?.dataset.total ?? '360');
+		const visibles = Number(estadoTxt?.dataset.fuera ?? 0) + n;
+		const frase = `Mostrando ${visibles} de ${total} objetos`;
+		if (estadoTxt) estadoTxt.textContent = frase;
+		if (cuentaPie) cuentaPie.textContent = frase;
 		if (contador) {
 			contador.hidden = !activos;
 			contador.textContent = String(activos);

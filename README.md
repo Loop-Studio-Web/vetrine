@@ -28,7 +28,7 @@
 *Vetrine* is Italian for **shop windows**. That is the whole idea: a shop window has one job, to make a stranger stop. So every concept here is a complete homepage with its own mood, structure, typography and motion, grouped by business category (Food & drink first), with several archetypes inside each category.
 
 > [!NOTE]
-> Most pages are in Italian, because that is the audience they are built for. A few are written for another market on purpose: Hot Swap, Marrow & Knot and Soft Riot in English, Obra Fina in Spanish (Spain) and Mala Hierba Flores in Mexican Spanish. The hub, the detail pages and the "back to the street" strip stay in Italian. All businesses, people, addresses and reviews are fictional and declared as such.
+> Most pages are in Italian, because that is the audience they are built for. A few are written for another market on purpose: Hot Swap, Marrow & Knot and Soft Riot in English, Obra Fina in Spanish (Spain), Mala Hierba Flores in Mexican Spanish and Sobremesa in River Plate Spanish. The hub, the detail pages and the "back to the street" strip stay in Italian. All businesses, people, addresses and reviews are fictional and declared as such.
 
 **A street, not a grid.** Each row sits in a full-width scene drawn in CSS and generated SVG (no image files): sky, two layers of skyline with lit windows, lamp posts, pavement and road, with a light parallax on scroll (off with reduced motion). The dark theme is night, the light theme is day, and every category has its own hour: restaurants at dusk, wellness at dawn, tech in the dead of night (windows lit like screens), home and craft at sunset, events at the blue hour, e-commerce in clear daylight, and the "in progress" rows under grey skies with a crane. Under the neon "Open" sign, a row of neon pills (one per category, in the colour of its hour) jumps to each row of the street.
 
@@ -359,11 +359,29 @@
 
 <br>
 
+### 18 · Sobremesa
+
+<a href="https://vetrine.theloopstudio.org/ecommerce/sobremesa/"><img src="docs/img/card-sobremesa.jpg" alt="Sobremesa on desktop and mobile: the enamel sign with the shop name, a cobalt plate with the story headline, three photographs of a laid table with cardboard price tags tied to the objects and a yellow free-shipping strip, on a dark green wall." width="100%"></a>
+
+*A magazine where every object in the photograph can be bought.* A home-and-table shop in River Plate Spanish, built as a wall of enamel signs.
+
+| | |
+|---|---|
+| **Archetype** | The magazine-shop: the **experience** tier of the E-commerce window, for a shop with a large catalogue and a strong editorial voice, where the unit of browsing is the scene and not the product |
+| **Mood** | The wall of an almacén covered in signs: enamel plates in cobalt, red, yellow, white and black on dark green, photographs printed on the plates, cardboard price tags with handwritten prices. Colour is the colour of the enamel, not the hour of the day |
+| **Type** | Anton for titles, Barlow Condensed for the signs, Archivo for the wordmark, Caveat for the handwritten prices. All SIL OFL, packaged with `@fontsource` |
+| **Palette** | <img src="docs/img/palette-sobremesa.svg" alt="Wall green, cobalt, enamel red, yellow, black and enamel white" height="22"> |
+| **Signature moves** | **From the picture to the plate**: tap an object in the photograph (or on the shelf) and its pixels melt, cell by cell, into an enamel plate (a small WebGL shader, about 6 KB, loaded on the first gesture, with the CSS plate as a fallback) that opens from the spot you touched; "Sumá a la bolsa" sends the plate flying to the red sign of the bag. Objects with several colours have **colour dots** that change the photograph, the enamel and the melt. Signs **hang** on the wall on load with one pendulum swing and sections **screw in** as they enter. A **depot** of large and small cards with a left **drawer of filters** and a single live counter; on wide screens the strips beside the wall carry vertical signs for filters, bag and catalogue. A **bag drawer** with a free-shipping bar, gift message, stock limits and a test order, a **calculator** of zones and amounts, a **notebook** of saved objects and a four-step order tracker. On phones the cardboard tags become numbered dots with a legend |
+| **Lighthouse** | 84 performance on mobile and 98 on desktop in a local run (the online PageSpeed numbers come after the deploy), 100 on accessibility and best practices, no layout shift (SEO 66 only because the page is `noindex` by design). axe: 0 violations at 390, 1440 and 1920, light and dark, with the object dialog, bag and filter drawer open. Photographs from Unsplash, credited in `src/assets/sobremesa/CREDITI.md`; the big table photograph is a generated example image, declared as such. No payment is real |
+
+[**Open Sobremesa →**](https://vetrine.theloopstudio.org/ecommerce/sobremesa/)
+
+<br>
+
 ### Next on the street
 
 | Category | Archetype | Status |
 |---|---|---|
-| E-commerce | An editorial "shoppable" magazine (experience) | In progress |
 | Hospitality | Hotels, B&Bs and holiday homes | Planned |
 | Pets | Grooming, boarding and pet shops | Planned |
 | Legal | Law firms | Planned |
@@ -399,6 +417,7 @@ flowchart TB
     infra --> K["<b>Marrow & Knot</b><br/>own markup · CSS · JS · fonts"]
     infra --> C["<b>Chioma Saracena</b><br/>own markup · CSS · JS · fonts"]
     infra --> SR["<b>Soft Riot</b><br/>own markup · CSS · JS · fonts"]
+    infra --> SM["<b>Sobremesa</b><br/>own markup · CSS · JS · fonts"]
     infra --> N["<b>next concept…</b>"]
     T -.-|nothing shared| O
     O -.-|nothing shared| B
@@ -413,15 +432,15 @@ A piece of code is reused between two concepts only when it is the *exact same t
 
 Before a concept goes on the street, it has to clear the same gate:
 
-| Gate | What it means | Trattoria | Ossidiana | Luppolo & Watt | Tre Rasoi | Lumen | Aeterna | FIXLAB | Hot Swap | Ordito | Sifone | Obra Fina | Scala Vera | Mala Hierba | Limonaia | Marrow & Knot | Chioma | Soft Riot |
-|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| **Builds** | `astro build` is clean | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Accessible** | `axe-core`: zero violations | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Menu on phones** | Its own open/close effect, keyboard and Escape friendly (Chioma: a blue sheet that slides down under the bar; Soft Riot: a panel with the search field on top) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Gate | What it means | Trattoria | Ossidiana | Luppolo & Watt | Tre Rasoi | Lumen | Aeterna | FIXLAB | Hot Swap | Ordito | Sifone | Obra Fina | Scala Vera | Mala Hierba | Limonaia | Marrow & Knot | Chioma | Soft Riot | Sobremesa |
+|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| **Builds** | `astro build` is clean | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Accessible** | `axe-core`: zero violations | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Narrow** | No horizontal scroll at 390 px | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Menu on phones** | Its own open/close effect, keyboard and Escape friendly (Chioma: a blue sheet that slides down under the bar; Soft Riot: a panel with the search field on top) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | — |
+| **Interactive** | Widgets are exercised end to end (forms, tabs, keyboard) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Shareable** | A 1200×630 `og:image` that previews properly | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Discreet** | `noindex, nofollow`, fictional data, no third-party logos | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ```text
  LIGHTHOUSE · mobile            Trattoria                Ossidiana
@@ -458,7 +477,8 @@ src/
 │  ├─ eventi/                          fiorista, location, wedding
 │  └─ ecommerce/
 │     ├─ olio/index.astro              (every concept also has an info.astro next to it)
-│     └─ softriot/index.astro
+│     ├─ softriot/index.astro
+│     └─ sobremesa/index.astro
 ├─ hub/                                data, styles and sections of the hub page
 ├─ concepts/
 │  ├─ trattoria/                       one component per section + base.css
@@ -474,7 +494,8 @@ src/
 │  ├─ malahierba/, limonaia/           and again (Mexican Spanish, then a page that changes light with the hour)
 │  ├─ marrowknot/                      and again, in English, with photographs woven in WebGL
 │  ├─ chioma/                          and again, a one-product shop with a cart and checkout
-│  └─ softriot/                        and again, a fashion shop whose catalogue opens like windows
+│  ├─ softriot/                        and again, a fashion shop whose catalogue opens like windows
+│  └─ sobremesa/                       and again, a magazine-shop made of enamel signs (Rioplatense Spanish, WebGL melt)
 └─ assets/<concept>/ and hub/          local images only, no hotlinking
 public/images/<concept>/               fixed URLs: og:image, favicon
 docs/img/                              the pictures you are looking at

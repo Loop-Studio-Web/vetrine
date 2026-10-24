@@ -3,15 +3,18 @@
 // colgados de la misma pared, centrados en la franja (con un poco de desorden). Son adorno (aria-hidden), salvo el del catálogo,
 // que es un enlace. Nada pisa el marco: cada franja mide lo que sobra a cada lado.
 import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
+import { OBJETOS, NUMEROS } from './dati';
+const dias = Math.min(...OBJETOS.map((o) => o.dias));
+const ultimo = NUMEROS[0];
 const t = `--textura:url(${enamelWhite.src})`;
 ---
 
 <div class="lados">
 	<div class="lado lado--izq" aria-hidden="true">
 		<div class="chapa cartel c1" style={`--c:var(--amarillo);--tornillo:#4a3706;${t}`}>
-			<span class="c1__a">Desde</span>
-			<span class="c1__n">1964</span>
-			<span class="c1__a">Villa Crespo</span>
+			<span class="c1__a">A pedido,<br />desde</span>
+			<span class="c1__n">{dias}</span>
+			<span class="c1__a">días</span>
 		</div>
 		<div class="chapa cartel c2" style={`--c:var(--esmalte);--tornillo:#55524c;${t}`}>
 			<span class="c2__t">Hoy no<br />se fía</span>
@@ -26,15 +29,15 @@ const t = `--textura:url(${enamelWhite.src})`;
 		<a class="chapa cartel r1" href="#deposito" style={`--c:var(--cobalto-vivo);--tornillo:#020f33;${t}`}>
 			<span class="r1__a">Catálogo</span>
 			<span class="r1__n">360</span>
-			<span class="r1__a">objetos ↓</span>
+			<span class="r1__a">objetos <svg class="flecha" viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="M6 1v10M2 7l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" /></svg></span>
 		</a>
 		<div class="chapa cartel r2" aria-hidden="true" style={`--c:var(--negro);--tornillo:#000;${t}`}>
 			<span class="r2__t">Abierto</span>
 			<span class="r2__m">todo el año</span>
 		</div>
 		<div class="chapa cartel r3" aria-hidden="true" style={`--c:var(--esmalte);--tornillo:#55524c;${t}`}>
-			<span class="r3__n">Nº 14</span>
-			<span class="r3__a">Revista + tienda<br />octubre</span>
+			<span class="r3__n">Nº {String(ultimo.n).padStart(2, '0')}</span>
+			<span class="r3__a">Revista + tienda<br />{ultimo.estacion}</span>
 		</div>
 	</div>
 </div>
@@ -48,7 +51,7 @@ const t = `--textura:url(${enamelWhite.src})`;
 		.lados {
 			display: contents;
 			--k: 0.85px;
-			--marco: min(100%, calc((100svh - 34px) * 1.5));
+			--marco: clamp(1280px, min(100%, calc((100svh - 34px) * 1.5)), 1760px);
 		}
 		.lado {
 			position: absolute;
@@ -145,6 +148,11 @@ const t = `--textura:url(${enamelWhite.src})`;
 		.r1:hover {
 			translate: 0 -3px;
 			filter: brightness(1.12);
+		}
+		.flecha {
+			width: 0.8em;
+			height: 0.8em;
+			vertical-align: -0.05em;
 		}
 		.r1__a {
 			font-size: 1.0625rem;

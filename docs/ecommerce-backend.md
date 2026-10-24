@@ -16,6 +16,7 @@ progetti del portfolio già online che usano davvero WordPress (non toccarli).
   verificato il 2026-10-20 su stripe.com/en-it/pricing).
 - **Evoluto**: neutro, per cliente: WooCommerce headless senza plugin a pagamento oppure Medusa su un VPS piccolo.
 - **Esperienza**: Medusa su misura (open source; serve un server Node + Postgres + Redis da mantenere).
+  Sobremesa (2026-10-24): il «catalogo da 360 oggetti» con varianti di colore, scorte e storie collegate giustifica internamente Medusa; sull'hub resta neutro («un motore pensato per il catalogo»).
 - **Shopify**: tendenzialmente escluso (nessun piano gratuito; circa 24-33 €/mese in UE più 2% sul gateway esterno nel piano
   base, cifre da riverificare). Conviene più un pacchetto assistenza nostro, ma se l'assistenza + hosting costasse più del canone
   Shopify il vantaggio per il cliente sparisce: tenerne conto nel preventivo.

@@ -58,3 +58,8 @@ Accessibilità 3 · Performance 3 · Theming 3 · Responsive 3 · Implementation
 | che cosa NON ha visto chi | | detect, critique e audit non hanno visto la negretta sintetica né il bug del canvas; solo il finish reviewer (guardando i render) e break-ui (dati estremi + dpr 1) li hanno trovati |
 | performance | | TBT 2,5 s causato dallo shader in idle (trovato dall'audit con Lighthouse e confermato bloccando il modulo); dopo: mobile 84 / desktop 98 |
 | tempo e token (sub-agent) | | critique A 6,2 min/124k · critique B 4,9 min/84k · audit 13 min/182k · finish reviewer 2 min/71k · documenter 2,7 min/96k = **~557k token di sub-agent**, ~29 min di agente; l'intera sessione 14:45 → ~16:20 con l'autore al browser per `generate` |
+
+## 8. Tornata finale (2026-10-24 sera, dopo depósito/filtri/laterali/rieles)
+- axe 0 (390/1440/1920, chiaro e scuro, con filtri, dialog, bolsa); Lighthouse locale mobile 84 / desktop 98.
+- **Finish reviewer 2** (agente fresco, ~4 min · 100k token, **senza browser**: ha letto codice e catture full-page, quindi ha giudicato «da codice» filtri, rieles, dialog): 10 correzioni materiali, tutte vere. Le più utili sono bug che né axe né Lighthouse vedono: focus perso sui punti, volo verso la bolsa nascosta a ≥1700 px, contatore che si contraddice, dati dei laterali incoerenti con la rivista. Corrette in un giro (vedi scheda, «Chiusura»); foto del bolso e dell'almohadón in sospeso.
+- `build-phase advance --force` negato dal sistema (sessione nuova senza deroga esplicita): fase `responsive` ferma, `finish` non registrato.

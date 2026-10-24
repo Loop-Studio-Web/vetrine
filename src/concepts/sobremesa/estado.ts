@@ -76,3 +76,14 @@ export const leerPedidos = (): Pedido[] => leer<Pedido[]>(PEDIDOS, []);
 export function guardarPedido(p: Pedido) {
 	escribir(PEDIDOS, [p, ...leerPedidos()].slice(0, 5), 'sb:pedidos');
 }
+
+// la bolsa que se ve ahora: la de la testata arriba, la de Rieles en pantallas anchas cuando la testata ya salió de la vista
+export function bolsaVisible(): HTMLElement | null {
+	const todas = [...document.querySelectorAll<HTMLElement>('[data-bolsa-abrir]')];
+	return (
+		todas.find((b) => {
+			const r = b.getBoundingClientRect();
+			return getComputedStyle(b).visibility === 'visible' && r.width > 0 && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth;
+		}) ?? todas[0] ?? null
+	);
+}

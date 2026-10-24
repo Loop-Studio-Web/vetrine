@@ -229,7 +229,7 @@ const datos = await Promise.all(OBJETOS.map(async (o) => ({
 </style>
 
 <script>
-	import { sumar, alternarLibreta, leerLibreta } from './estado';
+	import { sumar, alternarLibreta, leerLibreta, bolsaVisible } from './estado';
 	import type { Lamina } from './chapa-gl';
 
 	type Dato = {
@@ -312,18 +312,23 @@ const datos = await Promise.all(OBJETOS.map(async (o) => ({
 		caja.hidden = !d.variantes;
 		if (!d.variantes) return;
 		q('[data-color-nombre]').textContent = `Color: ${nombreColor()}`;
-		q('[data-puntos]').replaceChildren(
-			...d.variantes.map((v) => {
-				const b = document.createElement('button');
-				b.type = 'button';
-				b.className = 'punto';
-				b.dataset.color = v.color;
-				b.style.setProperty('--p', v.fondo);
-				b.setAttribute('aria-label', v.nombre);
-				b.setAttribute('aria-pressed', String(v.color === colorActual));
-				return b;
-			}),
-		);
+		const fila = q<HTMLElement>('[data-puntos]');
+		// los botones se arman solo cuando cambia el objeto: al elegir un color el foco tiene que quedarse en su punto
+		if (fila.dataset.objeto !== d.id) {
+			fila.dataset.objeto = d.id;
+			fila.replaceChildren(
+				...d.variantes.map((v) => {
+					const b = document.createElement('button');
+					b.type = 'button';
+					b.className = 'punto';
+					b.dataset.color = v.color;
+					b.style.setProperty('--p', v.fondo);
+					b.setAttribute('aria-label', v.nombre);
+					return b;
+				}),
+			);
+		}
+		fila.querySelectorAll<HTMLElement>('.punto').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.color === colorActual)));
 	}
 	function elegirColor(color: string) {
 		const d = actual;
@@ -411,7 +416,7 @@ const datos = await Promise.all(OBJETOS.map(async (o) => ({
 	}
 	const cerrar = () => salir(null, 220);
 	const volar = () => {
-		const bolsa = document.querySelector<HTMLElement>('[data-bolsa-abrir]');
+		const bolsa = bolsaVisible();
 		salir(bolsa ? bolsa.getBoundingClientRect() : null, 420);
 	};
 

@@ -30,6 +30,7 @@ le celle con "?" vanno verificate sul concept prima di fidarsi.
 | Marrow & Knot | corridoio orizzontale di sale + nodo che si stringe | foto a tutta pagina tessute a fili (WebGL/OGL) + video in maschera a serratura | le foto si tessono entrando in sala e una si tesse sull'altra mentre si avanza; il testo si costruisce con lo scroll |
 | Chioma Saracena | pagina lunga a oggetto unico, acquisto in fondo (pagina prodotto + carrello + checkout) | lastre fotografiche + vetro cannettato, litografia su latta fuori registro, latta in render 3D | un oggetto solo che scende con lo scroll e cambia forma: oliva, goccia, latta che si posa accanto al pulsante |
 | Soft Riot | home da negozio (fascia avvisi, carosello, catalogo filtrabile, scheda rapida, carrello laterale) | campi di colore pieno, raso trapuntato 3D di brand + foto vere di moda in ritagli | il ritaglio che si apre: una finestra di forma diversa per tessera che al passaggio/tocco si allarga sul capo intero; interruttore di griglia a mattoncini |
+| Sobremesa | negozio-rivista con scene acquistabili (parete di un almacén coperta di cartelli, deposito con punti colore e cassetto di filtri) | lamiere smaltate (cobalto, rosso, giallo, bianco, nero) su parete verde scuro, foto impresse sulle lamiere, cartellini kraft con prezzi a mano | «Del cuadro a la chapa»: toccando un oggetto della foto i suoi pixel si fondono (WebGL) in una lamiera con la sua sagoma, che si appende vicino al cartello dati; «Sumá a la bolsa» la fa volare al cartello rosso |
 
 ### Cosa si ripete (lettura al 2026-10-15)
 

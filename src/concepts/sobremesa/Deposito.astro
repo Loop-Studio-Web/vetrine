@@ -15,6 +15,7 @@ const conColores = await Promise.all(
 );
 const chicos = DEPOSITO.filter((o) => !o.variantes);
 const mostrados = OBJETOS.length;
+const estante = mostrados - DEPOSITO.length;
 const marco = (c: { fondo: string; tinta: string; filete: string }) => `--c:${c.fondo};--tinta-c:${c.tinta};--filete:${c.filete};--textura:url(${enamelWhite.src});--tornillo:rgb(0 0 0 / 0.55)`;
 ---
 
@@ -24,13 +25,13 @@ const marco = (c: { fondo: string; tinta: string; filete: string }) => `--c:${c.
 
 	<div class="barra">
 		<button class="btn-chapa" type="button" data-filtros-abrir aria-haspopup="dialog">Filtrar <span class="barra__n" data-filtros-n hidden></span></button>
-		<p class="barra__estado" role="status" data-filtros-estado>{DEPOSITO.length} objetos en el depósito</p>
+		<p class="barra__estado" role="status" data-filtros-estado data-fuera={estante}>Mostrando {mostrados} de {TOTAL_CATALOGO} objetos</p>
 		<button class="btn-chapa btn-chapa--claro btn-chapa--chico" type="button" data-filtros-borrar hidden>Borrar filtros</button>
 	</div>
 
 	<ul class="caja">
 		{conColores.map(({ o, vs }, i) => (
-			<li class:list={['dep', 'dep--color', i < 3 ? 'dep--tres' : 'dep--cuatro']} data-filtro data-cat={o.categoria} data-taller={slug(o.taller)} data-precio={franja(o.precio)} data-colores="1">
+			<li class:list={['dep', 'dep--color', i < 3 ? 'dep--tres' : 'dep--cuatro', i % 2 ? 'dep--par' : 'dep--impar']} data-filtro data-cat={o.categoria} data-taller={slug(o.taller)} data-precio={franja(o.precio)} data-colores="1">
 				<article class="chapa chapa--flujo tarjeta" data-tarjeta data-id={o.id} style={marco(COLOR[vs[0].color])}>
 					<button class="tarjeta__foto" type="button" data-objeto={o.id} data-color={vs[0].color} aria-label={`${o.nombre}: ver de cerca`}>
 						<img src={vs[0].url} alt={`${o.nombre}, foto de ejemplo`} width="720" height="720" loading="lazy" decoding="async" />
@@ -65,8 +66,8 @@ const marco = (c: { fondo: string; tinta: string; filete: string }) => `--c:${c.
 	</ul>
 
 	<ul class="chicos">
-		{chicos.map((o) => (
-			<li class="dep dep--chico" data-filtro data-cat={o.categoria} data-taller={slug(o.taller)} data-precio={franja(o.precio)} data-colores="0">
+		{chicos.map((o, i) => (
+			<li class:list={['dep', 'dep--chico', { 'dep--bajo': i % 3 === 1 }]} data-filtro data-cat={o.categoria} data-taller={slug(o.taller)} data-precio={franja(o.precio)} data-colores="0">
 				<article class="chapa chapa--flujo mini" style={marco(COLOR[o.color])}>
 					<button class="tarjeta__foto" type="button" data-objeto={o.id} aria-label={`${o.nombre}: ver de cerca`}>
 						<Image src={o.foto} alt={`${o.nombre}, foto de ejemplo`} width={480} quality={72} format="webp" sizes="(min-width: 900px) 16vw, 44vw" loading="lazy" />
@@ -92,8 +93,8 @@ const marco = (c: { fondo: string; tinta: string; filete: string }) => `--c:${c.
 	</div>
 
 	<div class="catalogo">
-		<p class="catalogo__cuenta">Mostrando {mostrados} de {TOTAL_CATALOGO} objetos</p>
-		<button class="btn-chapa" type="button" data-catalogo aria-describedby="catalogo-aviso">Descubrí el catálogo completo · {TOTAL_CATALOGO} objetos</button>
+		<p class="catalogo__cuenta" data-filtros-cuenta data-fuera={estante} data-total={TOTAL_CATALOGO}>Mostrando {mostrados} de {TOTAL_CATALOGO} objetos</p>
+		<button class="btn-chapa" type="button" data-catalogo aria-describedby="catalogo-aviso">Descubrí el catálogo completo</button>
 		<p class="catalogo__aviso" id="catalogo-aviso" role="status" hidden>Es una maqueta: acá se abriría el catálogo entero, con filtros por taller, color y precio. Lo que ves es todo lo que hay en esta vitrina.</p>
 	</div>
 
@@ -102,6 +103,8 @@ const marco = (c: { fondo: string; tinta: string; filete: string }) => `--c:${c.
 		<p>Cada número de la revista tiene su propia mesa. Los anteriores siguen en el archivo.</p>
 		<a class="btn-chapa" href="#revista">Ver números anteriores</a>
 	</div>
+
+	<button class="btn-chapa filtrar-flota" type="button" data-filtros-abrir data-filtros-flota aria-haspopup="dialog">Filtrar</button>
 </section>
 
 <style>
@@ -109,6 +112,31 @@ const marco = (c: { fondo: string; tinta: string; filete: string }) => `--c:${c.
 		display: grid;
 		justify-items: start;
 		margin-top: clamp(72px, 9vw, 140px);
+	}
+	/* en pantallas angostas el botón de filtrar acompaña mientras se recorre el depósito (en las anchas lo hacen los carteles de Rieles) */
+	.filtrar-flota {
+		position: fixed;
+		left: max(16px, env(safe-area-inset-left, 0px));
+		bottom: max(16px, env(safe-area-inset-bottom, 0px));
+		z-index: 15;
+		--c: var(--amarillo);
+		background: var(--amarillo);
+		color: #1a1006;
+		visibility: hidden;
+		opacity: 0;
+		translate: 0 12px;
+		transition: opacity 0.25s ease, translate 0.25s var(--ease-out), visibility 0s 0.25s;
+	}
+	.filtrar-flota.on {
+		visibility: visible;
+		opacity: 1;
+		translate: 0 0;
+		transition: opacity 0.25s ease, translate 0.25s var(--ease-out);
+	}
+	@media (min-width: 1700px) and (min-aspect-ratio: 16 / 9) {
+		.filtrar-flota {
+			display: none;
+		}
 	}
 	.caja,
 	.chicos {
@@ -138,14 +166,14 @@ const marco = (c: { fondo: string; tinta: string; filete: string }) => `--c:${c.
 	.dep--chico {
 		grid-column: span 2;
 	}
-	.dep--color:nth-child(odd) {
+	.dep--impar {
 		rotate: -0.4deg;
 	}
-	.dep--color:nth-child(even) {
+	.dep--par {
 		rotate: 0.4deg;
 		margin-top: clamp(0px, 1.6vw, 26px);
 	}
-	.dep--chico:nth-child(3n + 2) {
+	.dep--bajo {
 		margin-top: clamp(0px, 1.2vw, 18px);
 	}
 
@@ -275,6 +303,9 @@ const marco = (c: { fondo: string; tinta: string; filete: string }) => `--c:${c.
 			grid-auto-flow: column;
 			justify-content: space-between;
 			align-items: baseline;
+		}
+		.tarjeta__pie :global(.btn-chapa) {
+			flex: 1;
 		}
 	}
 	.corazon {
@@ -460,6 +491,22 @@ const marco = (c: { fondo: string; tinta: string; filete: string }) => `--c:${c.
 </style>
 
 <script>
+	// el botón flotante de filtrar se ve con el depósito a pantalla, salvo cuando ya está a la vista el de la barra
+	{
+		const flota = document.querySelector<HTMLElement>('[data-filtros-flota]');
+		const dep = document.getElementById('deposito');
+		const barra = dep?.querySelector<HTMLElement>('.barra');
+		const final = dep?.querySelector<HTMLElement>('.catalogo');
+		if (flota && dep && barra && final && 'IntersectionObserver' in window) {
+			const vive = new Set<Element>();
+			const pinta = () => flota.classList.toggle('on', vive.has(dep) && !vive.has(barra) && !vive.has(final));
+			const io = new IntersectionObserver((es) => {
+				es.forEach((e) => (e.isIntersecting ? vive.add(e.target) : vive.delete(e.target)));
+				pinta();
+			});
+			[dep, barra, final].forEach((el) => io.observe(el));
+		}
+	}
 	// puntos de color de las tarjetas: la foto, la lámina y las claves de sumar/guardar siguen al punto elegido
 	const precargados = new Set<string>();
 	document.addEventListener('pointerover', (e) => {

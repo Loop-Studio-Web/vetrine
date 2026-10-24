@@ -34,6 +34,8 @@ import cardChioma from '../assets/hub/card-chioma.jpg';
 import shotChioma from '../assets/hub/shot-chioma.jpg';
 import cardSoftriot from '../assets/hub/card-softriot.jpg';
 import shotSoftriot from '../assets/hub/shot-softriot.jpg';
+import cardSobremesa from '../assets/hub/card-sobremesa.jpg';
+import shotSobremesa from '../assets/hub/shot-sobremesa.jpg';
 
 export const SITE = 'https://theloopstudio.org/';
 export const CONTACT = 'https://theloopstudio.org/contatti';
@@ -1049,6 +1051,64 @@ export const concepts: Concept[] = [
 		backend: {
 			titolo: 'Un motore su misura, senza abbonamenti',
 			d: 'Nel sito vero il catalogo vive in un motore su misura, sul server del cliente o su uno piccolo a canone fisso: niente plugin a pagamento e nessuna commissione di piattaforma sulle vendite, solo quella del servizio di pagamento. Prodotti, taglie e ordini si gestiscono da un pannello semplice; la scelta del motore si fa nel preventivo, in base a catalogo e volumi.',
+		},
+	},
+	{
+		slug: 'sobremesa',
+		macro: 'ecommerce',
+		nome: 'Sobremesa',
+		categoria: 'E-commerce',
+		archetipo: 'Il negozio-rivista di casa e tavola',
+		claim: 'Una rivista in cui ogni oggetto della foto si compra: toccalo e si fonde in una lamiera smaltata, poi vola nella borsa.',
+		path: '/ecommerce/sobremesa/',
+		infoPath: '/ecommerce/sobremesa/info/',
+		titoloSeo: 'Sito e-commerce editoriale per oggetti di casa e tavola: homepage concept con scene acquistabili e carrello (in spagnolo)',
+		descrizioneSeo:
+			'Come potrebbe essere un negozio online che è anche una rivista: scene fotografiche in cui ogni oggetto si compra dentro la storia, deposito con varianti di colore e filtri a cassetto, borsa con spedizione gratuita, libreta dei preferiti e ordine di prova. In spagnolo rioplatense. Concept dimostrativo di Loop Studio.',
+		intro: [
+			'Un negozio che vende oggetti per la casa ha un problema: il catalogo è una griglia, e una griglia non racconta niente. Qui la porta d’ingresso è la storia: una tavola apparecchiata, una cucina, e dentro la foto gli oggetti veri, ognuno col suo cartellino di cartone e il suo prezzo. Si legge, si riconosce una lampada o una brocca, si tocca: l’oggetto si stacca dalla foto, si fonde in una lamiera smaltata col suo colore e si appende accanto al cartello dei dati. “Sumá a la bolsa” e la lamiera vola al cartello rosso della borsa.',
+			'È il livello Esperienza della categoria E-commerce e una vetrina dimostrativa, scritta in spagnolo rioplatense per un pubblico argentino: marchio, laboratori, prezzi, spedizioni e recapiti sono di fantasia. Alcune fotografie sono d’archivio e la grande foto della tavola è un’immagine di esempio generata. Nessun pagamento è reale e il catalogo da 360 oggetti è una maquette: ne sono in scena ventuno.',
+		],
+		perChi:
+			'Negozi di arredo, ceramica, tessile e oggetti per la casa che hanno storie da raccontare e vogliono che chi legge possa comprare senza uscire dal racconto. Adatta a chi ha un catalogo ampio ma una voce editoriale forte: una rivista, un blog, un’identità visiva da mostrare già nella prima schermata.',
+		sezioni: [
+			{
+				t: 'Scene acquistabili, con i cartellini appesi',
+				d: 'La prima schermata è una parete di lamiere smaltate: il titolo della storia, tre foto della tavola e quattro cartellini di cartone con nome e prezzo scritto a mano, legati agli oggetti. Si appendono alla parete al caricamento; sul telefono i cartellini diventano punti numerati con una legenda.',
+			},
+			{
+				t: 'Dalla foto alla lamiera',
+				d: 'Toccando un oggetto la foto si fonde nello smalto pixel dopo pixel (WebGL, con riserva in CSS se manca) e la lamiera si apre dal punto toccato, con il cartello dei dati accanto. Gli oggetti con più colori hanno i loro punti: cambia la foto, il colore dello smalto e la fusione riparte.',
+			},
+			{
+				t: 'Il deposito: varianti, filtri a cassetto e punti di colore',
+				d: 'Sotto lo scaffale un deposito con schede grandi e piccole, il contatore sul catalogo intero e un cassetto di filtri (categoria, laboratorio, prezzo, solo con colori) con stato vuoto onesto. Sugli schermi larghi le fasce ai lati della parete portano i cartelli verticali con filtri, borsa e catalogo.',
+			},
+			{
+				t: 'Borsa, libreta e ordine di prova',
+				d: 'Cassetto della borsa con barra della spedizione gratuita, regalo con messaggio, scorte, calcolatrice di zone e importi, preferiti salvati nel browser e un tracciato dell’ordine in quattro tappe. Rispetta il movimento ridotto e funziona da tastiera.',
+			},
+		],
+		awning: ['#06236b', '#e8b414'],
+		glow: 'rgba(23, 71, 184, 0.55)',
+		livello: 3,
+		lingua: 'ES',
+		card: cardSobremesa,
+		shot: shotSobremesa,
+		shotAlt: '',
+		crop: '50% 30%',
+		cardAlt: 'Sobremesa su desktop e su telefono: l’insegna in lamiera col nome, il titolo bianco su una lamiera blu cobalto, tre fotografie di una tavola apparecchiata con cartellini di cartone legati agli oggetti e una striscia gialla di spedizione gratuita, su una parete verde scuro.',
+		mood: 'La parete di un almacén coperta di cartelli: lamiere smaltate cobalto, rosso, giallo, bianco e nero su verde scuro, foto impresse sulle lamiere e cartellini di cartone con i prezzi a mano. Il colore è quello dello smalto, non quello dell’ora del giorno.',
+		caratteri: 'Anton, Barlow Condensed, Archivo e Caveat',
+		palette: ['#16261c', '#1747b8', '#a82a1a', '#e8b414', '#14161a', '#d6d1ca'],
+		metriche: [
+			{ label: 'Performance', valore: '84' },
+			{ label: 'Accessibilità', valore: '100' },
+			{ label: 'Buone pratiche', valore: '100' },
+		],
+		backend: {
+			titolo: 'Un catalogo grande, un motore pensato per lui',
+			d: 'Un negozio con centinaia di oggetti, varianti di colore e scorte ha bisogno di un motore pensato per il catalogo, non di un plugin: gira sul server del cliente o su uno piccolo a canone fisso, senza abbonamenti di piattaforma né commissioni sulle vendite oltre a quella del servizio di pagamento. Storie, oggetti e ordini si gestiscono da un unico pannello; la scelta del motore si fa nel preventivo, in base a catalogo e volumi.',
 		},
 	},
 ];

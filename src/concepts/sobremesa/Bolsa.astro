@@ -447,7 +447,7 @@ const ligero = await Promise.all(
 </style>
 
 <script>
-	import { leerBolsa, sumar, fijar, vaciar, guardarPedido, cuenta, type Pedido } from './estado';
+	import { leerBolsa, sumar, fijar, vaciar, guardarPedido, cuenta, bolsaVisible, type Pedido } from './estado';
 
 	type Dato = { id: string; nombre: string; precio: number; stock: number; dias: number; foto: string };
 	const { objetos, zonas, gratis } = JSON.parse(document.getElementById('sb-bolsa-datos')!.textContent!) as {
@@ -638,7 +638,7 @@ const ligero = await Promise.all(
 			anuncio.textContent = `${una ? 'Sumaste los objetos de la mesa' : `${d?.nombre ?? 'Objeto'} sumado`}. En la bolsa: ${n} ${n === 1 ? 'objeto' : 'objetos'}.`;
 		}, 500);
 		if (reducido()) return;
-		const b = document.querySelector<HTMLElement>('[data-bolsa-abrir]');
+		const b = bolsaVisible();
 		if (!b) return;
 		b.classList.remove('bolsa-golpe');
 		void b.offsetWidth;
