@@ -35,6 +35,9 @@ COLLEGATI in `index.astro` (2026-10-24) e provati a 1440 e 390 (build ok, 0 erro
 
 **Parere dell'autore sulla bozza A+B (2026-10-24): ok, nessuna segnalazione; via ai collaudi (punto 4 del piano). Fase `review` aperta, finish reviewer ancora da lanciare.** `generate` riconfermato dall'autore (2026-10-24): UNA volta, per test, con le condizioni del punto 5 (dopo i collaudi e prima di `polish`; `live` resta escluso).
 
+**COLLAUDI FATTI (2026-10-24, 14:45-16:20): registro completo e tabella di confronto con Mala Hierba in `docs/concept/sobremesa-collaudi.md` (leggere quello).** critique 22/32 · audit 15/20 · axe 0 (1440 e 390, anche coi dialog) · Lighthouse locale mobile 84 / desktop 98 (PSI online da fare dopo il deploy) · `generate` usato UNA volta (scaffale, mix 2+3 scelto dall'autore) · `PRODUCT.md` e `DESIGN.md` ancora in radice (untracked: spostare in `docs/` a fine prova, influenzano `impeccable context` degli altri concept) · `build-phase finish --disposition ship` NON registrato (il motore dice «frontend inputs changed since the responsive screenshots were checked» anche dopo ricattura + `advance --force`; fase attuale `review`).
+**Aperti, da decidere con l'autore:** (1) foto dello scaffale di lámpara e jarra diverse dagli oggetti dell'hero (nuove foto, o ritagli dalla scena, o etichetta «foto ilustrativa»); (2) storie non leggibili (le card puntano a `#objetos`; «5 min de lectura» promette articoli che non ci sono: o si scrive una storia vera o si tolgono i minuti); (3) credits non linkati dalla pagina; (4) l'hero 3:2 non riempie la larghezza su schermi larghi (le sezioni sotto ora seguono il marco fino a 1760 px); (5) LCP mobile simulato 4,4 s da capire con PSI online.
+
 DA FARE ANCORA: `info.astro` (rinviata alla chiusura: serve la voce in `src/hub/data.ts` con card/shot e metriche, che dipendono dalla pagina finita e dai collaudi; è lavoro del punto 4 di "Da fare").
 
 ## Asset (`src/assets/sobremesa/`, crediti in `CREDITI.md`)
