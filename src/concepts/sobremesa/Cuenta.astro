@@ -1,9 +1,12 @@
 ---
 // Tu libreta y tu pedido: lo guardado (corazones) y el seguimiento de un pedido de prueba con sus cuatro tramos.
+import { getImage } from 'astro:assets';
 import { OBJETOS, PASOS_PEDIDO } from './dati';
 import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 
-const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.precio, foto: o.foto.src }));
+const ligero = await Promise.all(
+	OBJETOS.map(async (o) => ({ id: o.id, nombre: o.nombre, precio: o.precio, foto: await getImage({ src: o.foto, width: 720, quality: 76, format: 'webp' }).then((i) => i.src) })),
+);
 ---
 
 <section class="cuenta" id="cuenta" aria-labelledby="cuenta-titulo">
@@ -11,7 +14,7 @@ const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.preci
 
 	<div class="paneles">
 		<div class="chapa chapa--flujo panel" style={`--c:var(--cobalto);--tornillo:#020f33`}>
-			<h3 class="panel__titulo">Mi libreta</h3>
+			<h3 class="panel__titulo">Tu libreta</h3>
 			<p class="panel__bajada">Lo que guardaste con el corazón. Queda en este navegador, no hay cuenta ni clave.</p>
 			<ul class="libreta" data-libreta-lista></ul>
 			<p class="vacio" data-libreta-vacio>Todavía no guardaste nada. Tocá el corazón de cualquier objeto.</p>
@@ -54,6 +57,7 @@ const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.preci
 	}
 	.panel {
 		display: grid;
+		grid-template-columns: minmax(0, 1fr);
 		gap: 14px;
 		padding: clamp(26px, 4vw, 48px);
 		color: var(--blanco);
@@ -123,6 +127,7 @@ const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.preci
 	}
 	.seguir {
 		display: grid;
+		grid-template-columns: minmax(0, 1fr);
 		gap: 8px;
 	}
 	.seguir label {

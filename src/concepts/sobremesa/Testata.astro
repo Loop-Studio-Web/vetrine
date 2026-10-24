@@ -1,6 +1,7 @@
 ---
 // Testata dentro la parete: el nombre y las cuatro voces son carteles esmaltados, la bolsa es un cartel rojo.
 // Las posiciones salen de la medida del mockup (caja / dentro); el esmalte lleva la grana del recorte limpio del mockup.
+import { getImage } from 'astro:assets';
 import { caja, dentro } from './caja';
 import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 
@@ -10,11 +11,11 @@ const voces = [
 	{ id: 'nav-revista', href: '#revista', texto: 'Revista' },
 	{ id: 'nav-nosotros', href: '#nosotros', texto: 'Nosotros' },
 ];
-const textura = `--textura:url(${enamelWhite.src})`;
+const textura = `--textura:url(${(await getImage({ src: enamelWhite, format: 'webp', quality: 85 })).src})`;
 ---
 
 <header class="testata">
-	<a class="chapa marca" href="#main" style={`${caja('sign-wordmark')};--c:var(--esmalte);${textura}`} aria-label="Sobremesa, ir al inicio">
+	<a class="chapa marca" href="#main" style={`${caja('sign-wordmark')};--c:var(--esmalte);${textura}`} aria-label="Sobremesa Revista · shop de objetos para el hogar, ir al inicio">
 		<span class="marca__nombre" style={dentro('wordmark', 'sign-wordmark')}>Sobremesa</span>
 		<span class="marca__sub" style={dentro('wordmark-sub', 'sign-wordmark')}>Revista · shop de objetos para el hogar</span>
 	</a>
@@ -152,7 +153,7 @@ const textura = `--textura:url(${enamelWhite.src})`;
 			grid-column: 1 / -1;
 			grid-row: 2;
 			display: grid;
-			grid-template-columns: repeat(4, minmax(0, 1fr));
+			grid-template-columns: repeat(auto-fit, minmax(4.6rem, 1fr));
 			gap: 8px;
 		}
 		.voz {

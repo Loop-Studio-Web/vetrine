@@ -9,7 +9,10 @@ import '../../../concepts/sobremesa/base.css';
 import antonUrl from '@fontsource/anton/files/anton-latin-400-normal.woff2?url';
 import barlowUrl from '@fontsource/barlow-condensed/files/barlow-condensed-latin-700-normal.woff2?url';
 import archivoUrl from '@fontsource-variable/archivo/files/archivo-latin-wght-normal.woff2?url';
+import { getImage } from 'astro:assets';
 import wall from '../../../assets/sobremesa/plates/wall.png';
+import enamelBlue from '../../../assets/sobremesa/plates/enamel-blue.png';
+import enamelGrano from '../../../assets/sobremesa/plates/enamel-grano.jpg';
 import Fascia from '../../../concepts/sobremesa/Fascia.astro';
 import Pared from '../../../concepts/sobremesa/Pared.astro';
 import Testata from '../../../concepts/sobremesa/Testata.astro';
@@ -26,6 +29,10 @@ import Bolsa from '../../../concepts/sobremesa/Bolsa.astro';
 import Movimiento from '../../../concepts/sobremesa/Movimiento.astro';
 import Pie from '../../../concepts/sobremesa/Pie.astro';
 
+// texturas CSS en webp (mismos parámetros que en Portada / Testata, así el archivo es el mismo) y precargadas: el CSS las
+// descubre tarde y son lo primero que se pinta
+const textura = async (src: ImageMetadata) => (await getImage({ src, format: 'webp', quality: 85 })).src;
+const [paredUrl, azulUrl, granoUrl] = await Promise.all([textura(wall), textura(enamelBlue), textura(enamelGrano)]);
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const title = 'Sobremesa — Revista y tienda de objetos para la casa y la mesa';
 const description =
@@ -38,6 +45,9 @@ const pageUrl = new URL(`${base}/ecommerce/sobremesa/`, Astro.site).href;
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href={`${base}/images/sobremesa/favicon.svg`} />
+		<link rel="preload" as="image" href={azulUrl} fetchpriority="high" />
+		<link rel="preload" as="image" href={paredUrl} />
+		<link rel="preload" as="image" href={granoUrl} />
 		<link rel="preload" as="font" type="font/woff2" href={antonUrl} crossorigin />
 		<link rel="preload" as="font" type="font/woff2" href={barlowUrl} crossorigin />
 		<link rel="preload" as="font" type="font/woff2" href={archivoUrl} crossorigin />
@@ -57,7 +67,7 @@ const pageUrl = new URL(`${base}/ecommerce/sobremesa/`, Astro.site).href;
 		<meta property="og:image:height" content="630" />
 		<meta name="twitter:card" content="summary_large_image" />
 	</head>
-	<body style={`--pared-img:url(${wall.src})`}>
+	<body style={`--pared-img:url(${paredUrl})`}>
 		<a href="#main" class="skip-link">Ir al contenido</a>
 		<Fascia />
 		<main id="main">

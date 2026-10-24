@@ -1,0 +1,34 @@
+# Sobremesa: registro dei collaudi Impeccable (prova completa, 2026-10-24)
+
+Per il confronto con Mala Hierba (critique 22/32, solo `detect` + `critique`). Inizio collaudi 14:45. Pagina compilata (`dist`) servita dalla 4401.
+
+## 1. detect (14:46, 0,4 s sul file, 13 s per URL)
+- **File `dist/.../index.html`: 30** (low-contrast 5, broken-image 2, cramped-padding 19, tight-leading 4). **Senza CSS reale, quasi tutto falso.**
+- **URL a 1440: 5; a 390: 4** (cramped-padding 2 + straggler 3 / 2).
+- Classificazione (agente B, verificata sul DOM): VERI: contrasto del testo dei cartellini kraft ~3,9:1 (il rilevatore dice 1,1:1 perché non legge l'immagine: cifra sbagliata, difetto reale ma moderato), 5 vedove (parola sola sull'ultima riga), 1 px di scorrimento orizzontale a 375 px in `#cuenta`. FALSI: broken-image (le due `<img>` dei dialog si riempiono all'apertura), cramped-padding (padding 13-17 px reali, il rilevatore misura il line-height di Anton), tight-leading (titoli display).
+
+## 2. critique (due sub-agent isolati; B senza overlay/live-server, escluso)
+Durata A 6,2 min · 124k token; B 4,9 min · 84k token.
+- **Punteggio 22/32 (69%)**, con heuristiche 7 e 10 `n/a` (Persuade). Uguale a Mala Hierba (22/32). Punteggi: 1:3 · 2:3 · 3:3 · 4:2 · 5:2 · 6:3 · 8:3 · 9:3. Cognitive load: 2 falliti su 8 (scelte minime / working memory).
+- Verdetto di specificità: **autentico** (parete di lamiere, cartellini kraft, prezzi a mano); sotto l'hero diventa «pila standard» (titolo, intro, griglia, laboratori, calcolatrice).
+- **P1** nessuna storia leggibile: i due cartelli storia puntano a `#cocina-de-pasillo` e `#un-domingo-de-lino` che non esistono; il cartello titolo non è un link; «6 min de lectura» ma non si legge nulla (contraddice il principio 2 di PRODUCT.md).
+- **P1** il gesto firma mostra l'immagine sbagliata: toccando la lampada dell'hero si apre la foto di catalogo (3 lampade arancioni), non l'oggetto della scena; su 390 px il bordo alto della lamiera tocca il viewport e la brocca è tagliata. «Sacar del cuadro» sulle schede dello scaffale non ha senso (non sono un cuadro).
+- **P2** lo scaffale è una griglia di prodotti «in costume» + molto verde vuoto a destra delle intro.
+- **P2** calcolatrice: `min=10000` ma accetta 5 e -5 senza messaggio; il valore di default senza punto delle migliaia (`$ 100000`).
+- **P3** CTA dell'hero «Sumá a la bolsa» aggiunge 4 oggetti senza dirlo.
+- Minori: larghezza header (100-1340) diversa dal corpo (128-1312); hover del bottone «Ver» più chiaro delle altre lamiere; nessun accesso alla bolsa fisso su telefono; «Historias» nel menù riporta in cima.
+- Lato rilevatore/browser (B): console pulita, 0 overflow a 1440/390, 57 elementi con focus visibile, ordine di tab logico, 29 immagini (17 `alt=""`), target tattili <44 px solo in fascia di ritorno e link del piede; **H1 con due `<span>` senza spazio nel DOM** («LARGADE» per gli screen reader); titoli dei dialog vuoti nell'HTML statico; due landmark «Envíos».
+
+## 3. audit (sub-agent isolato, 13 min · 182k token) — **15/20 «Good»**, P0 0 · P1 3 · P2 5 · P3 5
+Accessibilità 3 · Performance 3 · Theming 3 · Responsive 3 · Implementation Integrity 3 (PASS: nessun gradiente-testo, vetro, griglie di schede identiche).
+- **P1** label-in-name (WCAG 2.5.3, A; axe «serious», 7 nodi a 1440, 11 a 390): `.marca` (Testata:17), `button.tapa` (Revista:19), `.cartelito` su telefono (Portada:67).
+- **P1** testo dei cartellini kraft 3,7-4,0:1 (mediana; axe «incomplete»). Il resto campionato passa (pin 7-18:1, bottoni 7,99:1).
+- **P1** scorrimento orizzontale a 320 px (376) e a 200% di testo (623): `.panel`/`.seguir` di Cuenta e `.fascia` (nowrap), `.titulo-meta`.
+- **P2** focus perso in Bolsa dopo +, −, Sacar (`replaceChildren`); aggiunta alla bolsa non annunciata (niente live region); ~1 MB di JPG originali precaricati in idle da `Chapa.astro` (stessi file già serviti in webp allo scaffale); texture CSS dell'hero scoperte tardi (PNG) e 3 foto dello scaffale `eager`; 3 px di overflow prima dello scroll (sezioni `.sb-pre` ruotate).
+- **P3** kill reduced-motion troppo largo (base.css:183), `.rotulo` senza padding-block, vedove (6), scroll dietro i dialog, `<header>` dentro `<main>` (nessun banner), ~30 colori letterali.
+- Pesi: 1846 KB scrivania / 1597 KB telefono (immagini 1611/1463), JS 13 KB, CSS 11 KB, font 198/97 KB, 52 richieste. Lighthouse locale: **mobile 72 (LCP 4,9 s)**, desktop 98; Accessibilità 100, Best practices 100, SEO 66 (noindex). Verificati OK: dialog e bolsa da tastiera (focus, Esc, ritorno), fallback WebGL, reduced motion, axe 0 sui dialog a 1440.
+
+## 4. optimize + harden (con break-ui) + clarify (un giro, 15:00-15:25)
+**optimize** (misurato con Lighthouse locale mobile, 3 giri): partenza 54-72 con **TBT 2,5 s**: la causa era la compilazione dello shader WebGL (software GL del Lighthouse) lanciata in idle appena caricata la pagina; bloccando `chapa-gl` il TBT va a 0. Ora lo shader si carica **al primo gesto** (o dopo 8 s): **mobile 83-85, TBT 0**, desktop 97-98. Altro: foto del dialog/bolsa/libreta in webp 720 dello scaffale (un solo file, niente JPG originali da 1 MB in idle; prefetch saltato con `saveData`), texture CSS dell'hero in webp + `preload`, tre foto dello scaffale non più `eager`. **LCP simulato resta ~4,4 s** in anteprima senza compressione (elemento `section.portada`, render delay): la misura vera è PSI online dopo il deploy; nessuna spiegazione trovata nel tempo dato.
+**harden** (+ break-ui: nome di 100 caratteri, bolsa a stock massimo, 1 pezzo, vuota, 320 px, testo al 200%, calcolatrice con 5, focus da tastiera): trovati e corretti: **canvas WebGL nato 300x150: con la lamina da 300 px la foto usciva ingrandita e tagliata in alto (bug vero, causa della P1 «immagine sbagliata su 390 px» del critique)**; dialog con `align-content: center` che tagliava l'alto quando il nome è lungo (ora `safe center`); titolo del dialog con interlinea 1 (la tilde della Ñ toccava la riga sopra, ora 1,08); righe della bolsa a 320 px (nome schiacciato in 84 px: ora a tutta larghezza); focus perso nella bolsa dopo +/−/Sacar (ora torna al bottone); annuncio per lettori di schermo all'aggiunta; label-in-name (marca, tapas, cartellini su telefono); H1 con spazio fra le righe; scorrimento orizzontale a 320 e al 200% (griglie senza `minmax(0,1fr)` in Cuenta e Pie, fascia, nav della testata `auto-fit`); calcolatrice che accettava 5 senza messaggio (ora avviso + valore limitato); contrasto cartellini kraft (testo `#1a1006`, cartone +10% luce); `html:has(dialog[open])` blocca lo scroll dietro; link storie senza ancora morta (puntano a `#objetos`; `#historias` sul cartello 1).
+**clarify**: «Sacar del cuadro» sulle schede dello scaffale (non sono un quadro) → «Ver de cerca»; «hecho en N días» → «listo en N días» (come nel dialog); «Mi libreta» → «Tu libreta»; CTA dell'hero «Sumá a la bolsa» → «Sumá los 4» (aggiunge quattro oggetti).

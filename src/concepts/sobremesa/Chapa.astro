@@ -3,10 +3,13 @@
 // la pared y el objeto se despega de donde estaba: la foto del objeto, impresa sobre una lámina esmaltada en su color, viaja
 // desde el punto tocado hasta su lugar y al lado entra un cartel con el nombre, el precio y "Sumá a la bolsa". Todo el
 // movimiento es WAAPI (transform y opacity); con movimiento reducido solo hay un fundido.
+import { getImage } from 'astro:assets';
 import { OBJETOS, COLOR, pesos } from './dati';
 import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 
-const datos = OBJETOS.map((o) => ({
+// misma foto, mismos parámetros que el estante (Objetos.astro): un solo archivo webp en lugar del JPG original
+const fotoWebp = (o: (typeof OBJETOS)[number]) => getImage({ src: o.foto, width: 720, quality: 76, format: 'webp' }).then((i) => i.src);
+const datos = await Promise.all(OBJETOS.map(async (o) => ({
 	id: o.id,
 	nombre: o.nombre,
 	precio: o.precio,
@@ -16,8 +19,8 @@ const datos = OBJETOS.map((o) => ({
 	dias: o.dias,
 	stock: o.stock,
 	color: COLOR[o.color],
-	foto: o.foto.src,
-}));
+	foto: await fotoWebp(o),
+})));
 ---
 
 <script type="application/json" id="sb-objetos" set:html={JSON.stringify(datos)} />
@@ -130,7 +133,8 @@ const datos = OBJETOS.map((o) => ({
 		font-family: var(--f-titulo);
 		font-weight: 400;
 		font-size: clamp(2.2rem, 4.4vw, 3.6rem);
-		line-height: 1;
+		line-height: 1.08;
+		text-wrap: balance;
 		text-transform: uppercase;
 		padding-right: 52px;
 	}
@@ -204,6 +208,7 @@ const datos = OBJETOS.map((o) => ({
 			grid-template-columns: minmax(0, 1fr);
 			min-height: 100%;
 			align-content: center;
+			align-content: safe center; /* con un nombre largo el contenido supera la pantalla: sin "safe" se cortaba arriba, fuera de alcance del scroll */
 			padding: 0;
 		}
 		.figura {
@@ -241,6 +246,7 @@ const datos = OBJETOS.map((o) => ({
 	let anims: Animation[] = [];
 
 	// las fotos se bajan en el rato libre: al tocar, el objeto ya está listo y el movimiento no espera a la red
+	// (salvo con ahorro de datos: ahí la foto se baja recién al tocar)
 	const precargar = () => datos.forEach((d) => Object.assign(new Image(), { src: d.foto }));
 	// el shader de la lámina (chapa-gl.ts) se baja y se compila también en el rato libre; si no está listo o no hay WebGL,
 	// el diálogo abre con la lámina CSS de siempre
@@ -250,8 +256,18 @@ const datos = OBJETOS.map((o) => ({
 			.then((m) => (lamina = m.crearLamina(figura)))
 			.catch(() => {});
 	const enReposo = (f: () => void) => ('requestIdleCallback' in window ? requestIdleCallback(f) : setTimeout(f, 1500));
-	enReposo(precargar);
-	enReposo(cargarGL);
+	if (!(navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData) enReposo(precargar);
+	// compilar el shader pesa en el hilo principal (en equipos sin GPU o con WebGL por software, segundos): se espera al primer gesto
+	// de la persona (o a los 8 s) para no cargarle esa cuenta a la primera pantalla
+	let glPedido = false;
+	const pedirGL = () => {
+		if (glPedido) return;
+		glPedido = true;
+		['pointerdown', 'pointermove', 'touchstart', 'keydown', 'scroll', 'wheel'].forEach((t) => removeEventListener(t, pedirGL));
+		enReposo(cargarGL);
+	};
+	['pointerdown', 'pointermove', 'touchstart', 'keydown', 'scroll', 'wheel'].forEach((t) => addEventListener(t, pedirGL, { passive: true }));
+	setTimeout(pedirGL, 8000);
 
 	// animaciones con fill: quedarían pegadas al diálogo cerrado (y lo dejarían invisible al reabrir): se anulan todas
 	function limpiar() {

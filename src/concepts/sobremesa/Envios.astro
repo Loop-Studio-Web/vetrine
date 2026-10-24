@@ -20,6 +20,7 @@ import enamelBlue from '../../assets/sobremesa/plates/enamel-blue.png';
 			<label class="campo">
 				<span>Cuánto querés gastar</span>
 				<span class="campo__monto"><b aria-hidden="true">$</b><input type="number" name="monto" min="10000" max="900000" step="1000" value="100000" inputmode="numeric" data-monto /></span>
+				<span class="campo__aviso" role="alert" data-aviso hidden>Poné un monto entre $10.000 y $900.000.</span>
 			</label>
 		</form>
 
@@ -106,6 +107,12 @@ import enamelBlue from '../../assets/sobremesa/plates/enamel-blue.png';
 	.campo__monto input {
 		padding-left: 32px;
 	}
+	.campo__aviso {
+		margin-top: 6px;
+		font-weight: 700;
+		font-size: 0.9375rem;
+		color: var(--amarillo);
+	}
 	.resultado {
 		display: grid;
 		grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
@@ -186,7 +193,11 @@ import enamelBlue from '../../assets/sobremesa/plates/enamel-blue.png';
 
 	function pintar() {
 		const z = zonas.find((x) => x.id === zona.value) ?? zonas[0];
-		const m = Math.max(0, Number(monto.value) || 0);
+		const crudo = Number(monto.value);
+		const fuera = !(crudo >= Number(monto.min) && crudo <= Number(monto.max));
+		el('[data-aviso]').hidden = !fuera;
+		monto.setAttribute('aria-invalid', String(fuera));
+		const m = Math.min(Number(monto.max), Math.max(Number(monto.min), crudo || 0));
 		el('[data-plazo]').textContent = `Llega en ${z.dias}`;
 		el('[data-costo]').textContent = m >= gratis ? 'Envío gratis' : `Envío ${f(z.costo)}`;
 		el('[data-gratis]').textContent = m >= gratis ? 'Pasaste el mínimo de envío gratis.' : `Te faltan ${f(gratis - m)} para el envío gratis.`;

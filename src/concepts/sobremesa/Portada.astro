@@ -1,7 +1,7 @@
 ---
 // Portada: el cartel grande con el título de la historia y la foto de la mesa impresa sobre tres láminas, con los
 // cartelitos de precio colgados de los objetos. Posiciones del mockup aprobado (caja / dentro).
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import { caja, dentro } from './caja';
 import { OBJETOS_MESA, pesos } from './dati';
 import { MEDIDAS } from './medidas';
@@ -10,6 +10,8 @@ import photo1 from '../../assets/sobremesa/plates/photo-1.png';
 import photo2 from '../../assets/sobremesa/plates/photo-2.png';
 import photo3 from '../../assets/sobremesa/plates/photo-3.png';
 import tagKraft from '../../assets/sobremesa/tag-kraft.png';
+
+const texturaAzul = (await getImage({ src: enamelBlue, format: 'webp', quality: 85 })).src;
 
 const laminas = [
 	{ id: 'photo-1', img: photo1, w: 520 },
@@ -45,10 +47,10 @@ const pinDe = (region: string, id: string) => {
 const leyenda = [...cartelitos].sort((a, b) => pines[a.objeto.id].n - pines[b.objeto.id].n);
 ---
 
-<section class="portada" aria-labelledby="titulo" style={`--textura:url(${enamelBlue.src})`}>
+<section class="portada" aria-labelledby="titulo" style={`--textura:url(${texturaAzul})`}>
 	<div class="chapa titulo-cartel" style={`${caja('sign-headline')};--c:var(--cobalto);--tornillo:#020f33`}>
 		<h1 id="titulo" class="titulo" style={dentro('headline-1', 'sign-headline')}>
-			<span>LA MESA LARGA</span>
+			<span>LA MESA LARGA</span>{' '}
 			<span>DE CARO Y MATI</span>
 		</h1>
 		<div class="titulo-regla" style={dentro('headline-rule', 'sign-headline')}></div>
@@ -64,7 +66,7 @@ const leyenda = [...cartelitos].sort((a, b) => pines[a.objeto.id].n - pines[b.ob
 		<p class="sr-only">Foto de ejemplo, generada: una mesa larga de madera con un mantel de lino, una jarra de gres con flores, vasos de vidrio y una lámpara colgante de chapa.</p>
 
 		{cartelitos.map((c) => (
-			<button class="cartelito" type="button" style={`--ax:${((c.x / 1536) * 100).toFixed(3)}%;--ay:${((c.y / 1024) * 100).toFixed(3)}%;--giro:${c.giro}deg;${pinDe(c.region, c.objeto.id)};--pin:${pines[c.objeto.id].fondo};--pin-tinta:${pines[c.objeto.id].tinta}`} data-objeto={c.objeto.id} aria-label={`${c.objeto.nombre}, ${pesos(c.objeto.precio)}. Ver y sumar a la bolsa`}>
+			<button class="cartelito" type="button" style={`--ax:${((c.x / 1536) * 100).toFixed(3)}%;--ay:${((c.y / 1024) * 100).toFixed(3)}%;--giro:${c.giro}deg;${pinDe(c.region, c.objeto.id)};--pin:${pines[c.objeto.id].fondo};--pin-tinta:${pines[c.objeto.id].tinta}`} data-objeto={c.objeto.id} aria-label={`${pines[c.objeto.id].n}. ${c.objeto.nombre}, ${pesos(c.objeto.precio)}. Ver y sumar a la bolsa`}>
 				<span class="cartelito__lamina">
 					<Image class="cartelito__carton" src={tagKraft} alt="" width={200} quality={85} format="webp" loading="eager" />
 					<span class="cartelito__texto" aria-hidden="true">
@@ -92,7 +94,7 @@ const leyenda = [...cartelitos].sort((a, b) => pines[a.objeto.id].n - pines[b.ob
 			<polygon points="5,5 203,5 224,35 203,65 5,65" fill="var(--cobalto)" stroke="rgb(255 255 255 / 0.92)" stroke-width="3" stroke-linejoin="round" />
 			<polygon points="11,11 200,11 217,35 200,59 11,59" fill="none" stroke="rgb(255 255 255 / 0.28)" stroke-width="1.5" stroke-linejoin="round" />
 		</svg>
-		<span>Sumá a la bolsa</span>
+		<span>Sumá los 4<small class="sr-only"> objetos de la mesa a la bolsa</small></span>
 	</button>
 </section>
 
@@ -199,6 +201,7 @@ const leyenda = [...cartelitos].sort((a, b) => pines[a.objeto.id].n - pines[b.ob
 		translate: -50% -50%;
 		rotate: -90deg;
 		object-fit: contain;
+		filter: brightness(1.1);
 	}
 	.cartelito__texto {
 		position: absolute;
@@ -214,7 +217,7 @@ const leyenda = [...cartelitos].sort((a, b) => pines[a.objeto.id].n - pines[b.ob
 		font-weight: 600;
 		font-size: calc(17 * var(--k));
 		line-height: 0.92;
-		color: #2f2210;
+		color: #1a1006;
 		text-align: center;
 		text-wrap: balance;
 	}
@@ -318,6 +321,7 @@ const leyenda = [...cartelitos].sort((a, b) => pines[a.objeto.id].n - pines[b.ob
 			order: 2;
 			margin-top: 12px;
 			font-size: 1.25rem;
+			white-space: normal;
 		}
 		.titulo-regla {
 			order: 3;

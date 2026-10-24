@@ -147,7 +147,8 @@ export function crearLamina(figura: HTMLElement): Lamina | null {
 		const w = figura.clientWidth;
 		const dpr = Math.min(window.devicePixelRatio || 1, 2);
 		const px = Math.max(64, Math.round(w * dpr));
-		if (canvas.width !== px) canvas.width = canvas.height = px;
+		// el lienzo nace de 300x150: con px = 300 solo el ancho coincidía y la foto salía recortada y ampliada
+		if (canvas.width !== px || canvas.height !== px) canvas.width = canvas.height = px;
 		gl!.viewport(0, 0, px, px);
 		const pad = parseFloat(getComputedStyle(figura).paddingLeft) / w;
 		geom = { px, pad, rim: pad * 0.36 };

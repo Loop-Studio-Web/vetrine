@@ -180,6 +180,11 @@ p {
 	white-space: nowrap;
 }
 
+/* con un diálogo abierto la página de atrás no se desplaza */
+html:has(dialog[open]) {
+	overflow: hidden;
+}
+
 @media (prefers-reduced-motion: reduce) {
 	*,
 	*::before,
@@ -192,6 +197,7 @@ p {
 
 /* ---- cuerpo de la página bajo la portada: secciones en el flujo, misma parete y mismos carteles ---- */
 .cuerpo {
+	overflow-x: clip;
 	--k: clamp(0.62px, calc(100vw / 1536), 1px);
 	width: min(100%, 1280px);
 	margin-inline: auto;

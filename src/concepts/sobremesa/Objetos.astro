@@ -8,7 +8,7 @@ import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 
 <section class="objetos" id="objetos" aria-labelledby="objetos-titulo">
 	<h2 id="objetos-titulo" class="chapa chapa--flujo rotulo" style={`--c:var(--esmalte);--tornillo:#55524c;--textura:url(${enamelWhite.src})`}>Lo que vimos en la mesa</h2>
-	<p class="bajada">Todo lo que cuelga de la foto de la portada y unas cosas más de la misma casa. Tocá la foto de uno y lo sacamos del cuadro.</p>
+	<p class="bajada">Todo lo que cuelga de la foto de la portada y unas cosas más de la misma casa. Tocá la foto de uno y lo ves de cerca.</p>
 
 	<ul class="estante">
 		{OBJETOS.map((o, i) => {
@@ -16,14 +16,14 @@ import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 			return (
 				<li class="obj" style={`--span:${o.ancho}`}>
 					<article class="chapa chapa--flujo tarjeta" style={`--c:${c.fondo};--tinta-c:${c.tinta};--filete:${c.filete};--textura:url(${enamelWhite.src});--tornillo:rgb(0 0 0 / 0.55)`}>
-						<button class="tarjeta__foto" type="button" data-objeto={o.id} aria-label={`${o.nombre}: sacar del cuadro y ver el detalle`}>
-							<Image src={o.foto} alt={`${o.nombre}, foto de ejemplo`} width={720} quality={76} format="webp" sizes="(min-width: 900px) 40vw, 90vw" loading={i < 3 ? 'eager' : 'lazy'} />
-							<span class="tarjeta__ver" aria-hidden="true">Sacar del cuadro</span>
+						<button class="tarjeta__foto" type="button" data-objeto={o.id} aria-label={`${o.nombre}: ver de cerca`}>
+							<Image src={o.foto} alt={`${o.nombre}, foto de ejemplo`} width={720} quality={76} format="webp" sizes="(min-width: 900px) 40vw, 90vw" loading="lazy" />
+							<span class="tarjeta__ver" aria-hidden="true">Ver de cerca</span>
 						</button>
 						<div class="tarjeta__texto">
 							<h3 class="tarjeta__nombre">{o.nombre}</h3>
 							<p class="tarjeta__frase">{o.frase}</p>
-							<p class="tarjeta__meta">{o.taller} · hecho en {o.dias} días</p>
+							<p class="tarjeta__meta">{o.taller} · listo en {o.dias} días</p>
 						</div>
 						<div class="tarjeta__pie">
 							<p class="tarjeta__precio">

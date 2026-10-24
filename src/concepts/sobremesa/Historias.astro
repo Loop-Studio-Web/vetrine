@@ -13,9 +13,9 @@ const items = [
 ];
 ---
 
-<section class="historias" id="historias" aria-label="Más historias de este número">
+<section class="historias" aria-label="Más historias de este número">
 	{items.map(({ n, hist, foto, w }) => (
-		<a class="chapa historia" href={`#${hist.id}`} style={`${caja(`sign-story-${n}`)};--c:var(--esmalte);--tornillo:#55524c;--textura:url(${enamelWhite.src})`}>
+		<a class="chapa historia" id={n === 1 ? 'historias' : undefined} href="#objetos" style={`${caja(`sign-story-${n}`)};--c:var(--esmalte);--tornillo:#55524c;--textura:url(${enamelWhite.src})`}>
 			<span class="historia__foto" style={dentro(`story-${n}-photo`, `sign-story-${n}`)}>
 				<Image src={foto} alt="" width={w} quality={78} format="webp" sizes="22vw" loading="eager" />
 			</span>

@@ -2,11 +2,17 @@
 // La bolsa: un cajón que entra por la derecha. Cada objeto cuelga como un cartelito de la lámina blanca, con su cantidad,
 // una barra hasta el envío gratis, un mensaje de regalo y un pago de prueba (sin marcas ni datos: no se cobra nada).
 // El estado vive en estado.ts; acá solo se pinta y se escucha [data-bolsa-abrir], [data-sumar-mesa] y "sb:agregado".
+import { getImage } from 'astro:assets';
 import { OBJETOS, ZONAS, PRECIO_ENVIO_GRATIS } from './dati';
 import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 
-const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.precio, stock: o.stock, dias: o.dias, foto: o.foto.src }));
+// misma foto webp que el estante y el diálogo (un solo archivo en caché)
+const ligero = await Promise.all(
+	OBJETOS.map(async (o) => ({ id: o.id, nombre: o.nombre, precio: o.precio, stock: o.stock, dias: o.dias, foto: await getImage({ src: o.foto, width: 720, quality: 76, format: 'webp' }).then((i) => i.src) })),
+);
 ---
+
+<p class="sr-only" role="status" data-anuncio></p>
 
 <dialog class="cajon" id="sb-bolsa" aria-labelledby="sb-bolsa-titulo" style={`--textura:url(${enamelWhite.src})`}>
 	<div class="cajon__marco">
@@ -422,6 +428,17 @@ const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.preci
 		.linea {
 			grid-template-columns: 56px minmax(0, 1fr) auto;
 		}
+	}
+	/* pantallas muy angostas o texto al 200%: el nombre ocupa todo el ancho y precio y cantidad bajan juntos */
+	@media (max-width: 380px) {
+		.linea {
+			grid-template-areas: 'foto nombre nombre' 'foto quitar quitar' 'precio precio cant';
+		}
+		.linea__quitar {
+			justify-self: start;
+			min-height: 36px;
+			padding-left: 0;
+		}
 		.linea img {
 			width: 56px;
 			height: 56px;
@@ -430,7 +447,7 @@ const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.preci
 </style>
 
 <script>
-	import { leerBolsa, sumar, fijar, vaciar, guardarPedido, type Pedido } from './estado';
+	import { leerBolsa, sumar, fijar, vaciar, guardarPedido, cuenta, type Pedido } from './estado';
 
 	type Dato = { id: string; nombre: string; precio: number; stock: number; dias: number; foto: string };
 	const { objetos, zonas, gratis } = JSON.parse(document.getElementById('sb-bolsa-datos')!.textContent!) as {
@@ -460,6 +477,19 @@ const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.preci
 			.map(({ d, n }) => ({ d, n: Math.min(n, d.stock) }));
 	}
 	const subtotal = (ls = lineas()) => ls.reduce((t, l) => t + l.d.precio * l.n, 0);
+
+	// el foco no se pierde cuando las líneas se vuelven a pintar: vuelve al mismo botón de la misma línea (o a la vecina si se fue)
+	let foco: { id: string; tipo: 'mas' | 'menos' | 'quitar' } | null = null;
+	function devolverFoco() {
+		if (!foco) return;
+		const { id, tipo } = foco;
+		foco = null;
+		const li = lista.querySelector<HTMLElement>(`.linea[data-id="${id}"]`);
+		const btn = li?.querySelector<HTMLButtonElement>(`[data-${tipo}]`);
+		const alt = li?.querySelector<HTMLButtonElement>('[data-menos]');
+		const vecina = lista.querySelector<HTMLButtonElement>('[data-quitar]');
+		(btn && !btn.disabled ? btn : li ? alt : vecina ?? dlg.querySelector<HTMLElement>('[data-bolsa-cerrar]'))?.focus();
+	}
 
 	function pintar() {
 		const ls = lineas();
@@ -501,6 +531,7 @@ const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.preci
 		q('[data-barra-texto]').textContent = sub >= gratis ? 'Envío gratis: ya llegaste.' : `Te faltan ${f(gratis - sub)} para el envío gratis.`;
 		q<HTMLElement>('[data-barra]').style.width = `${Math.min(100, (sub / gratis) * 100)}%`;
 		window.dispatchEvent(new CustomEvent('sb:bolsa-total', { detail: sub }));
+		devolverFoco();
 	}
 
 	// ---- abrir y cerrar ----
@@ -528,7 +559,7 @@ const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.preci
 		if (t.closest('[data-bolsa-abrir]')) abrir();
 		if (t.closest('[data-sumar-mesa]')) {
 			MESA.forEach((id) => sumar(id));
-			window.dispatchEvent(new CustomEvent('sb:agregado', { detail: { id: MESA[0] } }));
+			window.dispatchEvent(new CustomEvent('sb:agregado', { detail: { id: MESA[0], mesa: true } }));
 			abrir();
 		}
 	});
@@ -540,9 +571,18 @@ const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.preci
 		const id = li.dataset.id!;
 		const act = lineas().find((l) => l.d.id === id);
 		if (!act) return;
-		if (t.closest('[data-mas]')) fijar(id, Math.min(act.d.stock, act.n + 1));
-		if (t.closest('[data-menos]')) fijar(id, act.n - 1);
-		if (t.closest('[data-quitar]')) fijar(id, 0);
+		if (t.closest('[data-mas]')) {
+			foco = { id, tipo: 'mas' };
+			fijar(id, Math.min(act.d.stock, act.n + 1));
+		}
+		if (t.closest('[data-menos]')) {
+			foco = { id, tipo: 'menos' };
+			fijar(id, act.n - 1);
+		}
+		if (t.closest('[data-quitar]')) {
+			foco = { id, tipo: 'quitar' };
+			fijar(id, 0);
+		}
 	});
 	dlg.addEventListener('cancel', (e) => {
 		e.preventDefault();
@@ -587,7 +627,16 @@ const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.preci
 	});
 
 	// ---- el contador de la testata da un golpe cuando algo cae en la bolsa ----
-	window.addEventListener('sb:agregado', () => {
+	// aviso para lectores de pantalla (el diálogo del objeto ya se está cerrando cuando el aviso entra)
+	const anuncio = document.querySelector<HTMLElement>('[data-anuncio]')!;
+	window.addEventListener('sb:agregado', (e) => {
+		const { id, mesa } = (e as CustomEvent<{ id: string; mesa?: boolean }>).detail ?? {};
+		const n = cuenta();
+		const una = !!mesa;
+		const d = objetos.find((o) => o.id === id);
+		setTimeout(() => {
+			anuncio.textContent = `${una ? 'Sumaste los objetos de la mesa' : `${d?.nombre ?? 'Objeto'} sumado`}. En la bolsa: ${n} ${n === 1 ? 'objeto' : 'objetos'}.`;
+		}, 500);
 		if (reducido()) return;
 		const b = document.querySelector<HTMLElement>('[data-bolsa-abrir]');
 		if (!b) return;

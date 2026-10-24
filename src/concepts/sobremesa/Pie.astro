@@ -37,6 +37,7 @@ import logoLoop from '../../assets/hub/loop-logo-on-dark.svg';
 		margin: clamp(72px, 9vw, 140px) auto 0;
 		padding: 0 var(--gutter) clamp(40px, 5vw, 64px);
 		display: grid;
+		grid-template-columns: minmax(0, 1fr);
 		gap: clamp(36px, 5vw, 64px);
 	}
 	.pie__boletin {
@@ -63,6 +64,7 @@ import logoLoop from '../../assets/hub/loop-logo-on-dark.svg';
 	}
 	.pie__form {
 		display: grid;
+		grid-template-columns: minmax(0, 1fr);
 		gap: 8px;
 	}
 	.pie__form label {
@@ -124,7 +126,7 @@ import logoLoop from '../../assets/hub/loop-logo-on-dark.svg';
 	@media (max-width: 860px) {
 		.pie__boletin,
 		.pie__base {
-			grid-template-columns: 1fr;
+			grid-template-columns: minmax(0, 1fr);
 		}
 	}
 	@media (max-width: 480px) {
