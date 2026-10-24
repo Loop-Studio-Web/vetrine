@@ -45,6 +45,8 @@ body {
 	color: var(--blanco);
 	font-family: var(--f-cartel);
 	font-weight: 600;
+	/* Anton existe solo en 400: sin esto los títulos que heredan 600 salían con negrita sintética (letras pegadas) */
+	font-synthesis: none;
 	line-height: 1.35;
 	-webkit-font-smoothing: antialiased;
 }
@@ -94,6 +96,12 @@ p {
 	outline-offset: 3px;
 	box-shadow: 0 0 0 6px var(--cobalto-vivo);
 	border-radius: 6px;
+}
+
+/* una palabra sola en la última línea afea los párrafos cortos de los carteles */
+.cuerpo p,
+.cuerpo li {
+	text-wrap: pretty;
 }
 
 .sr-only {
@@ -215,7 +223,7 @@ html:has(dialog[open]) {
 	display: inline-block;
 	justify-self: start;
 	margin: 0 0 clamp(20px, 3vw, 36px);
-	padding: calc(18 * var(--k)) calc(44 * var(--k)) calc(14 * var(--k));
+	padding: calc(18 * var(--k) + 4px) calc(44 * var(--k)) calc(14 * var(--k) + 4px);
 	font-family: var(--f-titulo);
 	font-weight: 400;
 	font-size: clamp(2rem, 4.6vw, 4rem);

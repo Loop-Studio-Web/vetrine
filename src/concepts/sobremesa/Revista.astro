@@ -18,8 +18,8 @@ const tintas = ['var(--blanco)', '#fff', 'var(--tinta)', 'var(--tinta)', 'var(--
 			<li>
 				<button class="chapa chapa--flujo tapa" type="button" data-numero={n.n} style={`--c:${colores[i]};--tinta-c:${tintas[i]};--textura:url(${i % 2 ? enamelWhite.src : enamelBlue.src});--tornillo:rgb(0 0 0 / 0.5)`} aria-haspopup="dialog" aria-label={`Nº ${String(n.n).padStart(2, '0')} ${n.titulo} ${n.estacion}. Ver el índice`}>
 					<Image class="tapa__foto" src={n.foto} alt="" width={520} quality={72} format="webp" sizes="260px" loading="lazy" />
-					<span class="tapa__num">Nº {String(n.n).padStart(2, '0')}</span>
-					<span class="tapa__titulo">{n.titulo}</span>
+					<span class="tapa__num">Nº {String(n.n).padStart(2, '0')}</span>{' '}
+					<span class="tapa__titulo">{n.titulo}</span>{' '}
 					<span class="tapa__estacion">{n.estacion}</span>
 				</button>
 			</li>

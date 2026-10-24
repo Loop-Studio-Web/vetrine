@@ -29,7 +29,7 @@ import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 	  <strong>{pesos(o.precio)}</strong>
 	  <span class:list={['tarjeta__stock', { 'tarjeta__stock--poco': o.stock <= 4 }]}>{o.stock <= 4 ? `Quedan ${o.stock}` : 'En stock'}</span>
 	  </p>
-	  <button class="btn-chapa btn-chapa--chico" type="button" data-sumar={o.id}>Sumá</button>
+	  <button class="btn-chapa btn-chapa--chico" type="button" data-sumar={o.id} aria-label={`Sumá ${o.nombre} a la bolsa`}>Sumá</button>
 	  <button class="corazon" type="button" data-libreta={o.id} aria-pressed="false" aria-label={`Guardar ${o.nombre} en mi libreta`}>
 	  <svg viewBox="0 0 24 24" aria-hidden="true" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9-9.4C1.9 7.600 4 5 6.800 5c2 0 3.700 1.100 5.200 3 1.500-1.900 3.200-3 5.200-3C20 5 22.100 7.600 21 11.100c-1.500 4.800-9 9.400-9 9.400Z" /></svg>
 	  </button>
@@ -57,7 +57,7 @@ import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 	  <strong>{pesos(o.precio)}</strong>
 	  <span class:list={['tarjeta__stock', { 'tarjeta__stock--poco': o.stock <= 4 }]}>{o.stock <= 4 ? `Quedan ${o.stock}` : 'En stock'}</span>
 	  </p>
-	  <button class="btn-chapa btn-chapa--chico" type="button" data-sumar={o.id}>Sumá</button>
+	  <button class="btn-chapa btn-chapa--chico" type="button" data-sumar={o.id} aria-label={`Sumá ${o.nombre} a la bolsa`}>Sumá</button>
 	  <button class="corazon" type="button" data-libreta={o.id} aria-pressed="false" aria-label={`Guardar ${o.nombre} en mi libreta`}>
 	  <svg viewBox="0 0 24 24" aria-hidden="true" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9-9.4C1.9 7.600 4 5 6.800 5c2 0 3.700 1.100 5.200 3 1.500-1.900 3.200-3 5.200-3C20 5 22.100 7.600 21 11.100c-1.500 4.800-9 9.400-9 9.400Z" /></svg>
 	  </button>
@@ -85,7 +85,7 @@ import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 	  <strong>{pesos(o.precio)}</strong>
 	  <span class:list={['tarjeta__stock', { 'tarjeta__stock--poco': o.stock <= 4 }]}>{o.stock <= 4 ? `Quedan ${o.stock}` : 'En stock'}</span>
 	  </p>
-	  <button class="btn-chapa btn-chapa--chico" type="button" data-sumar={o.id}>Sumá</button>
+	  <button class="btn-chapa btn-chapa--chico" type="button" data-sumar={o.id} aria-label={`Sumá ${o.nombre} a la bolsa`}>Sumá</button>
 	  <button class="corazon" type="button" data-libreta={o.id} aria-pressed="false" aria-label={`Guardar ${o.nombre} en mi libreta`}>
 	  <svg viewBox="0 0 24 24" aria-hidden="true" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9-9.4C1.9 7.600 4 5 6.800 5c2 0 3.700 1.100 5.200 3 1.500-1.900 3.200-3 5.200-3C20 5 22.100 7.600 21 11.100c-1.500 4.800-9 9.400-9 9.400Z" /></svg>
 	  </button>
@@ -113,7 +113,7 @@ import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 	  <strong>{pesos(o.precio)}</strong>
 	  <span class:list={['tarjeta__stock', { 'tarjeta__stock--poco': o.stock <= 4 }]}>{o.stock <= 4 ? `Quedan ${o.stock}` : 'En stock'}</span>
 	  </p>
-	  <button class="btn-chapa btn-chapa--chico" type="button" data-sumar={o.id}>Sumá</button>
+	  <button class="btn-chapa btn-chapa--chico" type="button" data-sumar={o.id} aria-label={`Sumá ${o.nombre} a la bolsa`}>Sumá</button>
 	  <button class="corazon" type="button" data-libreta={o.id} aria-pressed="false" aria-label={`Guardar ${o.nombre} en mi libreta`}>
 	  <svg viewBox="0 0 24 24" aria-hidden="true" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9-9.4C1.9 7.600 4 5 6.800 5c2 0 3.700 1.100 5.200 3 1.500-1.900 3.200-3 5.200-3C20 5 22.100 7.600 21 11.100c-1.500 4.800-9 9.400-9 9.400Z" /></svg>
 	  </button>
@@ -258,20 +258,13 @@ import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 		font-size: 1rem;
 		letter-spacing: 0.04em;
 		text-transform: uppercase;
-		translate: 0 6px;
-		opacity: 0;
-		transition: opacity 0.2s, translate 0.25s var(--ease-out);
+		opacity: 0.94;
+		transition: opacity 0.2s, background 0.2s;
 	}
 	.tarjeta__foto:hover .tarjeta__ver,
 	.tarjeta__foto:focus-visible .tarjeta__ver {
 		opacity: 1;
-		translate: 0 0;
-	}
-	@media (hover: none) {
-		.tarjeta__ver {
-			opacity: 1;
-			translate: 0 0;
-		}
+		background: var(--cobalto-vivo);
 	}
 	.tarjeta__nombre {
 		font-family: var(--f-titulo);
@@ -336,9 +329,16 @@ import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 	}
 	.tarjeta__stock--poco {
 		opacity: 1;
-		text-decoration: underline;
-		text-underline-offset: 3px;
-		text-decoration-thickness: 2px;
+	}
+	.tarjeta__stock--poco::before {
+		content: '';
+		display: inline-block;
+		width: 0.5em;
+		height: 0.5em;
+		margin-right: 0.45em;
+		border-radius: 50%;
+		background: currentColor;
+		vertical-align: 0.05em;
 	}
 	:global(.btn-chapa--chico) {
 		min-height: 44px;
