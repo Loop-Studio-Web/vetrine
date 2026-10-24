@@ -161,6 +161,18 @@ import enamelWhite from '../../assets/sobremesa/plates/enamel-white.png';
 		padding-top: calc(14 * var(--k));
 		border-top: 2px solid currentColor;
 	}
+	/* en las tarjetas angostas el precio ocupa su fila y Sumá + corazón van juntos debajo */
+	.obj {
+		container-type: inline-size;
+	}
+	@container (max-width: 330px) {
+		.tarjeta__precio {
+			flex: 1 1 100%;
+			grid-auto-flow: column;
+			justify-content: space-between;
+			align-items: baseline;
+		}
+	}
 	.tarjeta__precio {
 		margin-right: auto;
 		display: grid;

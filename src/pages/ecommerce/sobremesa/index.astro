@@ -16,6 +16,14 @@ import Testata from '../../../concepts/sobremesa/Testata.astro';
 import Portada from '../../../concepts/sobremesa/Portada.astro';
 import Historias from '../../../concepts/sobremesa/Historias.astro';
 import Envio from '../../../concepts/sobremesa/Envio.astro';
+import Objetos from '../../../concepts/sobremesa/Objetos.astro';
+import Talleres from '../../../concepts/sobremesa/Talleres.astro';
+import Envios from '../../../concepts/sobremesa/Envios.astro';
+import Revista from '../../../concepts/sobremesa/Revista.astro';
+import Cuenta from '../../../concepts/sobremesa/Cuenta.astro';
+import Chapa from '../../../concepts/sobremesa/Chapa.astro';
+import Bolsa from '../../../concepts/sobremesa/Bolsa.astro';
+import Pie from '../../../concepts/sobremesa/Pie.astro';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const title = 'Sobremesa — Revista y tienda de objetos para la casa y la mesa';
@@ -58,7 +66,17 @@ const pageUrl = new URL(`${base}/ecommerce/sobremesa/`, Astro.site).href;
 				<Historias />
 				<Envio />
 			</Pared>
+			<div class="cuerpo">
+				<Objetos />
+				<Talleres />
+				<Envios />
+				<Revista />
+				<Cuenta />
+			</div>
 		</main>
+		<Pie />
+		<Chapa />
+		<Bolsa />
 		<script>
 			import { cuenta } from '../../../concepts/sobremesa/estado';
 			const pintar = () => document.querySelectorAll('[data-bolsa-n]').forEach((el) => (el.textContent = String(cuenta())));

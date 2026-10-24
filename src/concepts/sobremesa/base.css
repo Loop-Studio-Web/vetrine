@@ -184,6 +184,7 @@ p {
 	margin-inline: auto;
 	padding: clamp(56px, 8vw, 120px) var(--gutter) 0;
 	display: grid;
+	grid-template-columns: minmax(0, 1fr);
 	gap: clamp(72px, 9vw, 140px);
 }
 .chapa--flujo {

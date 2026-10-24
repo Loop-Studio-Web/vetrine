@@ -1,0 +1,605 @@
+---
+// La bolsa: un cajón que entra por la derecha. Cada objeto cuelga como un cartelito de la lámina blanca, con su cantidad,
+// una barra hasta el envío gratis, un mensaje de regalo y un pago de prueba (sin marcas ni datos: no se cobra nada).
+// El estado vive en estado.ts; acá solo se pinta y se escucha [data-bolsa-abrir], [data-sumar-mesa] y "sb:agregado".
+import { OBJETOS, ZONAS, PRECIO_ENVIO_GRATIS } from './dati';
+import enamelWhite from '../../assets/sobremesa/plates/enamel-white.png';
+
+const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.precio, stock: o.stock, dias: o.dias, foto: o.recorte.src }));
+---
+
+<dialog class="cajon" id="sb-bolsa" aria-labelledby="sb-bolsa-titulo" style={`--textura:url(${enamelWhite.src})`}>
+	<div class="cajon__marco">
+		<header class="cajon__cab">
+			<h2 id="sb-bolsa-titulo" class="chapa chapa--flujo chapa--chica cajon__titulo" style="--c:var(--rojo);--tornillo:#4a1209;color:#fff">Tu bolsa</h2>
+			<button class="cajon__cerrar" type="button" data-bolsa-cerrar aria-label="Cerrar la bolsa">
+				<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19" /></svg>
+			</button>
+		</header>
+
+		<div class="cajon__vista" data-vista-bolsa>
+			<p class="cajon__vacia" data-vacia>Todavía no colgaste nada. Tocá un cartelito de la foto o «Sumá» en cualquier objeto.</p>
+
+			<ul class="lineas" data-lineas></ul>
+
+			<div class="resumen" data-resumen>
+				<div class="barra" aria-live="polite">
+					<p class="barra__texto" data-barra-texto></p>
+					<div class="barra__pista" aria-hidden="true"><span class="barra__relleno" data-barra></span></div>
+				</div>
+
+				<div class="regalo">
+					<label class="regalo__check"><input type="checkbox" data-regalo /><span>Es un regalo</span></label>
+					<label class="regalo__msg" data-msg-caja hidden>
+						<span>Mensaje en la tarjeta</span>
+						<textarea rows="2" maxlength="140" placeholder="Para la mesa nueva…" data-msg></textarea>
+					</label>
+				</div>
+
+				<label class="zona">
+					<span>Dónde lo mandamos</span>
+					<select data-zona>
+						{ZONAS.map((z) => <option value={z.id}>{z.nombre}</option>)}
+					</select>
+				</label>
+
+				<dl class="cuentas">
+					<div><dt>Objetos</dt><dd data-sub></dd></div>
+					<div><dt>Envío</dt><dd data-envio></dd></div>
+					<div class="cuentas__total"><dt>Total</dt><dd data-total></dd></div>
+				</dl>
+
+				<button class="btn-chapa cajon__pagar" type="button" data-pagar>Pagar (de prueba)</button>
+				<p class="cajon__nota">Pago de prueba: esta tienda no existe, no pedimos datos ni se cobra nada. Los precios son de ejemplo.</p>
+			</div>
+		</div>
+
+		<div class="listo" data-vista-listo hidden>
+			<div class="chapa chapa--flujo listo__cartel" style={`--c:var(--amarillo);--tornillo:#4a3706;--textura:url(${enamelWhite.src});color:var(--tinta)`}>
+				<p class="listo__kicker">Pedido de ejemplo</p>
+				<p class="listo__num" data-listo-num></p>
+				<p class="listo__texto" data-listo-texto></p>
+			</div>
+			<div class="listo__acciones">
+				<a class="btn-chapa" href="#cuenta" data-bolsa-cerrar>Seguir mi pedido</a>
+				<button class="btn-chapa btn-chapa--claro" type="button" data-bolsa-cerrar>Seguir mirando</button>
+			</div>
+		</div>
+	</div>
+	<script type="application/json" id="sb-bolsa-datos" set:html={JSON.stringify({ objetos: ligero, zonas: ZONAS, gratis: PRECIO_ENVIO_GRATIS })} />
+</dialog>
+
+<style is:global>
+	.cajon {
+		position: fixed;
+		inset: 0 0 0 auto;
+		width: min(480px, 100vw);
+		max-width: none;
+		height: 100svh;
+		max-height: none;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		background: var(--pared-fondo);
+		color: var(--blanco);
+		box-shadow: -18px 0 40px rgb(0 0 0 / 0.5), inset 3px 0 0 var(--esmalte);
+		overflow: hidden;
+	}
+	.cajon [hidden] {
+		display: none !important;
+	}
+	.cajon::backdrop {
+		background: rgb(8 16 11 / 0.7);
+	}
+	.cajon__marco {
+		display: grid;
+		grid-template-rows: auto minmax(0, 1fr);
+		height: 100%;
+		--k: 1px;
+	}
+	.cajon__cab {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		padding: 20px 22px 14px 28px;
+	}
+	.cajon__titulo {
+		margin: 0;
+		padding: 10px 30px 8px;
+		font-family: var(--f-titulo);
+		font-weight: 400;
+		font-size: 1.9rem;
+		line-height: 1;
+		text-transform: uppercase;
+	}
+	.cajon__cerrar {
+		display: grid;
+		place-items: center;
+		width: 48px;
+		height: 48px;
+		border: 2px solid var(--esmalte);
+		border-radius: 10px;
+		background: transparent;
+		color: var(--esmalte-luz);
+	}
+	.cajon__cerrar:hover {
+		background: rgb(255 255 255 / 0.12);
+	}
+	.cajon__vista,
+	.listo {
+		display: grid;
+		align-content: start;
+		gap: 18px;
+		padding: 6px 22px 28px 28px;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+	}
+	.cajon__vacia {
+		font-weight: 600;
+		font-size: 1.25rem;
+		line-height: 1.4;
+		max-width: 30ch;
+	}
+
+	/* cada línea es un cartelito de lámina blanca, colgado con su hilo */
+	.lineas {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 14px;
+	}
+	.linea {
+		position: relative;
+		display: grid;
+		grid-template-columns: 72px minmax(0, 1fr) auto;
+		grid-template-areas: 'foto nombre quitar' 'foto precio cant';
+		gap: 2px 14px;
+		align-items: center;
+		padding: 12px 14px 12px 12px;
+		border-radius: 12px;
+		background: var(--esmalte) var(--textura) center / 260px repeat;
+		color: var(--tinta);
+		box-shadow: inset 0 0 0 2px rgb(255 255 255 / 0.55), 0 5px 10px rgb(0 0 0 / 0.4);
+	}
+	.linea:nth-child(odd) {
+		rotate: -0.4deg;
+	}
+	.linea:nth-child(even) {
+		rotate: 0.4deg;
+	}
+	.linea img {
+		grid-area: foto;
+		width: 72px;
+		height: 72px;
+		object-fit: contain;
+		filter: drop-shadow(0 4px 4px rgb(0 0 0 / 0.35));
+	}
+	.linea__nombre {
+		grid-area: nombre;
+		font-weight: 700;
+		font-size: 1.1875rem;
+		line-height: 1.1;
+		text-transform: uppercase;
+		letter-spacing: 0.02em;
+	}
+	.linea__precio {
+		grid-area: precio;
+		font-family: var(--f-mano);
+		font-weight: 700;
+		font-size: 1.6rem;
+		line-height: 1;
+		color: var(--cobalto);
+	}
+	.linea__quitar {
+		grid-area: quitar;
+		justify-self: end;
+		align-self: start;
+		min-height: 44px;
+		padding: 0 6px;
+		border: 0;
+		background: none;
+		color: var(--tinta);
+		font-weight: 700;
+		font-size: 0.9375rem;
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+	.linea__cant {
+		grid-area: cant;
+		display: inline-flex;
+		align-items: center;
+		border: 2px solid var(--tinta);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+	.linea__cant button {
+		width: 44px;
+		height: 44px;
+		border: 0;
+		background: transparent;
+		color: var(--tinta);
+		font-weight: 700;
+		font-size: 1.4rem;
+		line-height: 1;
+	}
+	.linea__cant button:hover:not([disabled]) {
+		background: rgb(11 30 100 / 0.14);
+	}
+	.linea__cant button[disabled] {
+		opacity: 0.35;
+		cursor: not-allowed;
+	}
+	.linea__cant output {
+		min-width: 2ch;
+		text-align: center;
+		font-weight: 700;
+		font-size: 1.25rem;
+	}
+	.linea__aviso {
+		grid-column: 2 / -1;
+		font-weight: 700;
+		font-size: 0.875rem;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		color: var(--rojo);
+	}
+
+	.resumen {
+		display: grid;
+		gap: 18px;
+		padding-top: 6px;
+		border-top: 2px solid rgb(255 255 255 / 0.18);
+	}
+	.barra {
+		display: grid;
+		gap: 8px;
+		padding-top: 16px;
+	}
+	.barra__texto {
+		font-weight: 700;
+		font-size: 1.1875rem;
+	}
+	.barra__pista {
+		height: 14px;
+		border-radius: 7px;
+		background: rgb(255 255 255 / 0.14);
+		box-shadow: inset 0 0 0 2px rgb(255 255 255 / 0.35);
+		overflow: hidden;
+	}
+	.barra__relleno {
+		display: block;
+		height: 100%;
+		width: 0;
+		background: var(--amarillo);
+		transform-origin: left;
+		transition: width 0.45s var(--ease-out);
+	}
+	.regalo {
+		display: grid;
+		gap: 10px;
+	}
+	.regalo__check {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		min-height: 44px;
+		font-weight: 700;
+		font-size: 1.1875rem;
+	}
+	.regalo__check input {
+		appearance: none;
+		flex: none;
+		width: 26px;
+		height: 26px;
+		margin: 0;
+		border: 3px solid var(--esmalte-luz);
+		border-radius: 6px;
+		background: transparent;
+	}
+	.regalo__check input:checked {
+		background: var(--amarillo) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230b1e64' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7'/%3E%3C/svg%3E") center / 80% no-repeat;
+		border-color: var(--amarillo);
+	}
+	.regalo__msg,
+	.zona {
+		display: grid;
+		gap: 6px;
+		font-weight: 700;
+		font-size: 0.9375rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	.regalo__msg textarea,
+	.zona select {
+		width: 100%;
+		padding: 10px 12px;
+		border: 0;
+		border-radius: 10px;
+		background: var(--esmalte-luz);
+		color: var(--tinta);
+		font-family: var(--f-cartel);
+		font-weight: 700;
+		font-size: 1.125rem;
+		letter-spacing: 0.02em;
+		text-transform: none;
+	}
+	.regalo__msg textarea {
+		resize: vertical;
+		min-height: 64px;
+	}
+	.zona select {
+		min-height: 48px;
+	}
+	.cuentas {
+		display: grid;
+		gap: 6px;
+		margin: 0;
+		font-weight: 700;
+		font-size: 1.1875rem;
+	}
+	.cuentas div {
+		display: flex;
+		justify-content: space-between;
+		gap: 12px;
+	}
+	.cuentas dt,
+	.cuentas dd {
+		margin: 0;
+	}
+	.cuentas__total {
+		padding-top: 10px;
+		margin-top: 4px;
+		border-top: 2px solid rgb(255 255 255 / 0.3);
+		font-family: var(--f-titulo);
+		font-weight: 400;
+		font-size: 2rem;
+		line-height: 1;
+		text-transform: uppercase;
+	}
+	.cajon__pagar {
+		width: 100%;
+		min-height: 56px;
+		background: var(--amarillo);
+		color: var(--tinta);
+		box-shadow: inset 0 0 0 2px rgb(11 30 100 / 0.5), 0 4px 10px rgb(0 0 0 / 0.4);
+		font-size: 1.375rem;
+	}
+	.cajon__nota {
+		font-weight: 600;
+		font-size: 0.9375rem;
+		color: rgb(238 240 247 / 0.82);
+	}
+
+	.listo__cartel {
+		display: grid;
+		gap: 10px;
+		padding: 30px;
+		border-radius: 16px;
+	}
+	.listo__kicker {
+		font-weight: 700;
+		font-size: 1rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+	.listo__num {
+		font-family: var(--f-titulo);
+		font-size: clamp(2.6rem, 9vw, 3.6rem);
+		line-height: 1;
+	}
+	.listo__texto {
+		font-weight: 600;
+		font-size: 1.1875rem;
+		line-height: 1.4;
+	}
+	.listo__acciones {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px;
+	}
+
+	/* el contador de la testata da un golpe cuando algo cae en la bolsa */
+	.bolsa-golpe {
+		animation: sb-golpe 0.5s var(--ease-out);
+	}
+	@keyframes sb-golpe {
+		35% {
+			scale: 1.14;
+			rotate: -2deg;
+		}
+	}
+	@media (max-width: 480px) {
+		.cajon__cab {
+			padding-inline: 16px 14px;
+		}
+		.cajon__vista,
+		.listo {
+			padding-inline: 16px;
+		}
+		.linea {
+			grid-template-columns: 56px minmax(0, 1fr) auto;
+		}
+		.linea img {
+			width: 56px;
+			height: 56px;
+		}
+	}
+</style>
+
+<script>
+	import { leerBolsa, sumar, fijar, vaciar, guardarPedido, type Pedido } from './estado';
+
+	type Dato = { id: string; nombre: string; precio: number; stock: number; dias: number; foto: string };
+	const { objetos, zonas, gratis } = JSON.parse(document.getElementById('sb-bolsa-datos')!.textContent!) as {
+		objetos: Dato[];
+		zonas: { id: string; nombre: string; dias: string; costo: number }[];
+		gratis: number;
+	};
+	const MESA = ['lampara-chapa', 'jarra-gres', 'vasos-4', 'mantel-lino'];
+	const f = (n: number) => `$${Math.round(n).toLocaleString('es-AR')}`;
+	const reducido = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	const dlg = document.getElementById('sb-bolsa') as HTMLDialogElement;
+	const q = <T extends Element>(s: string) => dlg.querySelector<T>(s)!;
+	const lista = q<HTMLUListElement>('[data-lineas]');
+	const vistaBolsa = q<HTMLElement>('[data-vista-bolsa]');
+	const vistaListo = q<HTMLElement>('[data-vista-listo]');
+	const regalo = q<HTMLInputElement>('[data-regalo]');
+	const msgCaja = q<HTMLElement>('[data-msg-caja]');
+	const msg = q<HTMLTextAreaElement>('[data-msg]');
+	const zona = q<HTMLSelectElement>('[data-zona]');
+
+	// líneas válidas, con la cantidad topada por el stock del taller
+	function lineas() {
+		return leerBolsa()
+			.map((l) => ({ d: objetos.find((o) => o.id === l.id), n: l.n }))
+			.filter((x): x is { d: Dato; n: number } => !!x.d)
+			.map(({ d, n }) => ({ d, n: Math.min(n, d.stock) }));
+	}
+	const subtotal = (ls = lineas()) => ls.reduce((t, l) => t + l.d.precio * l.n, 0);
+
+	function pintar() {
+		const ls = lineas();
+		const sub = subtotal(ls);
+		const z = zonas.find((x) => x.id === zona.value) ?? zonas[0];
+		const envio = sub === 0 || sub >= gratis ? 0 : z.costo;
+
+		lista.replaceChildren(
+			...ls.map(({ d, n }) => {
+				const li = document.createElement('li');
+				li.className = 'linea';
+				li.dataset.id = d.id;
+				li.innerHTML =
+					'<img alt="" /><p class="linea__nombre"></p><p class="linea__precio"></p>' +
+					'<button class="linea__quitar" type="button" data-quitar>Sacar</button>' +
+					'<div class="linea__cant" role="group"><button type="button" data-menos aria-label="Una menos">−</button><output></output><button type="button" data-mas aria-label="Una más">+</button></div>';
+				li.querySelector('img')!.src = d.foto;
+				li.querySelector('.linea__nombre')!.textContent = d.nombre;
+				li.querySelector('.linea__precio')!.textContent = f(d.precio * n);
+				li.querySelector('[data-quitar]')!.setAttribute('aria-label', `Sacar ${d.nombre} de la bolsa`);
+				li.querySelector('output')!.textContent = String(n);
+				li.querySelector('.linea__cant')!.setAttribute('aria-label', `Cantidad de ${d.nombre}`);
+				(li.querySelector('[data-mas]') as HTMLButtonElement).disabled = n >= d.stock;
+				if (n >= d.stock) {
+					const a = document.createElement('p');
+					a.className = 'linea__aviso';
+					a.textContent = d.stock === 1 ? 'Es la última' : `Máximo ${d.stock}, son las que tiene el taller`;
+					li.append(a);
+				}
+				return li;
+			}),
+		);
+
+		q('[data-vacia]').toggleAttribute('hidden', ls.length > 0);
+		q('[data-resumen]').toggleAttribute('hidden', ls.length === 0);
+		q('[data-sub]').textContent = f(sub);
+		q('[data-envio]').textContent = sub === 0 ? '—' : envio === 0 ? 'Gratis' : f(envio);
+		q('[data-total]').textContent = f(sub + envio);
+		q('[data-barra-texto]').textContent = sub >= gratis ? 'Envío gratis: ya llegaste.' : `Te faltan ${f(gratis - sub)} para el envío gratis.`;
+		q<HTMLElement>('[data-barra]').style.width = `${Math.min(100, (sub / gratis) * 100)}%`;
+		window.dispatchEvent(new CustomEvent('sb:bolsa-total', { detail: sub }));
+	}
+
+	// ---- abrir y cerrar ----
+	function abrir() {
+		if (dlg.open) return;
+		vistaBolsa.hidden = false;
+		vistaListo.hidden = true;
+		pintar();
+		dlg.showModal();
+		if (!reducido()) {
+			dlg.animate([{ transform: 'translateX(40px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 320, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' });
+		}
+	}
+	function cerrar() {
+		if (!dlg.open) return;
+		if (reducido()) return dlg.close();
+		dlg.animate([{ opacity: 1 }, { opacity: 0, transform: 'translateX(40px)' }], { duration: 180, easing: 'ease-in', fill: 'forwards' }).onfinish = () => {
+			dlg.close();
+			dlg.getAnimations().forEach((a) => a.cancel());
+		};
+	}
+
+	document.addEventListener('click', (e) => {
+		const t = e.target as HTMLElement;
+		if (t.closest('[data-bolsa-abrir]')) abrir();
+		if (t.closest('[data-sumar-mesa]')) {
+			MESA.forEach((id) => sumar(id));
+			window.dispatchEvent(new CustomEvent('sb:agregado', { detail: { id: MESA[0] } }));
+			abrir();
+		}
+	});
+	dlg.addEventListener('click', (e) => {
+		const t = e.target as HTMLElement;
+		if (e.target === dlg || t.closest('[data-bolsa-cerrar]')) cerrar();
+		const li = t.closest<HTMLElement>('.linea');
+		if (!li) return;
+		const id = li.dataset.id!;
+		const act = lineas().find((l) => l.d.id === id);
+		if (!act) return;
+		if (t.closest('[data-mas]')) fijar(id, Math.min(act.d.stock, act.n + 1));
+		if (t.closest('[data-menos]')) fijar(id, act.n - 1);
+		if (t.closest('[data-quitar]')) fijar(id, 0);
+	});
+	dlg.addEventListener('cancel', (e) => {
+		e.preventDefault();
+		cerrar();
+	});
+
+	regalo.addEventListener('change', () => {
+		msgCaja.hidden = !regalo.checked;
+		if (regalo.checked) msg.focus();
+	});
+	zona.addEventListener('change', pintar);
+
+	// ---- pago de prueba ----
+	q('[data-pagar]').addEventListener('click', () => {
+		const ls = lineas();
+		if (!ls.length) return;
+		const sub = subtotal(ls);
+		const z = zonas.find((x) => x.id === zona.value) ?? zonas[0];
+		const envio = sub >= gratis ? 0 : z.costo;
+		const id = `SB-${String(Math.floor(10000 + Math.random() * 89999))}`;
+		const pedido: Pedido = {
+			id,
+			fecha: Date.now(),
+			lineas: ls.map(({ d, n }) => ({ id: d.id, nombre: d.nombre, n, precio: d.precio })),
+			subtotal: sub,
+			envio,
+			total: sub + envio,
+			zona: z.nombre,
+			regalo: regalo.checked ? msg.value.trim() : '',
+		};
+		guardarPedido(pedido);
+		vaciar();
+		q('[data-listo-num]').textContent = id;
+		q('[data-listo-texto]').textContent = `Recibimos tu pedido de ejemplo por ${f(pedido.total)}${pedido.regalo ? ', con tu tarjeta de regalo' : ''}. Llega a ${z.nombre} en ${z.dias}. Nada se cobró ni se manda: es una maqueta.`;
+		regalo.checked = false;
+		msgCaja.hidden = true;
+		msg.value = '';
+		vistaBolsa.hidden = true;
+		vistaListo.hidden = false;
+		vistaListo.scrollTop = 0;
+		vistaListo.querySelector<HTMLElement>('.btn-chapa')!.focus();
+	});
+
+	// ---- el contador de la testata da un golpe cuando algo cae en la bolsa ----
+	window.addEventListener('sb:agregado', () => {
+		if (reducido()) return;
+		const b = document.querySelector<HTMLElement>('[data-bolsa-abrir]');
+		if (!b) return;
+		b.classList.remove('bolsa-golpe');
+		void b.offsetWidth;
+		b.classList.add('bolsa-golpe');
+	});
+
+	window.addEventListener('sb:bolsa', () => {
+		if (dlg.open && !vistaBolsa.hidden) pintar();
+		else window.dispatchEvent(new CustomEvent('sb:bolsa-total', { detail: subtotal() }));
+	});
+	window.addEventListener('storage', () => dlg.open && !vistaBolsa.hidden && pintar());
+	// la calculadora de envíos arranca con el total de lo que ya estaba guardado
+	window.dispatchEvent(new CustomEvent('sb:bolsa-total', { detail: subtotal() }));
+</script>

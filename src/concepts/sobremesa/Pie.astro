@@ -1,0 +1,144 @@
+---
+// Pie: el boletín (de mentira), las aclaraciones de la maqueta y la firma del estudio.
+import logoLoop from '../../assets/hub/loop-logo-on-dark.svg';
+---
+
+<footer class="pie">
+	<div class="pie__boletin chapa chapa--flujo" style={`--c:var(--amarillo);--tornillo:#4a3706;color:var(--tinta)`}>
+		<div class="pie__boletin-texto">
+			<h2 class="pie__titulo">El boletín de la sobremesa</h2>
+			<p>Una carta por mes, con lo que se cocinó, lo que se rompió y lo que llegó del taller. Sin ofertas a gritos.</p>
+		</div>
+		<form class="pie__form" data-boletin onsubmit="return false">
+			<label for="sb-mail">Tu mail</label>
+			<div class="pie__fila">
+				<input id="sb-mail" type="email" name="mail" autocomplete="email" placeholder="vos@ejemplo.com" required />
+				<button class="btn-chapa" type="submit">Anotarme</button>
+			</div>
+			<p class="pie__ok" data-boletin-ok role="status" hidden>Listo, pero es una maqueta: no guardamos tu mail ni mandamos nada.</p>
+		</form>
+	</div>
+
+	<div class="pie__base">
+		<a class="pie__logo" href="https://theloopstudio.org/" aria-label="Loop Studio, sitio del estudio">
+			<img src={logoLoop.src} alt="Loop Studio" width="120" height="34" loading="lazy" />
+		</a>
+		<div class="pie__aclaraciones">
+			<p><strong>Vitrina demostrativa.</strong> Sobremesa no existe: los objetos, talleres, precios, plazos y números de la revista son de ejemplo y nada se vende ni se envía.</p>
+			<p>La foto de la mesa larga es una imagen de ejemplo generada; el resto de las fotos son de Unsplash, con sus autores en el archivo de créditos del proyecto.</p>
+			<p>Concepto de <a href="https://theloopstudio.org/">Loop Studio</a> · <a href="https://theloopstudio.org/contatti/?concept=sobremesa">Quiero una así</a> · <a href="../../">Todas las vitrinas</a></p>
+		</div>
+	</div>
+</footer>
+
+<style>
+	.pie {
+		width: min(100%, 1280px);
+		margin: clamp(72px, 9vw, 140px) auto 0;
+		padding: 0 var(--gutter) clamp(40px, 5vw, 64px);
+		display: grid;
+		gap: clamp(36px, 5vw, 64px);
+	}
+	.pie__boletin {
+		display: grid;
+		grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+		gap: clamp(24px, 4vw, 56px);
+		align-items: center;
+		padding: clamp(28px, 4.4vw, 56px);
+		border-radius: calc(20 * var(--k));
+	}
+	.pie__titulo {
+		margin-bottom: 10px;
+		font-family: var(--f-titulo);
+		font-weight: 400;
+		font-size: clamp(2rem, 4vw, 3.4rem);
+		line-height: 1;
+		text-transform: uppercase;
+	}
+	.pie__boletin-texto p {
+		max-width: 44ch;
+		font-weight: 600;
+		font-size: 1.1875rem;
+		line-height: 1.4;
+	}
+	.pie__form {
+		display: grid;
+		gap: 8px;
+	}
+	.pie__form label {
+		font-weight: 700;
+		font-size: 1rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	.pie__fila {
+		display: flex;
+		gap: 12px;
+	}
+	.pie__fila input {
+		flex: 1 1 auto;
+		min-width: 0;
+		min-height: 52px;
+		padding: 0 14px;
+		border: 0;
+		border-radius: 10px;
+		background: var(--esmalte-luz);
+		color: var(--tinta);
+		font-family: var(--f-cartel);
+		font-weight: 700;
+		font-size: 1.25rem;
+	}
+	.pie__ok {
+		font-weight: 700;
+		font-size: 1rem;
+	}
+	.pie__base {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		gap: clamp(20px, 4vw, 56px);
+		align-items: start;
+		padding-top: clamp(24px, 3vw, 36px);
+		border-top: 2px solid rgb(255 255 255 / 0.2);
+	}
+	.pie__logo {
+		display: inline-flex;
+		align-items: center;
+		min-height: 48px;
+	}
+	.pie__logo img {
+		width: 120px;
+		height: auto;
+	}
+	.pie__aclaraciones {
+		display: grid;
+		gap: 8px;
+		max-width: 78ch;
+		font-weight: 600;
+		font-size: 1rem;
+		line-height: 1.45;
+		color: rgb(238 240 247 / 0.86);
+	}
+	.pie__aclaraciones a {
+		text-underline-offset: 3px;
+	}
+	@media (max-width: 860px) {
+		.pie__boletin,
+		.pie__base {
+			grid-template-columns: 1fr;
+		}
+	}
+	@media (max-width: 480px) {
+		.pie__fila {
+			flex-direction: column;
+		}
+	}
+</style>
+
+<script>
+	const form = document.querySelector<HTMLFormElement>('[data-boletin]');
+	form?.addEventListener('submit', () => {
+		if (!form.checkValidity()) return form.reportValidity();
+		form.querySelector<HTMLElement>('[data-boletin-ok]')!.hidden = false;
+		form.reset();
+	});
+</script>

@@ -209,7 +209,7 @@ const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.preci
 	}
 	@media (max-width: 900px) {
 		.paneles {
-			grid-template-columns: 1fr;
+			grid-template-columns: minmax(0, 1fr);
 		}
 	}
 </style>
