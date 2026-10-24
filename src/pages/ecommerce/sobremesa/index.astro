@@ -23,6 +23,7 @@ import Revista from '../../../concepts/sobremesa/Revista.astro';
 import Cuenta from '../../../concepts/sobremesa/Cuenta.astro';
 import Chapa from '../../../concepts/sobremesa/Chapa.astro';
 import Bolsa from '../../../concepts/sobremesa/Bolsa.astro';
+import Movimiento from '../../../concepts/sobremesa/Movimiento.astro';
 import Pie from '../../../concepts/sobremesa/Pie.astro';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -77,6 +78,7 @@ const pageUrl = new URL(`${base}/ecommerce/sobremesa/`, Astro.site).href;
 		<Pie />
 		<Chapa />
 		<Bolsa />
+		<Movimiento />
 		<script>
 			import { cuenta } from '../../../concepts/sobremesa/estado';
 			const pintar = () => document.querySelectorAll('[data-bolsa-n]').forEach((el) => (el.textContent = String(cuenta())));

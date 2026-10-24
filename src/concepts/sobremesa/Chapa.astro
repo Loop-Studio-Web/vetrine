@@ -84,6 +84,13 @@ const datos = OBJETOS.map((o) => ({
 		padding: calc(26 * var(--k));
 		border-radius: calc(18 * var(--k));
 	}
+	/* con el shader activo (clase gl) el canvas dibuja la foto y el reborde; la img queda debajo solo para dar el tamaño */
+	.figura.gl .figura__foto {
+		visibility: hidden;
+	}
+	.figura.gl::after {
+		display: none;
+	}
 	.figura__foto {
 		width: 100%;
 		height: 100%;
@@ -179,12 +186,25 @@ const datos = OBJETOS.map((o) => ({
 	}
 
 	@media (max-width: 820px) {
+		/* el diálogo ocupa toda la pantalla y se desplaza por dentro: en teléfonos bajos la lámina y el cartel no caben juntos y
+		   un diálogo más alto que la pantalla (position: fixed) se cortaba arriba; así además el vuelo desde el punto tocado
+		   no queda recortado por la caja del diálogo */
 		.objeto {
+			position: fixed;
+			inset: 0;
+			width: 100%;
+			height: 100%;
 			max-height: none;
-			margin-block: 12px;
+			margin: 0;
+			padding: 12px var(--gutter);
+			overflow-y: auto;
+			overscroll-behavior: contain;
 		}
 		.objeto__escena {
 			grid-template-columns: minmax(0, 1fr);
+			min-height: 100%;
+			align-content: center;
+			padding: 0;
 		}
 		.figura {
 			--alto: min(36svh, 300px);
@@ -198,6 +218,7 @@ const datos = OBJETOS.map((o) => ({
 
 <script>
 	import { sumar, alternarLibreta, leerLibreta } from './estado';
+	import type { Lamina } from './chapa-gl';
 
 	type Dato = {
 		id: string; nombre: string; precio: number; precioTxt: string; frase: string; taller: string; dias: number; stock: number;
@@ -221,8 +242,16 @@ const datos = OBJETOS.map((o) => ({
 
 	// las fotos se bajan en el rato libre: al tocar, el objeto ya está listo y el movimiento no espera a la red
 	const precargar = () => datos.forEach((d) => Object.assign(new Image(), { src: d.foto }));
-	if ('requestIdleCallback' in window) requestIdleCallback(precargar);
-	else setTimeout(precargar, 1500);
+	// el shader de la lámina (chapa-gl.ts) se baja y se compila también en el rato libre; si no está listo o no hay WebGL,
+	// el diálogo abre con la lámina CSS de siempre
+	let lamina: Lamina | null = null;
+	const cargarGL = () =>
+		import('./chapa-gl')
+			.then((m) => (lamina = m.crearLamina(figura)))
+			.catch(() => {});
+	const enReposo = (f: () => void) => ('requestIdleCallback' in window ? requestIdleCallback(f) : setTimeout(f, 1500));
+	enReposo(precargar);
+	enReposo(cargarGL);
 
 	// animaciones con fill: quedarían pegadas al diálogo cerrado (y lo dejarían invisible al reabrir): se anulan todas
 	function limpiar() {
@@ -265,6 +294,17 @@ const datos = OBJETOS.map((o) => ({
 		foto.src = d.foto;
 		dlg.showModal();
 
+		// la foto pasa a ser el shader: sus píxeles se funden en el esmalte (con movimiento reducido, el estado final quieto)
+		if (lamina?.activa()) {
+			figura.classList.add('gl');
+			foto
+				.decode()
+				.then(() => {
+					if (dlg.open && actual === d && !cerrando) lamina!.mostrar(foto, reducido());
+				})
+				.catch(() => figura.classList.remove('gl'));
+		}
+
 		if (reducido()) {
 			correr(dlg, [{ opacity: 0 }, { opacity: 1 }], { duration: 160, easing: 'ease-out' });
 			return;
@@ -283,6 +323,8 @@ const datos = OBJETOS.map((o) => ({
 		const fin = () => {
 			dlg.close();
 			limpiar();
+			lamina?.ocultar();
+			figura.classList.remove('gl');
 			cerrando = false;
 		};
 		if (reducido()) return fin();
@@ -319,6 +361,7 @@ const datos = OBJETOS.map((o) => ({
 			q('[data-guardar]').setAttribute('aria-pressed', String(on));
 		}
 	});
+	dlg.addEventListener('pointermove', (e) => lamina?.luz(e.clientX, e.clientY));
 	dlg.addEventListener('cancel', (e) => {
 		e.preventDefault();
 		cerrar();

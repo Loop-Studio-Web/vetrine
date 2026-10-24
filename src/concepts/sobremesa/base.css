@@ -153,6 +153,19 @@ p {
 	pointer-events: none;
 }
 
+/* reflejo del esmalte: una luz que sigue al puntero (Movimiento.astro pone .luz y --lx/--ly solo en la lámina bajo el mouse) */
+.chapa::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	background: radial-gradient(circle at var(--lx, 30%) var(--ly, 0%), rgb(255 255 255 / 0.5), rgb(255 255 255 / 0) 62%);
+	mix-blend-mode: overlay;
+	opacity: 0;
+	transition: opacity 0.25s ease;
+	pointer-events: none;
+}
+
 /* cartel chico: solo dos tornillos, a media altura, a los lados */
 .chapa--chica {
 	border-radius: calc(12 * var(--k));
