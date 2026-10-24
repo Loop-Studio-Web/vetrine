@@ -1,0 +1,164 @@
+---
+// Números anteriores: el archivo de la revista como una fila de chapas con la tapa. Cada una abre su índice.
+import { Image } from 'astro:assets';
+import { NUMEROS } from './dati';
+import enamelWhite from '../../assets/sobremesa/plates/enamel-white.png';
+import enamelBlue from '../../assets/sobremesa/plates/enamel-blue.png';
+
+const colores = ['var(--cobalto)', 'var(--rojo)', 'var(--amarillo)', 'var(--esmalte)', 'var(--cobalto)', 'var(--rojo)'];
+const tintas = ['var(--blanco)', '#fff', 'var(--tinta)', 'var(--tinta)', 'var(--blanco)', '#fff'];
+---
+
+<section class="revista" id="revista" aria-labelledby="revista-titulo">
+	<h2 id="revista-titulo" class="chapa chapa--flujo rotulo" style={`--c:var(--rojo);--tornillo:#4a1209;--textura:url(${enamelBlue.src});color:#fff`}>Números anteriores</h2>
+	<p class="bajada">Un número por estación, siempre con una mesa. Tocá una tapa para ver qué trae.</p>
+
+	<ul class="tapas" tabindex="-1">
+		{NUMEROS.map((n, i) => (
+			<li>
+				<button class="chapa chapa--flujo tapa" type="button" data-numero={n.n} style={`--c:${colores[i]};--tinta-c:${tintas[i]};--textura:url(${i % 2 ? enamelWhite.src : enamelBlue.src});--tornillo:rgb(0 0 0 / 0.5)`} aria-haspopup="dialog" aria-label={`Número ${n.n}, ${n.titulo}, ${n.estacion}. Ver el índice`}>
+					<Image class="tapa__foto" src={n.foto} alt="" width={520} quality={72} format="webp" sizes="260px" loading="lazy" />
+					<span class="tapa__num">Nº {String(n.n).padStart(2, '0')}</span>
+					<span class="tapa__titulo">{n.titulo}</span>
+					<span class="tapa__estacion">{n.estacion}</span>
+				</button>
+			</li>
+		))}
+	</ul>
+
+	<dialog class="indice" id="sb-indice" aria-labelledby="sb-indice-titulo">
+		<div class="chapa chapa--flujo indice__caja" style={`--c:var(--esmalte);--tornillo:#55524c;--textura:url(${enamelWhite.src})`}>
+			<h3 id="sb-indice-titulo" class="indice__titulo"></h3>
+			<ol class="indice__lista"></ol>
+			<p class="indice__nota">Índice de ejemplo: los artículos no existen. La revista es parte de la maqueta.</p>
+			<button class="btn-chapa" type="button" data-cerrar-indice>Cerrar</button>
+		</div>
+	</dialog>
+	<script type="application/json" id="sb-numeros" set:html={JSON.stringify(NUMEROS.map((n) => ({ n: n.n, titulo: n.titulo, estacion: n.estacion, indice: n.indice })))} />
+</section>
+
+<style>
+	.revista {
+		display: grid;
+		justify-items: start;
+	}
+	.tapas {
+		list-style: none;
+		margin: clamp(28px, 4vw, 48px) 0 0;
+		padding: 6px 4px 28px;
+		width: 100%;
+		display: flex;
+		gap: clamp(16px, 2.2vw, 28px);
+		overflow-x: auto;
+		scroll-snap-type: x proximity;
+		scrollbar-gutter: stable;
+	}
+	.tapas li {
+		flex: 0 0 clamp(190px, 21vw, 260px);
+		scroll-snap-align: start;
+	}
+	.tapa {
+		display: grid;
+		grid-template-rows: auto auto auto auto;
+		gap: 8px;
+		width: 100%;
+		padding: calc(22 * var(--k));
+		border: 0;
+		text-align: left;
+		color: var(--tinta-c);
+		border-radius: calc(16 * var(--k));
+		transition: translate 0.25s var(--ease-out);
+	}
+	.tapa:nth-child(n) {
+		rotate: 0deg;
+	}
+	li:nth-child(odd) .tapa {
+		rotate: -0.8deg;
+	}
+	li:nth-child(even) .tapa {
+		rotate: 0.8deg;
+	}
+	.tapa:hover {
+		translate: 0 -6px;
+	}
+	.tapa :global(.tapa__foto) {
+		width: 100%;
+		aspect-ratio: 3 / 4;
+		object-fit: cover;
+		border-radius: calc(8 * var(--k));
+		box-shadow: 0 0 0 calc(3 * var(--k)) rgb(255 255 255 / 0.55);
+	}
+	.tapa__num {
+		margin-top: 6px;
+		font-family: var(--f-titulo);
+		font-size: 2.1rem;
+		line-height: 1;
+		letter-spacing: 0.01em;
+	}
+	.tapa__titulo {
+		font-weight: 700;
+		font-size: 1.25rem;
+		line-height: 1.1;
+		text-transform: uppercase;
+		letter-spacing: 0.03em;
+	}
+	.tapa__estacion {
+		font-weight: 600;
+		font-size: 1rem;
+		opacity: 0.92;
+	}
+
+	.indice {
+		width: min(560px, calc(100vw - 2 * var(--gutter)));
+		padding: 0;
+		border: 0;
+		background: transparent;
+		color: var(--tinta);
+	}
+	.indice::backdrop {
+		background: rgb(8 16 11 / 0.86);
+	}
+	.indice__caja {
+		display: grid;
+		gap: 14px;
+		justify-items: start;
+		padding: clamp(26px, 4vw, 44px);
+		border-radius: 18px;
+	}
+	.indice__titulo {
+		font-family: var(--f-titulo);
+		font-weight: 400;
+		font-size: clamp(1.9rem, 4vw, 2.8rem);
+		line-height: 1;
+		text-transform: uppercase;
+	}
+	.indice__lista {
+		margin: 0;
+		padding-left: 1.4em;
+		display: grid;
+		gap: 8px;
+		font-weight: 700;
+		font-size: 1.25rem;
+	}
+	.indice__nota {
+		font-weight: 600;
+		font-size: 0.9375rem;
+	}
+</style>
+
+<script>
+	const dlg = document.getElementById('sb-indice') as HTMLDialogElement;
+	const datos: { n: number; titulo: string; estacion: string; indice: string[] }[] = JSON.parse(document.getElementById('sb-numeros')!.textContent!);
+	document.querySelectorAll<HTMLButtonElement>('[data-numero]').forEach((b) =>
+		b.addEventListener('click', () => {
+			const d = datos.find((x) => x.n === Number(b.dataset.numero));
+			if (!d) return;
+			dlg.querySelector('.indice__titulo')!.textContent = `Nº ${String(d.n).padStart(2, '0')} · ${d.titulo} (${d.estacion})`;
+			dlg.querySelector('.indice__lista')!.replaceChildren(...d.indice.map((t) => Object.assign(document.createElement('li'), { textContent: t })));
+			dlg.showModal();
+		}),
+	);
+	dlg.addEventListener('click', (e) => {
+		if (e.target === dlg || (e.target as HTMLElement).closest('[data-cerrar-indice]')) dlg.close();
+	});
+</script>

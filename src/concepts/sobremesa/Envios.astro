@@ -1,0 +1,210 @@
+---
+// Envíos y cuotas: una lámina cobalto con una calculadora de verdad (zona → plazo y costo; monto → cuotas sin interés).
+// Los números son de ejemplo, pero las cuentas se hacen en el momento.
+import { ZONAS, CUOTAS, PRECIO_ENVIO_GRATIS, pesos } from './dati';
+import enamelBlue from '../../assets/sobremesa/plates/enamel-blue.png';
+---
+
+<section class="envios" id="envios" aria-labelledby="envios-titulo">
+	<div class="chapa chapa--flujo caja" style={`--c:var(--cobalto);--tornillo:#020f33;--textura:url(${enamelBlue.src})`}>
+		<h2 id="envios-titulo" class="caja__titulo">Envíos y cuotas</h2>
+		<p class="caja__bajada">Elegí dónde vivís y cuánto querés gastar. Te decimos cuándo llega y en cuántas cuotas se paga, sin interés.</p>
+
+		<form class="calc" data-calc onsubmit="return false">
+			<label class="campo">
+				<span>Dónde vivís</span>
+				<select name="zona" data-zona>
+					{ZONAS.map((z) => <option value={z.id}>{z.nombre}</option>)}
+				</select>
+			</label>
+			<label class="campo">
+				<span>Cuánto querés gastar</span>
+				<span class="campo__monto"><b aria-hidden="true">$</b><input type="number" name="monto" min="10000" max="900000" step="1000" value="100000" inputmode="numeric" data-monto /></span>
+			</label>
+		</form>
+
+		<div class="resultado" aria-live="polite" data-resultado>
+			<div class="resultado__envio">
+				<p class="resultado__plazo" data-plazo></p>
+				<p class="resultado__costo" data-costo></p>
+				<p class="resultado__gratis" data-gratis></p>
+			</div>
+			<ul class="resultado__cuotas" data-cuotas>
+				{CUOTAS.map((n) => <li data-cuota={n}><strong></strong><span>{n} cuotas sin interés</span></li>)}
+			</ul>
+		</div>
+		<p class="caja__nota">Datos de ejemplo: esta tienda no existe y nada se envía ni se cobra.</p>
+	</div>
+	<script type="application/json" id="sb-zonas" set:html={JSON.stringify({ zonas: ZONAS, gratis: PRECIO_ENVIO_GRATIS })} />
+</section>
+
+<style>
+	.caja {
+		display: grid;
+		gap: 18px;
+		padding: clamp(28px, 5vw, 64px);
+		color: var(--blanco);
+		border-radius: calc(20 * var(--k));
+	}
+	.caja__titulo {
+		font-family: var(--f-titulo);
+		font-weight: 400;
+		font-size: clamp(2.2rem, 4.6vw, 4rem);
+		line-height: 1;
+		text-transform: uppercase;
+	}
+	.caja__bajada {
+		max-width: 56ch;
+		font-weight: 500;
+		font-size: 1.1875rem;
+		line-height: 1.45;
+	}
+	.calc {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 16px 24px;
+		margin-top: 6px;
+	}
+	.campo {
+		display: grid;
+		gap: 6px;
+		min-width: min(100%, 260px);
+		flex: 1 1 260px;
+		max-width: 420px;
+	}
+	.campo > span:first-child {
+		font-weight: 700;
+		font-size: 1rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	.campo select,
+	.campo input {
+		width: 100%;
+		min-height: 52px;
+		padding: 0 14px;
+		border: 0;
+		border-radius: 10px;
+		background: var(--esmalte-luz);
+		color: var(--tinta);
+		font-family: var(--f-cartel);
+		font-weight: 700;
+		font-size: 1.375rem;
+	}
+	.campo__monto {
+		position: relative;
+		display: block;
+	}
+	.campo__monto b {
+		position: absolute;
+		left: 14px;
+		top: 50%;
+		translate: 0 -50%;
+		color: var(--tinta);
+		font-size: 1.375rem;
+	}
+	.campo__monto input {
+		padding-left: 32px;
+	}
+	.resultado {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+		gap: 24px 48px;
+		margin-top: 10px;
+		padding-top: 22px;
+		border-top: 2px solid rgb(255 255 255 / 0.5);
+	}
+	.resultado__plazo {
+		font-family: var(--f-titulo);
+		font-size: clamp(1.8rem, 3.2vw, 2.8rem);
+		line-height: 1.05;
+		text-transform: uppercase;
+	}
+	.resultado__costo {
+		margin-top: 6px;
+		font-weight: 700;
+		font-size: 1.375rem;
+	}
+	.resultado__gratis {
+		margin-top: 8px;
+		font-weight: 600;
+		font-size: 1.0625rem;
+		color: var(--amarillo);
+	}
+	.resultado__cuotas {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 12px;
+	}
+	.resultado__cuotas li {
+		display: grid;
+		gap: 4px;
+		align-content: start;
+		padding: 14px 16px;
+		border-radius: 12px;
+		background: rgb(255 255 255 / 0.1);
+		box-shadow: inset 0 0 0 2px rgb(255 255 255 / 0.35);
+	}
+	.resultado__cuotas strong {
+		font-family: var(--f-titulo);
+		font-weight: 400;
+		font-size: 1.7rem;
+		line-height: 1;
+	}
+	.resultado__cuotas span {
+		font-weight: 600;
+		font-size: 0.9375rem;
+	}
+	.caja__nota {
+		font-size: 0.9375rem;
+		font-weight: 600;
+		color: rgb(238 240 247 / 0.8);
+	}
+	@media (max-width: 860px) {
+		.resultado {
+			grid-template-columns: 1fr;
+		}
+	}
+	@media (max-width: 560px) {
+		.resultado__cuotas {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>
+
+<script>
+	import { leerBolsa } from './estado';
+	const { zonas, gratis } = JSON.parse(document.getElementById('sb-zonas')!.textContent!) as { zonas: { id: string; nombre: string; dias: string; costo: number }[]; gratis: number };
+	const f = (n: number) => `$${Math.round(n).toLocaleString('es-AR')}`;
+	const root = document.querySelector<HTMLElement>('[data-calc]')!.closest('section')!;
+	const zona = root.querySelector<HTMLSelectElement>('[data-zona]')!;
+	const monto = root.querySelector<HTMLInputElement>('[data-monto]')!;
+	const el = (s: string) => root.querySelector<HTMLElement>(s)!;
+
+	function pintar() {
+		const z = zonas.find((x) => x.id === zona.value) ?? zonas[0];
+		const m = Math.max(0, Number(monto.value) || 0);
+		el('[data-plazo]').textContent = `Llega en ${z.dias}`;
+		el('[data-costo]').textContent = m >= gratis ? 'Envío gratis' : `Envío ${f(z.costo)}`;
+		el('[data-gratis]').textContent = m >= gratis ? 'Pasaste el mínimo de envío gratis.' : `Te faltan ${f(gratis - m)} para el envío gratis.`;
+		root.querySelectorAll<HTMLElement>('[data-cuota]').forEach((li) => {
+			const n = Number(li.dataset.cuota);
+			li.querySelector('strong')!.textContent = f((m + (m >= gratis ? 0 : z.costo)) / n);
+		});
+	}
+	zona.addEventListener('change', pintar);
+	monto.addEventListener('input', pintar);
+	// si ya hay cosas en la bolsa, la calculadora arranca con ese total
+	window.addEventListener('sb:bolsa-total', (e) => {
+		const t = (e as CustomEvent<number>).detail;
+		if (t > 0) {
+			monto.value = String(t);
+			pintar();
+		}
+	});
+	void leerBolsa;
+	pintar();
+</script>

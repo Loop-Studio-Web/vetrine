@@ -1,0 +1,280 @@
+---
+// Lo que vimos en la mesa: los objetos de la historia, cada uno en su cartel de esmalte. Ritmo irregular (3, 4 y 5 columnas),
+// no una grilla de tarjetas iguales. Tocar la foto saca el objeto del cuadro (ver Chapa.astro).
+import { Image } from 'astro:assets';
+import { OBJETOS, COLOR, pesos } from './dati';
+import enamelWhite from '../../assets/sobremesa/plates/enamel-white.png';
+---
+
+<section class="objetos" id="objetos" aria-labelledby="objetos-titulo">
+	<h2 id="objetos-titulo" class="chapa chapa--flujo rotulo" style={`--c:var(--esmalte);--tornillo:#55524c;--textura:url(${enamelWhite.src})`}>Lo que vimos en la mesa</h2>
+	<p class="bajada">Todo lo que cuelga de la foto de la portada y unas cosas más de la misma casa. Tocá la foto de uno y lo sacamos del cuadro.</p>
+
+	<ul class="estante">
+		{OBJETOS.map((o, i) => {
+			const c = COLOR[o.color];
+			return (
+				<li class="obj" style={`--span:${o.ancho}`}>
+					<article class="chapa chapa--flujo tarjeta" style={`--c:${c.fondo};--tinta-c:${c.tinta};--filete:${c.filete};--textura:url(${enamelWhite.src});--tornillo:rgb(0 0 0 / 0.55)`}>
+						<button class="tarjeta__foto" type="button" data-objeto={o.id} aria-label={`${o.nombre}: sacar del cuadro y ver el detalle`}>
+							<Image src={o.foto} alt={`${o.nombre}, foto de ejemplo`} width={720} quality={76} format="webp" sizes="(min-width: 900px) 40vw, 90vw" loading={i < 3 ? 'eager' : 'lazy'} />
+							<span class="tarjeta__ver" aria-hidden="true">Sacar del cuadro</span>
+						</button>
+						<div class="tarjeta__texto">
+							<h3 class="tarjeta__nombre">{o.nombre}</h3>
+							<p class="tarjeta__frase">{o.frase}</p>
+							<p class="tarjeta__meta">{o.taller} · hecho en {o.dias} días</p>
+						</div>
+						<div class="tarjeta__pie">
+							<p class="tarjeta__precio">
+								<strong>{pesos(o.precio)}</strong>
+								<span class:list={['tarjeta__stock', { 'tarjeta__stock--poco': o.stock <= 4 }]}>{o.stock <= 4 ? `Quedan ${o.stock}` : 'En stock'}</span>
+							</p>
+							<button class="btn-chapa btn-chapa--chico" type="button" data-sumar={o.id}>Sumá</button>
+							<button class="corazon" type="button" data-libreta={o.id} aria-pressed="false" aria-label={`Guardar ${o.nombre} en mi libreta`}>
+								<svg viewBox="0 0 24 24" aria-hidden="true" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9-9.4C1.9 7.600 4 5 6.800 5c2 0 3.700 1.100 5.200 3 1.500-1.900 3.200-3 5.200-3C20 5 22.100 7.600 21 11.100c-1.500 4.800-9 9.400-9 9.400Z" /></svg>
+							</button>
+						</div>
+					</article>
+				</li>
+			);
+		})}
+		<li class="obj obj--fin" style="--span:5">
+			<div class="chapa chapa--flujo fin" style={`--c:var(--cobalto);--tornillo:#020f33;--textura:url(${enamelWhite.src})`}>
+				<p class="fin__titulo">¿No era este el que buscabas?</p>
+				<p>Cada número de la revista tiene su propia mesa. Los anteriores siguen en el archivo.</p>
+				<a class="btn-chapa" href="#revista">Ver números anteriores</a>
+			</div>
+		</li>
+	</ul>
+</section>
+
+<style>
+	.objetos {
+		display: grid;
+		justify-items: start;
+	}
+	.estante {
+		list-style: none;
+		margin: clamp(28px, 4vw, 48px) 0 0;
+		padding: 0;
+		width: 100%;
+		display: grid;
+		grid-template-columns: repeat(12, minmax(0, 1fr));
+		gap: clamp(18px, 2.4vw, 32px);
+		align-items: start;
+	}
+	.obj {
+		grid-column: span var(--span);
+	}
+	/* un pequeño desnivel entre vecinos: se lee como carteles colgados a mano, no como una tabla */
+	.obj:nth-child(3n + 2) {
+		margin-top: clamp(0px, 3vw, 44px);
+	}
+	.obj:nth-child(3n) {
+		margin-top: clamp(0px, 1.2vw, 18px);
+	}
+	.tarjeta {
+		display: grid;
+		gap: calc(14 * var(--k));
+		padding: calc(34 * var(--k)) calc(34 * var(--k)) calc(30 * var(--k));
+		color: var(--tinta-c);
+		border-radius: calc(18 * var(--k));
+	}
+	.tarjeta__foto {
+		position: relative;
+		display: block;
+		padding: 0;
+		border: 0;
+		border-radius: calc(10 * var(--k));
+		overflow: hidden;
+		background: rgb(0 0 0 / 0.25);
+		aspect-ratio: 4 / 3;
+		box-shadow: 0 0 0 calc(4 * var(--k)) var(--filete), 0 calc(6 * var(--k)) calc(12 * var(--k)) rgb(0 0 0 / 0.4);
+		cursor: pointer;
+	}
+	.tarjeta__foto :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: scale 0.5s var(--ease-out);
+	}
+	.tarjeta__foto:hover :global(img) {
+		scale: 1.05;
+	}
+	.tarjeta__ver {
+		position: absolute;
+		left: 10px;
+		bottom: 10px;
+		padding: 6px 12px;
+		border-radius: 6px;
+		background: rgb(11 30 100 / 0.92);
+		color: #fff;
+		font-family: var(--f-cartel);
+		font-weight: 700;
+		font-size: 1rem;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		translate: 0 6px;
+		opacity: 0;
+		transition: opacity 0.2s, translate 0.25s var(--ease-out);
+	}
+	.tarjeta__foto:hover .tarjeta__ver,
+	.tarjeta__foto:focus-visible .tarjeta__ver {
+		opacity: 1;
+		translate: 0 0;
+	}
+	@media (hover: none) {
+		.tarjeta__ver {
+			opacity: 1;
+			translate: 0 0;
+		}
+	}
+	.tarjeta__nombre {
+		font-family: var(--f-titulo);
+		font-weight: 400;
+		font-size: clamp(1.6rem, 2.6vw, 2.3rem);
+		line-height: 1.05;
+		text-transform: uppercase;
+		letter-spacing: 0.01em;
+	}
+	.tarjeta__frase {
+		margin-top: 6px;
+		font-weight: 600;
+		font-size: 1.0625rem;
+		line-height: 1.35;
+		max-width: 38ch;
+	}
+	.tarjeta__meta {
+		margin-top: 8px;
+		font-weight: 700;
+		font-size: 0.9375rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		opacity: 0.9;
+	}
+	.tarjeta__pie {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		flex-wrap: wrap;
+		padding-top: calc(14 * var(--k));
+		border-top: 2px solid currentColor;
+	}
+	.tarjeta__precio {
+		margin-right: auto;
+		display: grid;
+		line-height: 1.1;
+	}
+	.tarjeta__precio strong {
+		font-family: var(--f-titulo);
+		font-weight: 400;
+		font-size: 1.75rem;
+		letter-spacing: 0.01em;
+	}
+	.tarjeta__stock {
+		font-weight: 700;
+		font-size: 0.9375rem;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+		opacity: 0.88;
+	}
+	.tarjeta__stock--poco {
+		opacity: 1;
+		text-decoration: underline;
+		text-underline-offset: 3px;
+		text-decoration-thickness: 2px;
+	}
+	:global(.btn-chapa--chico) {
+		min-height: 44px;
+		padding: 0 18px;
+		font-size: 1.125rem;
+	}
+	.corazon {
+		display: grid;
+		place-items: center;
+		width: 44px;
+		height: 44px;
+		border: 2px solid currentColor;
+		border-radius: 10px;
+		background: transparent;
+		color: inherit;
+		transition: background 0.2s, color 0.2s, scale 0.2s var(--ease-out);
+	}
+	.corazon:hover {
+		scale: 1.06;
+	}
+	.corazon[aria-pressed='true'] {
+		background: var(--rojo);
+		border-color: #fff;
+		color: #fff;
+	}
+	.corazon[aria-pressed='true'] svg {
+		fill: currentColor;
+	}
+
+	.fin {
+		display: grid;
+		gap: 14px;
+		justify-items: start;
+		padding: calc(40 * var(--k));
+		color: var(--blanco);
+		align-self: center;
+	}
+	.fin__titulo {
+		font-family: var(--f-titulo);
+		font-size: clamp(1.6rem, 2.6vw, 2.4rem);
+		line-height: 1.05;
+		text-transform: uppercase;
+	}
+	.fin p:not(.fin__titulo) {
+		max-width: 34ch;
+		font-weight: 500;
+		font-size: 1.125rem;
+	}
+
+	@media (max-width: 1000px) {
+		.obj {
+			grid-column: span 6;
+		}
+		.obj--fin {
+			grid-column: 1 / -1;
+		}
+		.obj:nth-child(n) {
+			margin-top: 0;
+		}
+	}
+	@media (max-width: 620px) {
+		.obj {
+			grid-column: 1 / -1;
+		}
+	}
+</style>
+
+<script>
+	import { sumar, alternarLibreta, leerLibreta } from './estado';
+
+	// sumar al instante desde la tarjeta y dar una señal visible en el propio botón
+	document.addEventListener('click', (e) => {
+		const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-sumar]');
+		if (!b) return;
+		sumar(b.dataset.sumar!);
+		window.dispatchEvent(new CustomEvent('sb:agregado', { detail: { id: b.dataset.sumar, origen: b } }));
+		const t = b.textContent;
+		b.textContent = 'En la bolsa ✓';
+		setTimeout(() => (b.textContent = t), 1400);
+	});
+
+	// el estado del corazón lo dice aria-pressed; la etiqueta no cambia
+	const pintarCorazones = () => {
+		const l = leerLibreta();
+		document.querySelectorAll<HTMLButtonElement>('[data-libreta]').forEach((el) => el.setAttribute('aria-pressed', String(l.includes(el.dataset.libreta!))));
+	};
+	document.addEventListener('click', (e) => {
+		const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-libreta]');
+		if (!b) return;
+		alternarLibreta(b.dataset.libreta!);
+	});
+	window.addEventListener('sb:libreta', pintarCorazones);
+	pintarCorazones();
+</script>

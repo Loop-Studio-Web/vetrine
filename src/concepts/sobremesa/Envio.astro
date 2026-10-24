@@ -1,0 +1,49 @@
+---
+// La fascia amarilla del envío: umbral de envío gratis y un camión dibujado (icono autoral, un solo trazo).
+import { caja, dentro } from './caja';
+import { PRECIO_ENVIO_GRATIS, pesos } from './dati';
+import enamelYellow from '../../assets/sobremesa/plates/enamel-yellow.png';
+---
+
+<section class="envio" aria-label="Envíos">
+	<div class="chapa tira" style={`${caja('strip-yellow')};--c:var(--amarillo);--tornillo:#4a3706;--tornillo-aro:rgb(255 255 255 / 0.35);--textura:url(${enamelYellow.src})`}>
+		<span class="tira__regla" style={dentro('strip-rule-l', 'strip-yellow')}></span>
+		<svg class="tira__camion" style={dentro('strip-truck', 'strip-yellow')} viewBox="0 0 76 54" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">
+			<path d="M3 8h40v30H3z" />
+			<path d="M43 18h16l12 12v8H43z" />
+			<circle cx="18" cy="42" r="6.5" fill="var(--amarillo)" />
+			<circle cx="58" cy="42" r="6.5" fill="var(--amarillo)" />
+		</svg>
+		<p class="tira__texto" style={dentro('strip-text', 'strip-yellow')}>Envío gratis desde {pesos(PRECIO_ENVIO_GRATIS)}</p>
+		<span class="tira__regla" style={dentro('strip-rule-r', 'strip-yellow')}></span>
+	</div>
+</section>
+
+<style>
+	.envio {
+		display: contents;
+	}
+	.tira {
+		color: var(--tinta);
+		border-radius: calc(14 * var(--k));
+	}
+	.tira__regla {
+		position: absolute;
+		background: var(--tinta);
+	}
+	.tira__camion {
+		position: absolute;
+		display: block;
+	}
+	.tira__texto {
+		position: absolute;
+		display: flex;
+		align-items: center;
+		font-family: var(--f-titulo);
+		font-size: calc(47 * var(--k));
+		letter-spacing: 0.04em;
+		line-height: 1;
+		text-transform: uppercase;
+		white-space: nowrap;
+	}
+</style>

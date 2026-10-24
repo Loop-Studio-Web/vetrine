@@ -1,0 +1,32 @@
+---
+// La parete del almacén: un marco de proporción fija (3:2, como el mockup) que se escala con el ancho y nunca pasa del
+// alto de la pantalla; todo lo que va dentro se coloca en % del marco y se dimensiona con --k (un píxel del mockup).
+---
+
+<section class="pared" aria-label="Portada de Sobremesa">
+	<div class="pared__marco">
+		<slot />
+	</div>
+</section>
+
+<style>
+	.pared {
+		--fascia-h: 34px;
+		display: grid;
+		justify-items: center;
+		align-content: start;
+		min-height: calc(100svh - var(--fascia-h));
+	}
+	.pared__marco {
+		position: relative;
+		width: min(100%, calc((100svh - var(--fascia-h)) * 1.5));
+		aspect-ratio: 3 / 2;
+		container-type: inline-size;
+	}
+	@media (max-width: 900px) {
+		/* el telefono se rehace aparte (columna de carteles): aquí no se reescala la composición de escritorio */
+		.pared__marco {
+			width: 100%;
+		}
+	}
+</style>

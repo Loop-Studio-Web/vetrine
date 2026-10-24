@@ -1,0 +1,280 @@
+---
+// Tu libreta y tu pedido: lo guardado (corazones) y el seguimiento de un pedido de prueba con sus cuatro tramos.
+import { OBJETOS, PASOS_PEDIDO } from './dati';
+import enamelWhite from '../../assets/sobremesa/plates/enamel-white.png';
+
+const ligero = OBJETOS.map((o) => ({ id: o.id, nombre: o.nombre, precio: o.precio, foto: o.recorte.src }));
+---
+
+<section class="cuenta" id="cuenta" aria-labelledby="cuenta-titulo">
+	<h2 id="cuenta-titulo" class="chapa chapa--flujo rotulo" style={`--c:var(--esmalte);--tornillo:#55524c;--textura:url(${enamelWhite.src})`}>Tu libreta y tu pedido</h2>
+
+	<div class="paneles">
+		<div class="chapa chapa--flujo panel" style={`--c:var(--cobalto);--tornillo:#020f33`}>
+			<h3 class="panel__titulo">Mi libreta</h3>
+			<p class="panel__bajada">Lo que guardaste con el corazón. Queda en este navegador, no hay cuenta ni clave.</p>
+			<ul class="libreta" data-libreta-lista></ul>
+			<p class="vacio" data-libreta-vacio>Todavía no guardaste nada. Tocá el corazón de cualquier objeto.</p>
+		</div>
+
+		<div class="chapa chapa--flujo panel" style={`--c:var(--amarillo);--tornillo:#4a3706;color:var(--tinta)`}>
+			<h3 class="panel__titulo">Seguí tu pedido</h3>
+			<form class="seguir" data-seguir onsubmit="return false">
+				<label for="sb-pedido">Número de pedido</label>
+				<div class="seguir__fila">
+					<input id="sb-pedido" name="pedido" type="text" autocomplete="off" spellcheck="false" placeholder="SB-24081" value="SB-24081" data-pedido />
+					<button class="btn-chapa" type="submit">Ver</button>
+				</div>
+			</form>
+			<div class="estado" data-estado aria-live="polite">
+				<p class="estado__quien" data-quien></p>
+				<ol class="pasos" data-pasos>
+					{PASOS_PEDIDO.map((p, i) => <li data-paso={i}><span class="pasos__marca" aria-hidden="true"></span><span>{p}</span></li>)}
+				</ol>
+				<p class="estado__nota" data-nota></p>
+			</div>
+		</div>
+	</div>
+	<script type="application/json" id="sb-cuenta" set:html={JSON.stringify(ligero)} />
+</section>
+
+<style>
+	.cuenta {
+		display: grid;
+		justify-items: start;
+	}
+	.paneles {
+		width: 100%;
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: clamp(20px, 3vw, 40px);
+		margin-top: clamp(8px, 1vw, 16px);
+		align-items: start;
+	}
+	.panel {
+		display: grid;
+		gap: 14px;
+		padding: clamp(26px, 4vw, 48px);
+		color: var(--blanco);
+		border-radius: calc(18 * var(--k));
+	}
+	.panel__titulo {
+		font-family: var(--f-titulo);
+		font-weight: 400;
+		font-size: clamp(1.9rem, 3.4vw, 3rem);
+		line-height: 1;
+		text-transform: uppercase;
+	}
+	.panel__bajada {
+		max-width: 44ch;
+		font-weight: 600;
+		font-size: 1.0625rem;
+	}
+	.libreta {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 10px;
+	}
+	.libreta li {
+		display: grid;
+		grid-template-columns: 64px minmax(0, 1fr) auto;
+		align-items: center;
+		gap: 14px;
+		padding: 10px 12px;
+		border-radius: 12px;
+		background: rgb(255 255 255 / 0.1);
+		box-shadow: inset 0 0 0 2px rgb(255 255 255 / 0.3);
+	}
+	.libreta img {
+		width: 64px;
+		height: 64px;
+		object-fit: contain;
+		filter: drop-shadow(0 4px 4px rgb(0 0 0 / 0.4));
+	}
+	.libreta__nombre {
+		font-weight: 700;
+		font-size: 1.1875rem;
+		line-height: 1.15;
+	}
+	.libreta__precio {
+		font-family: var(--f-titulo);
+		font-size: 1.2rem;
+	}
+	.libreta button {
+		min-height: 44px;
+		padding: 0 14px;
+		border: 2px solid #fff;
+		border-radius: 8px;
+		background: transparent;
+		color: #fff;
+		font-weight: 700;
+		font-size: 1rem;
+	}
+	.libreta button:hover {
+		background: rgb(255 255 255 / 0.18);
+	}
+	.vacio {
+		font-weight: 600;
+		font-size: 1.0625rem;
+	}
+	.seguir {
+		display: grid;
+		gap: 8px;
+	}
+	.seguir label {
+		font-weight: 700;
+		font-size: 1rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	.seguir__fila {
+		display: flex;
+		gap: 12px;
+	}
+	.seguir input {
+		flex: 1 1 auto;
+		min-width: 0;
+		min-height: 52px;
+		padding: 0 14px;
+		border: 0;
+		border-radius: 10px;
+		background: var(--esmalte-luz);
+		color: var(--tinta);
+		font-family: var(--f-cartel);
+		font-weight: 700;
+		font-size: 1.375rem;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+	.estado {
+		display: grid;
+		gap: 14px;
+		margin-top: 6px;
+	}
+	.estado__quien {
+		font-weight: 700;
+		font-size: 1.1875rem;
+	}
+	.pasos {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 0;
+	}
+	.pasos li {
+		position: relative;
+		display: flex;
+		align-items: center;
+		gap: 14px;
+		min-height: 48px;
+		font-weight: 700;
+		font-size: 1.1875rem;
+		letter-spacing: 0.02em;
+		opacity: 0.55;
+	}
+	.pasos li + li::before {
+		content: '';
+		position: absolute;
+		left: 11px;
+		top: -24px;
+		width: 3px;
+		height: 48px;
+		background: currentColor;
+		opacity: 0.4;
+	}
+	.pasos__marca {
+		flex: none;
+		width: 26px;
+		height: 26px;
+		border-radius: 50%;
+		border: 3px solid currentColor;
+		background: transparent;
+	}
+	.pasos li[data-hecho] {
+		opacity: 1;
+	}
+	.pasos li[data-hecho] .pasos__marca {
+		background: var(--tinta);
+		border-color: var(--tinta);
+	}
+	.pasos li[data-actual] .pasos__marca {
+		box-shadow: 0 0 0 4px var(--amarillo), 0 0 0 7px var(--tinta);
+	}
+	.estado__nota {
+		font-weight: 600;
+		font-size: 1rem;
+	}
+	@media (max-width: 900px) {
+		.paneles {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>
+
+<script>
+	import { leerLibreta, alternarLibreta, leerPedidos, sumar } from './estado';
+	type Ligero = { id: string; nombre: string; precio: number; foto: string };
+	const lig: Ligero[] = JSON.parse(document.getElementById('sb-cuenta')!.textContent!);
+	const pesos = (n: number) => `$${n.toLocaleString('es-AR')}`;
+
+	// --- mi libreta ---
+	const lista = document.querySelector<HTMLElement>('[data-libreta-lista]')!;
+	const vacio = document.querySelector<HTMLElement>('[data-libreta-vacio]')!;
+	function pintarLibreta() {
+		const ids = leerLibreta();
+		lista.replaceChildren(
+			...ids
+				.map((id) => lig.find((x) => x.id === id))
+				.filter((x): x is Ligero => !!x)
+				.map((o) => {
+					const li = document.createElement('li');
+					li.innerHTML = `<img src="${o.foto}" alt="" /><div><p class="libreta__nombre"></p><p class="libreta__precio"></p></div><div class="libreta__acciones"></div>`;
+					li.querySelector('.libreta__nombre')!.textContent = o.nombre;
+					li.querySelector('.libreta__precio')!.textContent = pesos(o.precio);
+					const add = Object.assign(document.createElement('button'), { type: 'button', textContent: 'Sumá' });
+					add.setAttribute('aria-label', `Sumar ${o.nombre} a la bolsa`);
+					add.onclick = () => { sumar(o.id); window.dispatchEvent(new CustomEvent('sb:agregado', { detail: { id: o.id, origen: add } })); };
+					const quitar = Object.assign(document.createElement('button'), { type: 'button', textContent: 'Quitar' });
+					quitar.setAttribute('aria-label', `Quitar ${o.nombre} de mi libreta`);
+					quitar.style.marginLeft = '8px';
+					quitar.onclick = () => alternarLibreta(o.id);
+					li.querySelector('.libreta__acciones')!.append(add, quitar);
+					return li;
+				}),
+		);
+		vacio.hidden = ids.length > 0;
+	}
+	window.addEventListener('sb:libreta', pintarLibreta);
+	pintarLibreta();
+
+	// --- seguí tu pedido: el de prueba (SB-24081) y los que se hacen al pagar ---
+	const DIA = 86400000;
+	const demo = { id: 'SB-24081', fecha: Date.now() - 3.4 * DIA, zona: 'CABA y Gran Buenos Aires', nombre: 'Jarra de gres y 2 más' };
+	const form = document.querySelector<HTMLFormElement>('[data-seguir]')!;
+	const inp = form.querySelector<HTMLInputElement>('[data-pedido]')!;
+	const pasos = document.querySelectorAll<HTMLElement>('[data-paso]');
+	const q = document.querySelector<HTMLElement>('[data-quien]')!;
+	const nota = document.querySelector<HTMLElement>('[data-nota]')!;
+	function ver() {
+		const code = inp.value.trim().toUpperCase();
+		const p = leerPedidos().find((x) => x.id === code);
+		const base = code === demo.id ? { id: demo.id, fecha: demo.fecha, desc: demo.nombre, zona: demo.zona } : p ? { id: p.id, fecha: p.fecha, desc: p.lineas.map((l) => l.nombre).slice(0, 1).join('') + (p.lineas.length > 1 ? ` y ${p.lineas.length - 1} más` : ''), zona: p.zona } : null;
+		pasos.forEach((li) => { li.removeAttribute('data-hecho'); li.removeAttribute('data-actual'); });
+		if (!base) {
+			q.textContent = 'No encontramos ese pedido.';
+			nota.textContent = 'Probá con SB-24081, que es el de ejemplo, o con el número que te dimos al pagar.';
+			return;
+		}
+		const dias = (Date.now() - base.fecha) / DIA;
+		const hecho = dias < 0.01 ? 0 : dias < 2 ? 1 : dias < 4 ? 2 : 3;
+		pasos.forEach((li, i) => { if (i <= hecho) li.setAttribute('data-hecho', ''); if (i === hecho) li.setAttribute('data-actual', ''); });
+		q.textContent = `${base.id} · ${base.desc}`;
+		nota.textContent = `Hecho el ${new Date(base.fecha).toLocaleDateString('es-AR', { day: 'numeric', month: 'long' })}, para ${base.zona}. Pedido de ejemplo: los tramos avanzan solos con el paso de los días.`;
+	}
+	form.addEventListener('submit', ver);
+	window.addEventListener('sb:pedidos', () => { const p = leerPedidos()[0]; if (p) { inp.value = p.id; ver(); } });
+	ver();
+</script>

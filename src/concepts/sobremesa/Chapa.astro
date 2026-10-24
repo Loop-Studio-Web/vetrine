@@ -1,0 +1,335 @@
+---
+// "Del cuadro a la chapa": el gesto firma. Tocar un cartelito de la foto (o la foto de un objeto del estante) baja la luz de
+// la pared y el objeto se despega del cuadro: los píxeles del objeto se funden en una lámina esmaltada con su propia silueta,
+// que cuelga al lado de un cartel con el nombre, el precio y "Sumá a la bolsa". Todo el movimiento es WAAPI; sin movimiento
+// reducido, el cartel aparece en su lugar con un fundido.
+import { OBJETOS, COLOR, pesos } from './dati';
+import enamelWhite from '../../assets/sobremesa/plates/enamel-white.png';
+
+const datos = OBJETOS.map((o) => ({
+	id: o.id,
+	nombre: o.nombre,
+	precio: o.precio,
+	precioTxt: pesos(o.precio),
+	frase: o.frase,
+	taller: o.taller,
+	dias: o.dias,
+	stock: o.stock,
+	color: COLOR[o.color],
+	recorte: o.recorte.src,
+	escena: o.escena ? { recorte: o.escena.recorte.src, x: o.escena.x, y: o.escena.y, w: o.escena.w, h: o.escena.h } : null,
+}));
+---
+
+<script type="application/json" id="sb-objetos" set:html={JSON.stringify(datos)} />
+
+<dialog class="objeto" id="sb-objeto" aria-labelledby="sb-objeto-nombre">
+	<div class="objeto__escena">
+		<div class="figura" data-figura aria-hidden="true">
+			<span class="figura__rim"></span>
+			<span class="figura__esmalte"></span>
+			<img class="figura__foto" alt="" />
+		</div>
+
+		<div class="chapa chapa--flujo datos" data-datos style={`--c:var(--esmalte);--tornillo:#55524c;--textura:url(${enamelWhite.src})`}>
+			<h2 class="datos__nombre" id="sb-objeto-nombre"></h2>
+			<p class="datos__precio"></p>
+			<p class="datos__frase"></p>
+			<ul class="datos__lista">
+				<li data-taller></li>
+				<li data-dias></li>
+				<li data-stock></li>
+			</ul>
+			<div class="datos__acciones">
+				<button class="btn-chapa" type="button" data-agregar>Sumá a la bolsa</button>
+				<button class="corazon" type="button" data-guardar aria-pressed="false" aria-label="Guardar en mi libreta">
+					<svg viewBox="0 0 24 24" aria-hidden="true" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9-9.4C1.9 7.6 4 5 6.8 5c2 0 3.7 1.1 5.2 3 1.5-1.9 3.2-3 5.2-3C20 5 22.1 7.6 21 11.1c-1.5 4.8-9 9.4-9 9.4Z" /></svg>
+				</button>
+				<button class="btn-chapa btn-chapa--claro" type="button" data-cerrar>Seguir mirando</button>
+			</div>
+		</div>
+	</div>
+</dialog>
+
+<style>
+	.objeto {
+		width: min(1080px, calc(100vw - 2 * var(--gutter)));
+		max-width: none;
+		max-height: calc(100svh - 32px);
+		margin: auto;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		color: var(--tinta);
+		overflow: visible;
+	}
+	.objeto::backdrop {
+		background: rgb(8 16 11 / 0.86);
+		animation: sb-velo 0.35s var(--ease-out);
+	}
+	@keyframes sb-velo {
+		from {
+			opacity: 0;
+		}
+	}
+	.objeto__escena {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+		gap: clamp(24px, 4vw, 56px);
+		align-items: center;
+		padding: 8px;
+		--k: clamp(0.7px, calc(100vw / 1536), 1px);
+	}
+
+	/* la lámina con la silueta del objeto: rim claro, esmalte en el color del objeto y, debajo, los píxeles reales que se funden */
+	.figura {
+		--sil: none;
+		position: relative;
+		justify-self: center;
+		height: min(58svh, 520px);
+		max-width: 100%;
+		filter: drop-shadow(0 18px 24px rgb(0 0 0 / 0.55));
+	}
+	.figura > * {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+	}
+	.figura__rim,
+	.figura__esmalte {
+		-webkit-mask: var(--sil) center / 100% 100% no-repeat;
+		mask: var(--sil) center / 100% 100% no-repeat;
+	}
+	.figura__rim {
+		background: var(--filete, #fff);
+		scale: 1.055;
+	}
+	.figura__esmalte {
+		background:
+			linear-gradient(118deg, rgb(255 255 255 / 0.34), rgb(255 255 255 / 0) 42%, rgb(0 0 0 / 0.22) 100%),
+			var(--c, var(--esmalte));
+	}
+	.figura__foto {
+		object-fit: fill;
+	}
+
+	.datos {
+		display: grid;
+		gap: 14px;
+		justify-items: start;
+		padding: clamp(28px, 4vw, 52px);
+		border-radius: 18px;
+	}
+	.datos__nombre {
+		font-family: var(--f-titulo);
+		font-weight: 400;
+		font-size: clamp(2.2rem, 4.4vw, 3.6rem);
+		line-height: 1;
+		text-transform: uppercase;
+	}
+	.datos__precio {
+		font-family: var(--f-titulo);
+		font-size: clamp(1.9rem, 3.4vw, 2.8rem);
+		line-height: 1;
+		color: var(--cobalto-vivo);
+	}
+	.datos__frase {
+		max-width: 38ch;
+		font-weight: 600;
+		font-size: 1.1875rem;
+		line-height: 1.4;
+	}
+	.datos__lista {
+		list-style: none;
+		margin: 0;
+		padding: 12px 0 0;
+		display: grid;
+		gap: 4px;
+		border-top: 2px solid var(--tinta);
+		width: 100%;
+		font-weight: 700;
+		font-size: 1rem;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+	.datos__acciones {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px;
+		align-items: center;
+		margin-top: 8px;
+	}
+	.datos .corazon {
+		display: grid;
+		place-items: center;
+		width: 48px;
+		height: 48px;
+		border: 2px solid var(--tinta);
+		border-radius: 10px;
+		background: transparent;
+		color: var(--tinta);
+	}
+	.datos .corazon[aria-pressed='true'] {
+		background: var(--rojo);
+		border-color: #fff;
+		color: #fff;
+	}
+	.datos .corazon[aria-pressed='true'] svg {
+		fill: currentColor;
+	}
+
+	@media (max-width: 820px) {
+		.objeto {
+			max-height: none;
+			margin-block: 12px;
+		}
+		.objeto__escena {
+			grid-template-columns: 1fr;
+		}
+		.figura {
+			height: min(36svh, 300px);
+		}
+	}
+</style>
+
+<script>
+	import { sumar, alternarLibreta, leerLibreta } from './estado';
+
+	type Dato = {
+		id: string; nombre: string; precio: number; precioTxt: string; frase: string; taller: string; dias: number; stock: number;
+		color: { fondo: string; tinta: string; filete: string };
+		recorte: string;
+		escena: { recorte: string; x: number; y: number; w: number; h: number } | null;
+	};
+	const datos: Dato[] = JSON.parse(document.getElementById('sb-objetos')!.textContent!);
+	const dlg = document.getElementById('sb-objeto') as HTMLDialogElement;
+	const figura = dlg.querySelector<HTMLElement>('[data-figura]')!;
+	const foto = figura.querySelector<HTMLImageElement>('.figura__foto')!;
+	const rim = figura.querySelector<HTMLElement>('.figura__rim')!;
+	const esmalte = figura.querySelector<HTMLElement>('.figura__esmalte')!;
+	const panel = dlg.querySelector<HTMLElement>('[data-datos]')!;
+	const q = <T extends Element>(s: string) => dlg.querySelector<T>(s)!;
+	const reducido = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+	let actual: Dato | null = null;
+	let abriendo = false;
+
+	// caja de un objeto de la escena en pantalla: la foto de la portada está impresa sobre tres láminas del marco 1536×1024
+	function rectEscena(e: NonNullable<Dato['escena']>): DOMRect | null {
+		const marco = document.querySelector<HTMLElement>('.pared__marco');
+		if (!marco) return null;
+		const r = marco.getBoundingClientRect();
+		const s = r.width / 1536;
+		const kx = 854 / 1672;
+		const ky = 474 / 929;
+		return new DOMRect(r.left + (646 + e.x * kx) * s, r.top + (165 + (e.y - 6) * ky) * s, e.w * kx * s, e.h * ky * s);
+	}
+
+	const precarga = (src: string) =>
+		new Promise<HTMLImageElement>((ok) => {
+			const i = new Image();
+			i.onload = i.onerror = () => ok(i);
+			i.src = src;
+		});
+
+	async function abrir(id: string, origen: HTMLElement) {
+		const d = datos.find((x) => x.id === id);
+		if (!d || abriendo || dlg.open) return;
+		abriendo = true;
+		actual = d;
+		const desdeEscena = origen.classList.contains('cartelito') && d.escena;
+		const src = desdeEscena ? d.escena!.recorte : d.recorte;
+		const img = await precarga(src);
+
+		q('.datos__nombre').textContent = d.nombre;
+		q('.datos__precio').textContent = d.precioTxt;
+		q('.datos__frase').textContent = d.frase;
+		q('[data-taller]').textContent = `Hecho por ${d.taller}`;
+		q('[data-dias]').textContent = `A pedido, listo en ${d.dias} días`;
+		q('[data-stock]').textContent = d.stock <= 4 ? `Quedan ${d.stock}` : 'En stock';
+		const g = q<HTMLButtonElement>('[data-guardar]');
+		g.setAttribute('aria-pressed', String(leerLibreta().includes(d.id)));
+		g.setAttribute('aria-label', `Guardar ${d.nombre} en mi libreta`);
+
+		figura.style.setProperty('--sil', `url(${src})`);
+		figura.style.setProperty('--c', d.color.fondo);
+		figura.style.setProperty('--filete', d.color.filete);
+		figura.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
+		foto.src = src;
+		dlg.showModal();
+
+		if (reducido()) {
+			dlg.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 180 });
+			foto.style.opacity = '0';
+			rim.style.opacity = esmalte.style.opacity = '1';
+			abriendo = false;
+			return;
+		}
+
+		const o = (desdeEscena ? rectEscena(d.escena!) : null) ?? origen.getBoundingClientRect();
+		const f = figura.getBoundingClientRect();
+		const s = Math.min(o.width / f.width, o.height / f.height);
+		const dx = o.left + o.width / 2 - (f.left + f.width / 2);
+		const dy = o.top + o.height / 2 - (f.top + f.height / 2);
+		const T = 640;
+		figura.animate(
+			[{ transform: `translate(${dx}px, ${dy}px) scale(${s})` }, { transform: 'translate(0, 0) scale(1.012)', offset: 0.86 }, { transform: 'none' }],
+			{ duration: T, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' },
+		);
+		foto.style.opacity = '1';
+		foto.animate([{ opacity: 1 }, { opacity: 1, offset: 0.4 }, { opacity: 0 }], { duration: T, fill: 'forwards', easing: 'ease-out' });
+		for (const el of [rim, esmalte]) el.animate([{ opacity: 0 }, { opacity: 0, offset: 0.35 }, { opacity: 1 }], { duration: T, fill: 'forwards', easing: 'ease-out' });
+		panel.animate([{ opacity: 0, transform: 'translateX(32px)' }, { opacity: 1, transform: 'none' }], { duration: 460, delay: 240, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'backwards' });
+		setTimeout(() => (abriendo = false), T);
+	}
+
+	function cerrar(luego?: () => void) {
+		if (!dlg.open) return;
+		const fin = () => {
+			dlg.close();
+			foto.getAnimations().forEach((a) => a.cancel());
+			[rim, esmalte].forEach((el) => el.getAnimations().forEach((a) => a.cancel()));
+			luego?.();
+		};
+		if (reducido()) return fin();
+		dlg.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 160, fill: 'forwards' }).onfinish = fin;
+	}
+
+	// volar hacia la bolsa: la lámina se achica hacia el cartel rojo y la cuenta da un pequeño golpe
+	function volar() {
+		const destino = document.querySelector<HTMLElement>('[data-bolsa-abrir]');
+		if (!destino || reducido()) return cerrar();
+		const f = figura.getBoundingClientRect();
+		const t = destino.getBoundingClientRect();
+		const dx = t.left + t.width / 2 - (f.left + f.width / 2);
+		const dy = t.top + t.height / 2 - (f.top + f.height / 2);
+		panel.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 220, fill: 'forwards' });
+		figura.animate(
+			[{ transform: 'none', opacity: 1 }, { transform: `translate(${dx * 0.5}px, ${dy * 0.35 - 40}px) scale(0.45)`, opacity: 1, offset: 0.55 }, { transform: `translate(${dx}px, ${dy}px) scale(0.08)`, opacity: 0.2 }],
+			{ duration: 560, easing: 'cubic-bezier(0.5, 0, 0.75, 0)', fill: 'forwards' },
+		).onfinish = () => cerrar();
+	}
+
+	document.addEventListener('click', (e) => {
+		const el = (e.target as HTMLElement).closest<HTMLElement>('[data-objeto]');
+		if (el) abrir(el.dataset.objeto!, el);
+	});
+	dlg.addEventListener('click', (e) => {
+		if (e.target === dlg) cerrar();
+		const t = e.target as HTMLElement;
+		if (t.closest('[data-cerrar]')) cerrar();
+		if (t.closest('[data-agregar]') && actual) {
+			sumar(actual.id);
+			window.dispatchEvent(new CustomEvent('sb:agregado', { detail: { id: actual.id } }));
+			volar();
+		}
+		if (t.closest('[data-guardar]') && actual) {
+			const on = alternarLibreta(actual.id);
+			q('[data-guardar]').setAttribute('aria-pressed', String(on));
+		}
+	});
+	dlg.addEventListener('cancel', (e) => {
+		e.preventDefault();
+		cerrar();
+	});
+</script>

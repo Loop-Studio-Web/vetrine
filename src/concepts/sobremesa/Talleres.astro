@@ -1,0 +1,133 @@
+---
+// Quién lo hace: tres talleres, cada uno con su lámina de foto y su cartel. Escalonados, no en fila de tarjetas iguales.
+import { Image } from 'astro:assets';
+import { TALLERES, OBJETOS } from './dati';
+import enamelWhite from '../../assets/sobremesa/plates/enamel-white.png';
+
+const colores = ['var(--esmalte)', 'var(--amarillo)', 'var(--esmalte)'];
+const nombresPorTaller = (nombre: string) => OBJETOS.filter((o) => o.taller === nombre).map((o) => o.nombre);
+---
+
+<section class="talleres" id="nosotros" aria-labelledby="talleres-titulo">
+	<h2 id="talleres-titulo" class="chapa chapa--flujo rotulo" style={`--c:var(--amarillo);--tornillo:#4a3706;--textura:url(${enamelWhite.src})`}>Quién lo hace</h2>
+	<p class="bajada">Nada sale de un depósito. Cada objeto viene de un taller que conocemos por el nombre, y por eso casi todo se hace a pedido.</p>
+
+	<ol class="lista">
+		{TALLERES.map((t, i) => (
+			<li class="taller" style={`--i:${i}`}>
+				<figure class="taller__foto">
+					<Image src={t.foto} alt={`${t.oficio}: foto de ejemplo`} width={760} quality={74} format="webp" sizes="(min-width: 900px) 40vw, 90vw" loading="lazy" />
+				</figure>
+				<div class="chapa chapa--flujo taller__cartel" style={`--c:${colores[i]};--tornillo:#55524c;--textura:url(${enamelWhite.src})`}>
+					<h3 class="taller__nombre">{t.nombre}</h3>
+					<p class="taller__oficio">{t.oficio} · {t.lugar}</p>
+					<p class="taller__texto">{t.texto}</p>
+					<p class="taller__dias">A pedido, listo en {t.dias} días</p>
+					{nombresPorTaller(t.nombre).length > 0 && <p class="taller__hace">Hacen: {nombresPorTaller(t.nombre).join(', ')}.</p>}
+				</div>
+			</li>
+		))}
+	</ol>
+</section>
+
+<style>
+	.talleres {
+		display: grid;
+		justify-items: start;
+	}
+	.lista {
+		list-style: none;
+		margin: clamp(32px, 5vw, 64px) 0 0;
+		padding: 0;
+		width: 100%;
+		display: grid;
+		gap: clamp(36px, 6vw, 84px);
+	}
+	.taller {
+		position: relative;
+		display: grid;
+		grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+		align-items: center;
+	}
+	.taller:nth-child(even) {
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+	}
+	.taller:nth-child(even) .taller__foto {
+		order: 2;
+	}
+	.taller__foto {
+		margin: 0;
+		padding: calc(8 * var(--k));
+		border-radius: calc(16 * var(--k));
+		background: var(--esmalte);
+		box-shadow: 0 calc(10 * var(--k)) calc(20 * var(--k)) rgb(0 0 0 / 0.5), inset 0 0 0 calc(2 * var(--k)) rgb(255 255 255 / 0.4);
+		rotate: -1.2deg;
+	}
+	.taller:nth-child(even) .taller__foto {
+		rotate: 1.2deg;
+	}
+	.taller__foto :global(img) {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 5 / 4;
+		object-fit: cover;
+		border-radius: calc(10 * var(--k));
+	}
+	.taller__cartel {
+		display: grid;
+		gap: 10px;
+		padding: clamp(24px, 3.4vw, 46px);
+		color: var(--tinta);
+		margin-left: calc(-1 * clamp(24px, 6vw, 88px));
+		z-index: 1;
+		border-radius: calc(18 * var(--k));
+	}
+	.taller:nth-child(even) .taller__cartel {
+		margin-left: 0;
+		margin-right: calc(-1 * clamp(24px, 6vw, 88px));
+	}
+	.taller__nombre {
+		font-family: var(--f-titulo);
+		font-weight: 400;
+		font-size: clamp(1.9rem, 3.4vw, 3rem);
+		line-height: 1;
+		text-transform: uppercase;
+	}
+	.taller__oficio {
+		font-weight: 700;
+		font-size: 1rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	.taller__texto {
+		max-width: 44ch;
+		font-weight: 600;
+		font-size: 1.125rem;
+		line-height: 1.45;
+	}
+	.taller__dias,
+	.taller__hace {
+		font-weight: 700;
+		font-size: 1rem;
+		padding-top: 8px;
+		border-top: 2px solid var(--tinta);
+	}
+	.taller__hace {
+		border-top: 0;
+		padding-top: 0;
+		font-weight: 600;
+	}
+	@media (max-width: 860px) {
+		.taller,
+		.taller:nth-child(even) {
+			grid-template-columns: 1fr;
+		}
+		.taller:nth-child(even) .taller__foto {
+			order: 0;
+		}
+		.taller__cartel,
+		.taller:nth-child(even) .taller__cartel {
+			margin: calc(-1 * clamp(18px, 6vw, 40px)) 12px 0;
+		}
+	}
+</style>

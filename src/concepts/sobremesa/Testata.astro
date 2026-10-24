@@ -1,0 +1,124 @@
+---
+// Testata dentro la parete: el nombre y las cuatro voces son carteles esmaltados, la bolsa es un cartel rojo.
+// Las posiciones salen de la medida del mockup (caja / dentro); el esmalte lleva la grana del recorte limpio del mockup.
+import { caja, dentro } from './caja';
+import enamelWhite from '../../assets/sobremesa/plates/enamel-white.png';
+
+const voces = [
+	{ id: 'nav-historias', href: '#historias', texto: 'Historias' },
+	{ id: 'nav-objetos', href: '#objetos', texto: 'Objetos' },
+	{ id: 'nav-revista', href: '#revista', texto: 'Revista' },
+	{ id: 'nav-nosotros', href: '#nosotros', texto: 'Nosotros' },
+];
+const textura = `--textura:url(${enamelWhite.src})`;
+---
+
+<header class="testata">
+	<a class="chapa marca" href="#main" style={`${caja('sign-wordmark')};--c:var(--esmalte);${textura}`} aria-label="Sobremesa, ir al inicio">
+		<span class="marca__nombre" style={dentro('wordmark', 'sign-wordmark')}>Sobremesa</span>
+		<span class="marca__sub" style={dentro('wordmark-sub', 'sign-wordmark')}>Revista · shop de objetos para el hogar</span>
+	</a>
+
+	<nav aria-label="Principal">
+		{voces.map((v) => (
+			<a class="chapa chapa--chica voz" href={v.href} style={`${caja(v.id)};--c:var(--esmalte);${textura}`}><span>{v.texto}</span></a>
+		))}
+	</nav>
+
+	<button class="chapa chapa--chica bolsa" type="button" style={`${caja('bolsa')};--c:var(--rojo);--tornillo:#4a1209`} aria-haspopup="dialog" data-bolsa-abrir>
+		<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6L5 8Z" /><path d="M9 8V6a3 3 0 0 1 6 0v2" /></svg>
+		<span>Bolsa (<span data-bolsa-n>0</span>)</span>
+	</button>
+</header>
+
+<style>
+	/* la testata cubre el marco sin tapar nada: solo sus hijos reciben clics */
+	.testata {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		z-index: 5;
+	}
+	.testata > *,
+	.testata nav > * {
+		pointer-events: auto;
+	}
+	.testata nav {
+		display: contents;
+	}
+
+	.marca {
+		display: block;
+		color: var(--tinta);
+		text-decoration: none;
+		--tornillo: #55524c;
+	}
+	.marca__nombre,
+	.marca__sub {
+		position: absolute;
+		display: block;
+		white-space: nowrap;
+	}
+	.marca__nombre {
+		display: flex;
+		align-items: center;
+		font-family: var(--f-marca);
+		font-variation-settings: 'wght' 850;
+		font-size: calc(70 * var(--k));
+		line-height: 1;
+		letter-spacing: -0.015em;
+	}
+	.marca__sub {
+		display: flex;
+		align-items: center;
+		font-family: var(--f-cartel);
+		font-weight: 700;
+		font-size: calc(17 * var(--k));
+		letter-spacing: 0.13em;
+		text-transform: uppercase;
+		line-height: 1;
+	}
+
+	.voz {
+		display: grid;
+		place-items: center;
+		border-radius: calc(12 * var(--k));
+		color: var(--tinta);
+		text-decoration: none;
+		font-family: var(--f-cartel);
+		font-weight: 700;
+		font-size: calc(27 * var(--k));
+		letter-spacing: 0.02em;
+		line-height: 1;
+		--tornillo: #55524c;
+		transition: translate 0.2s var(--ease-out), filter 0.2s;
+	}
+	.voz:hover {
+		translate: 0 calc(-2 * var(--k));
+		filter: brightness(1.06);
+	}
+
+	.bolsa {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: calc(10 * var(--k));
+		border: 0;
+		border-radius: calc(12 * var(--k));
+		color: #fff;
+		font-family: var(--f-cartel);
+		font-weight: 700;
+		font-size: calc(26 * var(--k));
+		letter-spacing: 0.02em;
+		line-height: 1;
+		transition: translate 0.2s var(--ease-out), filter 0.2s;
+	}
+	.bolsa svg {
+		width: calc(26 * var(--k));
+		height: calc(26 * var(--k));
+	}
+	.bolsa:hover {
+		translate: 0 calc(-2 * var(--k));
+		filter: brightness(1.1);
+	}
+</style>

@@ -1,0 +1,84 @@
+---
+// Las otras dos historias del número: carteles blancos con la foto a la izquierda, el título en Anton y la sección.
+import { Image } from 'astro:assets';
+import { caja, dentro } from './caja';
+import { HISTORIAS } from './dati';
+import enamelWhite from '../../assets/sobremesa/plates/enamel-white.png';
+import story1 from '../../assets/sobremesa/plates/story-1-photo.png';
+import story2 from '../../assets/sobremesa/plates/story-2-photo.png';
+
+const items = [
+	{ n: 1, hist: HISTORIAS[0], foto: story1, w: 540 },
+	{ n: 2, hist: HISTORIAS[1], foto: story2, w: 700 },
+];
+---
+
+<section class="historias" id="historias" aria-label="Más historias de este número">
+	{items.map(({ n, hist, foto, w }) => (
+		<a class="chapa historia" href={`#${hist.id}`} style={`${caja(`sign-story-${n}`)};--c:var(--esmalte);--tornillo:#55524c;--textura:url(${enamelWhite.src})`}>
+			<span class="historia__foto" style={dentro(`story-${n}-photo`, `sign-story-${n}`)}>
+				<Image src={foto} alt="" width={w} quality={78} format="webp" sizes="22vw" loading="eager" />
+			</span>
+			<span class="historia__titulo" style={dentro(`story-${n}-title`, `sign-story-${n}`)}>
+				{hist.titulo.map((l) => <span>{l}</span>)}
+			</span>
+			<span class="historia__regla" style={dentro(`story-${n}-rule`, `sign-story-${n}`)}></span>
+			<span class="historia__meta" style={dentro(`story-${n}-meta`, `sign-story-${n}`)}>{hist.seccion} · {hist.minutos} min de lectura</span>
+		</a>
+	))}
+</section>
+
+<style>
+	.historias {
+		display: contents;
+	}
+	.historia {
+		display: block;
+		color: var(--tinta);
+		text-decoration: none;
+		overflow: visible;
+		transition: translate 0.25s var(--ease-out), filter 0.25s;
+	}
+	.historia:hover {
+		translate: 0 calc(-3 * var(--k));
+		filter: brightness(1.05);
+	}
+	.historia__foto {
+		position: absolute;
+		overflow: hidden;
+		border-radius: calc(12 * var(--k)) 0 0 calc(12 * var(--k));
+	}
+	.historia__foto :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.historia__titulo {
+		position: absolute;
+		display: block;
+		font-family: var(--f-titulo);
+		font-size: calc(58 * var(--k));
+		line-height: calc(63 * var(--k));
+		white-space: nowrap;
+		height: auto !important;
+		margin-top: calc(-9 * var(--k));
+	}
+	.historia__titulo span {
+		display: block;
+	}
+	.historia__regla {
+		position: absolute;
+		background: var(--tinta);
+	}
+	.historia__meta {
+		position: absolute;
+		display: flex;
+		align-items: center;
+		font-family: var(--f-cartel);
+		font-weight: 700;
+		font-size: calc(19 * var(--k));
+		letter-spacing: 0.1em;
+		line-height: 1;
+		white-space: nowrap;
+	}
+</style>

@@ -1,0 +1,64 @@
+---
+// Fascia di ritorno: dice che è una vetrina dimostrativa e porta all'hub o al contatto. Sta nel flusso e scorre via con la
+// pagina (nessuna testata appiccicata sotto di lei: la navigazione vive dentro la parete).
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<aside class="fascia" aria-label="Sobre esta vitrina">
+	<p class="fascia__texto">Vitrina demostrativa <span>concepto de Loop Studio</span></p>
+	<nav class="fascia__links" aria-label="Vitrinas">
+		<a href={`${base}/`}>Todas las vitrinas</a>
+		<a href="https://theloopstudio.org/contatti/?concept=sobremesa" class="fascia__cta">Quiero una así</a>
+	</nav>
+</aside>
+
+<style>
+	.fascia {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
+		height: var(--fascia-h, 34px);
+		padding: 0 var(--gutter);
+		background: #0a120d;
+		color: var(--blanco);
+		border-bottom: 1px solid rgb(255 255 255 / 0.16);
+		font-family: var(--f-cartel);
+		font-weight: 600;
+		font-size: 0.9375rem;
+		letter-spacing: 0.02em;
+		white-space: nowrap;
+	}
+	.fascia__texto span {
+		margin-left: 0.7em;
+		padding-left: 0.8em;
+		border-left: 1px solid rgb(255 255 255 / 0.4);
+		color: rgb(238 240 247 / 0.78);
+	}
+	.fascia__links {
+		display: flex;
+		gap: 24px;
+	}
+	.fascia a {
+		display: inline-flex;
+		align-items: center;
+		min-height: 34px;
+		text-decoration: none;
+		border-bottom: 2px solid transparent;
+	}
+	.fascia a:hover {
+		border-bottom-color: currentColor;
+	}
+	.fascia a.fascia__cta {
+		color: var(--amarillo);
+		font-weight: 700;
+	}
+	@media (max-width: 720px) {
+		.fascia__texto span {
+			display: none;
+		}
+		.fascia {
+			font-size: 0.875rem;
+		}
+	}
+</style>

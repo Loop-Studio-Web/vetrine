@@ -1,0 +1,223 @@
+---
+// Portada: el cartel grande con el título de la historia y la foto de la mesa impresa sobre tres láminas, con los
+// cartelitos de precio colgados de los objetos. Posiciones del mockup aprobado (caja / dentro).
+import { Image } from 'astro:assets';
+import { caja, dentro } from './caja';
+import { OBJETOS_MESA, pesos } from './dati';
+import cartonLayout from './cartonLayout.json';
+import enamelBlue from '../../assets/sobremesa/plates/enamel-blue.png';
+import photo1 from '../../assets/sobremesa/plates/photo-1.png';
+import photo2 from '../../assets/sobremesa/plates/photo-2.png';
+import photo3 from '../../assets/sobremesa/plates/photo-3.png';
+import tagLampara from '../../assets/sobremesa/plates/tag-lampara.png';
+import tagJarra from '../../assets/sobremesa/plates/tag-jarra.png';
+import tagVasos from '../../assets/sobremesa/plates/tag-vasos.png';
+import tagMantel from '../../assets/sobremesa/plates/tag-mantel.png';
+
+const laminas = [
+	{ id: 'photo-1', img: photo1, w: 520 },
+	{ id: 'photo-2', img: photo2, w: 580 },
+	{ id: 'photo-3', img: photo3, w: 590 },
+];
+// cartelitos: la inclinación del cartón en el mockup, para que el texto escrito a mano la siga
+const cartelitos = [
+	{ region: 'tag-lampara', objeto: OBJETOS_MESA[0], img: tagLampara, giro: -20 },
+	{ region: 'tag-jarra', objeto: OBJETOS_MESA[1], img: tagJarra, giro: -12 },
+	{ region: 'tag-vasos', objeto: OBJETOS_MESA[2], img: tagVasos, giro: -22 },
+	{ region: 'tag-mantel', objeto: OBJETOS_MESA[3], img: tagMantel, giro: -22 },
+];
+---
+
+<section class="portada" aria-labelledby="titulo">
+	<div class="chapa titulo-cartel" style={`${caja('sign-headline')};--c:var(--cobalto);--tornillo:#020f33;--textura:url(${enamelBlue.src})`}>
+		<h1 id="titulo" class="titulo" style={dentro('headline-1', 'sign-headline')}>
+			<span>LA MESA LARGA</span>
+			<span>DE CARO Y MATI</span>
+		</h1>
+		<div class="titulo-regla" style={dentro('headline-rule', 'sign-headline')}></div>
+		<p class="titulo-meta" style={dentro('headline-meta', 'sign-headline')}>Villa Crespo · 6 min de lectura</p>
+	</div>
+
+	<div class="tavola" role="group" aria-label="La mesa larga: objetos de esta historia">
+		{laminas.map((l) => (
+			<figure class="lamina" style={caja(l.id)}>
+				<Image src={l.img} alt="" width={l.w} quality={80} format="webp" sizes="18vw" loading="eager" />
+			</figure>
+		))}
+		<p class="sr-only">Foto de ejemplo, generada: una mesa larga de madera con un mantel de lino, una jarra de gres con flores, vasos de vidrio y una lámpara colgante de chapa.</p>
+
+		{cartelitos.map((c) => {
+			const m = (cartonLayout as Record<string, { cx: number; cy: number; w: number; h: number }>)[c.region];
+			return (
+				<button class="cartelito" type="button" style={`${caja(c.region)};--giro:${c.giro}deg;--cx:${m.cx}%;--cy:${m.cy}%;--bw:${m.w}%`} data-objeto={c.objeto.id} aria-label={`${c.objeto.nombre}, ${pesos(c.objeto.precio)}. Ver y sumar a la bolsa`}>
+					<span class="cartelito__lamina">
+						<Image class="cartelito__carton" src={c.img} alt="" width={260} quality={85} format="webp" loading="eager" />
+						<span class="cartelito__texto" aria-hidden="true">
+							<span>{c.objeto.nombre}</span>
+							<strong>{pesos(c.objeto.precio)}</strong>
+						</span>
+					</span>
+				</button>
+			);
+		})}
+
+		<button class="cta" type="button" style={caja('cta-bolsa')} data-sumar-mesa>
+			<svg viewBox="0 0 229 70" preserveAspectRatio="none" aria-hidden="true">
+				<polygon points="5,5 203,5 224,35 203,65 5,65" fill="var(--cobalto)" stroke="rgb(255 255 255 / 0.92)" stroke-width="3" stroke-linejoin="round" />
+				<polygon points="11,11 200,11 217,35 200,59 11,59" fill="none" stroke="rgb(255 255 255 / 0.28)" stroke-width="1.5" stroke-linejoin="round" />
+			</svg>
+			<span>Sumá a la bolsa</span>
+		</button>
+	</div>
+</section>
+
+<style>
+	.portada {
+		display: contents;
+	}
+
+	.titulo-cartel {
+		--tornillo-aro: rgb(255 255 255 / 0.3);
+		color: var(--blanco);
+	}
+	.titulo {
+		position: absolute;
+		font-family: var(--f-titulo);
+		font-weight: 400;
+		font-size: calc(91 * var(--k));
+		line-height: calc(110 * var(--k));
+		letter-spacing: 0;
+		white-space: nowrap;
+		/* la caja del mockup envuelve solo la tinta del primer renglón: la altura se abre a los dos */
+		height: auto !important;
+		margin-top: calc(-14 * var(--k));
+	}
+	.titulo span {
+		display: block;
+	}
+	.titulo-regla {
+		position: absolute;
+		background: rgb(255 255 255 / 0.9);
+	}
+	.titulo-meta {
+		position: absolute;
+		display: flex;
+		align-items: center;
+		font-family: var(--f-cartel);
+		font-weight: 600;
+		font-size: calc(40 * var(--k));
+		letter-spacing: 0.03em;
+		line-height: 1;
+		white-space: nowrap;
+	}
+
+	/* la foto impresa sobre tres láminas esmaltadas, con tornillos y el hueco entre una y otra */
+	.lamina {
+		position: absolute;
+		margin: 0;
+		padding: calc(5 * var(--k));
+		border-radius: calc(12 * var(--k));
+		background:
+			radial-gradient(circle at calc(14 * var(--k)) calc(14 * var(--k)), #2c2b28 0 calc(3 * var(--k)), rgb(255 255 255 / 0.5) calc(3.5 * var(--k)) calc(5 * var(--k)), transparent calc(6 * var(--k))),
+			radial-gradient(circle at calc(100% - 14 * var(--k)) calc(14 * var(--k)), #2c2b28 0 calc(3 * var(--k)), rgb(255 255 255 / 0.5) calc(3.5 * var(--k)) calc(5 * var(--k)), transparent calc(6 * var(--k))),
+			radial-gradient(circle at calc(14 * var(--k)) calc(100% - 14 * var(--k)), #2c2b28 0 calc(3 * var(--k)), rgb(255 255 255 / 0.5) calc(3.5 * var(--k)) calc(5 * var(--k)), transparent calc(6 * var(--k))),
+			radial-gradient(circle at calc(100% - 14 * var(--k)) calc(100% - 14 * var(--k)), #2c2b28 0 calc(3 * var(--k)), rgb(255 255 255 / 0.5) calc(3.5 * var(--k)) calc(5 * var(--k)), transparent calc(6 * var(--k))),
+			var(--esmalte);
+		box-shadow:
+			0 calc(7 * var(--k)) calc(14 * var(--k)) rgb(0 0 0 / 0.5),
+			inset 0 0 0 calc(1.5 * var(--k)) rgb(255 255 255 / 0.35);
+		overflow: hidden;
+	}
+	.lamina :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		border-radius: calc(6 * var(--k));
+	}
+
+	/* cartelito de cartón colgado del objeto: el cartón es la lámina del mockup (agrandada, el hilo puede salir de la caja),
+	   el precio es texto real escrito a mano dentro del cuerpo medido del cartón */
+	.cartelito {
+		position: absolute;
+		display: block;
+		padding: 0;
+		border: 0;
+		background: none;
+		z-index: 2;
+		overflow: visible;
+		transition: translate 0.25s var(--ease-out), rotate 0.25s var(--ease-out);
+		transform-origin: 50% 20%;
+	}
+	.cartelito:hover {
+		translate: 0 calc(-3 * var(--k));
+		rotate: -2deg;
+	}
+	.cartelito__lamina {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: 160%;
+		height: 160%;
+		translate: -50% -50%;
+	}
+	.cartelito__lamina :global(.cartelito__carton) {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+		filter: drop-shadow(0 calc(4 * var(--k)) calc(5 * var(--k)) rgb(0 0 0 / 0.45));
+	}
+	.cartelito__texto {
+		position: absolute;
+		left: var(--cx);
+		top: var(--cy);
+		width: calc(var(--bw) * 0.92);
+		translate: -50% -50%;
+		rotate: var(--giro);
+		display: grid;
+		justify-items: center;
+		font-family: var(--f-mano);
+		font-weight: 600;
+		font-size: calc(16 * var(--k));
+		line-height: 0.95;
+		color: #2f2210;
+		text-align: center;
+		text-wrap: balance;
+	}
+	.cartelito__texto strong {
+		font-weight: 700;
+		font-size: 1.1em;
+	}
+
+	.cta {
+		position: absolute;
+		z-index: 3;
+		display: grid;
+		place-items: center;
+		padding: 0 0 0 calc(4 * var(--k));
+		border: 0;
+		background: none;
+		color: #fff;
+		font-family: var(--f-cartel);
+		font-weight: 700;
+		font-size: calc(30 * var(--k));
+		letter-spacing: 0.02em;
+		line-height: 1;
+		filter: drop-shadow(0 calc(5 * var(--k)) calc(8 * var(--k)) rgb(0 0 0 / 0.5));
+		transition: translate 0.2s var(--ease-out), filter 0.2s;
+	}
+	.cta svg {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		overflow: visible;
+	}
+	.cta span {
+		position: relative;
+		padding-right: calc(10 * var(--k));
+	}
+	.cta:hover {
+		translate: calc(3 * var(--k)) 0;
+		filter: drop-shadow(0 calc(5 * var(--k)) calc(8 * var(--k)) rgb(0 0 0 / 0.5)) brightness(1.15);
+	}
+</style>
