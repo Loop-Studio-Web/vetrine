@@ -48,6 +48,9 @@ Kowalski (`animate`; `review-animations` lo lancia l'utente). Struttura, gerarch
 codice: `frontend-design` (il brief vince). Ordine d'uso: nel flusso del CLAUDE.md globale; `detect` sulla pagina
 COMPILATA (dist), non sui `.astro`; correzioni in un giro solo. Il rilevatore non vede il contrasto del testo sopra un
 canvas: `studio-kit/scripts/canvas-shot.mjs` + `canvas-contrast.py`.
+**Verdetto della prova completa (Sobremesa, 2026-10-24; `studio-kit/docs/skill-design.md`):** niente `build-phase` comp-led;
+finish reviewer con le catture sempre, prima di hub e deploy; `audit` + break-ui/harden solo sui concept interattivi;
+`critique` con un solo agente e punteggio non affidabile; `generate`/`live` solo su richiesta dell'autore.
 
 ## Convenzioni di un concept
 
