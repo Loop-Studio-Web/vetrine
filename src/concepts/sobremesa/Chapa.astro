@@ -26,9 +26,8 @@ const datos = OBJETOS.map((o) => ({
 <dialog class="objeto" id="sb-objeto" aria-labelledby="sb-objeto-nombre">
 	<div class="objeto__escena">
 		<div class="figura" data-figura aria-hidden="true">
-			<span class="figura__rim"></span>
-			<span class="figura__esmalte"></span>
 			<img class="figura__foto" alt="" />
+			<span class="figura__brillo"></span>
 		</div>
 
 		<div class="chapa chapa--flujo datos" data-datos style={`--c:var(--esmalte);--tornillo:#55524c;--textura:url(${enamelWhite.src})`}>
@@ -81,14 +80,16 @@ const datos = OBJETOS.map((o) => ({
 		--k: clamp(0.7px, calc(100vw / 1536), 1px);
 	}
 
-	/* la lámina con la silueta del objeto: rim claro, esmalte en el color del objeto y, debajo, los píxeles reales que se funden */
+	/* el objeto impreso sobre su propia lámina: la foto recortada lleva un reborde de esmalte (color del objeto) y un filete claro,
+	   hechos con sombras duras encadenadas (--anillo, lo arma el script); encima, el brillo del esmalte con la misma silueta */
 	.figura {
 		--sil: none;
+		--alto: min(58svh, 520px);
 		position: relative;
 		justify-self: center;
-		height: min(58svh, 520px);
-		max-width: 100%;
-		filter: drop-shadow(0 18px 24px rgb(0 0 0 / 0.55));
+		/* el ancho sale de la proporción de la silueta (--r) y nunca pasa de la columna; la altura sigue a la proporción */
+		width: min(100%, calc(var(--alto) * var(--r, 1)));
+		aspect-ratio: var(--r, 1);
 	}
 	.figura > * {
 		position: absolute;
@@ -96,22 +97,16 @@ const datos = OBJETOS.map((o) => ({
 		width: 100%;
 		height: 100%;
 	}
-	.figura__rim,
-	.figura__esmalte {
-		-webkit-mask: var(--sil) center / 100% 100% no-repeat;
-		mask: var(--sil) center / 100% 100% no-repeat;
-	}
-	.figura__rim {
-		background: var(--filete, #fff);
-		scale: 1.055;
-	}
-	.figura__esmalte {
-		background:
-			linear-gradient(118deg, rgb(255 255 255 / 0.34), rgb(255 255 255 / 0) 42%, rgb(0 0 0 / 0.22) 100%),
-			var(--c, var(--esmalte));
-	}
 	.figura__foto {
 		object-fit: fill;
+		filter: var(--anillo, none) drop-shadow(0 18px 22px rgb(0 0 0 / 0.55));
+	}
+	.figura__brillo {
+		-webkit-mask: var(--sil) center / 100% 100% no-repeat;
+		mask: var(--sil) center / 100% 100% no-repeat;
+		background: linear-gradient(118deg, rgb(255 255 255 / 0.32), rgb(255 255 255 / 0) 46%, rgb(0 0 0 / 0.2) 100%);
+		mix-blend-mode: soft-light;
+		pointer-events: none;
 	}
 
 	.datos {
@@ -185,10 +180,10 @@ const datos = OBJETOS.map((o) => ({
 			margin-block: 12px;
 		}
 		.objeto__escena {
-			grid-template-columns: 1fr;
+			grid-template-columns: minmax(0, 1fr);
 		}
 		.figura {
-			height: min(36svh, 300px);
+			--alto: min(36svh, 300px);
 		}
 	}
 </style>
@@ -206,11 +201,12 @@ const datos = OBJETOS.map((o) => ({
 	const dlg = document.getElementById('sb-objeto') as HTMLDialogElement;
 	const figura = dlg.querySelector<HTMLElement>('[data-figura]')!;
 	const foto = figura.querySelector<HTMLImageElement>('.figura__foto')!;
-	const rim = figura.querySelector<HTMLElement>('.figura__rim')!;
-	const esmalte = figura.querySelector<HTMLElement>('.figura__esmalte')!;
 	const panel = dlg.querySelector<HTMLElement>('[data-datos]')!;
 	const q = <T extends Element>(s: string) => dlg.querySelector<T>(s)!;
 	const reducido = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+	// reborde de esmalte + filete: sombras duras desplazadas a los 4 lados y encadenadas (dilatan la silueta); r = grosor en px
+	const aro = (r: number, c: string) => [[r, 0], [-r, 0], [0, r], [0, -r]].map(([x, y]) => `drop-shadow(${x}px ${y}px 0 ${c})`).join(' ');
+	const anillo = (r: number, d: Dato) => `${aro(r, d.color.fondo)} ${aro(r * 0.4, d.color.filete)}`;
 	let actual: Dato | null = null;
 	let abriendo = false;
 
@@ -251,17 +247,17 @@ const datos = OBJETOS.map((o) => ({
 		g.setAttribute('aria-pressed', String(leerLibreta().includes(d.id)));
 		g.setAttribute('aria-label', `Guardar ${d.nombre} en mi libreta`);
 
+		// una animación con fill:forwards que quedara de un cierre anterior dejaría el diálogo invisible
+		dlg.getAnimations({ subtree: true }).forEach((a) => a.cancel());
 		figura.style.setProperty('--sil', `url(${src})`);
-		figura.style.setProperty('--c', d.color.fondo);
-		figura.style.setProperty('--filete', d.color.filete);
-		figura.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
+		figura.style.setProperty('--r', String(img.naturalWidth / img.naturalHeight));
 		foto.src = src;
 		dlg.showModal();
+		const r = Math.max(4, Math.min(9, figura.getBoundingClientRect().height * 0.017));
+		figura.style.setProperty('--anillo', anillo(r, d));
 
 		if (reducido()) {
 			dlg.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 180 });
-			foto.style.opacity = '0';
-			rim.style.opacity = esmalte.style.opacity = '1';
 			abriendo = false;
 			return;
 		}
@@ -276,9 +272,13 @@ const datos = OBJETOS.map((o) => ({
 			[{ transform: `translate(${dx}px, ${dy}px) scale(${s})` }, { transform: 'translate(0, 0) scale(1.012)', offset: 0.86 }, { transform: 'none' }],
 			{ duration: T, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' },
 		);
-		foto.style.opacity = '1';
-		foto.animate([{ opacity: 1 }, { opacity: 1, offset: 0.4 }, { opacity: 0 }], { duration: T, fill: 'forwards', easing: 'ease-out' });
-		for (const el of [rim, esmalte]) el.animate([{ opacity: 0 }, { opacity: 0, offset: 0.35 }, { opacity: 1 }], { duration: T, fill: 'forwards', easing: 'ease-out' });
+		// el esmalte crece alrededor del objeto mientras llega a su lugar
+		const sombra = 'drop-shadow(0 18px 22px rgb(0 0 0 / 0.55))';
+		foto.animate(
+			[{ filter: `${anillo(0, d)} ${sombra}` }, { filter: `${anillo(0, d)} ${sombra}`, offset: 0.35 }, { filter: `${anillo(r, d)} ${sombra}` }],
+			{ duration: T, easing: 'ease-out' },
+		);
+		figura.querySelector('.figura__brillo')!.animate([{ opacity: 0 }, { opacity: 0, offset: 0.5 }, { opacity: 1 }], { duration: T });
 		panel.animate([{ opacity: 0, transform: 'translateX(32px)' }, { opacity: 1, transform: 'none' }], { duration: 460, delay: 240, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'backwards' });
 		setTimeout(() => (abriendo = false), T);
 	}
@@ -287,8 +287,7 @@ const datos = OBJETOS.map((o) => ({
 		if (!dlg.open) return;
 		const fin = () => {
 			dlg.close();
-			foto.getAnimations().forEach((a) => a.cancel());
-			[rim, esmalte].forEach((el) => el.getAnimations().forEach((a) => a.cancel()));
+			dlg.getAnimations({ subtree: true }).forEach((a) => a.cancel());
 			luego?.();
 		};
 		if (reducido()) return fin();

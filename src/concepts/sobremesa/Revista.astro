@@ -27,11 +27,16 @@ const tintas = ['var(--blanco)', '#fff', 'var(--tinta)', 'var(--tinta)', 'var(--
 	</ul>
 
 	<dialog class="indice" id="sb-indice" aria-labelledby="sb-indice-titulo">
-		<div class="chapa chapa--flujo indice__caja" style={`--c:var(--esmalte);--tornillo:#55524c;--textura:url(${enamelWhite.src})`}>
-			<h3 id="sb-indice-titulo" class="indice__titulo"></h3>
-			<ol class="indice__lista"></ol>
-			<p class="indice__nota">Índice de ejemplo: los artículos no existen. La revista es parte de la maqueta.</p>
-			<button class="btn-chapa" type="button" data-cerrar-indice>Cerrar</button>
+		<div class="chapa chapa--flujo indice__caja" style={`--c:var(--esmalte);--tinta-c:var(--tinta);--tornillo:#55524c;--textura:url(${enamelWhite.src})`}>
+			<img class="indice__foto" alt="" width="260" height="325" />
+			<div class="indice__texto">
+				<p class="indice__num"></p>
+				<h3 id="sb-indice-titulo" class="indice__titulo"></h3>
+				<p class="indice__estacion"></p>
+				<ol class="indice__lista"></ol>
+				<p class="indice__nota">Índice de ejemplo: los artículos no existen. La revista es parte de la maqueta.</p>
+				<button class="btn-chapa" type="button" data-cerrar-indice>Cerrar</button>
+			</div>
 		</div>
 	</dialog>
 	<script type="application/json" id="sb-numeros" set:html={JSON.stringify(NUMEROS.map((n) => ({ n: n.n, titulo: n.titulo, estacion: n.estacion, indice: n.indice })))} />
@@ -45,24 +50,23 @@ const tintas = ['var(--blanco)', '#fff', 'var(--tinta)', 'var(--tinta)', 'var(--
 	.tapas {
 		list-style: none;
 		margin: clamp(28px, 4vw, 48px) 0 0;
-		padding: 6px 4px 28px;
+		padding: 6px 4px 12px;
 		width: 100%;
-		display: flex;
-		gap: clamp(16px, 2.2vw, 28px);
-		overflow-x: auto;
-		scroll-snap-type: x proximity;
-		scrollbar-gutter: stable;
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: clamp(20px, 3vw, 40px) clamp(16px, 2.6vw, 36px);
 	}
-	.tapas li {
-		flex: 0 0 clamp(190px, 21vw, 260px);
-		scroll-snap-align: start;
+	@media (max-width: 640px) {
+		.tapas {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
 	}
 	.tapa {
 		display: grid;
 		grid-template-rows: auto auto auto auto;
 		gap: 8px;
 		width: 100%;
-		padding: calc(22 * var(--k));
+		padding: calc(22 * var(--k)) calc(22 * var(--k)) calc(46 * var(--k)) calc(26 * var(--k));
 		border: 0;
 		text-align: left;
 		color: var(--tinta-c);
@@ -83,7 +87,8 @@ const tintas = ['var(--blanco)', '#fff', 'var(--tinta)', 'var(--tinta)', 'var(--
 	}
 	.tapa :global(.tapa__foto) {
 		width: 100%;
-		aspect-ratio: 3 / 4;
+		height: auto;
+		aspect-ratio: 4 / 5;
 		object-fit: cover;
 		border-radius: calc(8 * var(--k));
 		box-shadow: 0 0 0 calc(3 * var(--k)) rgb(255 255 255 / 0.55);
@@ -109,7 +114,9 @@ const tintas = ['var(--blanco)', '#fff', 'var(--tinta)', 'var(--tinta)', 'var(--
 	}
 
 	.indice {
-		width: min(560px, calc(100vw - 2 * var(--gutter)));
+		width: min(760px, calc(100vw - 2 * var(--gutter)));
+		max-height: calc(100svh - 24px);
+		overflow: auto;
 		padding: 0;
 		border: 0;
 		background: transparent;
@@ -119,30 +126,75 @@ const tintas = ['var(--blanco)', '#fff', 'var(--tinta)', 'var(--tinta)', 'var(--
 		background: rgb(8 16 11 / 0.86);
 	}
 	.indice__caja {
+		--k: 1px;
 		display: grid;
-		gap: 14px;
-		justify-items: start;
-		padding: clamp(26px, 4vw, 44px);
+		grid-template-columns: minmax(0, 0.42fr) minmax(0, 1fr);
+		gap: clamp(20px, 3vw, 36px);
+		align-items: start;
+		padding: clamp(28px, 4vw, 44px);
 		border-radius: 18px;
+		color: var(--tinta-c);
+	}
+	.indice__foto {
+		width: 100%;
+		aspect-ratio: 4 / 5;
+		object-fit: cover;
+		border-radius: 8px;
+		box-shadow: 0 0 0 3px rgb(255 255 255 / 0.55), 0 8px 18px rgb(0 0 0 / 0.35);
+		rotate: -1.5deg;
+	}
+	.indice__texto {
+		display: grid;
+		gap: 10px;
+		justify-items: start;
+		align-content: start;
+	}
+	.indice__num {
+		font-family: var(--f-titulo);
+		font-size: 1.1rem;
+		letter-spacing: 0.08em;
+		opacity: 0.85;
 	}
 	.indice__titulo {
 		font-family: var(--f-titulo);
 		font-weight: 400;
-		font-size: clamp(1.9rem, 4vw, 2.8rem);
+		font-size: clamp(2rem, 4vw, 3rem);
 		line-height: 1;
 		text-transform: uppercase;
 	}
+	.indice__estacion {
+		font-weight: 700;
+		font-size: 1.0625rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		padding-bottom: 10px;
+		border-bottom: 2px solid currentColor;
+		width: 100%;
+	}
 	.indice__lista {
-		margin: 0;
+		margin: 4px 0 0;
 		padding-left: 1.4em;
 		display: grid;
 		gap: 8px;
 		font-weight: 700;
-		font-size: 1.25rem;
+		font-size: 1.1875rem;
 	}
 	.indice__nota {
 		font-weight: 600;
-		font-size: 0.9375rem;
+		font-size: 0.875rem;
+		opacity: 0.85;
+	}
+	.indice .btn-chapa {
+		margin-top: 6px;
+	}
+	@media (max-width: 560px) {
+		.indice__caja {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.indice__foto {
+			aspect-ratio: 16 / 9;
+			max-height: 200px;
+		}
 	}
 </style>
 
@@ -153,7 +205,13 @@ const tintas = ['var(--blanco)', '#fff', 'var(--tinta)', 'var(--tinta)', 'var(--
 		b.addEventListener('click', () => {
 			const d = datos.find((x) => x.n === Number(b.dataset.numero));
 			if (!d) return;
-			dlg.querySelector('.indice__titulo')!.textContent = `Nº ${String(d.n).padStart(2, '0')} · ${d.titulo} (${d.estacion})`;
+			const caja = dlg.querySelector<HTMLElement>('.indice__caja')!;
+			for (const v of ['--c', '--tinta-c', '--textura']) caja.style.setProperty(v, b.style.getPropertyValue(v));
+			const foto = b.querySelector<HTMLImageElement>('.tapa__foto');
+			if (foto) dlg.querySelector<HTMLImageElement>('.indice__foto')!.src = foto.currentSrc || foto.src;
+			dlg.querySelector('.indice__num')!.textContent = `Nº ${String(d.n).padStart(2, '0')}`;
+			dlg.querySelector('.indice__titulo')!.textContent = d.titulo;
+			dlg.querySelector('.indice__estacion')!.textContent = d.estacion;
 			dlg.querySelector('.indice__lista')!.replaceChildren(...d.indice.map((t) => Object.assign(document.createElement('li'), { textContent: t })));
 			dlg.showModal();
 		}),
