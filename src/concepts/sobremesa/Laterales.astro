@@ -1,6 +1,6 @@
 ---
 // Las franjas de pared a los lados del marco 3:2, solo en pantallas anchas (cuando sobran ~150 px por lado): carteles chicos
-// colgados de la misma pared, algunos cortados por el borde de la pantalla. Son adorno (aria-hidden), salvo el del catálogo,
+// colgados de la misma pared, centrados en la franja (con un poco de desorden). Son adorno (aria-hidden), salvo el del catálogo,
 // que es un enlace. Nada pisa el marco: cada franja mide lo que sobra a cada lado.
 import enamelWhite from '../../assets/sobremesa/plates/enamel-grano.jpg';
 const t = `--textura:url(${enamelWhite.src})`;
@@ -86,7 +86,7 @@ const t = `--textura:url(${enamelWhite.src})`;
 		/* izquierda: tres carteles, uno asomando por el borde */
 		.c1 {
 			top: 9%;
-			left: -26px;
+			left: calc(50% - 75px - 6px);
 			width: 150px;
 			rotate: -2.5deg;
 		}
@@ -102,7 +102,7 @@ const t = `--textura:url(${enamelWhite.src})`;
 		}
 		.c2 {
 			top: 36%;
-			left: 22px;
+			left: calc(50% - 67px + 8px);
 			width: 134px;
 			rotate: 2deg;
 		}
@@ -121,7 +121,7 @@ const t = `--textura:url(${enamelWhite.src})`;
 		}
 		.c3 {
 			top: 64%;
-			left: -20px;
+			left: calc(50% - 75px - 2px);
 			width: 150px;
 			color: #fff;
 			rotate: -1.5deg;
@@ -135,7 +135,7 @@ const t = `--textura:url(${enamelWhite.src})`;
 		/* derecha: el enlace al catálogo (entero, a la vista), un cartel negro y la revista */
 		.r1 {
 			top: 12%;
-			right: 20px;
+			left: calc(50% - 67px + 4px);
 			width: 134px;
 			color: #fff;
 			text-decoration: none;
@@ -158,7 +158,7 @@ const t = `--textura:url(${enamelWhite.src})`;
 		}
 		.r2 {
 			top: 41%;
-			right: -30px;
+			left: calc(50% - 75px - 8px);
 			width: 150px;
 			color: var(--amarillo);
 			rotate: -2deg;
@@ -176,7 +176,7 @@ const t = `--textura:url(${enamelWhite.src})`;
 		}
 		.r3 {
 			top: 69%;
-			right: 16px;
+			left: calc(50% - 70px + 6px);
 			width: 140px;
 			rotate: 2deg;
 		}
